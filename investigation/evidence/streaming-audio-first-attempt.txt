@@ -1,0 +1,10 @@
+Executing payload...
+MOONLIGHT_STREAM_AUDIO_SERVICE: {"name":"audout:u","result":"0x0","opened":true}
+MOONLIGHT_STREAM_AUDIO_SERVICE_CLOSED: {"name":"audout:u","result":"0x0"}
+MOONLIGHT_STREAM_AUDIO_SERVICE: {"name":"audren:u","result":"0x0","opened":true}
+MOONLIGHT_STREAM_AUDIO_SERVICE_CLOSED: {"name":"audren:u","result":"0x0"}
+
+The audout:u and audren:u service connections were acquired and closed.
+The following nvdrv service-name lookup did not return; the probe timed out.
+No AudioOut object or PCM buffer was opened in this attempt. The service lookup
+was removed. A game restart is needed to clear the pending native request.

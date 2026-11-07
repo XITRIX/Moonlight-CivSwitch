@@ -1,0 +1,4 @@
+Executing payload...
+MOONLIGHT_STREAM_GLOBALS: {"windowEqualsGlobal":true,"windowArray":"function","globalArray":"function","windowWasm":"undefined","globalWasm":"undefined","globalWorker":"undefined","globalAudioContext":"undefined","globalVideoDecoder":"undefined","functionWasm":"undefined","globalThisWasm":"undefined"}
+MOONLIGHT_STREAM_WASM_DESCRIPTOR: null
+Executed successfully

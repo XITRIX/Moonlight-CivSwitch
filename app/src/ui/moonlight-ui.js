@@ -105,6 +105,12 @@
     connect.id = "moonlight-connect";
     connect.type = "button";
     connect.tabIndex = -1;
+    var settingsButton = element("button", panel, {
+        display:"flex",alignItems:"center",justifyContent:"center",width:"100%",height:"48px",marginTop:"12px",
+        border:"2px solid #35435b",borderRadius:"9px",backgroundColor:"#0c1423",color:"#f4f7ff",
+        fontFamily:"Arial, sans-serif",fontSize:"20px",outline:"none"
+    },"Settings");
+    settingsButton.id="moonlight-open-settings";settingsButton.type="button";settingsButton.tabIndex=-1;
 
     var status = element("div", panel, {
         display: "flex", minHeight: "24px", marginTop: "20px", fontSize: "16px",
@@ -121,8 +127,38 @@
         display: "flex", marginTop: "24px", fontSize: "17px", color: "#a7b6cf",
         textAlign: "center", maxWidth: "94vw"
     }, "D-pad up/down: Move    A: Edit / Select    B: Back");
-    var controls = [host, connect];
-    var games = window.MoonlightGames.create({parent:root,onBack:returnToHost,onRefresh:refreshGames});
+    var controls = [host, connect, settingsButton];
+    var streamMode=window.MoonlightSettings.defaults(),settingsLoaded=false,settingsReturn="connect",settingsTransport=null;
+    function loadSettings(){
+        if(settingsLoaded)return;settingsLoaded=true;
+        try{
+            if(window.MoonlightNative&&window.MoonlightNative.available){settingsTransport=window.MoonlightNative.create();if(settingsTransport.loadStreamSettings)streamMode=window.MoonlightSettings.validate(settingsTransport.loadStreamSettings());}
+        }catch(error){report("MOONLIGHT_SETTINGS_LOAD_ERROR: "+error.message);}
+    }
+    var settings=window.MoonlightSettingsScreen.create({parent:root,onBack:function(mode){
+        if(settingsTransport&&settingsTransport.saveStreamSettings)settingsTransport.saveStreamSettings(mode);
+        streamMode=mode;settings.hide();screen=settingsReturn;
+        if(screen==="games")games.resume();else panel.style.display="flex";
+        heldDirection="";ignoreInputUntil=Date.now()+200;root.focus();paintFocus();
+        report("MOONLIGHT_SETTINGS_SAVED: "+JSON.stringify(mode));
+    }});
+    function openSettings(){
+        if(connectionTask||streamTask||editing||closed)return;
+        loadSettings();settingsReturn=screen;
+        if(screen==="games")games.hide();else panel.style.display="none";
+        screen="settings";heldDirection="";settings.show(streamMode);paintFocus();root.focus();
+    }
+    var streamTask = null;
+    var stream = window.MoonlightStreamScreen ? window.MoonlightStreamScreen.create({parent:root,
+        log:function(text){report("MOONLIGHT_STREAM_CORE: "+text);},
+        onStats:function(stats){report("MOONLIGHT_STREAM_STATS: "+JSON.stringify(stats));},
+        onBack:function(){if(!closed){screen="games";games.resume("Stream stopped. Choose an application to reconnect.");hints.style.display="flex";ignoreInputUntil=Date.now()+250;paintFocus();}}
+    }) : null;
+    var games = window.MoonlightGames.create({parent:root,onBack:returnToHost,onRefresh:refreshGames,onLaunch:launchGame,onSettings:openSettings,
+        onArtworkLoaded:function(id,bytes,cached){report((cached?"MOONLIGHT_ARTWORK_CACHED: ":"MOONLIGHT_ARTWORK_LOADED: ")+id+" ("+bytes+" bytes)");},
+        onArtworkDisplayed:function(id){report("MOONLIGHT_ARTWORK_DISPLAYED: "+id);},
+        onArtworkError:function(id,error){report("MOONLIGHT_ARTWORK_ERROR: "+id+" "+error.message);}
+    });
     root.appendChild(hints);
 
     function paintFocus() {
@@ -134,8 +170,10 @@
                 : (active ? "#1b2c45" : "#0c1423");
             control.setAttribute("data-selected", active ? "true" : "false");
         });
-        hints.textContent = screen === "games"
-            ? "D-pad up/down: Move    A: Select    B: Back"
+        hints.textContent = screen === "settings"
+            ? "D-pad up/down: Move    Left/right: Change    A: Select    B: Back"
+            : screen === "games"
+            ? "D-pad: Move    A: Select    B: Back"
             : editing
             ? "Type to edit    Enter / B: Done    D-pad up/down: Move"
             : "D-pad up/down: Move    A: Edit / Select    B: Back";
@@ -255,7 +293,7 @@
     function select(index) {
         endEdit();
         selected = (index + controls.length) % controls.length;
-        if (!connectionTask) status.textContent = selected === 1 ? "Press A to connect and load games." : "Press A to edit.";
+        if (!connectionTask) status.textContent = selected === 1 ? "Press A to connect and load games." : selected===2?"Press A to change stream settings.":"Press A to edit.";
         paintFocus();
     }
 
@@ -349,6 +387,8 @@
     }
 
     function activate() {
+        if (screen === "stream") return;
+        if (screen === "settings") { settings.activate(); return; }
         if (screen === "games") { games.activate(); return; }
         if (connectionTask) {
             if (selected === 1) {
@@ -362,9 +402,24 @@
                 endEdit();
                 status.textContent = "Press A to edit.";
             } else beginEdit(selected, true);
+        } else if(selected===2){
+            openSettings();
         } else {
             connectToSunshine();
         }
+    }
+
+    function launchGame(app) {
+        if (connectionTask || streamTask || closed) return;
+        if (!stream || !window.MoonlightStreamClient) { games.fail("Streaming runtime unavailable. Send the UI with --streaming."); return; }
+        loadSettings();
+        games.hide();screen="stream";hints.style.display="none";heldDirection="";
+        try {
+            streamTask=stream.show(gameHost.address,app,streamMode).then(function(result){
+                if(!closed && result && result.error)games.fail(result.error.message);
+            }).catch(function(error){if(!closed){screen="games";games.resume(error.message);hints.style.display="flex";}report("MOONLIGHT_STREAM_ERROR: "+error.message);})
+                .finally(function(){streamTask=null;});
+        } catch(error) {screen="games";games.resume(error.message);hints.style.display="flex";}
     }
 
     function connectToSunshine() {
@@ -427,11 +482,15 @@
     }
 
     async function fetchGames(options, signal) {
+        options.onArtworkCacheError=function(error){report("MOONLIGHT_ARTWORK_CACHE_ERROR: "+error.message);};
         games.startLoading();
         report("MOONLIGHT_APPLIST_LOADING");
         var result = await window.MoonlightApps.create(options).listApps(gameHost.address, gameHost.httpsPort);
         if (closed || signal.aborted || screen !== "games") return;
-        games.setApps(result.apps);
+        var address=gameHost.address,port=gameHost.httpsPort;
+        games.setApps(result.apps,function(app,artworkSignal){
+            return window.MoonlightApps.create(Object.assign({},options,{signal:artworkSignal})).loadArtwork(address,app.id,port);
+        },result.host);
         report("MOONLIGHT_APPLIST_LOADED: " + result.apps.length);
     }
 
@@ -469,6 +528,7 @@
 
     function action(name, inputStatus, source, x, y) {
         if (closed) return;
+        if (screen === "stream") { stream.action(name,Number(inputStatus),x,y);return; }
         if (name === "keyboard-escape") name = "cancel";
         var phase = Number(inputStatus);
         if (nativeEditor) {
@@ -483,11 +543,13 @@
         }
         if (Date.now() < ignoreInputUntil) return;
         if (name === "nav-move") {
-            if (Number(y) > 0.5) name = "nav-up";
+            if (Math.abs(Number(x)) > Math.abs(Number(y)) && Math.abs(Number(x)) > 0.5) name = Number(x)>0?"nav-right":"nav-left";
+            else if (Number(y) > 0.5) name = "nav-up";
             else if (Number(y) < -0.5) name = "nav-down";
+            else if (phase !== 0 && phase !== 3 && heldDirection) name = heldDirection;
             else return;
         }
-        if (["nav-up", "nav-down", "accept", "cancel"].indexOf(name) < 0) return;
+        if (["nav-up", "nav-down", "nav-left", "nav-right", "accept", "cancel"].indexOf(name) < 0) return;
         if (phase !== 0 && phase !== 3) {
             if (name === heldDirection) heldDirection = "";
             return;
@@ -495,15 +557,17 @@
         var now = Date.now();
         // One press can arrive through both native and DOM input routes.
         if (lastAction.name === name && now - lastAction.time < 90) return;
-        if (name === "nav-up" || name === "nav-down") {
+        if (name.indexOf("nav-") === 0) {
             if (phase === 3 && (heldDirection !== name || now < nextRepeat)) return;
             heldDirection = name;
             nextRepeat = now + (phase === 0 ? 350 : 150);
-            if (screen === "games") games.move(name === "nav-up" ? -1 : 1);
-            else select(selected + (name === "nav-up" ? -1 : 1));
+            if (screen === "games") games.move(name.slice(4));
+            else if (screen === "settings") settings.move(name.slice(4));
+            else if (name === "nav-up" || name === "nav-down") select(selected + (name === "nav-up" ? -1 : 1));
         } else {
             if (phase !== 0) return;
             if (name === "accept") activate();
+            else if (screen === "settings") settings.back();
             else if (screen === "games") returnToHost();
             else if (editing) {
                 endEdit();
@@ -521,6 +585,11 @@
     function onGameEvent(event) {
         // The native textbox must receive its own navigation and completion.
         var detail = event.detail || {};
+        if (screen === "stream") {
+            action(detail.name, detail.status, event.type, detail.x, detail.y);
+            consume(event);
+            return;
+        }
         if (nativeEditor) {
             action(detail.name, detail.status, event.type, detail.x, detail.y);
             return;
@@ -536,13 +605,16 @@
             consume(event);
             return;
         }
+        if (screen === "stream") { stream.key(event,true);consume(event);return; }
         if (nativeEditor) {
             if (event.key === "Escape") action("cancel", event.repeat ? 3 : 0, "keyboard");
             return;
         }
         var name = { ArrowUp: "nav-up", ArrowDown: "nav-down", Enter: "accept", Escape: "cancel" }[event.key];
+        if ((screen === "games"||screen==="settings") && (event.key === "ArrowLeft" || event.key === "ArrowRight")) name=event.key==="ArrowLeft"?"nav-left":"nav-right";
         if (event.key === "Tab") {
-            if (screen === "games") games.move(event.shiftKey ? -1 : 1);
+            if (screen === "games") games.step(event.shiftKey ? -1 : 1);
+            else if(screen==="settings")settings.step(event.shiftKey?-1:1);
             else select(selected + (event.shiftKey ? -1 : 1));
             consume(event);
         } else if (name) {
@@ -556,11 +628,12 @@
 
     function pollGamepads() {
         if (closed) return;
+        if (screen === "stream") {stream.poll();frame=requestAnimationFrame(pollGamepads);return;}
         // Prefer the game's native action route. Polling is a browser fallback.
         if (!nativeSubscribed && navigator.getGamepads) {
             var pads;
             try { pads = navigator.getGamepads(); } catch (_) { pads = []; }
-            var mapping = [[12, "nav-up"], [13, "nav-down"], [0, "accept"], [1, "cancel"]];
+            var mapping = [[12, "nav-up"], [13, "nav-down"], [14, "nav-left"], [15, "nav-right"], [0, "accept"], [1, "cancel"]];
             for (var p = 0; p < pads.length; p++) {
                 if (!pads[p]) continue;
                 for (var b = 0; b < mapping.length; b++) {
@@ -586,6 +659,9 @@
         if (connectionSignal) connectionSignal.aborted = true;
         endEdit();
         if (frame !== null) cancelAnimationFrame(frame);
+        var artworkDone=games.destroy();
+        settings.destroy();
+        var streamDone=stream?stream.destroy():null;
         removers.forEach(function (remove) { remove(); });
         try {
             if (subscription && typeof subscription.clear === "function") subscription.clear();
@@ -596,22 +672,24 @@
         if (root.parentNode) root.parentNode.removeChild(root);
         delete window.__moonlightSimpleUI;
         // Let in-flight native requests release sockets before the loader blocks in accept().
-        if (connectionTask) connectionTask.then(finish, finish);
-        else finish();
+        Promise.all([connectionTask,artworkDone,streamDone,streamTask]).then(finish,finish);
     }
 
     controls.forEach(function (control, index) {
         listen(control, "click", function () {
             if (screen !== "connect") return;
             if (index === 0 && !connectionTask) beginEdit(index, true);
-            else if (index === 1) { select(1); activate(); }
+            else if (index > 0) { select(index); activate(); }
         });
     });
     listen(window, "keydown", onKey, true);
+    listen(window, "blur", function () { if (stream) stream.suspend(true); });
+    listen(window, "focus", function () { if (stream) stream.suspend(document.hidden); });
+    listen(document, "visibilitychange", function () { if (stream) stream.suspend(document.hidden); });
     listen(window, "keyup", function (event) {
-        if (event.key === "ArrowUp" || event.key === "ArrowDown") {
-            action(event.key === "ArrowUp" ? "nav-up" : "nav-down", 1, "keyboard");
-        }
+        if(screen==="stream"){stream.key(event,false);consume(event);return;}
+        var name={ArrowUp:"nav-up",ArrowDown:"nav-down",ArrowLeft:"nav-left",ArrowRight:"nav-right"}[event.key];
+        if (name) action(name, 1, "keyboard");
     }, true);
     listen(window, "navigate-input", onGameEvent, true);
     listen(window, "engine-input", onGameEvent, true);

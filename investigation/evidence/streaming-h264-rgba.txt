@@ -1,0 +1,6 @@
+Executing payload...
+MOONLIGHT_STREAM_RGBA_CONSTRUCTING: true
+MOONLIGHT_STREAM_RGBA_CONFIGURING: true
+MOONLIGHT_STREAM_RGBA_CONFIGURED: {"code":8193,"label":"Status_InvalidConfiguration"}
+MOONLIGHT_STREAM_RGBA_END: true
+Executed successfully

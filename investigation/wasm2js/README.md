@@ -1,0 +1,116 @@
+# moonlight-common-c as executable JavaScript
+
+The entire upstream core is compiled through Emscripten/wasm2js into
+`dist/moonlight-core.js`. This includes ENet, nanors FEC, and real Mbed TLS/PSA
+cryptography. All 54 public `Li*` functions are exported. Upstream sources are
+unmodified; the platform integration and diagnostics live here.
+
+**Verified on the actual Switch:** the generated library initialized and passed
+RTSP, FEC, AES-GCM/replay/tamper and secure-entropy checks with no WebAssembly or
+Worker API. This validates the baseline build. The separate streaming target described below
+now completes real Sunshine sessions on the Switch.
+The stock non-pthread build returns EAGAIN (6) when a thread is requested.
+
+## Files and reproducibility
+
+- `sources.lock.json`: pinned core, submodules, crypto dependency and SDK revisions.
+- `bootstrap.py`: clones missing sources and installs/activates a local SDK.
+- `build.py` / `CMakeLists.txt`: compile all core sources and export the public API.
+- `bridge.c`: secure-entropy import and diagnostics using the actual C algorithms.
+- `crypto-config.h`: crypto uses volatile keys and supplied secure entropy; no file storage.
+- `test-core.cjs`: browser-like VM with WebAssembly/Workers absent and Wasm execution disabled.
+- `send-console-test.py` / `probe-console.js`: bounded in-memory upload and on-console tests.
+- `dist/`: generated JS, manifest and third-party licenses; ignored by Git.
+- `build/`: generated objects/cache; ignored by Git.
+
+From the repository root:
+
+```sh
+python3 -B investigation/wasm2js/bootstrap.py
+python3 -B investigation/wasm2js/build.py
+node investigation/wasm2js/test-core.cjs
+```
+
+The SDK is pinned to Emscripten 3.1.74, which includes wasm2js support. Newer
+Emscripten documentation deprecates `WASM=0`; use the pinned version instead of
+relying on future defaults. The build uses `-sWASM=0 -sSINGLE_FILE=1`, so the
+result has no external `.wasm` or `.data` file and requires no Wasm runtime.
+See [Emscripten's WASM setting](https://emscripten.org/docs/tools_reference/settings_reference.html#wasm).
+
+Dependencies stay under `investigation/references/` and `investigation/toolchains/`.
+Bootstrap does not change shell profiles or global SDK configuration. Existing
+checkouts at a different revision are rejected instead of reset. Toolchain and
+cloned repositories are ignored; their licenses and provenance are retained.
+
+## Loading the module
+
+The artifact defines an asynchronous `MoonlightCore` factory. Example for Node:
+
+```js
+const MoonlightCore = require('./dist/moonlight-core.js');
+const { randomFillSync } = require('node:crypto');
+const core = await MoonlightCore({
+  moonlightPlatform: { randomFill: randomFillSync }
+});
+console.log(core._ml_test_rtsp()); // 0
+```
+
+For CivSwitch, supply `randomFill(view)` using the existing native secure RNG;
+`probe-console.js` demonstrates this adapter. The provider must synchronously
+fill the borrowed byte view. There is no Math.random fallback. `_malloc`/`_free`,
+typed heap views, `ccall`/`cwrap`, UTF-8 helpers and function-table helpers are
+available. **C pointers are offsets into this module's JS heap, not native Switch
+addresses.** Native adapters must validate/translate/copy buffers and structures.
+
+## Hardware test
+
+Close the app UI and leave CivSwitch waiting on port 9026, then run:
+
+```sh
+python3 -B investigation/wasm2js/send-console-test.py 192.168.1.182
+```
+
+The 740,701-byte tested artifact exceeds the loader's 500 KiB payload limit.
+The sender uploads it in five bounded chunks, assembles/evaluates it in memory,
+and cleans up the temporary upload/helper globals on completion. No Switch
+filesystem is mounted or written. Emscripten's default MEMFS exists only inside
+the module's JS heap; NODEFS/NODERAWFS are not enabled or mounted. The library
+currently retains Emscripten's POSIX socket implementation, which depends on
+MEMFS and WebSockets. **That implementation is not a native UDP adapter.**
+
+If a payload fails or stops returning logs, inspect the evidence before retrying.
+The hardware probe does not start or launch a Sunshine session.
+
+## Streaming target
+
+`dist/moonlight-stream.js` compiles the same unmodified upstream protocol,
+ENet, FEC and crypto sources, replacing `Platform.c` with the cooperative
+platform implementation under `app/native/`. Linker wrappers replace POSIX
+sockets with native Switch TCP/UDP and nonblocking readiness polling.
+Emscripten Asyncify fibers preserve C stacks without Wasm, Workers, pthreads,
+or injected ARM64 code. C stacks must be 16-byte aligned; 8-byte alignment
+caused incorrect optimized stack accesses and is covered by hardware evidence.
+
+`app/src/streaming/` supplies native socket/memory, movie H.264 decoder,
+Opus/AudioOut, Sunshine launch negotiation and lifecycle adapters. The core
+keeps the upstream RTSP, ENet, FEC, decryption and packet assembly logic.
+Remote input is queued on the JS side and dispatched from a cooperative C task.
+
+```sh
+node investigation/wasm2js/test-runtime.cjs
+python3 -B tools/send_ui.py 192.168.1.182 --streaming
+```
+
+The runtime test checks scheduling and NV12→PNG pixel values, CRCs and bounds.
+`send-runtime-test.py` uploads the streaming target and runs bounded probes;
+its default probe checks C scheduling plus real native HTTP and UDP. The
+`probe-live-stream.js` experiment additionally launches Desktop and streams for
+20 seconds; extra app sources must be passed with `--extra` (see the commands in
+[streaming notes](../../docs/streaming.md)). Probes use RAM only on the Switch.
+
+The full path has decoded real host frames and presented them in Gameface.
+The initial PNG renderer is deliberately low resolution and rate limited;
+this does not establish acceptable game-streaming latency or smoothness.
+
+Hardware and local results: [baseline wasm2js evidence](../evidence/wasm2js.md)
+and [live streaming evidence](../evidence/streaming-live.md).

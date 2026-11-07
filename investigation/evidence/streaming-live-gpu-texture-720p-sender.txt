@@ -1,0 +1,170 @@
+Executing payload...
+MOONLIGHT_STREAM_UPLOAD: 1/7
+Executed successfully
+Executing payload...
+MOONLIGHT_STREAM_UPLOAD: 2/7
+Executed successfully
+Executing payload...
+MOONLIGHT_STREAM_UPLOAD: 3/7
+Executed successfully
+Executing payload...
+MOONLIGHT_STREAM_UPLOAD: 4/7
+Executed successfully
+Executing payload...
+MOONLIGHT_STREAM_UPLOAD: 5/7
+Executed successfully
+Executing payload...
+MOONLIGHT_STREAM_UPLOAD: 6/7
+Executed successfully
+Executing payload...
+MOONLIGHT_STREAM_UPLOAD: 7/7
+Executed successfully
+Executing payload...
+MOONLIGHT_STREAM_STATUS: "Preparing streaming runtime…"
+MOONLIGHT_STREAM_STATUS: "Starting application on Sunshine…"
+MOONLIGHT_STREAM_CORE: RTSP port: 48010
+
+MOONLIGHT_STREAM_CORE: Initializing platform...
+MOONLIGHT_STREAM_CORE: Event 1: 1, 0
+MOONLIGHT_STREAM_STATUS: "Connecting: stage 1…"
+MOONLIGHT_STREAM_CORE: Event 2: 1, 0
+MOONLIGHT_STREAM_CORE: done
+
+MOONLIGHT_STREAM_CORE: Resolving host name...
+MOONLIGHT_STREAM_CORE: Event 1: 2, 0
+MOONLIGHT_STREAM_STATUS: "Connecting: stage 2…"
+MOONLIGHT_STREAM_CORE: Event 2: 2, 0
+MOONLIGHT_STREAM_CORE: done
+
+MOONLIGHT_STREAM_CORE: Initializing audio stream...
+MOONLIGHT_STREAM_CORE: Event 1: 3, 0
+MOONLIGHT_STREAM_STATUS: "Connecting: stage 3…"
+MOONLIGHT_STREAM_CORE: Event 2: 3, 0
+MOONLIGHT_STREAM_CORE: done
+
+MOONLIGHT_STREAM_CORE: Starting RTSP handshake...
+MOONLIGHT_STREAM_CORE: Event 1: 4, 0
+MOONLIGHT_STREAM_STATUS: "Connecting: stage 4…"
+MOONLIGHT_STREAM_STATS: {"state":1,"tasks":1,"network":{"calls":8,"sentBytes":0,"receivedBytes":0,"lastError":115,"rtpTypes":{}},"renderer":"png","submitted":0,"decoded":0,"presented":0,"conversionMs":0,"maxConversionMs":0,"audioDecoded":0,"audioQueued":0,"audioDropped":0}
+MOONLIGHT_STREAM_CORE: Audio port: 48000
+
+MOONLIGHT_STREAM_CORE: setsockopt(SO_PRIORITY, 6) failed: 50
+
+MOONLIGHT_STREAM_CORE: Video port: 47998
+
+MOONLIGHT_STREAM_CORE: Control port: 47999
+
+MOONLIGHT_STREAM_CORE: Event 2: 4, 0
+MOONLIGHT_STREAM_CORE: done
+
+MOONLIGHT_STREAM_CORE: Initializing control stream...
+MOONLIGHT_STREAM_CORE: Event 1: 5, 0
+MOONLIGHT_STREAM_STATUS: "Connecting: stage 5…"
+MOONLIGHT_STREAM_CORE: Event 2: 5, 0
+MOONLIGHT_STREAM_CORE: done
+
+MOONLIGHT_STREAM_CORE: Initializing video stream...
+MOONLIGHT_STREAM_CORE: Event 1: 6, 0
+MOONLIGHT_STREAM_STATUS: "Connecting: stage 6…"
+MOONLIGHT_STREAM_CORE: Event 2: 6, 0
+MOONLIGHT_STREAM_CORE: done
+
+MOONLIGHT_STREAM_CORE: Initializing input stream...
+MOONLIGHT_STREAM_CORE: Event 1: 7, 0
+MOONLIGHT_STREAM_STATUS: "Connecting: stage 7…"
+MOONLIGHT_STREAM_CORE: Event 2: 7, 0
+MOONLIGHT_STREAM_CORE: done
+
+MOONLIGHT_STREAM_CORE: Starting control stream...
+MOONLIGHT_STREAM_CORE: Event 1: 8, 0
+MOONLIGHT_STREAM_STATUS: "Connecting: stage 8…"
+MOONLIGHT_STREAM_CORE: Event 2: 8, 0
+MOONLIGHT_STREAM_CORE: done
+
+MOONLIGHT_STREAM_CORE: Starting video stream...
+MOONLIGHT_STREAM_CORE: Event 1: 9, 0
+MOONLIGHT_STREAM_STATUS: "Connecting: stage 9…"
+MOONLIGHT_STREAM_STATUS: "Video decoder ready: 1280×720 at 30 fps"
+MOONLIGHT_STREAM_CORE: setsockopt(SO_PRIORITY, 5) failed: 50
+
+MOONLIGHT_STREAM_CORE: Event 2: 9, 0
+MOONLIGHT_STREAM_CORE: done
+
+MOONLIGHT_STREAM_CORE: Starting audio stream...
+MOONLIGHT_STREAM_CORE: Event 1: 10, 0
+MOONLIGHT_STREAM_STATUS: "Connecting: stage 10…"
+MOONLIGHT_STREAM_CORE: Event 2: 10, 0
+MOONLIGHT_STREAM_CORE: done
+
+MOONLIGHT_STREAM_CORE: Starting input stream...
+MOONLIGHT_STREAM_CORE: Event 1: 11, 0
+MOONLIGHT_STREAM_STATUS: "Connecting: stage 11…"
+MOONLIGHT_STREAM_CORE: Event 2: 11, 0
+MOONLIGHT_STREAM_CORE: done
+
+MOONLIGHT_STREAM_CORE: Event 4: 0, 0
+MOONLIGHT_STREAM_STATUS: "Streaming 1280×720 · hold B to stop"
+MOONLIGHT_STREAM_CORE: Received first audio packet after 200 ms
+
+MOONLIGHT_STREAM_CORE: Initial audio resync period: 500 milliseconds
+
+MOONLIGHT_STREAM_CORE: Received first video packet after 200 ms
+
+MOONLIGHT_STREAM_CORE: Unrecoverable frame 1: 5+0=5 received < 14 needed
+
+MOONLIGHT_STREAM_CORE: Network dropped 1 frame (frame 1)
+
+MOONLIGHT_STREAM_CORE: Waiting for IDR frame
+
+MOONLIGHT_STREAM_CORE: IDR frame request sent
+
+MOONLIGHT_STREAM_CORE: Waiting for IDR frame
+
+MOONLIGHT_STREAM_STATS: {"state":2,"tasks":10,"network":{"calls":786,"sentBytes":3801,"receivedBytes":221513,"lastError":11,"rtpTypes":{"80:0":3,"0:0":1,"80:61":88,"80:7f":44,"90:0":202}},"renderer":"native-gpu-texture","submitted":9,"decoded":8,"presented":8,"conversionMs":17,"maxConversionMs":9,"audioDecoded":0,"audioQueued":0,"audioDropped":0,"textureFrames":8,"textureUploadMs":0,"maxTextureUploadMs":0}
+MOONLIGHT_STREAM_STATS: {"state":2,"tasks":10,"network":{"calls":2026,"sentBytes":4753,"receivedBytes":793707,"lastError":11,"rtpTypes":{"80:0":3,"0:0":1,"80:61":88,"80:7f":44,"90:0":752}},"renderer":"native-gpu-texture","submitted":49,"decoded":49,"presented":49,"conversionMs":57,"maxConversionMs":9,"audioDecoded":0,"audioQueued":0,"audioDropped":0,"textureFrames":49,"textureUploadMs":0,"maxTextureUploadMs":0}
+MOONLIGHT_STREAM_STATS: {"state":2,"tasks":10,"network":{"calls":3747,"sentBytes":5705,"receivedBytes":1651741,"lastError":11,"rtpTypes":{"80:0":3,"0:0":1,"80:61":424,"80:7f":212,"90:0":1540}},"renderer":"native-gpu-texture","submitted":109,"decoded":108,"presented":108,"conversionMs":110,"maxConversionMs":9,"audioDecoded":332,"audioQueued":83,"audioDropped":0,"textureFrames":108,"textureUploadMs":0,"maxTextureUploadMs":0}
+MOONLIGHT_STREAM_STATS: {"state":2,"tasks":10,"network":{"calls":5579,"sentBytes":6545,"receivedBytes":2597705,"lastError":11,"rtpTypes":{"80:0":3,"0:0":1,"80:61":830,"80:7f":414,"90:0":2405}},"renderer":"native-gpu-texture","submitted":169,"decoded":169,"presented":169,"conversionMs":163,"maxConversionMs":9,"audioDecoded":738,"audioQueued":184,"audioDropped":0,"textureFrames":169,"textureUploadMs":0,"maxTextureUploadMs":0}
+MOONLIGHT_STREAM_STATS: {"state":2,"tasks":10,"network":{"calls":7412,"sentBytes":7441,"receivedBytes":3550387,"lastError":11,"rtpTypes":{"80:0":3,"0:0":1,"80:61":1230,"80:7f":614,"90:0":3277}},"renderer":"native-gpu-texture","submitted":230,"decoded":229,"presented":229,"conversionMs":217,"maxConversionMs":9,"audioDecoded":1138,"audioQueued":284,"audioDropped":0,"textureFrames":229,"textureUploadMs":0,"maxTextureUploadMs":0}
+MOONLIGHT_STREAM_STATS: {"state":2,"tasks":10,"network":{"calls":9270,"sentBytes":8291,"receivedBytes":4521487,"lastError":11,"rtpTypes":{"80:0":3,"0:0":1,"80:61":1636,"80:7f":818,"90:0":4166}},"renderer":"native-gpu-texture","submitted":290,"decoded":290,"presented":290,"conversionMs":271,"maxConversionMs":9,"audioDecoded":1544,"audioQueued":386,"audioDropped":0,"textureFrames":290,"textureUploadMs":0,"maxTextureUploadMs":0}
+MOONLIGHT_STREAM_STATS: {"state":2,"tasks":10,"network":{"calls":11121,"sentBytes":9187,"receivedBytes":5491849,"lastError":11,"rtpTypes":{"80:0":3,"0:0":1,"80:61":2036,"80:7f":1018,"90:0":5055}},"renderer":"native-gpu-texture","submitted":351,"decoded":350,"presented":350,"conversionMs":325,"maxConversionMs":9,"audioDecoded":1944,"audioQueued":486,"audioDropped":0,"textureFrames":350,"textureUploadMs":0,"maxTextureUploadMs":0}
+MOONLIGHT_STREAM_STATS: {"state":2,"tasks":10,"network":{"calls":12869,"sentBytes":9999,"receivedBytes":6350325,"lastError":11,"rtpTypes":{"80:0":3,"0:0":1,"80:61":2440,"80:7f":1220,"90:0":5836}},"renderer":"native-gpu-texture","submitted":409,"decoded":409,"presented":409,"conversionMs":378,"maxConversionMs":9,"audioDecoded":2348,"audioQueued":587,"audioDropped":0,"textureFrames":409,"textureUploadMs":0,"maxTextureUploadMs":0}
+MOONLIGHT_STREAM_STATS: {"state":2,"tasks":10,"network":{"calls":14841,"sentBytes":10931,"receivedBytes":7452903,"lastError":11,"rtpTypes":{"80:0":3,"0:0":1,"80:61":2842,"80:7f":1420,"90:0":6852}},"renderer":"native-gpu-texture","submitted":470,"decoded":470,"presented":470,"conversionMs":437,"maxConversionMs":9,"audioDecoded":2750,"audioQueued":687,"audioDropped":0,"textureFrames":470,"textureUploadMs":0,"maxTextureUploadMs":0}
+MOONLIGHT_STREAM_STATUS: "Stopping stream…"
+MOONLIGHT_STREAM_CORE: Stopping input stream...
+MOONLIGHT_STREAM_CORE: ENet wait interrupted
+
+MOONLIGHT_STREAM_CORE: Control stream connection failed: 27
+
+MOONLIGHT_STREAM_CORE: done
+
+MOONLIGHT_STREAM_CORE: Stopping audio stream...
+MOONLIGHT_STREAM_CORE: done
+
+MOONLIGHT_STREAM_CORE: Stopping video stream...
+MOONLIGHT_STREAM_CORE: done
+
+MOONLIGHT_STREAM_CORE: Stopping control stream...
+MOONLIGHT_STREAM_CORE: ENet peer acknowledged disconnection
+
+MOONLIGHT_STREAM_CORE: done
+
+MOONLIGHT_STREAM_CORE: Cleaning up input stream...
+MOONLIGHT_STREAM_CORE: done
+
+MOONLIGHT_STREAM_CORE: Cleaning up video stream...
+MOONLIGHT_STREAM_CORE: done
+
+MOONLIGHT_STREAM_CORE: Cleaning up control stream...
+MOONLIGHT_STREAM_CORE: done
+
+MOONLIGHT_STREAM_CORE: Cleaning up audio stream...
+MOONLIGHT_STREAM_CORE: done
+
+MOONLIGHT_STREAM_CORE: Cleaning up platform...
+MOONLIGHT_STREAM_CORE: done
+
+MOONLIGHT_STREAM_CORE: Event 7: 0, 0
+MOONLIGHT_STREAM_LIVE_RESULT: {"error":null,"stats":{"state":0,"tasks":0,"network":{"calls":16785,"sentBytes":11955,"receivedBytes":8562707,"lastError":11,"rtpTypes":{"80:0":3,"0:0":2,"80:61":3233,"80:7f":1616,"90:0":7876}},"renderer":"native-gpu-texture","submitted":531,"decoded":524,"presented":524,"conversionMs":485,"maxConversionMs":9,"audioDecoded":3141,"audioQueued":785,"audioDropped":0,"textureFrames":524,"textureUploadMs":0,"maxTextureUploadMs":0},"visibleMs":18913}
+MOONLIGHT_STREAM_LIVE_PASSED: true
+MOONLIGHT_STREAM_LIVE_END: true
+Executed successfully

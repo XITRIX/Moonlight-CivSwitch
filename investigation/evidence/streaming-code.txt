@@ -1,0 +1,4 @@
+Executing payload...
+MOONLIGHT_STREAM_EXEC_OWN_PAGE_RX: {"result":"0xd801","allowed":false}
+MOONLIGHT_STREAM_EXEC_CODE_END: true
+Executed successfully

@@ -1,0 +1,38 @@
+Read-only Gameface PNG data-URL probe on the user's Switch, 2026-11-07.
+Both visible and display:none image elements fired load. naturalWidth,
+naturalHeight and complete were undefined; width/height reported source size.
+The temporary probe UI was removed automatically. No console files were written.
+
+Executing payload...
+MOONLIGHT_IMAGE_PROBE_EVENT: 0 load
+MOONLIGHT_IMAGE_PROBE_EVENT: 1 load
+MOONLIGHT_IMAGE_PROBE_INITIAL: [{"width":16,"height":16,"display":"block"},{"width":16,"height":16,"display":"none"}]
+MOONLIGHT_IMAGE_PROBE_VISIBLE: [{"width":16,"height":16,"display":"block"},{"width":16,"height":16,"display":"block"}]
+Executed successfully
+
+First application cover download over pinned native TLS:
+MOONLIGHT_APPLIST_LOADED: 3
+MOONLIGHT_ARTWORK_LOADED: 881448767 (8231 bytes)
+
+The user reported that covers loaded slowly each time. The original UI discarded
+its cache on Refresh/return to Host; that lifetime has been corrected to retain
+successful covers and image elements for the same host until the UI closes.
+
+Updated UI, real host images:
+MOONLIGHT_ARTWORK_LOADED: 881448767 (8231 bytes)
+MOONLIGHT_ARTWORK_DISPLAYED: 881448767
+MOONLIGHT_ARTWORK_LOADED: 1093255277 (24833 bytes)
+MOONLIGHT_ARTWORK_DISPLAYED: 1093255277
+MOONLIGHT_ARTWORK_LOADED: 382300562 (98678 bytes)
+MOONLIGHT_ARTWORK_DISPLAYED: 382300562
+MOONLIGHT_HOST_SCREEN
+MOONLIGHT_SUNSHINE_CHECKING
+MOONLIGHT_SUNSHINE_ONLINE
+MOONLIGHT_SUNSHINE_CHECKING_PAIR
+MOONLIGHT_SUNSHINE_PAIRED
+MOONLIGHT_PAIRING_SAVED: reused
+MOONLIGHT_APPLIST_LOADING
+MOONLIGHT_APPLIST_LOADED: 3
+
+No artwork downloads occurred on reconnect. The user confirmed:
+"Yes — cached covers appear immediately" after testing Refresh and B → Connect.

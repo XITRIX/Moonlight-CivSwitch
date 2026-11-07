@@ -1,0 +1,1284 @@
+{
+  "evidence_id": "ev_3a6a2825633b54d61dfe78228a276e3919d647803d6417e16eb32a9ad35d1c2e",
+  "subject": {
+    "name": "movie-gpu-transfer.elf",
+    "digest": {
+      "sha256": "4775f42621f4af24e36d0675f6d34a688c9e354bdeae0e1543970eed54706d07"
+    },
+    "format": "elf",
+    "architecture": "arm64",
+    "local_path": "/Users/daniilvinogradov/Documents/Dev/NS2-experiments/investigation/artifacts/movie-gpu-transfer.elf"
+  },
+  "result": {
+    "procedure": {
+      "address": "0x2b6a380",
+      "name": "capture_2b6a380",
+      "classification": null,
+      "body": {
+        "available": false,
+        "reason": "Hopper's public Python API does not expose complete function body ranges"
+      },
+      "signature": "int capture(int arg0, int arg1, int arg2, int arg3)",
+      "locals": [
+        {
+          "description": "<__main__.LocalVariable object at 0x12ab1a0f0>",
+          "provenance": "hopper-public-python-api"
+        },
+        {
+          "description": "<__main__.LocalVariable object at 0x12ab19250>",
+          "provenance": "hopper-public-python-api"
+        },
+        {
+          "description": "<__main__.LocalVariable object at 0x12ab18950>",
+          "provenance": "hopper-public-python-api"
+        },
+        {
+          "description": "<__main__.LocalVariable object at 0x12ab1a210>",
+          "provenance": "hopper-public-python-api"
+        },
+        {
+          "description": "<__main__.LocalVariable object at 0x12ab1a2d0>",
+          "provenance": "hopper-public-python-api"
+        },
+        {
+          "description": "<__main__.LocalVariable object at 0x12ab1a390>",
+          "provenance": "hopper-public-python-api"
+        },
+        {
+          "description": "<__main__.LocalVariable object at 0x12ab19850>",
+          "provenance": "hopper-public-python-api"
+        },
+        {
+          "description": "<__main__.LocalVariable object at 0x12ab198b0>",
+          "provenance": "hopper-public-python-api"
+        },
+        {
+          "description": "<__main__.LocalVariable object at 0x12ab1a510>",
+          "provenance": "hopper-public-python-api"
+        },
+        {
+          "description": "<__main__.LocalVariable object at 0x12ab1a450>",
+          "provenance": "hopper-public-python-api"
+        },
+        {
+          "description": "<__main__.LocalVariable object at 0x12ab19d90>",
+          "provenance": "hopper-public-python-api"
+        },
+        {
+          "description": "<__main__.LocalVariable object at 0x12ab19df0>",
+          "provenance": "hopper-public-python-api"
+        },
+        {
+          "description": "<__main__.LocalVariable object at 0x12ab19e50>",
+          "provenance": "hopper-public-python-api"
+        },
+        {
+          "description": "<__main__.LocalVariable object at 0x12ab19eb0>",
+          "provenance": "hopper-public-python-api"
+        },
+        {
+          "description": "<__main__.LocalVariable object at 0x12ab19f10>",
+          "provenance": "hopper-public-python-api"
+        },
+        {
+          "description": "<__main__.LocalVariable object at 0x12ab1a630>",
+          "provenance": "hopper-public-python-api"
+        },
+        {
+          "description": "<__main__.LocalVariable object at 0x12ab1a690>",
+          "provenance": "hopper-public-python-api"
+        },
+        {
+          "description": "<__main__.LocalVariable object at 0x12ab1a6f0>",
+          "provenance": "hopper-public-python-api"
+        },
+        {
+          "description": "<__main__.LocalVariable object at 0x12ab1a750>",
+          "provenance": "hopper-public-python-api"
+        },
+        {
+          "description": "<__main__.LocalVariable object at 0x12ab1a7b0>",
+          "provenance": "hopper-public-python-api"
+        },
+        {
+          "description": "<__main__.LocalVariable object at 0x12ab1a810>",
+          "provenance": "hopper-public-python-api"
+        },
+        {
+          "description": "<__main__.LocalVariable object at 0x12ab1a870>",
+          "provenance": "hopper-public-python-api"
+        },
+        {
+          "description": "<__main__.LocalVariable object at 0x12ab1a8d0>",
+          "provenance": "hopper-public-python-api"
+        },
+        {
+          "description": "<__main__.LocalVariable object at 0x12ab1a930>",
+          "provenance": "hopper-public-python-api"
+        },
+        {
+          "description": "<__main__.LocalVariable object at 0x12ab1a990>",
+          "provenance": "hopper-public-python-api"
+        },
+        {
+          "description": "<__main__.LocalVariable object at 0x12ab1a9f0>",
+          "provenance": "hopper-public-python-api"
+        },
+        {
+          "description": "<__main__.LocalVariable object at 0x12ab1aa50>",
+          "provenance": "hopper-public-python-api"
+        }
+      ]
+    },
+    "pseudocode": "    r31 = r31 - 0x110;\n    saved_fp = r29;\n    decomp_var_m8 = r30;\n    saved_regs_10 = r28;\n    decomp_var_m18 = r27;\n    saved_regs_20 = r26;\n    decomp_var_m28 = r25;\n    saved_regs_30 = r24;\n    decomp_var_m38 = r23;\n    saved_regs_40 = r22;\n    decomp_var_m48 = r21;\n    saved_regs_50 = r20;\n    decomp_var_m58 = r19;\n    r19 = arg1;\n    r21 = arg3;\n    r24 = arg2;\n    r20 = arg0;\n    var_C = 0x0;\n    r0 = loc_2b9e9d0(arg2, &var_C, arg2, arg3);\n    if (r0 != 0x0) goto loc_2b6a8b4;\n    goto loc_2b6a3c8;\n\nloc_2b6a8b4:\n    loc_2bd20e0();\n    goto loc_2b6a8b8;\n\nloc_2b6a3c8:\n    if (var_C != 0x1) goto loc_2b6a3e8;\n    goto loc_2b6a3d4;\n\nloc_2b6a8b8:\n    loc_2bd20e0();\n    goto loc_2b6a8bc;\n\nloc_2b6a3e8:\n    r23 = loc_2bdb4c0(r21);\n    if ((loc_2b53090(0x4, 0x4, 0x0) & 0x1) == 0x0 || (loc_2b53070(0x6, 0x4, 0x0) & 0x1) == 0x0) goto loc_2b6a41c;\n    goto loc_2b6a450;\n\nloc_2b6a3d4:\n    loc_2bd2160(0x4c4b40);\n    r0 = 0x7fffffff;\n    return r0;\n\nloc_2b6a8bc:\n    loc_2bd20e0();\n    goto loc_2b6a8c0;\n\nloc_2b6a41c:\n    if ((loc_2b54830() & 0x1) != 0x0) goto loc_2b6a450;\n    goto loc_2b6a424;\n\nloc_2b6a450:\n    if ((loc_2b52f30() & 0x1) == 0x0) goto loc_2b6a8b8;\n    goto loc_2b6a45c;\n\n.l12:\n    return r0;\n\nloc_2b6a8c0:\n    loc_2bd20e0();\n    goto loc_2b6a8c4;\n\nloc_2b6a424:\n    r22 = loc_2bdb5a0(r21);\n    r21 = loc_2bdb5b0(r21);\n    if (r22 == 0x0) goto loc_2b6a454;\n    goto loc_2b6a440;\n\nloc_2b6a45c:\n    r0 = (**0x4038630)(r23);\n    if (r0 == 0x0) goto loc_2b6a8b8;\n    goto loc_2b6a474;\n\nloc_2b6a8c4:\n    loc_2bd20e0();\n    goto loc_2b6a8c8;\n\nloc_2b6a454:\n    if ((loc_2b52f30() & 0x1) == 0x0) goto .l20;\n    goto .l18;\n\nloc_2b6a440:\n    if (r20[0x1] == r22) {\n            var_10 = 0x0;\n            r0 = loc_2b9e9a0(r24, &var_10);\n            if (r0 != 0x5) {\n                    if (r0 == 0x0) {\n                            var_B0 = r19;\n                            r24 = loc_2b63e80(r20 + 0x32a8, var_10);\n                            r27 = *0x40386a8;\n                            r25 = (*r27)();\n                            r19 = *0x40386b0;\n                            r26 = (*r19)(r24);\n                            var_28 = 0x0;\n                            r0 = (*r27)(r23);\n                            r8 = *r19;\n                            r27 = r0;\n                            r0 = (r8)(r23);\n                            decomp_var_40 = 0x0;\n                            asm { ccmp       w0, w26, #0x8, ge };\n                            var_50 = 0x0;\n                            if (asm { ccmp       w0, w26, #0x8, ge }) {\n                                    r8 = 0x1;\n                            }\n                            bool_81 = r8 != 0x0;\n                            if (r8 == 0x0) {\n                                    r8 = r25;\n                            }\n                            else {\n                                    r8 = r27;\n                            }\n                            if (!bool_81) {\n                                    r9 = r26;\n                            }\n                            else {\n                                    r9 = r0;\n                            }\n                            r0 = (**0x40386b8)(&var_50);\n                            r0 = (**0x40386a0)(r23);\n                            (**0x40386c0)(&var_50);\n                            (**0x40386c8)(r20 + 0x3120, r20 + 0x3018, 0x0, r20[0xca0]);\n                            (**0x40386d0)(r20 + 0x3120, r20[0x652], r20[0xca6]);\n                            (**0x40386d8)(r20 + 0x3120);\n                            (**0x40386e0)(r20 + 0x3120, 0x100);\n                            (**0x40386e8)(r20 + 0x3120, r24, 0x0, &var_28, r23, &var_50, &decomp_var_40, 0x0);\n                            var_58 = (**0x40386f0)(r20 + 0x3120);\n                            if (r21 != 0x0) {\n                                    var_98 = 0x0;\n                                    r0 = (*0xd957080)(r21, &var_98);\n                                    if ((r0 & 0xff) != 0x0) {\n                                            (**0x4038610)(r21);\n                                            if (r20[0x3228] == 0x1) {\n                                                    (**0x4038610)(r20 + 0x31e8);\n                                                    r20[0x3228] = 0x0;\n                                            }\n                                            r0 = (**0x4038638)(r20 + 0x31e8, r22, &var_98);\n                                            if ((r0 & 0xff) != 0x0) {\n                                                    r20[0x3228] = 0x1;\n                                                    if (((**0x40386f8)(r20 + 0x10, r20 + 0x31e8) & 0xff) != 0x0) {\n                                                            loc_27a160(&var_98);\n                                                            (**0x4038700)(r20 + 0x10, 0x1, &var_58);\n                                                            if ((loc_2b546c0() & 0x1) == 0x0) {\n                                                                    r24 = var_B0;\n                                                                    if (r21 != 0x0) {\n                                                                            if (((**0x4038698)(r21, r22) & 0xff) != 0x0) {\n                                                                                    (**0x4038708)(r20 + 0x10, r21, 0x0, 0x1);\n                                                                                    (**0x4038710)(r20 + 0x10);\n                                                                                    var_98 = 0x0;\n                                                                                    var_A0 = 0x0;\n                                                                                    (*0xd957080)(r21, &var_98);\n                                                                                    r0 = loc_27ae80(&var_98, 0x0, &var_A0);\n                                                                                    if (r0 == 0x0) {\n                                                                                            var_A8 = var_A0;\n                                                                                            r0 = loc_1ba0b0(&var_A8);\n                                                                                            r8 = r0;\n                                                                                            r0 = 0x0;\n                                                                                            *r24 = r8;\n                                                                                            r24[0x1] = r1;\n                                                                                    }\n                                                                                    else {\n                                                                                            loc_2bd20e0();\n                                                                                            r0 = loc_2bd20e0();\n                                                                                    }\n                                                                            }\n                                                                            else {\n                                                                                    loc_2bd20e0();\n                                                                                    loc_2bd20e0();\n                                                                                    r0 = loc_2bd20e0();\n                                                                            }\n                                                                    }\n                                                                    else {\n                                                                            (**0x4038718)(r20 + 0x10);\n                                                                            r0 = 0x0;\n                                                                            *r24 = 0x0;\n                                                                            r24[0x1] = 0x0;\n                                                                    }\n                                                            }\n                                                            else {\n                                                                    (**0x4038708)(r20 + 0x10, r20 + 0x3230, 0x0, 0x1);\n                                                                    (**0x4038710)(r20 + 0x10);\n                                                                    (**0x4038720)(r20 + 0x3230, 0x1fca055);\n                                                                    r0 = 0x0;\n                                                            }\n                                                    }\n                                                    else {\n                                                            r0 = loc_2bd20e0();\n                                                    }\n                                            }\n                                            else {\n                                                    loc_27a160(&var_98);\n                                                    r0 = 0x20;\n                                            }\n                                    }\n                                    else {\n                                            loc_2bd20e0();\n                                            loc_2bd20e0();\n                                            loc_2bd20e0();\n                                            r0 = loc_2bd20e0();\n                                    }\n                            }\n                            else {\n                                    (**0x4038700)(r20 + 0x10, 0x1, &var_58);\n                                    if ((loc_2b546c0() & 0x1) == 0x0) {\n                                            r24 = var_B0;\n                                            if (r21 != 0x0) {\n                                                    if (((**0x4038698)(r21, r22) & 0xff) != 0x0) {\n                                                            (**0x4038708)(r20 + 0x10, r21, 0x0, 0x1);\n                                                            (**0x4038710)(r20 + 0x10);\n                                                            var_98 = 0x0;\n                                                            var_A0 = 0x0;\n                                                            (*0xd957080)(r21, &var_98);\n                                                            r0 = loc_27ae80(&var_98, 0x0, &var_A0);\n                                                            if (r0 == 0x0) {\n                                                                    var_A8 = var_A0;\n                                                                    r0 = loc_1ba0b0(&var_A8);\n                                                                    r8 = r0;\n                                                                    r0 = 0x0;\n                                                                    *r24 = r8;\n                                                                    r24[0x1] = r1;\n                                                            }\n                                                            else {\n                                                                    loc_2bd20e0();\n                                                                    r0 = loc_2bd20e0();\n                                                            }\n                                                    }\n                                                    else {\n                                                            loc_2bd20e0();\n                                                            loc_2bd20e0();\n                                                            r0 = loc_2bd20e0();\n                                                    }\n                                            }\n                                            else {\n                                                    (**0x4038718)(r20 + 0x10);\n                                                    r0 = 0x0;\n                                                    *r24 = 0x0;\n                                                    r24[0x1] = 0x0;\n                                            }\n                                    }\n                                    else {\n                                            (**0x4038708)(r20 + 0x10, r20 + 0x3230, 0x0, 0x1);\n                                            (**0x4038710)(r20 + 0x10);\n                                            (**0x4038720)(r20 + 0x3230, 0x1fca055);\n                                            r0 = 0x0;\n                                    }\n                            }\n                    }\n            }\n            else {\n                    var_B0 = r19;\n                    r24 = loc_2b63e80(r20 + 0x32a8, var_10);\n                    r27 = *0x40386a8;\n                    r25 = (*r27)();\n                    r19 = *0x40386b0;\n                    r26 = (*r19)(r24);\n                    var_28 = 0x0;\n                    r0 = (*r27)(r23);\n                    r8 = *r19;\n                    r27 = r0;\n                    r0 = (r8)(r23);\n                    decomp_var_40 = 0x0;\n                    asm { ccmp       w0, w26, #0x8, ge };\n                    var_50 = 0x0;\n                    if (asm { ccmp       w0, w26, #0x8, ge }) {\n                            r8 = 0x1;\n                    }\n                    bool_58 = r8 != 0x0;\n                    if (r8 == 0x0) {\n                            r8 = r25;\n                    }\n                    else {\n                            r8 = r27;\n                    }\n                    if (!bool_58) {\n                            r9 = r26;\n                    }\n                    else {\n                            r9 = r0;\n                    }\n                    r0 = (**0x40386b8)(&var_50);\n                    r0 = (**0x40386a0)(r23);\n                    (**0x40386c0)(&var_50);\n                    (**0x40386c8)(r20 + 0x3120, r20 + 0x3018, 0x0, r20[0xca0]);\n                    (**0x40386d0)(r20 + 0x3120, r20[0x652], r20[0xca6]);\n                    (**0x40386d8)(r20 + 0x3120);\n                    (**0x40386e0)(r20 + 0x3120, 0x100);\n                    (**0x40386e8)(r20 + 0x3120, r24, 0x0, &var_28, r23, &var_50, &decomp_var_40, 0x0);\n                    var_58 = (**0x40386f0)(r20 + 0x3120);\n                    if (r21 != 0x0) {\n                            var_98 = 0x0;\n                            r0 = (*0xd957080)(r21, &var_98);\n                            if ((r0 & 0xff) != 0x0) {\n                                    (**0x4038610)(r21);\n                                    if (r20[0x3228] == 0x1) {\n                                            (**0x4038610)(r20 + 0x31e8);\n                                            r20[0x3228] = 0x0;\n                                    }\n                                    r0 = (**0x4038638)(r20 + 0x31e8, r22, &var_98);\n                                    if ((r0 & 0xff) != 0x0) {\n                                            r20[0x3228] = 0x1;\n                                            if (((**0x40386f8)(r20 + 0x10, r20 + 0x31e8) & 0xff) != 0x0) {\n                                                    loc_27a160(&var_98);\n                                                    (**0x4038700)(r20 + 0x10, 0x1, &var_58);\n                                                    if ((loc_2b546c0() & 0x1) == 0x0) {\n                                                            r24 = var_B0;\n                                                            if (r21 != 0x0) {\n                                                                    if (((**0x4038698)(r21, r22) & 0xff) != 0x0) {\n                                                                            (**0x4038708)(r20 + 0x10, r21, 0x0, 0x1);\n                                                                            (**0x4038710)(r20 + 0x10);\n                                                                            var_98 = 0x0;\n                                                                            var_A0 = 0x0;\n                                                                            (*0xd957080)(r21, &var_98);\n                                                                            r0 = loc_27ae80(&var_98, 0x0, &var_A0);\n                                                                            if (r0 == 0x0) {\n                                                                                    var_A8 = var_A0;\n                                                                                    r0 = loc_1ba0b0(&var_A8);\n                                                                                    r8 = r0;\n                                                                                    r0 = 0x0;\n                                                                                    *r24 = r8;\n                                                                                    r24[0x1] = r1;\n                                                                            }\n                                                                            else {\n                                                                                    loc_2bd20e0();\n                                                                                    r0 = loc_2bd20e0();\n                                                                            }\n                                                                    }\n                                                                    else {\n                                                                            loc_2bd20e0();\n                                                                            loc_2bd20e0();\n                                                                            r0 = loc_2bd20e0();\n                                                                    }\n                                                            }\n                                                            else {\n                                                                    (**0x4038718)(r20 + 0x10);\n                                                                    r0 = 0x0;\n                                                                    *r24 = 0x0;\n                                                                    r24[0x1] = 0x0;\n                                                            }\n                                                    }\n                                                    else {\n                                                            (**0x4038708)(r20 + 0x10, r20 + 0x3230, 0x0, 0x1);\n                                                            (**0x4038710)(r20 + 0x10);\n                                                            (**0x4038720)(r20 + 0x3230, 0x1fca055);\n                                                            r0 = 0x0;\n                                                    }\n                                            }\n                                            else {\n                                                    r0 = loc_2bd20e0();\n                                            }\n                                    }\n                                    else {\n                                            loc_27a160(&var_98);\n                                            r0 = 0x20;\n                                    }\n                            }\n                            else {\n                                    loc_2bd20e0();\n                                    loc_2bd20e0();\n                                    loc_2bd20e0();\n                                    r0 = loc_2bd20e0();\n                            }\n                    }\n                    else {\n                            (**0x4038700)(r20 + 0x10, 0x1, &var_58);\n                            if ((loc_2b546c0() & 0x1) == 0x0) {\n                                    r24 = var_B0;\n                                    if (r21 != 0x0) {\n                                            if (((**0x4038698)(r21, r22) & 0xff) != 0x0) {\n                                                    (**0x4038708)(r20 + 0x10, r21, 0x0, 0x1);\n                                                    (**0x4038710)(r20 + 0x10);\n                                                    var_98 = 0x0;\n                                                    var_A0 = 0x0;\n                                                    (*0xd957080)(r21, &var_98);\n                                                    r0 = loc_27ae80(&var_98, 0x0, &var_A0);\n                                                    if (r0 == 0x0) {\n                                                            var_A8 = var_A0;\n                                                            r0 = loc_1ba0b0(&var_A8);\n                                                            r8 = r0;\n                                                            r0 = 0x0;\n                                                            *r24 = r8;\n                                                            r24[0x1] = r1;\n                                                    }\n                                                    else {\n                                                            loc_2bd20e0();\n                                                            r0 = loc_2bd20e0();\n                                                    }\n                                            }\n                                            else {\n                                                    loc_2bd20e0();\n                                                    loc_2bd20e0();\n                                                    r0 = loc_2bd20e0();\n                                            }\n                                    }\n                                    else {\n                                            (**0x4038718)(r20 + 0x10);\n                                            r0 = 0x0;\n                                            *r24 = 0x0;\n                                            r24[0x1] = 0x0;\n                                    }\n                            }\n                            else {\n                                    (**0x4038708)(r20 + 0x10, r20 + 0x3230, 0x0, 0x1);\n                                    (**0x4038710)(r20 + 0x10);\n                                    (**0x4038720)(r20 + 0x3230, 0x1fca055);\n                                    r0 = 0x0;\n                            }\n                    }\n            }\n    }\n    else {\n            r0 = sub_2b6a020(r20, r22);\n            if (r0 != 0x5) {\n                    if (r0 == 0x0) {\n                            var_10 = 0x0;\n                            r0 = loc_2b9e9a0(r24, &var_10);\n                            if (r0 != 0x5) {\n                                    if (r0 == 0x0) {\n                                            var_B0 = r19;\n                                            r24 = loc_2b63e80(r20 + 0x32a8, var_10);\n                                            r27 = *0x40386a8;\n                                            r25 = (*r27)();\n                                            r19 = *0x40386b0;\n                                            r26 = (*r19)(r24);\n                                            var_28 = 0x0;\n                                            r0 = (*r27)(r23);\n                                            r8 = *r19;\n                                            r27 = r0;\n                                            r0 = (r8)(r23);\n                                            decomp_var_40 = 0x0;\n                                            asm { ccmp       w0, w26, #0x8, ge };\n                                            var_50 = 0x0;\n                                            if (asm { ccmp       w0, w26, #0x8, ge }) {\n                                                    r8 = 0x1;\n                                            }\n                                            bool_143 = r8 != 0x0;\n                                            if (r8 == 0x0) {\n                                                    r8 = r25;\n                                            }\n                                            else {\n                                                    r8 = r27;\n                                            }\n                                            if (!bool_143) {\n                                                    r9 = r26;\n                                            }\n                                            else {\n                                                    r9 = r0;\n                                            }\n                                            r0 = (**0x40386b8)(&var_50);\n                                            r0 = (**0x40386a0)(r23);\n                                            (**0x40386c0)(&var_50);\n                                            (**0x40386c8)(r20 + 0x3120, r20 + 0x3018, 0x0, r20[0xca0]);\n                                            (**0x40386d0)(r20 + 0x3120, r20[0x652], r20[0xca6]);\n                                            (**0x40386d8)(r20 + 0x3120);\n                                            (**0x40386e0)(r20 + 0x3120, 0x100);\n                                            (**0x40386e8)(r20 + 0x3120, r24, 0x0, &var_28, r23, &var_50, &decomp_var_40, 0x0);\n                                            var_58 = (**0x40386f0)(r20 + 0x3120);\n                                            if (r21 != 0x0) {\n                                                    var_98 = 0x0;\n                                                    r0 = (*0xd957080)(r21, &var_98);\n                                                    if ((r0 & 0xff) != 0x0) {\n                                                            (**0x4038610)(r21);\n                                                            if (r20[0x3228] == 0x1) {\n                                                                    (**0x4038610)(r20 + 0x31e8);\n                                                                    r20[0x3228] = 0x0;\n                                                            }\n                                                            r0 = (**0x4038638)(r20 + 0x31e8, r22, &var_98);\n                                                            if ((r0 & 0xff) != 0x0) {\n                                                                    r20[0x3228] = 0x1;\n                                                                    if (((**0x40386f8)(r20 + 0x10, r20 + 0x31e8) & 0xff) != 0x0) {\n                                                                            loc_27a160(&var_98);\n                                                                            (**0x4038700)(r20 + 0x10, 0x1, &var_58);\n                                                                            if ((loc_2b546c0() & 0x1) == 0x0) {\n                                                                                    r24 = var_B0;\n                                                                                    if (r21 != 0x0) {\n                                                                                            if (((**0x4038698)(r21, r22) & 0xff) != 0x0) {\n                                                                                                    (**0x4038708)(r20 + 0x10, r21, 0x0, 0x1);\n                                                                                                    (**0x4038710)(r20 + 0x10);\n                                                                                                    var_98 = 0x0;\n                                                                                                    var_A0 = 0x0;\n                                                                                                    (*0xd957080)(r21, &var_98);\n                                                                                                    r0 = loc_27ae80(&var_98, 0x0, &var_A0);\n                                                                                                    if (r0 == 0x0) {\n                                                                                                            var_A8 = var_A0;\n                                                                                                            r0 = loc_1ba0b0(&var_A8);\n                                                                                                            r8 = r0;\n                                                                                                            r0 = 0x0;\n                                                                                                            *r24 = r8;\n                                                                                                            r24[0x1] = r1;\n                                                                                                    }\n                                                                                                    else {\n                                                                                                            loc_2bd20e0();\n                                                                                                            r0 = loc_2bd20e0();\n                                                                                                    }\n                                                                                            }\n                                                                                            else {\n                                                                                                    loc_2bd20e0();\n                                                                                                    loc_2bd20e0();\n                                                                                                    r0 = loc_2bd20e0();\n                                                                                            }\n                                                                                    }\n                                                                                    else {\n                                                                                            (**0x4038718)(r20 + 0x10);\n                                                                                            r0 = 0x0;\n                                                                                            *r24 = 0x0;\n                                                                                            r24[0x1] = 0x0;\n                                                                                    }\n                                                                            }\n                                                                            else {\n                                                                                    (**0x4038708)(r20 + 0x10, r20 + 0x3230, 0x0, 0x1);\n                                                                                    (**0x4038710)(r20 + 0x10);\n                                                                                    (**0x4038720)(r20 + 0x3230, 0x1fca055);\n                                                                                    r0 = 0x0;\n                                                                            }\n                                                                    }\n                                                                    else {\n                                                                            r0 = loc_2bd20e0();\n                                                                    }\n                                                            }\n                                                            else {\n                                                                    loc_27a160(&var_98);\n                                                                    r0 = 0x20;\n                                                            }\n                                                    }\n                                                    else {\n                                                            loc_2bd20e0();\n                                                            loc_2bd20e0();\n                                                            loc_2bd20e0();\n                                                            r0 = loc_2bd20e0();\n                                                    }\n                                            }\n                                            else {\n                                                    (**0x4038700)(r20 + 0x10, 0x1, &var_58);\n                                                    if ((loc_2b546c0() & 0x1) == 0x0) {\n                                                            r24 = var_B0;\n                                                            if (r21 != 0x0) {\n                                                                    if (((**0x4038698)(r21, r22) & 0xff) != 0x0) {\n                                                                            (**0x4038708)(r20 + 0x10, r21, 0x0, 0x1);\n                                                                            (**0x4038710)(r20 + 0x10);\n                                                                            var_98 = 0x0;\n                                                                            var_A0 = 0x0;\n                                                                            (*0xd957080)(r21, &var_98);\n                                                                            r0 = loc_27ae80(&var_98, 0x0, &var_A0);\n                                                                            if (r0 == 0x0) {\n                                                                                    var_A8 = var_A0;\n                                                                                    r0 = loc_1ba0b0(&var_A8);\n                                                                                    r8 = r0;\n                                                                                    r0 = 0x0;\n                                                                                    *r24 = r8;\n                                                                                    r24[0x1] = r1;\n                                                                            }\n                                                                            else {\n                                                                                    loc_2bd20e0();\n                                                                                    r0 = loc_2bd20e0();\n                                                                            }\n                                                                    }\n                                                                    else {\n                                                                            loc_2bd20e0();\n                                                                            loc_2bd20e0();\n                                                                            r0 = loc_2bd20e0();\n                                                                    }\n                                                            }\n                                                            else {\n                                                                    (**0x4038718)(r20 + 0x10);\n                                                                    r0 = 0x0;\n                                                                    *r24 = 0x0;\n                                                                    r24[0x1] = 0x0;\n                                                            }\n                                                    }\n                                                    else {\n                                                            (**0x4038708)(r20 + 0x10, r20 + 0x3230, 0x0, 0x1);\n                                                            (**0x4038710)(r20 + 0x10);\n                                                            (**0x4038720)(r20 + 0x3230, 0x1fca055);\n                                                            r0 = 0x0;\n                                                    }\n                                            }\n                                    }\n                            }\n                            else {\n                                    var_B0 = r19;\n                                    r24 = loc_2b63e80(r20 + 0x32a8, var_10);\n                                    r27 = *0x40386a8;\n                                    r25 = (*r27)();\n                                    r19 = *0x40386b0;\n                                    r26 = (*r19)(r24);\n                                    var_28 = 0x0;\n                                    r0 = (*r27)(r23);\n                                    r8 = *r19;\n                                    r27 = r0;\n                                    r0 = (r8)(r23);\n                                    decomp_var_40 = 0x0;\n                                    asm { ccmp       w0, w26, #0x8, ge };\n                                    var_50 = 0x0;\n                                    if (asm { ccmp       w0, w26, #0x8, ge }) {\n                                            r8 = 0x1;\n                                    }\n                                    bool_126 = r8 != 0x0;\n                                    if (r8 == 0x0) {\n                                            r8 = r25;\n                                    }\n                                    else {\n                                            r8 = r27;\n                                    }\n                                    if (!bool_126) {\n                                            r9 = r26;\n                                    }\n                                    else {\n                                            r9 = r0;\n                                    }\n                                    r0 = (**0x40386b8)(&var_50);\n                                    r0 = (**0x40386a0)(r23);\n                                    (**0x40386c0)(&var_50);\n                                    (**0x40386c8)(r20 + 0x3120, r20 + 0x3018, 0x0, r20[0xca0]);\n                                    (**0x40386d0)(r20 + 0x3120, r20[0x652], r20[0xca6]);\n                                    (**0x40386d8)(r20 + 0x3120);\n                                    (**0x40386e0)(r20 + 0x3120, 0x100);\n                                    (**0x40386e8)(r20 + 0x3120, r24, 0x0, &var_28, r23, &var_50, &decomp_var_40, 0x0);\n                                    var_58 = (**0x40386f0)(r20 + 0x3120);\n                                    if (r21 != 0x0) {\n                                            var_98 = 0x0;\n                                            r0 = (*0xd957080)(r21, &var_98);\n                                            if ((r0 & 0xff) != 0x0) {\n                                                    (**0x4038610)(r21);\n                                                    if (r20[0x3228] == 0x1) {\n                                                            (**0x4038610)(r20 + 0x31e8);\n                                                            r20[0x3228] = 0x0;\n                                                    }\n                                                    r0 = (**0x4038638)(r20 + 0x31e8, r22, &var_98);\n                                                    if ((r0 & 0xff) != 0x0) {\n                                                            r20[0x3228] = 0x1;\n                                                            if (((**0x40386f8)(r20 + 0x10, r20 + 0x31e8) & 0xff) != 0x0) {\n                                                                    loc_27a160(&var_98);\n                                                                    (**0x4038700)(r20 + 0x10, 0x1, &var_58);\n                                                                    if ((loc_2b546c0() & 0x1) == 0x0) {\n                                                                            r24 = var_B0;\n                                                                            if (r21 != 0x0) {\n                                                                                    if (((**0x4038698)(r21, r22) & 0xff) != 0x0) {\n                                                                                            (**0x4038708)(r20 + 0x10, r21, 0x0, 0x1);\n                                                                                            (**0x4038710)(r20 + 0x10);\n                                                                                            var_98 = 0x0;\n                                                                                            var_A0 = 0x0;\n                                                                                            (*0xd957080)(r21, &var_98);\n                                                                                            r0 = loc_27ae80(&var_98, 0x0, &var_A0);\n                                                                                            if (r0 == 0x0) {\n                                                                                                    var_A8 = var_A0;\n                                                                                                    r0 = loc_1ba0b0(&var_A8);\n                                                                                                    r8 = r0;\n                                                                                                    r0 = 0x0;\n                                                                                                    *r24 = r8;\n                                                                                                    r24[0x1] = r1;\n                                                                                            }\n                                                                                            else {\n                                                                                                    loc_2bd20e0();\n                                                                                                    r0 = loc_2bd20e0();\n                                                                                            }\n                                                                                    }\n                                                                                    else {\n                                                                                            loc_2bd20e0();\n                                                                                            loc_2bd20e0();\n                                                                                            r0 = loc_2bd20e0();\n                                                                                    }\n                                                                            }\n                                                                            else {\n                                                                                    (**0x4038718)(r20 + 0x10);\n                                                                                    r0 = 0x0;\n                                                                                    *r24 = 0x0;\n                                                                                    r24[0x1] = 0x0;\n                                                                            }\n                                                                    }\n                                                                    else {\n                                                                            (**0x4038708)(r20 + 0x10, r20 + 0x3230, 0x0, 0x1);\n                                                                            (**0x4038710)(r20 + 0x10);\n                                                                            (**0x4038720)(r20 + 0x3230, 0x1fca055);\n                                                                            r0 = 0x0;\n                                                                    }\n                                                            }\n                                                            else {\n                                                                    r0 = loc_2bd20e0();\n                                                            }\n                                                    }\n                                                    else {\n                                                            loc_27a160(&var_98);\n                                                            r0 = 0x20;\n                                                    }\n                                            }\n                                            else {\n                                                    loc_2bd20e0();\n                                                    loc_2bd20e0();\n                                                    loc_2bd20e0();\n                                                    r0 = loc_2bd20e0();\n                                            }\n                                    }\n                                    else {\n                                            (**0x4038700)(r20 + 0x10, 0x1, &var_58);\n                                            if ((loc_2b546c0() & 0x1) == 0x0) {\n                                                    r24 = var_B0;\n                                                    if (r21 != 0x0) {\n                                                            if (((**0x4038698)(r21, r22) & 0xff) != 0x0) {\n                                                                    (**0x4038708)(r20 + 0x10, r21, 0x0, 0x1);\n                                                                    (**0x4038710)(r20 + 0x10);\n                                                                    var_98 = 0x0;\n                                                                    var_A0 = 0x0;\n                                                                    (*0xd957080)(r21, &var_98);\n                                                                    r0 = loc_27ae80(&var_98, 0x0, &var_A0);\n                                                                    if (r0 == 0x0) {\n                                                                            var_A8 = var_A0;\n                                                                            r0 = loc_1ba0b0(&var_A8);\n                                                                            r8 = r0;\n                                                                            r0 = 0x0;\n                                                                            *r24 = r8;\n                                                                            r24[0x1] = r1;\n                                                                    }\n                                                                    else {\n                                                                            loc_2bd20e0();\n                                                                            r0 = loc_2bd20e0();\n                                                                    }\n                                                            }\n                                                            else {\n                                                                    loc_2bd20e0();\n                                                                    loc_2bd20e0();\n                                                                    r0 = loc_2bd20e0();\n                                                            }\n                                                    }\n                                                    else {\n                                                            (**0x4038718)(r20 + 0x10);\n                                                            r0 = 0x0;\n                                                            *r24 = 0x0;\n                                                            r24[0x1] = 0x0;\n                                                    }\n                                            }\n                                            else {\n                                                    (**0x4038708)(r20 + 0x10, r20 + 0x3230, 0x0, 0x1);\n                                                    (**0x4038710)(r20 + 0x10);\n                                                    (**0x4038720)(r20 + 0x3230, 0x1fca055);\n                                                    r0 = 0x0;\n                                            }\n                                    }\n                            }\n                    }\n            }\n            else {\n                    var_10 = 0x0;\n                    r0 = loc_2b9e9a0(r24, &var_10);\n                    if (r0 != 0x5) {\n                            if (r0 == 0x0) {\n                                    var_B0 = r19;\n                                    r24 = loc_2b63e80(r20 + 0x32a8, var_10);\n                                    r27 = *0x40386a8;\n                                    r25 = (*r27)();\n                                    r19 = *0x40386b0;\n                                    r26 = (*r19)(r24);\n                                    var_28 = 0x0;\n                                    r0 = (*r27)(r23);\n                                    r8 = *r19;\n                                    r27 = r0;\n                                    r0 = (r8)(r23);\n                                    decomp_var_40 = 0x0;\n                                    asm { ccmp       w0, w26, #0x8, ge };\n                                    var_50 = 0x0;\n                                    if (asm { ccmp       w0, w26, #0x8, ge }) {\n                                            r8 = 0x1;\n                                    }\n                                    bool_106 = r8 != 0x0;\n                                    if (r8 == 0x0) {\n                                            r8 = r25;\n                                    }\n                                    else {\n                                            r8 = r27;\n                                    }\n                                    if (!bool_106) {\n                                            r9 = r26;\n                                    }\n                                    else {\n                                            r9 = r0;\n                                    }\n                                    r0 = (**0x40386b8)(&var_50);\n                                    r0 = (**0x40386a0)(r23);\n                                    (**0x40386c0)(&var_50);\n                                    (**0x40386c8)(r20 + 0x3120, r20 + 0x3018, 0x0, r20[0xca0]);\n                                    (**0x40386d0)(r20 + 0x3120, r20[0x652], r20[0xca6]);\n                                    (**0x40386d8)(r20 + 0x3120);\n                                    (**0x40386e0)(r20 + 0x3120, 0x100);\n                                    (**0x40386e8)(r20 + 0x3120, r24, 0x0, &var_28, r23, &var_50, &decomp_var_40, 0x0);\n                                    var_58 = (**0x40386f0)(r20 + 0x3120);\n                                    if (r21 != 0x0) {\n                                            var_98 = 0x0;\n                                            r0 = (*0xd957080)(r21, &var_98);\n                                            if ((r0 & 0xff) != 0x0) {\n                                                    (**0x4038610)(r21);\n                                                    if (r20[0x3228] == 0x1) {\n                                                            (**0x4038610)(r20 + 0x31e8);\n                                                            r20[0x3228] = 0x0;\n                                                    }\n                                                    r0 = (**0x4038638)(r20 + 0x31e8, r22, &var_98);\n                                                    if ((r0 & 0xff) != 0x0) {\n                                                            r20[0x3228] = 0x1;\n                                                            if (((**0x40386f8)(r20 + 0x10, r20 + 0x31e8) & 0xff) != 0x0) {\n                                                                    loc_27a160(&var_98);\n                                                                    (**0x4038700)(r20 + 0x10, 0x1, &var_58);\n                                                                    if ((loc_2b546c0() & 0x1) == 0x0) {\n                                                                            r24 = var_B0;\n                                                                            if (r21 != 0x0) {\n                                                                                    if (((**0x4038698)(r21, r22) & 0xff) != 0x0) {\n                                                                                            (**0x4038708)(r20 + 0x10, r21, 0x0, 0x1);\n                                                                                            (**0x4038710)(r20 + 0x10);\n                                                                                            var_98 = 0x0;\n                                                                                            var_A0 = 0x0;\n                                                                                            (*0xd957080)(r21, &var_98);\n                                                                                            r0 = loc_27ae80(&var_98, 0x0, &var_A0);\n                                                                                            if (r0 == 0x0) {\n                                                                                                    var_A8 = var_A0;\n                                                                                                    r0 = loc_1ba0b0(&var_A8);\n                                                                                                    r8 = r0;\n                                                                                                    r0 = 0x0;\n                                                                                                    *r24 = r8;\n                                                                                                    r24[0x1] = r1;\n                                                                                            }\n                                                                                            else {\n                                                                                                    loc_2bd20e0();\n                                                                                                    r0 = loc_2bd20e0();\n                                                                                            }\n                                                                                    }\n                                                                                    else {\n                                                                                            loc_2bd20e0();\n                                                                                            loc_2bd20e0();\n                                                                                            r0 = loc_2bd20e0();\n                                                                                    }\n                                                                            }\n                                                                            else {\n                                                                                    (**0x4038718)(r20 + 0x10);\n                                                                                    r0 = 0x0;\n                                                                                    *r24 = 0x0;\n                                                                                    r24[0x1] = 0x0;\n                                                                            }\n                                                                    }\n                                                                    else {\n                                                                            (**0x4038708)(r20 + 0x10, r20 + 0x3230, 0x0, 0x1);\n                                                                            (**0x4038710)(r20 + 0x10);\n                                                                            (**0x4038720)(r20 + 0x3230, 0x1fca055);\n                                                                            r0 = 0x0;\n                                                                    }\n                                                            }\n                                                            else {\n                                                                    r0 = loc_2bd20e0();\n                                                            }\n                                                    }\n                                                    else {\n                                                            loc_27a160(&var_98);\n                                                            r0 = 0x20;\n                                                    }\n                                            }\n                                            else {\n                                                    loc_2bd20e0();\n                                                    loc_2bd20e0();\n                                                    loc_2bd20e0();\n                                                    r0 = loc_2bd20e0();\n                                            }\n                                    }\n                                    else {\n                                            (**0x4038700)(r20 + 0x10, 0x1, &var_58);\n                                            if ((loc_2b546c0() & 0x1) == 0x0) {\n                                                    r24 = var_B0;\n                                                    if (r21 != 0x0) {\n                                                            if (((**0x4038698)(r21, r22) & 0xff) != 0x0) {\n                                                                    (**0x4038708)(r20 + 0x10, r21, 0x0, 0x1);\n                                                                    (**0x4038710)(r20 + 0x10);\n                                                                    var_98 = 0x0;\n                                                                    var_A0 = 0x0;\n                                                                    (*0xd957080)(r21, &var_98);\n                                                                    r0 = loc_27ae80(&var_98, 0x0, &var_A0);\n                                                                    if (r0 == 0x0) {\n                                                                            var_A8 = var_A0;\n                                                                            r0 = loc_1ba0b0(&var_A8);\n                                                                            r8 = r0;\n                                                                            r0 = 0x0;\n                                                                            *r24 = r8;\n                                                                            r24[0x1] = r1;\n                                                                    }\n                                                                    else {\n                                                                            loc_2bd20e0();\n                                                                            r0 = loc_2bd20e0();\n                                                                    }\n                                                            }\n                                                            else {\n                                                                    loc_2bd20e0();\n                                                                    loc_2bd20e0();\n                                                                    r0 = loc_2bd20e0();\n                                                            }\n                                                    }\n                                                    else {\n                                                            (**0x4038718)(r20 + 0x10);\n                                                            r0 = 0x0;\n                                                            *r24 = 0x0;\n                                                            r24[0x1] = 0x0;\n                                                    }\n                                            }\n                                            else {\n                                                    (**0x4038708)(r20 + 0x10, r20 + 0x3230, 0x0, 0x1);\n                                                    (**0x4038710)(r20 + 0x10);\n                                                    (**0x4038720)(r20 + 0x3230, 0x1fca055);\n                                                    r0 = 0x0;\n                                            }\n                                    }\n                            }\n                    }\n                    else {\n                            var_B0 = r19;\n                            r24 = loc_2b63e80(r20 + 0x32a8, var_10);\n                            r27 = *0x40386a8;\n                            r25 = (*r27)();\n                            r19 = *0x40386b0;\n                            r26 = (*r19)(r24);\n                            var_28 = 0x0;\n                            r0 = (*r27)(r23);\n                            r8 = *r19;\n                            r27 = r0;\n                            r0 = (r8)(r23);\n                            decomp_var_40 = 0x0;\n                            asm { ccmp       w0, w26, #0x8, ge };\n                            var_50 = 0x0;\n                            if (asm { ccmp       w0, w26, #0x8, ge }) {\n                                    r8 = 0x1;\n                            }\n                            bool_63 = r8 != 0x0;\n                            if (r8 == 0x0) {\n                                    r8 = r25;\n                            }\n                            else {\n                                    r8 = r27;\n                            }\n                            if (!bool_63) {\n                                    r9 = r26;\n                            }\n                            else {\n                                    r9 = r0;\n                            }\n                            r0 = (**0x40386b8)(&var_50);\n                            r0 = (**0x40386a0)(r23);\n                            (**0x40386c0)(&var_50);\n                            (**0x40386c8)(r20 + 0x3120, r20 + 0x3018, 0x0, r20[0xca0]);\n                            (**0x40386d0)(r20 + 0x3120, r20[0x652], r20[0xca6]);\n                            (**0x40386d8)(r20 + 0x3120);\n                            (**0x40386e0)(r20 + 0x3120, 0x100);\n                            (**0x40386e8)(r20 + 0x3120, r24, 0x0, &var_28, r23, &var_50, &decomp_var_40, 0x0);\n                            var_58 = (**0x40386f0)(r20 + 0x3120);\n                            if (r21 != 0x0) {\n                                    var_98 = 0x0;\n                                    r0 = (*0xd957080)(r21, &var_98);\n                                    if ((r0 & 0xff) != 0x0) {\n                                            (**0x4038610)(r21);\n                                            if (r20[0x3228] == 0x1) {\n                                                    (**0x4038610)(r20 + 0x31e8);\n                                                    r20[0x3228] = 0x0;\n                                            }\n                                            r0 = (**0x4038638)(r20 + 0x31e8, r22, &var_98);\n                                            if ((r0 & 0xff) != 0x0) {\n                                                    r20[0x3228] = 0x1;\n                                                    if (((**0x40386f8)(r20 + 0x10, r20 + 0x31e8) & 0xff) != 0x0) {\n                                                            loc_27a160(&var_98);\n                                                            (**0x4038700)(r20 + 0x10, 0x1, &var_58);\n                                                            if ((loc_2b546c0() & 0x1) == 0x0) {\n                                                                    r24 = var_B0;\n                                                                    if (r21 != 0x0) {\n                                                                            if (((**0x4038698)(r21, r22) & 0xff) != 0x0) {\n                                                                                    (**0x4038708)(r20 + 0x10, r21, 0x0, 0x1);\n                                                                                    (**0x4038710)(r20 + 0x10);\n                                                                                    var_98 = 0x0;\n                                                                                    var_A0 = 0x0;\n                                                                                    (*0xd957080)(r21, &var_98);\n                                                                                    r0 = loc_27ae80(&var_98, 0x0, &var_A0);\n                                                                                    if (r0 == 0x0) {\n                                                                                            var_A8 = var_A0;\n                                                                                            r0 = loc_1ba0b0(&var_A8);\n                                                                                            r8 = r0;\n                                                                                            r0 = 0x0;\n                                                                                            *r24 = r8;\n                                                                                            r24[0x1] = r1;\n                                                                                    }\n                                                                                    else {\n                                                                                            loc_2bd20e0();\n                                                                                            r0 = loc_2bd20e0();\n                                                                                    }\n                                                                            }\n                                                                            else {\n                                                                                    loc_2bd20e0();\n                                                                                    loc_2bd20e0();\n                                                                                    r0 = loc_2bd20e0();\n                                                                            }\n                                                                    }\n                                                                    else {\n                                                                            (**0x4038718)(r20 + 0x10);\n                                                                            r0 = 0x0;\n                                                                            *r24 = 0x0;\n                                                                            r24[0x1] = 0x0;\n                                                                    }\n                                                            }\n                                                            else {\n                                                                    (**0x4038708)(r20 + 0x10, r20 + 0x3230, 0x0, 0x1);\n                                                                    (**0x4038710)(r20 + 0x10);\n                                                                    (**0x4038720)(r20 + 0x3230, 0x1fca055);\n                                                                    r0 = 0x0;\n                                                            }\n                                                    }\n                                                    else {\n                                                            r0 = loc_2bd20e0();\n                                                    }\n                                            }\n                                            else {\n                                                    loc_27a160(&var_98);\n                                                    r0 = 0x20;\n                                            }\n                                    }\n                                    else {\n                                            loc_2bd20e0();\n                                            loc_2bd20e0();\n                                            loc_2bd20e0();\n                                            r0 = loc_2bd20e0();\n                                    }\n                            }\n                            else {\n                                    (**0x4038700)(r20 + 0x10, 0x1, &var_58);\n                                    if ((loc_2b546c0() & 0x1) == 0x0) {\n                                            r24 = var_B0;\n                                            if (r21 != 0x0) {\n                                                    if (((**0x4038698)(r21, r22) & 0xff) != 0x0) {\n                                                            (**0x4038708)(r20 + 0x10, r21, 0x0, 0x1);\n                                                            (**0x4038710)(r20 + 0x10);\n                                                            var_98 = 0x0;\n                                                            var_A0 = 0x0;\n                                                            (*0xd957080)(r21, &var_98);\n                                                            r0 = loc_27ae80(&var_98, 0x0, &var_A0);\n                                                            if (r0 == 0x0) {\n                                                                    var_A8 = var_A0;\n                                                                    r0 = loc_1ba0b0(&var_A8);\n                                                                    r8 = r0;\n                                                                    r0 = 0x0;\n                                                                    *r24 = r8;\n                                                                    r24[0x1] = r1;\n                                                            }\n                                                            else {\n                                                                    loc_2bd20e0();\n                                                                    r0 = loc_2bd20e0();\n                                                            }\n                                                    }\n                                                    else {\n                                                            loc_2bd20e0();\n                                                            loc_2bd20e0();\n                                                            r0 = loc_2bd20e0();\n                                                    }\n                                            }\n                                            else {\n                                                    (**0x4038718)(r20 + 0x10);\n                                                    r0 = 0x0;\n                                                    *r24 = 0x0;\n                                                    r24[0x1] = 0x0;\n                                            }\n                                    }\n                                    else {\n                                            (**0x4038708)(r20 + 0x10, r20 + 0x3230, 0x0, 0x1);\n                                            (**0x4038710)(r20 + 0x10);\n                                            (**0x4038720)(r20 + 0x3230, 0x1fca055);\n                                            r0 = 0x0;\n                                    }\n                            }\n                    }\n            }\n    }\n    return r0;\n\nloc_2b6a474:\n    r22 = r0;\n    if (r20[0x1] == r0) goto loc_2b6a49c;\n    goto loc_2b6a484;\n\nloc_2b6a8c8:\n    r0 = loc_2bd20e0();\n    return r0;\n\n.l20:\n    loc_2bd20e0();\n    goto .l16;\n\n.l18:\n    r0 = (**0x4038630)(r23);\n    if (r0 == 0x0) goto .l20;\n    goto .l17;\n\nloc_2b6a49c:\n    var_10 = 0x0;\n    r0 = loc_2b9e9a0(r24, &var_10);\n    if (r0 == 0x5 || r0 == 0x0) goto loc_2b6a4b8;\n    goto .l12;\n\nloc_2b6a484:\n    r0 = sub_2b6a020(r20, r22);\n    if (r0 == 0x5 || r0 == 0x0) goto loc_2b6a49c;\n    goto .l12;\n\n.l16:\n    loc_2bd20e0();\n    loc_2bd20e0();\n    loc_2bd20e0();\n    goto .l10;\n\n.l17:\n    r22 = r0;\n    if (r20[0x1] == r0) goto .l7;\n    goto .l11;\n\nloc_2b6a4b8:\n    var_B0 = r19;\n    r24 = loc_2b63e80(r20 + 0x32a8, var_10);\n    r27 = *0x40386a8;\n    r25 = (*r27)();\n    r19 = *0x40386b0;\n    r26 = (*r19)(r24);\n    var_28 = 0x0;\n    r0 = (*r27)(r23);\n    r8 = *r19;\n    r27 = r0;\n    r0 = (r8)(r23);\n    decomp_var_40 = 0x0;\n    asm { ccmp       w0, w26, #0x8, ge };\n    var_50 = 0x0;\n    if (asm { ccmp       w0, w26, #0x8, ge }) {\n            r8 = 0x1;\n    }\n    bool_22 = r8 != 0x0;\n    if (r8 == 0x0) {\n            r8 = r25;\n    }\n    else {\n            r8 = r27;\n    }\n    if (!bool_22) {\n            r9 = r26;\n    }\n    else {\n            r9 = r0;\n    }\n    r0 = (**0x40386b8)(&var_50);\n    r0 = (**0x40386a0)(r23);\n    (**0x40386c0)(&var_50);\n    (**0x40386c8)(r20 + 0x3120, r20 + 0x3018, 0x0, r20[0xca0]);\n    (**0x40386d0)(r20 + 0x3120, r20[0x652], r20[0xca6]);\n    (**0x40386d8)(r20 + 0x3120);\n    (**0x40386e0)(r20 + 0x3120, 0x100);\n    (**0x40386e8)(r20 + 0x3120, r24, 0x0, &var_28, r23, &var_50, &decomp_var_40, 0x0);\n    var_58 = (**0x40386f0)(r20 + 0x3120);\n    if (0x0 == 0x0) goto loc_2b6a728;\n    goto loc_2b6a66c;\n\n.l10:\n    r0 = loc_2bd20e0();\n    return r0;\n\n.l7:\n    var_10 = 0x0;\n    r0 = loc_2b9e9a0(r24, &var_10);\n    if (r0 == 0x5 || r0 == 0x0) goto .l3;\n    goto .l12;\n\n.l11:\n    r0 = sub_2b6a020(r20, r22);\n    if (r0 == 0x5 || r0 == 0x0) goto .l7;\n    goto .l12;\n\nloc_2b6a728:\n    (**0x4038700)(r20 + 0x10, 0x1, &var_58);\n    if ((loc_2b546c0() & 0x1) != 0x0) goto loc_2b6a858;\n    goto loc_2b6a74c;\n\nloc_2b6a66c:\n    var_98 = 0x0;\n    r0 = (*0xd957080)(0x0, &var_98);\n    if ((r0 & 0xff) == 0x0) goto loc_2b6a8bc;\n    goto loc_2b6a69c;\n\n.l3:\n    var_B0 = r19;\n    r24 = loc_2b63e80(r20 + 0x32a8, var_10);\n    r27 = *0x40386a8;\n    r25 = (*r27)();\n    r19 = *0x40386b0;\n    r26 = (*r19)(r24);\n    var_28 = 0x0;\n    r0 = (*r27)(r23);\n    r8 = *r19;\n    r27 = r0;\n    r0 = (r8)(r23);\n    decomp_var_40 = 0x0;\n    asm { ccmp       w0, w26, #0x8, ge };\n    var_50 = 0x0;\n    if (asm { ccmp       w0, w26, #0x8, ge }) {\n            r8 = 0x1;\n    }\n    bool_41 = r8 != 0x0;\n    if (r8 == 0x0) {\n            r8 = r25;\n    }\n    else {\n            r8 = r27;\n    }\n    if (!bool_41) {\n            r9 = r26;\n    }\n    else {\n            r9 = r0;\n    }\n    r0 = (**0x40386b8)(&var_50);\n    r0 = (**0x40386a0)(r23);\n    (**0x40386c0)(&var_50);\n    (**0x40386c8)(r20 + 0x3120, r20 + 0x3018, 0x0, r20[0xca0]);\n    (**0x40386d0)(r20 + 0x3120, r20[0x652], r20[0xca6]);\n    (**0x40386d8)(r20 + 0x3120);\n    (**0x40386e0)(r20 + 0x3120, 0x100);\n    (**0x40386e8)(r20 + 0x3120, r24, 0x0, &var_28, r23, &var_50, &decomp_var_40, 0x0);\n    var_58 = (**0x40386f0)(r20 + 0x3120);\n    if (r21 == 0x0) goto .l15;\n    goto .l1;\n\nloc_2b6a858:\n    (**0x4038708)(r20 + 0x10, r20 + 0x3230, 0x0, 0x1);\n    (**0x4038710)(r20 + 0x10);\n    (**0x4038720)(r20 + 0x3230, 0x1fca055);\n    r0 = 0x0;\n    return r0;\n\nloc_2b6a74c:\n    r24 = var_B0;\n    if (0x0 == 0x0) goto loc_2b6a80c;\n    goto loc_2b6a754;\n\nloc_2b6a69c:\n    (**0x4038610)(0x0);\n    if (r20[0x3228] == 0x1) {\n            (**0x4038610)(r20 + 0x31e8);\n            r20[0x3228] = 0x0;\n    }\n    r0 = (**0x4038638)(r20 + 0x31e8, r22, &var_98);\n    if ((r0 & 0xff) == 0x0) goto loc_2b6a82c;\n    goto loc_2b6a6f8;\n\n.l15:\n    (**0x4038700)(r20 + 0x10, 0x1, &var_58);\n    if ((loc_2b546c0() & 0x1) != 0x0) goto .l13;\n    goto .l8;\n\n.l1:\n    var_98 = 0x0;\n    r0 = (*0xd957080)(r21, &var_98);\n    if ((r0 & 0xff) == 0x0) goto .l16;\n    goto .l2;\n\nloc_2b6a80c:\n    (**0x4038718)(r20 + 0x10);\n    r0 = 0x0;\n    *r24 = 0x0;\n    r24[0x1] = 0x0;\n    return r0;\n\nloc_2b6a754:\n    r21 = 0x0;\n    if (((**0x4038698)(0x0, r22) & 0xff) == 0x0) goto loc_2b6a8c0;\n    goto loc_2b6a774;\n\nloc_2b6a82c:\n    loc_27a160(&var_98);\n    r0 = 0x20;\n    return r0;\n\nloc_2b6a6f8:\n    r20[0x3228] = 0x1;\n    if (((**0x40386f8)(r20 + 0x10, r20 + 0x31e8) & 0xff) == 0x0) goto loc_2b6a8c8;\n    goto loc_2b6a720;\n\n.l13:\n    (**0x4038708)(r20 + 0x10, r20 + 0x3230, 0x0, 0x1);\n    (**0x4038710)(r20 + 0x10);\n    (**0x4038720)(r20 + 0x3230, 0x1fca055);\n    r0 = 0x0;\n    return r0;\n\n.l8:\n    r24 = var_B0;\n    if (r21 == 0x0) goto .l21;\n    goto .l6;\n\n.l2:\n    (**0x4038610)(r21);\n    if (r20[0x3228] == 0x1) {\n            (**0x4038610)(r20 + 0x31e8);\n            r20[0x3228] = 0x0;\n    }\n    r0 = (**0x4038638)(r20 + 0x31e8, r22, &var_98);\n    if ((r0 & 0xff) == 0x0) goto .l9;\n    goto .l4;\n\nloc_2b6a774:\n    (**0x4038708)(r20 + 0x10, r21, 0x0, 0x1);\n    (**0x4038710)(r20 + 0x10);\n    var_98 = 0x0;\n    var_A0 = 0x0;\n    (*0xd957080)(r21, &var_98);\n    r0 = loc_27ae80(&var_98, 0x0, &var_A0);\n    if (r0 != 0x0) goto loc_2b6a8c4;\n    goto loc_2b6a7ec;\n\nloc_2b6a720:\n    loc_27a160(&var_98);\n    goto loc_2b6a728;\n\n.l21:\n    (**0x4038718)(r20 + 0x10);\n    r0 = 0x0;\n    *r24 = 0x0;\n    r24[0x1] = 0x0;\n    return r0;\n\n.l6:\n    if (((**0x4038698)(r21, r22) & 0xff) == 0x0) goto .l14;\n    goto .l19;\n\n.l9:\n    loc_27a160(&var_98);\n    r0 = 0x20;\n    return r0;\n\n.l4:\n    r20[0x3228] = 0x1;\n    if (((**0x40386f8)(r20 + 0x10, r20 + 0x31e8) & 0xff) == 0x0) goto .l22;\n    goto .l5;\n\nloc_2b6a7ec:\n    var_A8 = var_A0;\n    r0 = loc_1ba0b0(&var_A8);\n    r8 = r0;\n    r0 = 0x0;\n    *r24 = r8;\n    r24[0x1] = r1;\n    return r0;\n\n.l14:\n    loc_2bd20e0();\n    loc_2bd20e0();\n    goto .l10;\n\n.l19:\n    (**0x4038708)(r20 + 0x10, r21, 0x0, 0x1);\n    (**0x4038710)(r20 + 0x10);\n    var_98 = 0x0;\n    var_A0 = 0x0;\n    (*0xd957080)(r21, &var_98);\n    r0 = loc_27ae80(&var_98, 0x0, &var_A0);\n    if (r0 == 0x0) {\n            var_A8 = var_A0;\n            r0 = loc_1ba0b0(&var_A8);\n            r8 = r0;\n            r0 = 0x0;\n            *r24 = r8;\n            r24[0x1] = r1;\n    }\n    else {\n            loc_2bd20e0();\n            r0 = loc_2bd20e0();\n    }\n    return r0;\n\n.l22:\n    r0 = loc_2bd20e0();\n    return r0;\n\n.l5:\n    loc_27a160(&var_98);\n    goto .l15;\n",
+    "assembly": [
+      "0x2b6a380: pacibsp",
+      "0x2b6a384: sub sp, sp, #0x110",
+      "0x2b6a388: stp fp, lr, [sp, #0xb0]",
+      "0x2b6a38c: stp x28, x27, [sp, #0xc0]",
+      "0x2b6a390: stp x26, x25, [sp, #0xd0]",
+      "0x2b6a394: stp x24, x23, [sp, #0xe0]",
+      "0x2b6a398: stp x22, x21, [sp, #0xf0]",
+      "0x2b6a39c: stp x20, x19, [sp, #0x100]",
+      "0x2b6a3a0: add fp, sp, #0xb0",
+      "0x2b6a3a4: mov x19, x1",
+      "0x2b6a3a8: sub x1, fp, #0xc",
+      "0x2b6a3ac: mov x21, x3",
+      "0x2b6a3b0: mov x24, x2",
+      "0x2b6a3b4: mov x20, x0",
+      "0x2b6a3b8: sturb wzr, [fp, var_C]",
+      "0x2b6a3bc: mov x0, x2",
+      "0x2b6a3c0: bl 0x2b9e9d0",
+      "0x2b6a3c8: ldurb w8, [fp, var_C]",
+      "0x2b6a3cc: cmp w8, #0x1",
+      "0x2b6a3d4: mov w0, #0x4b40",
+      "0x2b6a3d8: movk w0, #0x4c, lsl #16",
+      "0x2b6a3dc: bl 0x2bd2160",
+      "0x2b6a3e0: mov w0, #0x7fffffff",
+      "0x2b6a838: ldp x20, x19, [sp, #0x100]",
+      "0x2b6a83c: ldp x22, x21, [sp, #0xf0]",
+      "0x2b6a840: ldp x24, x23, [sp, #0xe0]",
+      "0x2b6a844: ldp x26, x25, [sp, #0xd0]",
+      "0x2b6a848: ldp x28, x27, [sp, #0xc0]",
+      "0x2b6a84c: ldp fp, lr, [sp, #0xb0]",
+      "0x2b6a850: add sp, sp, #0x110",
+      "0x2b6a3e8: mov x0, x21",
+      "0x2b6a3ec: bl 0x2bdb4c0",
+      "0x2b6a3f0: mov x23, x0",
+      "0x2b6a3f4: mov w0, #0x4",
+      "0x2b6a3f8: mov w1, #0x4",
+      "0x2b6a3fc: mov w2, wzr",
+      "0x2b6a400: bl 0x2b53090",
+      "0x2b6a408: mov w0, #0x6",
+      "0x2b6a40c: mov w1, #0x4",
+      "0x2b6a410: mov w2, wzr",
+      "0x2b6a414: bl 0x2b53070",
+      "0x2b6a41c: bl 0x2b54830",
+      "0x2b6a424: mov x0, x21",
+      "0x2b6a428: bl 0x2bdb5a0",
+      "0x2b6a42c: mov x22, x0",
+      "0x2b6a430: mov x0, x21",
+      "0x2b6a434: bl 0x2bdb5b0",
+      "0x2b6a438: mov x21, x0",
+      "0x2b6a440: ldr x8, [x20, #0x8]",
+      "0x2b6a444: cmp x8, x22",
+      "0x2b6a49c: sub x1, fp, #0x10",
+      "0x2b6a4a0: stur wzr, [fp, var_10]",
+      "0x2b6a4a4: mov x0, x24",
+      "0x2b6a4a8: bl 0x2b9e9a0",
+      "0x2b6a4ac: cmp w0, #0x5",
+      "0x2b6a4b8: ldur w1, [fp, var_10]",
+      "0x2b6a4bc: mov w8, #0x32a8",
+      "0x2b6a4c0: str x19, [sp, #0xb0 + var_B0]",
+      "0x2b6a4c4: add x0, x20, x8",
+      "0x2b6a4c8: bl 0x2b63e80",
+      "0x2b6a4cc: mov w28, #0x1",
+      "0x2b6a4d0: adrp x27, #0x4038000",
+      "0x2b6a4d4: mov x24, x0",
+      "0x2b6a4d8: stur w28, [fp, var_14]",
+      "0x2b6a4dc: ldr x27, [x27, #0x6a8]",
+      "0x2b6a4e0: ldr x8, [x27]",
+      "0x2b6a4e4: blr x8",
+      "0x2b6a4e8: stur w0, [fp, var_1C]",
+      "0x2b6a4ec: adrp x19, #0x4038000",
+      "0x2b6a4f0: mov w25, w0",
+      "0x2b6a4f4: mov x0, x24",
+      "0x2b6a4f8: ldr x19, [x19, #0x6b0]",
+      "0x2b6a4fc: ldr x8, [x19]",
+      "0x2b6a500: blr x8",
+      "0x2b6a504: ldr x8, [x27]",
+      "0x2b6a508: mov w26, w0",
+      "0x2b6a50c: stur xzr, [fp, var_28]",
+      "0x2b6a510: stur w0, [fp, var_18]",
+      "0x2b6a514: mov x0, x23",
+      "0x2b6a518: stur wzr, [fp, var_20]",
+      "0x2b6a51c: stur w28, [fp, var_2C]",
+      "0x2b6a520: blr x8",
+      "0x2b6a524: ldr x8, [x19]",
+      "0x2b6a528: mov w27, w0",
+      "0x2b6a52c: mov x0, x23",
+      "0x2b6a530: blr x8",
+      "0x2b6a534: cmp w27, w25",
+      "0x2b6a538: stp xzr, xzr, [fp, var_48]",
+      "0x2b6a53c: stur wzr, [fp, var_38]",
+      "0x2b6a540: ccmp w0, w26, #0x8, ge",
+      "0x2b6a544: stur xzr, [fp, var_50]",
+      "0x2b6a548: cset w8, lt",
+      "0x2b6a54c: cmp w8, #0x0",
+      "0x2b6a550: csel w8, w27, w25, ne",
+      "0x2b6a554: csel w9, w0, w26, ne",
+      "0x2b6a558: sub x0, fp, #0x50",
+      "0x2b6a55c: stp w8, w9, [fp, var_34]",
+      "0x2b6a560: adrp x8, #0x4038000",
+      "0x2b6a564: ldr x8, [x8, #0x6b8]",
+      "0x2b6a568: ldr x8, [x8]",
+      "0x2b6a56c: blr x8",
+      "0x2b6a570: adrp x8, #0x4038000",
+      "0x2b6a574: mov x0, x23",
+      "0x2b6a578: ldr x8, [x8, #0x6a0]",
+      "0x2b6a57c: ldr x8, [x8]",
+      "0x2b6a580: blr x8",
+      "0x2b6a584: sub w8, w0, #0x37",
+      "0x2b6a588: cmp w8, #0x2",
+      "0x2b6a58c: mov w8, #0x25",
+      "0x2b6a590: csel w1, w8, w0, lo",
+      "0x2b6a594: adrp x8, #0x4038000",
+      "0x2b6a598: sub x0, fp, #0x50",
+      "0x2b6a59c: ldr x8, [x8, #0x6c0]",
+      "0x2b6a5a0: ldr x8, [x8]",
+      "0x2b6a5a4: blr x8",
+      "0x2b6a5a8: adrp x9, #0x4038000",
+      "0x2b6a5ac: ldr w3, [x20, #0x3280]",
+      "0x2b6a5b0: mov w19, #0x3120",
+      "0x2b6a5b4: mov w8, #0x3018",
+      "0x2b6a5b8: mov x2, xzr",
+      "0x2b6a5bc: ldr x9, [x9, #0x6c8]",
+      "0x2b6a5c0: add x0, x20, x19",
+      "0x2b6a5c4: add x1, x20, x8",
+      "0x2b6a5c8: ldr x9, [x9]",
+      "0x2b6a5cc: blr x9",
+      "0x2b6a5d0: adrp x8, #0x4038000",
+      "0x2b6a5d4: ldr x1, [x20, #0x3290]",
+      "0x2b6a5d8: ldr w2, [x20, #0x3298]",
+      "0x2b6a5dc: add x0, x20, x19",
+      "0x2b6a5e0: ldr x8, [x8, #0x6d0]",
+      "0x2b6a5e4: ldr x8, [x8]",
+      "0x2b6a5e8: blr x8",
+      "0x2b6a5ec: adrp x8, #0x4038000",
+      "0x2b6a5f0: add x0, x20, x19",
+      "0x2b6a5f4: ldr x8, [x8, #0x6d8]",
+      "0x2b6a5f8: ldr x8, [x8]",
+      "0x2b6a5fc: blr x8",
+      "0x2b6a600: adrp x8, #0x4038000",
+      "0x2b6a604: add x0, x20, x19",
+      "0x2b6a608: mov w1, #0x100",
+      "0x2b6a60c: ldr x8, [x8, #0x6e0]",
+      "0x2b6a610: ldr x8, [x8]",
+      "0x2b6a614: blr x8",
+      "0x2b6a618: adrp x8, #0x4038000",
+      "0x2b6a61c: add x0, x20, x19",
+      "0x2b6a620: sub x3, fp, #0x28",
+      "0x2b6a624: sub x5, fp, #0x50",
+      "0x2b6a628: mov x1, x24",
+      "0x2b6a62c: mov x2, xzr",
+      "0x2b6a630: mov x4, x23",
+      "0x2b6a634: mov w7, wzr",
+      "0x2b6a638: ldr x8, [x8, #0x6e8]",
+      "0x2b6a63c: sub x6, fp, #0x40",
+      "0x2b6a640: ldr x8, [x8]",
+      "0x2b6a644: blr x8",
+      "0x2b6a648: adrp x8, #0x4038000",
+      "0x2b6a64c: add x0, x20, x19",
+      "0x2b6a650: ldr x8, [x8, #0x6f0]",
+      "0x2b6a654: ldr x8, [x8]",
+      "0x2b6a658: blr x8",
+      "0x2b6a65c: str x0, [sp, #0xb0 + var_58]",
+      "0x2b6a660: adrp x23, #0xd957000",
+      "0x2b6a664: add x23, x23, #0x80",
+      "0x2b6a66c: ldr x8, [x23]",
+      "0x2b6a670: add x1, sp, #0x18",
+      "0x2b6a674: stp xzr, xzr, [sp, #0x48]",
+      "0x2b6a678: stp xzr, xzr, [sp, #0x38]",
+      "0x2b6a67c: mov x0, x21",
+      "0x2b6a680: stp xzr, xzr, [sp, #0x18]",
+      "0x2b6a684: stp xzr, xzr, [sp, #0x28]",
+      "0x2b6a688: str w28, [sp, #0xb0 + var_90]",
+      "0x2b6a68c: str w28, [sp, #0xb0 + var_88]",
+      "0x2b6a690: blr x8",
+      "0x2b6a694: tst w0, #0xff",
+      "0x2b6a69c: adrp x26, #0x4038000",
+      "0x2b6a6a0: mov x0, x21",
+      "0x2b6a6a4: ldr x26, [x26, #0x610]",
+      "0x2b6a6a8: ldr x8, [x26]",
+      "0x2b6a6ac: blr x8",
+      "0x2b6a6b0: mov w25, #0x3228",
+      "0x2b6a6b4: mov w24, #0x31e8",
+      "0x2b6a6b8: ldrb w8, [x20, x25]",
+      "0x2b6a6bc: cmp w8, #0x1",
+      "0x2b6a6c4: ldr x8, [x26]",
+      "0x2b6a6c8: add x0, x20, x24",
+      "0x2b6a6cc: blr x8",
+      "0x2b6a6f8: mov w8, #0x1",
+      "0x2b6a6fc: add x0, x20, #0x10",
+      "0x2b6a700: add x1, x20, x24",
+      "0x2b6a704: strb w8, [x20, x25]",
+      "0x2b6a708: adrp x8, #0x4038000",
+      "0x2b6a70c: ldr x8, [x8, #0x6f8]",
+      "0x2b6a710: ldr x8, [x8]",
+      "0x2b6a714: blr x8",
+      "0x2b6a718: tst w0, #0xff",
+      "0x2b6a720: add x0, sp, #0x18",
+      "0x2b6a74c: ldr x24, [sp, #0xb0 + var_B0]",
+      "0x2b6a754: adrp x8, #0x4038000",
+      "0x2b6a758: mov x0, x21",
+      "0x2b6a75c: mov x1, x22",
+      "0x2b6a760: ldr x8, [x8, #0x698]",
+      "0x2b6a764: ldr x8, [x8]",
+      "0x2b6a768: blr x8",
+      "0x2b6a76c: tst w0, #0xff",
+      "0x2b6a774: adrp x8, #0x4038000",
+      "0x2b6a778: add x0, x20, #0x10",
+      "0x2b6a77c: mov w3, #0x1",
+      "0x2b6a780: mov w19, #0x1",
+      "0x2b6a784: mov x1, x21",
+      "0x2b6a788: mov w2, wzr",
+      "0x2b6a78c: ldr x8, [x8, #0x708]",
+      "0x2b6a790: ldr x8, [x8]",
+      "0x2b6a794: blr x8",
+      "0x2b6a798: adrp x8, #0x4038000",
+      "0x2b6a79c: add x0, x20, #0x10",
+      "0x2b6a7a0: ldr x8, [x8, #0x710]",
+      "0x2b6a7a4: ldr x8, [x8]",
+      "0x2b6a7a8: blr x8",
+      "0x2b6a7ac: ldr x8, [x23]",
+      "0x2b6a7b0: add x1, sp, #0x18",
+      "0x2b6a7b4: stp xzr, xzr, [sp, #0x48]",
+      "0x2b6a7b8: stp xzr, xzr, [sp, #0x38]",
+      "0x2b6a7bc: mov x0, x21",
+      "0x2b6a7c0: stp xzr, xzr, [sp, #0x18]",
+      "0x2b6a7c4: stp xzr, xzr, [sp, #0x28]",
+      "0x2b6a7c8: str w19, [sp, #0xb0 + var_90]",
+      "0x2b6a7cc: str w19, [sp, #0xb0 + var_88]",
+      "0x2b6a7d0: str xzr, [sp, #0xb0 + var_A0]",
+      "0x2b6a7d4: blr x8",
+      "0x2b6a7d8: add x0, sp, #0x18",
+      "0x2b6a7dc: add x2, sp, #0x10",
+      "0x2b6a7e0: mov w1, wzr",
+      "0x2b6a7e4: bl 0x27ae80",
+      "0x2b6a7ec: ldp w8, w9, [sp, #0x10]",
+      "0x2b6a7f0: add x0, sp, #0x8",
+      "0x2b6a7f4: stp w8, w9, [sp, #0x8]",
+      "0x2b6a7f8: bl 0x1ba0b0",
+      "0x2b6a7fc: mov x8, x0",
+      "0x2b6a800: mov w0, wzr",
+      "0x2b6a804: stp x8, x1, [x24]",
+      "0x2b6a80c: adrp x8, #0x4038000",
+      "0x2b6a810: add x0, x20, #0x10",
+      "0x2b6a814: ldr x8, [x8, #0x718]",
+      "0x2b6a818: ldr x8, [x8]",
+      "0x2b6a81c: blr x8",
+      "0x2b6a820: mov w0, wzr",
+      "0x2b6a824: stp xzr, xzr, [x24]",
+      "0x2b6a858: adrp x8, #0x4038000",
+      "0x2b6a85c: mov w19, #0x3230",
+      "0x2b6a860: add x0, x20, #0x10",
+      "0x2b6a864: mov w3, #0x1",
+      "0x2b6a868: mov w2, wzr",
+      "0x2b6a86c: ldr x8, [x8, #0x708]",
+      "0x2b6a870: add x1, x20, x19",
+      "0x2b6a874: ldr x8, [x8]",
+      "0x2b6a878: blr x8",
+      "0x2b6a87c: adrp x8, #0x4038000",
+      "0x2b6a880: add x0, x20, #0x10",
+      "0x2b6a884: ldr x8, [x8, #0x710]",
+      "0x2b6a888: ldr x8, [x8]",
+      "0x2b6a88c: blr x8",
+      "0x2b6a890: adrp x8, #0x4038000",
+      "0x2b6a894: mov w1, #0xa055",
+      "0x2b6a898: add x0, x20, x19",
+      "0x2b6a89c: ldr x8, [x8, #0x720]",
+      "0x2b6a8a0: movk w1, #0x1fc, lsl #16",
+      "0x2b6a8a4: ldr x8, [x8]",
+      "0x2b6a8a8: blr x8",
+      "0x2b6a8ac: mov w0, wzr",
+      "0x2b6a82c: add x0, sp, #0x18",
+      "0x2b6a830: bl 0x27a160",
+      "0x2b6a6d4: adrp x8, #0x4038000",
+      "0x2b6a6d8: add x0, x20, x24",
+      "0x2b6a6dc: add x2, sp, #0x18",
+      "0x2b6a6e0: mov x1, x22",
+      "0x2b6a6e4: ldr x8, [x8, #0x638]",
+      "0x2b6a6e8: ldr x8, [x8]",
+      "0x2b6a6ec: blr x8",
+      "0x2b6a6f0: tst w0, #0xff",
+      "0x2b6a728: adrp x8, #0x4038000",
+      "0x2b6a72c: add x0, x20, #0x10",
+      "0x2b6a730: add x2, sp, #0x58",
+      "0x2b6a734: mov w1, #0x1",
+      "0x2b6a738: ldr x8, [x8, #0x700]",
+      "0x2b6a73c: ldr x8, [x8]",
+      "0x2b6a740: blr x8",
+      "0x2b6a744: bl 0x2b546c0",
+      "0x2b6a484: mov x0, x20",
+      "0x2b6a488: mov x1, x22",
+      "0x2b6a48c: bl sub_2b6a020",
+      "0x2b6a490: cmp w0, #0x5",
+      "0x2b6a454: bl 0x2b52f30",
+      "0x2b6a45c: adrp x8, #0x4038000",
+      "0x2b6a460: mov x0, x23",
+      "0x2b6a464: ldr x8, [x8, #0x630]",
+      "0x2b6a468: ldr x8, [x8]",
+      "0x2b6a46c: blr x8",
+      "0x2b6a474: mov x22, x0",
+      "0x2b6a478: ldr x8, [x20, #0x8]",
+      "0x2b6a47c: cmp x8, x0"
+    ],
+    "comments": [],
+    "callers": [],
+    "callees": [
+      {
+        "address": "0x2b6a020",
+        "name": "sub_2b6a020",
+        "classification": null,
+        "body": {
+          "available": false,
+          "reason": "Hopper's public Python API does not expose complete function body ranges"
+        }
+      }
+    ],
+    "incoming_references": [
+      {
+        "source_address": "0x2b6a3d0",
+        "target_address": "0x2b6a3e8",
+        "source_procedure": {
+          "address": "0x2b6a380",
+          "name": "capture_2b6a380",
+          "classification": null,
+          "body": {
+            "available": false,
+            "reason": "Hopper's public Python API does not expose complete function body ranges"
+          }
+        },
+        "target_procedure": {
+          "address": "0x2b6a380",
+          "name": "capture_2b6a380",
+          "classification": null,
+          "body": {
+            "available": false,
+            "reason": "Hopper's public Python API does not expose complete function body ranges"
+          }
+        },
+        "kind": {
+          "available": false,
+          "reason": "Hopper's public Python API does not classify reference kinds"
+        }
+      },
+      {
+        "source_address": "0x2b6a3e4",
+        "target_address": "0x2b6a838",
+        "source_procedure": {
+          "address": "0x2b6a380",
+          "name": "capture_2b6a380",
+          "classification": null,
+          "body": {
+            "available": false,
+            "reason": "Hopper's public Python API does not expose complete function body ranges"
+          }
+        },
+        "target_procedure": {
+          "address": "0x2b6a380",
+          "name": "capture_2b6a380",
+          "classification": null,
+          "body": {
+            "available": false,
+            "reason": "Hopper's public Python API does not expose complete function body ranges"
+          }
+        },
+        "kind": {
+          "available": false,
+          "reason": "Hopper's public Python API does not classify reference kinds"
+        }
+      },
+      {
+        "source_address": "0x2b6a404",
+        "target_address": "0x2b6a41c",
+        "source_procedure": {
+          "address": "0x2b6a380",
+          "name": "capture_2b6a380",
+          "classification": null,
+          "body": {
+            "available": false,
+            "reason": "Hopper's public Python API does not expose complete function body ranges"
+          }
+        },
+        "target_procedure": {
+          "address": "0x2b6a380",
+          "name": "capture_2b6a380",
+          "classification": null,
+          "body": {
+            "available": false,
+            "reason": "Hopper's public Python API does not expose complete function body ranges"
+          }
+        },
+        "kind": {
+          "available": false,
+          "reason": "Hopper's public Python API does not classify reference kinds"
+        }
+      },
+      {
+        "source_address": "0x2b6a43c",
+        "target_address": "0x2b6a454",
+        "source_procedure": {
+          "address": "0x2b6a380",
+          "name": "capture_2b6a380",
+          "classification": null,
+          "body": {
+            "available": false,
+            "reason": "Hopper's public Python API does not expose complete function body ranges"
+          }
+        },
+        "target_procedure": {
+          "address": "0x2b6a380",
+          "name": "capture_2b6a380",
+          "classification": null,
+          "body": {
+            "available": false,
+            "reason": "Hopper's public Python API does not expose complete function body ranges"
+          }
+        },
+        "kind": {
+          "available": false,
+          "reason": "Hopper's public Python API does not classify reference kinds"
+        }
+      },
+      {
+        "source_address": "0x2b6a448",
+        "target_address": "0x2b6a484",
+        "source_procedure": {
+          "address": "0x2b6a380",
+          "name": "capture_2b6a380",
+          "classification": null,
+          "body": {
+            "available": false,
+            "reason": "Hopper's public Python API does not expose complete function body ranges"
+          }
+        },
+        "target_procedure": {
+          "address": "0x2b6a380",
+          "name": "capture_2b6a380",
+          "classification": null,
+          "body": {
+            "available": false,
+            "reason": "Hopper's public Python API does not expose complete function body ranges"
+          }
+        },
+        "kind": {
+          "available": false,
+          "reason": "Hopper's public Python API does not classify reference kinds"
+        }
+      },
+      {
+        "source_address": "0x2b6a44c",
+        "target_address": "0x2b6a49c",
+        "source_procedure": {
+          "address": "0x2b6a380",
+          "name": "capture_2b6a380",
+          "classification": null,
+          "body": {
+            "available": false,
+            "reason": "Hopper's public Python API does not expose complete function body ranges"
+          }
+        },
+        "target_procedure": {
+          "address": "0x2b6a380",
+          "name": "capture_2b6a380",
+          "classification": null,
+          "body": {
+            "available": false,
+            "reason": "Hopper's public Python API does not expose complete function body ranges"
+          }
+        },
+        "kind": {
+          "available": false,
+          "reason": "Hopper's public Python API does not classify reference kinds"
+        }
+      },
+      {
+        "source_address": "0x2b6a480",
+        "target_address": "0x2b6a49c",
+        "source_procedure": {
+          "address": "0x2b6a380",
+          "name": "capture_2b6a380",
+          "classification": null,
+          "body": {
+            "available": false,
+            "reason": "Hopper's public Python API does not expose complete function body ranges"
+          }
+        },
+        "target_procedure": {
+          "address": "0x2b6a380",
+          "name": "capture_2b6a380",
+          "classification": null,
+          "body": {
+            "available": false,
+            "reason": "Hopper's public Python API does not expose complete function body ranges"
+          }
+        },
+        "kind": {
+          "available": false,
+          "reason": "Hopper's public Python API does not classify reference kinds"
+        }
+      },
+      {
+        "source_address": "0x2b6a494",
+        "target_address": "0x2b6a49c",
+        "source_procedure": {
+          "address": "0x2b6a380",
+          "name": "capture_2b6a380",
+          "classification": null,
+          "body": {
+            "available": false,
+            "reason": "Hopper's public Python API does not expose complete function body ranges"
+          }
+        },
+        "target_procedure": {
+          "address": "0x2b6a380",
+          "name": "capture_2b6a380",
+          "classification": null,
+          "body": {
+            "available": false,
+            "reason": "Hopper's public Python API does not expose complete function body ranges"
+          }
+        },
+        "kind": {
+          "available": false,
+          "reason": "Hopper's public Python API does not classify reference kinds"
+        }
+      },
+      {
+        "source_address": "0x2b6a498",
+        "target_address": "0x2b6a838",
+        "source_procedure": {
+          "address": "0x2b6a380",
+          "name": "capture_2b6a380",
+          "classification": null,
+          "body": {
+            "available": false,
+            "reason": "Hopper's public Python API does not expose complete function body ranges"
+          }
+        },
+        "target_procedure": {
+          "address": "0x2b6a380",
+          "name": "capture_2b6a380",
+          "classification": null,
+          "body": {
+            "available": false,
+            "reason": "Hopper's public Python API does not expose complete function body ranges"
+          }
+        },
+        "kind": {
+          "available": false,
+          "reason": "Hopper's public Python API does not classify reference kinds"
+        }
+      },
+      {
+        "source_address": "0x2b6a4b0",
+        "target_address": "0x2b6a4b8",
+        "source_procedure": {
+          "address": "0x2b6a380",
+          "name": "capture_2b6a380",
+          "classification": null,
+          "body": {
+            "available": false,
+            "reason": "Hopper's public Python API does not expose complete function body ranges"
+          }
+        },
+        "target_procedure": {
+          "address": "0x2b6a380",
+          "name": "capture_2b6a380",
+          "classification": null,
+          "body": {
+            "available": false,
+            "reason": "Hopper's public Python API does not expose complete function body ranges"
+          }
+        },
+        "kind": {
+          "available": false,
+          "reason": "Hopper's public Python API does not classify reference kinds"
+        }
+      },
+      {
+        "source_address": "0x2b6a4b4",
+        "target_address": "0x2b6a838",
+        "source_procedure": {
+          "address": "0x2b6a380",
+          "name": "capture_2b6a380",
+          "classification": null,
+          "body": {
+            "available": false,
+            "reason": "Hopper's public Python API does not expose complete function body ranges"
+          }
+        },
+        "target_procedure": {
+          "address": "0x2b6a380",
+          "name": "capture_2b6a380",
+          "classification": null,
+          "body": {
+            "available": false,
+            "reason": "Hopper's public Python API does not expose complete function body ranges"
+          }
+        },
+        "kind": {
+          "available": false,
+          "reason": "Hopper's public Python API does not classify reference kinds"
+        }
+      },
+      {
+        "source_address": "0x2b6a668",
+        "target_address": "0x2b6a728",
+        "source_procedure": {
+          "address": "0x2b6a380",
+          "name": "capture_2b6a380",
+          "classification": null,
+          "body": {
+            "available": false,
+            "reason": "Hopper's public Python API does not expose complete function body ranges"
+          }
+        },
+        "target_procedure": {
+          "address": "0x2b6a380",
+          "name": "capture_2b6a380",
+          "classification": null,
+          "body": {
+            "available": false,
+            "reason": "Hopper's public Python API does not expose complete function body ranges"
+          }
+        },
+        "kind": {
+          "available": false,
+          "reason": "Hopper's public Python API does not classify reference kinds"
+        }
+      },
+      {
+        "source_address": "0x2b6a6c0",
+        "target_address": "0x2b6a6d4",
+        "source_procedure": {
+          "address": "0x2b6a380",
+          "name": "capture_2b6a380",
+          "classification": null,
+          "body": {
+            "available": false,
+            "reason": "Hopper's public Python API does not expose complete function body ranges"
+          }
+        },
+        "target_procedure": {
+          "address": "0x2b6a380",
+          "name": "capture_2b6a380",
+          "classification": null,
+          "body": {
+            "available": false,
+            "reason": "Hopper's public Python API does not expose complete function body ranges"
+          }
+        },
+        "kind": {
+          "available": false,
+          "reason": "Hopper's public Python API does not classify reference kinds"
+        }
+      },
+      {
+        "source_address": "0x2b6a6f4",
+        "target_address": "0x2b6a82c",
+        "source_procedure": {
+          "address": "0x2b6a380",
+          "name": "capture_2b6a380",
+          "classification": null,
+          "body": {
+            "available": false,
+            "reason": "Hopper's public Python API does not expose complete function body ranges"
+          }
+        },
+        "target_procedure": {
+          "address": "0x2b6a380",
+          "name": "capture_2b6a380",
+          "classification": null,
+          "body": {
+            "available": false,
+            "reason": "Hopper's public Python API does not expose complete function body ranges"
+          }
+        },
+        "kind": {
+          "available": false,
+          "reason": "Hopper's public Python API does not classify reference kinds"
+        }
+      },
+      {
+        "source_address": "0x2b6a748",
+        "target_address": "0x2b6a858",
+        "source_procedure": {
+          "address": "0x2b6a380",
+          "name": "capture_2b6a380",
+          "classification": null,
+          "body": {
+            "available": false,
+            "reason": "Hopper's public Python API does not expose complete function body ranges"
+          }
+        },
+        "target_procedure": {
+          "address": "0x2b6a380",
+          "name": "capture_2b6a380",
+          "classification": null,
+          "body": {
+            "available": false,
+            "reason": "Hopper's public Python API does not expose complete function body ranges"
+          }
+        },
+        "kind": {
+          "available": false,
+          "reason": "Hopper's public Python API does not classify reference kinds"
+        }
+      },
+      {
+        "source_address": "0x2b6a750",
+        "target_address": "0x2b6a80c",
+        "source_procedure": {
+          "address": "0x2b6a380",
+          "name": "capture_2b6a380",
+          "classification": null,
+          "body": {
+            "available": false,
+            "reason": "Hopper's public Python API does not expose complete function body ranges"
+          }
+        },
+        "target_procedure": {
+          "address": "0x2b6a380",
+          "name": "capture_2b6a380",
+          "classification": null,
+          "body": {
+            "available": false,
+            "reason": "Hopper's public Python API does not expose complete function body ranges"
+          }
+        },
+        "kind": {
+          "available": false,
+          "reason": "Hopper's public Python API does not classify reference kinds"
+        }
+      },
+      {
+        "source_address": "0x2b6a808",
+        "target_address": "0x2b6a838",
+        "source_procedure": {
+          "address": "0x2b6a380",
+          "name": "capture_2b6a380",
+          "classification": null,
+          "body": {
+            "available": false,
+            "reason": "Hopper's public Python API does not expose complete function body ranges"
+          }
+        },
+        "target_procedure": {
+          "address": "0x2b6a380",
+          "name": "capture_2b6a380",
+          "classification": null,
+          "body": {
+            "available": false,
+            "reason": "Hopper's public Python API does not expose complete function body ranges"
+          }
+        },
+        "kind": {
+          "available": false,
+          "reason": "Hopper's public Python API does not classify reference kinds"
+        }
+      },
+      {
+        "source_address": "0x2b6a828",
+        "target_address": "0x2b6a838",
+        "source_procedure": {
+          "address": "0x2b6a380",
+          "name": "capture_2b6a380",
+          "classification": null,
+          "body": {
+            "available": false,
+            "reason": "Hopper's public Python API does not expose complete function body ranges"
+          }
+        },
+        "target_procedure": {
+          "address": "0x2b6a380",
+          "name": "capture_2b6a380",
+          "classification": null,
+          "body": {
+            "available": false,
+            "reason": "Hopper's public Python API does not expose complete function body ranges"
+          }
+        },
+        "kind": {
+          "available": false,
+          "reason": "Hopper's public Python API does not classify reference kinds"
+        }
+      },
+      {
+        "source_address": "0x2b6a8b0",
+        "target_address": "0x2b6a838",
+        "source_procedure": {
+          "address": "0x2b6a380",
+          "name": "capture_2b6a380",
+          "classification": null,
+          "body": {
+            "available": false,
+            "reason": "Hopper's public Python API does not expose complete function body ranges"
+          }
+        },
+        "target_procedure": {
+          "address": "0x2b6a380",
+          "name": "capture_2b6a380",
+          "classification": null,
+          "body": {
+            "available": false,
+            "reason": "Hopper's public Python API does not expose complete function body ranges"
+          }
+        },
+        "kind": {
+          "available": false,
+          "reason": "Hopper's public Python API does not classify reference kinds"
+        }
+      }
+    ],
+    "outgoing_references": [
+      {
+        "source_address": "0x2b6a48c",
+        "target_address": "0x2b6a020",
+        "source_procedure": {
+          "address": "0x2b6a380",
+          "name": "capture_2b6a380",
+          "classification": null,
+          "body": {
+            "available": false,
+            "reason": "Hopper's public Python API does not expose complete function body ranges"
+          }
+        },
+        "target_procedure": {
+          "address": "0x2b6a020",
+          "name": "sub_2b6a020",
+          "classification": null,
+          "body": {
+            "available": false,
+            "reason": "Hopper's public Python API does not expose complete function body ranges"
+          }
+        },
+        "kind": {
+          "available": false,
+          "reason": "Hopper's public Python API does not classify reference kinds"
+        }
+      }
+    ],
+    "referenced_strings": [],
+    "referenced_names": [
+      {
+        "address": "0x2b6a020",
+        "value": "sub_2b6a020",
+        "source_address": "0x2b6a48c"
+      }
+    ],
+    "basic_blocks": [
+      {
+        "start": "0x2b6a380",
+        "end": "0x2b6a3c4",
+        "successors": [
+          "0x2b6a3c8",
+          "0x2b6a8b4"
+        ]
+      },
+      {
+        "start": "0x2b6a3c8",
+        "end": "0x2b6a3d0",
+        "successors": [
+          "0x2b6a3d4",
+          "0x2b6a3e8"
+        ]
+      },
+      {
+        "start": "0x2b6a3d4",
+        "end": "0x2b6a3e4",
+        "successors": [
+          "0x2b6a838"
+        ]
+      },
+      {
+        "start": "0x2b6a838",
+        "end": "0x2b6a854",
+        "successors": []
+      },
+      {
+        "start": "0x2b6a3e8",
+        "end": "0x2b6a404",
+        "successors": [
+          "0x2b6a408",
+          "0x2b6a41c"
+        ]
+      },
+      {
+        "start": "0x2b6a408",
+        "end": "0x2b6a418",
+        "successors": [
+          "0x2b6a41c",
+          "0x2b6a450"
+        ]
+      },
+      {
+        "start": "0x2b6a41c",
+        "end": "0x2b6a420",
+        "successors": [
+          "0x2b6a424",
+          "0x2b6a450"
+        ]
+      },
+      {
+        "start": "0x2b6a424",
+        "end": "0x2b6a43c",
+        "successors": [
+          "0x2b6a440",
+          "0x2b6a454"
+        ]
+      },
+      {
+        "start": "0x2b6a440",
+        "end": "0x2b6a448",
+        "successors": [
+          "0x2b6a44c",
+          "0x2b6a484"
+        ]
+      },
+      {
+        "start": "0x2b6a44c",
+        "end": "0x2b6a44c",
+        "successors": [
+          "0x2b6a49c"
+        ]
+      },
+      {
+        "start": "0x2b6a49c",
+        "end": "0x2b6a4b0",
+        "successors": [
+          "0x2b6a4b4",
+          "0x2b6a4b8"
+        ]
+      },
+      {
+        "start": "0x2b6a4b4",
+        "end": "0x2b6a4b4",
+        "successors": [
+          "0x2b6a4b8",
+          "0x2b6a838"
+        ]
+      },
+      {
+        "start": "0x2b6a4b8",
+        "end": "0x2b6a668",
+        "successors": [
+          "0x2b6a66c",
+          "0x2b6a728"
+        ]
+      },
+      {
+        "start": "0x2b6a66c",
+        "end": "0x2b6a698",
+        "successors": [
+          "0x2b6a69c",
+          "0x2b6a8bc"
+        ]
+      },
+      {
+        "start": "0x2b6a69c",
+        "end": "0x2b6a6c0",
+        "successors": [
+          "0x2b6a6c4",
+          "0x2b6a6d4"
+        ]
+      },
+      {
+        "start": "0x2b6a6c4",
+        "end": "0x2b6a6d0",
+        "successors": [
+          "0x2b6a6d4"
+        ]
+      },
+      {
+        "start": "0x2b6a6f8",
+        "end": "0x2b6a71c",
+        "successors": [
+          "0x2b6a720",
+          "0x2b6a8c8"
+        ]
+      },
+      {
+        "start": "0x2b6a720",
+        "end": "0x2b6a724",
+        "successors": [
+          "0x2b6a728"
+        ]
+      },
+      {
+        "start": "0x2b6a74c",
+        "end": "0x2b6a750",
+        "successors": [
+          "0x2b6a754",
+          "0x2b6a80c"
+        ]
+      },
+      {
+        "start": "0x2b6a754",
+        "end": "0x2b6a770",
+        "successors": [
+          "0x2b6a774",
+          "0x2b6a8c0"
+        ]
+      },
+      {
+        "start": "0x2b6a774",
+        "end": "0x2b6a7e8",
+        "successors": [
+          "0x2b6a7ec",
+          "0x2b6a8c4"
+        ]
+      },
+      {
+        "start": "0x2b6a7ec",
+        "end": "0x2b6a808",
+        "successors": [
+          "0x2b6a838"
+        ]
+      },
+      {
+        "start": "0x2b6a8c4",
+        "end": "0x2b6a8c4",
+        "successors": [
+          "0x2b6a8c8"
+        ]
+      },
+      {
+        "start": "0x2b6a8c0",
+        "end": "0x2b6a8c0",
+        "successors": [
+          "0x2b6a8c4"
+        ]
+      },
+      {
+        "start": "0x2b6a80c",
+        "end": "0x2b6a828",
+        "successors": [
+          "0x2b6a838"
+        ]
+      },
+      {
+        "start": "0x2b6a858",
+        "end": "0x2b6a8b0",
+        "successors": [
+          "0x2b6a838"
+        ]
+      },
+      {
+        "start": "0x2b6a8c8",
+        "end": "0x2b6a8c8",
+        "successors": []
+      },
+      {
+        "start": "0x2b6a82c",
+        "end": "0x2b6a834",
+        "successors": [
+          "0x2b6a838"
+        ]
+      },
+      {
+        "start": "0x2b6a6d4",
+        "end": "0x2b6a6f4",
+        "successors": [
+          "0x2b6a6f8",
+          "0x2b6a82c"
+        ]
+      },
+      {
+        "start": "0x2b6a8bc",
+        "end": "0x2b6a8bc",
+        "successors": [
+          "0x2b6a8c0"
+        ]
+      },
+      {
+        "start": "0x2b6a728",
+        "end": "0x2b6a748",
+        "successors": [
+          "0x2b6a74c",
+          "0x2b6a858"
+        ]
+      },
+      {
+        "start": "0x2b6a484",
+        "end": "0x2b6a494",
+        "successors": [
+          "0x2b6a498",
+          "0x2b6a49c"
+        ]
+      },
+      {
+        "start": "0x2b6a498",
+        "end": "0x2b6a498",
+        "successors": [
+          "0x2b6a49c",
+          "0x2b6a838"
+        ]
+      },
+      {
+        "start": "0x2b6a454",
+        "end": "0x2b6a458",
+        "successors": [
+          "0x2b6a45c",
+          "0x2b6a8b8"
+        ]
+      },
+      {
+        "start": "0x2b6a45c",
+        "end": "0x2b6a470",
+        "successors": [
+          "0x2b6a474",
+          "0x2b6a8b8"
+        ]
+      },
+      {
+        "start": "0x2b6a474",
+        "end": "0x2b6a480",
+        "successors": [
+          "0x2b6a484",
+          "0x2b6a49c"
+        ]
+      },
+      {
+        "start": "0x2b6a8b8",
+        "end": "0x2b6a8b8",
+        "successors": [
+          "0x2b6a8bc"
+        ]
+      },
+      {
+        "start": "0x2b6a450",
+        "end": "0x2b6a450",
+        "successors": [
+          "0x2b6a454"
+        ]
+      },
+      {
+        "start": "0x2b6a8b4",
+        "end": "0x2b6a8b4",
+        "successors": [
+          "0x2b6a8b8"
+        ]
+      }
+    ],
+    "native_api": null,
+    "native_value_flow": null,
+    "limitations": [
+      "Hopper's public Python API does not classify reference kinds.",
+      "Hopper's public Python API does not expose equivalent external or thunk classification in this dossier.",
+      "Unresolved indirect calls without reported target addresses are not represented as call edges.",
+      "Pseudocode and assembly are provider-specific representations, not original source."
+    ]
+  }
+}

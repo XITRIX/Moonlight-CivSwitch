@@ -5,15 +5,28 @@ import argparse
 from pathlib import Path
 import socket
 import sys
+from civswitch_sender import upload_module
 
 APP_DIR = Path(__file__).resolve().parents[1] / "app"
 APP_SCRIPTS = (
     "vendor/forge-1.4.3.min.js",
     "src/storage/pairing-store.js",
+    "src/storage/artwork-store.js",
+    "src/storage/stream-settings.js",
     "src/platform/native-network.js",
     "src/protocol/sunshine-pairing.js",
     "src/protocol/sunshine-apps.js",
+    "src/ui/game-artwork.js",
     "src/ui/games-screen.js",
+    "src/ui/settings-screen.js",
+    "src/streaming/native-io.js",
+    "src/streaming/png-preview.js",
+    "src/streaming/native-texture.js",
+    "src/streaming/native-media.js",
+    "src/streaming/sunshine-session.js",
+    "src/streaming/stream-client.js",
+    "src/streaming/controller-input.js",
+    "src/ui/stream-screen.js",
     "src/ui/moonlight-ui.js",
 )
 CLEANUP_SCRIPTS = (
@@ -37,6 +50,7 @@ def main():
     parser.add_argument("console_ip", help="Switch's local IP address")
     parser.add_argument("--port", type=int, default=9026)
     parser.add_argument("--clear-switch-data", action="store_true", help="Delete only this experiment's Switch directory (Sunshine client entry remains)")
+    parser.add_argument("--streaming", action="store_true", help="Preload the generated wasm2js core in memory to enable application streaming")
     args = parser.parse_args()
     try:
         payload = build_payload(args.clear_switch_data)
@@ -44,6 +58,9 @@ def main():
         parser.exit(1, f"Cannot build payload: {error}\n")
 
     try:
+        if args.streaming and not args.clear_switch_data:
+            artifact = APP_DIR.parent / "investigation/wasm2js/dist/moonlight-stream.js"
+            upload_module(args.console_ip, artifact.read_text(), sys.stdout.buffer)
         with socket.create_connection((args.console_ip, args.port), timeout=10) as connection:
             connection.settimeout(None)
             connection.sendall(payload)

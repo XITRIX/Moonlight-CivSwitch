@@ -1,0 +1,10 @@
+Executing payload...
+MOONLIGHT_CACHE_WRITE_PROBE_BEGIN
+MOONLIGHT_CACHE_WRITE_PROBE_STORE_READY
+MOONLIGHT_CACHE_FS_PATH: _ZN2nn2fs26DeleteDirectoryRecursivelyEPKc
+MOONLIGHT_CACHE_FS_PATH: _ZN2nn2fs6CommitEPKc
+MOONLIGHT_CACHE_FS_PATH: _ZN2nn2fs15CreateDirectoryEPKc
+MOONLIGHT_CACHE_FS_PATH: _ZN2nn2fs15CreateDirectoryEPKc
+MOONLIGHT_CACHE_FS_WRITE_BEGIN
+MOONLIGHT_CACHE_FS_CREATE_FILE
+Connection ended without the loader completion marker; the payload may have crashed. Do not assume success.

@@ -1,0 +1,6 @@
+Executing payload...
+MOONLIGHT_STREAM_EXEC_THREAD_ATTEMPT: {"sdkPriority":0,"kernelPriority":28,"stackBytes":65536,"threadObjectBytes":1024}
+MOONLIGHT_STREAM_EXEC_THREAD_CREATE: {"result":"0x0","created":true}
+MOONLIGHT_STREAM_EXEC_THREAD_COMPLETE: true
+MOONLIGHT_STREAM_EXEC_THREAD_END: true
+Executed successfully

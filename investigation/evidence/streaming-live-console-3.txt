@@ -1,0 +1,160 @@
+Executing payload...
+MOONLIGHT_STREAM_UPLOAD: 1/7
+Executed successfully
+Executing payload...
+MOONLIGHT_STREAM_UPLOAD: 2/7
+Executed successfully
+Executing payload...
+MOONLIGHT_STREAM_UPLOAD: 3/7
+Executed successfully
+Executing payload...
+MOONLIGHT_STREAM_UPLOAD: 4/7
+Executed successfully
+Executing payload...
+MOONLIGHT_STREAM_UPLOAD: 5/7
+Executed successfully
+Executing payload...
+MOONLIGHT_STREAM_UPLOAD: 6/7
+Executed successfully
+Executing payload...
+MOONLIGHT_STREAM_UPLOAD: 7/7
+Executed successfully
+Executing payload...
+MOONLIGHT_STREAM_STATUS: "Preparing streaming runtime…"
+MOONLIGHT_STREAM_STATUS: "Starting application on Sunshine…"
+MOONLIGHT_STREAM_CORE: RTSP port: 48010
+
+MOONLIGHT_STREAM_CORE: Initializing platform...
+MOONLIGHT_STREAM_CORE: Event 1: 1, 0
+MOONLIGHT_STREAM_STATUS: "Connecting: stage 1…"
+MOONLIGHT_STREAM_CORE: Event 2: 1, 0
+MOONLIGHT_STREAM_CORE: done
+
+MOONLIGHT_STREAM_CORE: Resolving host name...
+MOONLIGHT_STREAM_CORE: Event 1: 2, 0
+MOONLIGHT_STREAM_STATUS: "Connecting: stage 2…"
+MOONLIGHT_STREAM_CORE: Event 2: 2, 0
+MOONLIGHT_STREAM_CORE: done
+
+MOONLIGHT_STREAM_CORE: Initializing audio stream...
+MOONLIGHT_STREAM_CORE: Event 1: 3, 0
+MOONLIGHT_STREAM_STATUS: "Connecting: stage 3…"
+MOONLIGHT_STREAM_CORE: Event 2: 3, 0
+MOONLIGHT_STREAM_CORE: done
+
+MOONLIGHT_STREAM_CORE: Starting RTSP handshake...
+MOONLIGHT_STREAM_CORE: Event 1: 4, 0
+MOONLIGHT_STREAM_STATUS: "Connecting: stage 4…"
+MOONLIGHT_STREAM_STATS: {"state":1,"tasks":1,"network":{"calls":8,"sentBytes":0,"receivedBytes":0,"lastError":115},"submitted":0,"decoded":0,"presented":0,"audioDecoded":0,"audioQueued":0,"audioDropped":0}
+MOONLIGHT_STREAM_CORE: Audio port: 48000
+
+MOONLIGHT_STREAM_CORE: setsockopt(SO_PRIORITY, 6) failed: 50
+
+MOONLIGHT_STREAM_CORE: Video port: 47998
+
+MOONLIGHT_STREAM_CORE: Control port: 47999
+
+MOONLIGHT_STREAM_CORE: Event 2: 4, 0
+MOONLIGHT_STREAM_CORE: done
+
+MOONLIGHT_STREAM_CORE: Initializing control stream...
+MOONLIGHT_STREAM_CORE: Event 1: 5, 0
+MOONLIGHT_STREAM_STATUS: "Connecting: stage 5…"
+MOONLIGHT_STREAM_CORE: Event 2: 5, 0
+MOONLIGHT_STREAM_CORE: done
+
+MOONLIGHT_STREAM_CORE: Initializing video stream...
+MOONLIGHT_STREAM_CORE: Event 1: 6, 0
+MOONLIGHT_STREAM_STATUS: "Connecting: stage 6…"
+MOONLIGHT_STREAM_CORE: Event 2: 6, 0
+MOONLIGHT_STREAM_CORE: done
+
+MOONLIGHT_STREAM_CORE: Initializing input stream...
+MOONLIGHT_STREAM_CORE: Event 1: 7, 0
+MOONLIGHT_STREAM_STATUS: "Connecting: stage 7…"
+MOONLIGHT_STREAM_CORE: Event 2: 7, 0
+MOONLIGHT_STREAM_CORE: done
+
+MOONLIGHT_STREAM_CORE: Starting control stream...
+MOONLIGHT_STREAM_CORE: Event 1: 8, 0
+MOONLIGHT_STREAM_STATUS: "Connecting: stage 8…"
+MOONLIGHT_STREAM_CORE: Event 2: 8, 0
+MOONLIGHT_STREAM_CORE: done
+
+MOONLIGHT_STREAM_CORE: Starting video stream...
+MOONLIGHT_STREAM_CORE: Event 1: 9, 0
+MOONLIGHT_STREAM_STATUS: "Connecting: stage 9…"
+MOONLIGHT_STREAM_STATUS: "Video decoder ready: 320×180 at 15 fps"
+MOONLIGHT_STREAM_CORE: setsockopt(SO_PRIORITY, 5) failed: 50
+
+MOONLIGHT_STREAM_CORE: Event 2: 9, 0
+MOONLIGHT_STREAM_CORE: done
+
+MOONLIGHT_STREAM_CORE: Starting audio stream...
+MOONLIGHT_STREAM_CORE: Event 1: 10, 0
+MOONLIGHT_STREAM_STATUS: "Connecting: stage 10…"
+MOONLIGHT_STREAM_CORE: Event 2: 10, 0
+MOONLIGHT_STREAM_CORE: done
+
+MOONLIGHT_STREAM_CORE: Starting input stream...
+MOONLIGHT_STREAM_CORE: Event 1: 11, 0
+MOONLIGHT_STREAM_STATUS: "Connecting: stage 11…"
+MOONLIGHT_STREAM_CORE: Event 2: 11, 0
+MOONLIGHT_STREAM_CORE: done
+
+MOONLIGHT_STREAM_CORE: Event 4: 0, 0
+MOONLIGHT_STREAM_STATUS: "Streaming 320×180 · hold B to stop"
+MOONLIGHT_STREAM_CORE: Received first audio packet after 200 ms
+
+MOONLIGHT_STREAM_CORE: Initial audio resync period: 500 milliseconds
+
+MOONLIGHT_STREAM_CORE: Received first video packet after 200 ms
+
+MOONLIGHT_STREAM_STATS: {"state":2,"tasks":9,"network":{"calls":488,"sentBytes":3537,"receivedBytes":20683,"lastError":11},"submitted":3,"decoded":3,"presented":1,"audioDecoded":0,"audioQueued":0,"audioDropped":0}
+MOONLIGHT_STREAM_STATS: {"state":2,"tasks":9,"network":{"calls":1183,"sentBytes":4339,"receivedBytes":113539,"lastError":11},"submitted":24,"decoded":23,"presented":2,"audioDecoded":0,"audioQueued":0,"audioDropped":0}
+MOONLIGHT_STREAM_STATS: {"state":2,"tasks":9,"network":{"calls":2010,"sentBytes":5301,"receivedBytes":177181,"lastError":11},"submitted":44,"decoded":44,"presented":2,"audioDecoded":0,"audioQueued":0,"audioDropped":0}
+MOONLIGHT_STREAM_STATS: {"state":2,"tasks":9,"network":{"calls":2861,"sentBytes":6345,"receivedBytes":249145,"lastError":11},"submitted":66,"decoded":66,"presented":2,"audioDecoded":0,"audioQueued":0,"audioDropped":0}
+MOONLIGHT_STREAM_STATS: {"state":2,"tasks":9,"network":{"calls":3670,"sentBytes":7307,"receivedBytes":305517,"lastError":11},"submitted":84,"decoded":84,"presented":2,"audioDecoded":0,"audioQueued":0,"audioDropped":0}
+MOONLIGHT_STREAM_STATS: {"state":2,"tasks":9,"network":{"calls":4475,"sentBytes":8279,"receivedBytes":364991,"lastError":11},"submitted":103,"decoded":103,"presented":2,"audioDecoded":0,"audioQueued":0,"audioDropped":0}
+MOONLIGHT_STREAM_STATS: {"state":2,"tasks":9,"network":{"calls":5291,"sentBytes":9221,"receivedBytes":421353,"lastError":11},"submitted":121,"decoded":121,"presented":2,"audioDecoded":0,"audioQueued":0,"audioDropped":0}
+MOONLIGHT_STREAM_STATS: {"state":2,"tasks":9,"network":{"calls":6104,"sentBytes":10239,"receivedBytes":477717,"lastError":11},"submitted":139,"decoded":139,"presented":2,"audioDecoded":0,"audioQueued":0,"audioDropped":0}
+MOONLIGHT_STREAM_STATS: {"state":2,"tasks":9,"network":{"calls":6921,"sentBytes":11181,"receivedBytes":537199,"lastError":11},"submitted":158,"decoded":158,"presented":2,"audioDecoded":0,"audioQueued":0,"audioDropped":0}
+MOONLIGHT_STREAM_STATUS: "Stopping stream…"
+MOONLIGHT_STREAM_CORE: Stopping input stream...
+MOONLIGHT_STREAM_CORE: ENet wait interrupted
+
+MOONLIGHT_STREAM_CORE: Control stream connection failed: 27
+
+MOONLIGHT_STREAM_CORE: done
+
+MOONLIGHT_STREAM_CORE: Stopping audio stream...
+MOONLIGHT_STREAM_CORE: done
+
+MOONLIGHT_STREAM_CORE: Stopping video stream...
+MOONLIGHT_STREAM_CORE: done
+
+MOONLIGHT_STREAM_CORE: Stopping control stream...
+MOONLIGHT_STREAM_CORE: ENet peer acknowledged disconnection
+
+MOONLIGHT_STREAM_CORE: done
+
+MOONLIGHT_STREAM_CORE: Cleaning up input stream...
+MOONLIGHT_STREAM_CORE: done
+
+MOONLIGHT_STREAM_CORE: Cleaning up video stream...
+MOONLIGHT_STREAM_CORE: done
+
+MOONLIGHT_STREAM_CORE: Cleaning up control stream...
+MOONLIGHT_STREAM_CORE: done
+
+MOONLIGHT_STREAM_CORE: Cleaning up audio stream...
+MOONLIGHT_STREAM_CORE: done
+
+MOONLIGHT_STREAM_CORE: Cleaning up platform...
+MOONLIGHT_STREAM_CORE: done
+
+MOONLIGHT_STREAM_CORE: Event 7: 0, 0
+MOONLIGHT_STREAM_LIVE_RESULT: {"error":null,"stats":{"state":2,"tasks":9,"network":{"calls":6921,"sentBytes":11181,"receivedBytes":537199,"lastError":11},"submitted":176,"decoded":175,"presented":2,"audioDecoded":0,"audioQueued":0,"audioDropped":0},"displayed":1}
+MOONLIGHT_STREAM_LIVE_PASSED: true
+MOONLIGHT_STREAM_LIVE_END: true
+Executed successfully

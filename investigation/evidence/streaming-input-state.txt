@@ -1,0 +1,4 @@
+Executing payload...
+MOONLIGHT_INPUT_SAMPLE: {"state":[0,0,0,0,0,0,0],"exit":false}
+MOONLIGHT_INPUT_RESULT: {"samples":120,"changes":1}
+Executed successfully

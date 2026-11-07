@@ -3,6 +3,16 @@
 Target: user's Switch 2, Civ VII/CivSwitch loader at 192.168.1.182:9026.
 Sunshine: 192.168.1.4:47989, advertised HTTPS port47984.
 
+Streaming investigation: start with [the feasibility ledger](streaming-feasibility.md)
+for measured Wasm, video, audio, networking, execution limits and linked probe logs.
+The later [wasm2js build and hardware test](wasm2js.md) establishes execution of
+the actual C core's algorithms as ordinary JS without enabling WebAssembly.
+The [direct-rendering ledger](direct-rendering.md) records the implemented
+native texture presenter, generated-image hardware checks, and real host runs
+and the later native GPU decoder path at about 30 presented fps at 720p.
+[Live session evidence](streaming-live.md) tracks
+video/audio results and their remaining limitations.
+
 - `network-capabilities.txt`: actual JavaScript capability inventory; XHR external
   request returned404. WebSocket exists but external connectivity was not tested.
 - `native-network.txt`: direct native TCP GET returnedHTTP200/serverinfo. SDK
@@ -70,8 +80,51 @@ and cleanup scope.
 Application list: the Switch fetched `/applist` over pinned native TLS and parsed
 three entries: Desktop (881448767), Steam Big Picture (1093255277), and Virtual
 Display (382300562). DOMParser was confirmed absent. Browser UI tests use a
-separate fake eight-entry library to check 720p layout, paging, literal rendering
-of markup-like titles, empty/error responses, refresh, B cancellation, late
-responses, reconnect, and close. `games-screen-preview.png` depicts that fixture.
+separate ten-entry library to check the portrait grid at 720p and 1080p, four-way
+keyboard/engine/gamepad navigation, paging and partial rows, horizontal footer
+controls, literal rendering of markup-like titles, empty/error responses, refresh,
+B cancellation, late responses, reconnect, and close.
+`games-screen-preview.png` depicts the three example host entries using the fake
+browser host, generated test PNG covers, and the current dark card style. These
+fixture covers are not images downloaded from the real host.
 The user then verified the dedicated screen on the real Switch: the list,
-D-pad navigation, and B back all work.
+portrait grid, four-way D-pad navigation, horizontal footer controls, and B back
+all work. Browser tests also cover lazy PNG loading, download/decode failures,
+and cancellation. All three real host covers subsequently loaded and fired image
+display events on the Switch; the user verified immediate cache reuse.
+
+`image-loader.txt`: a read-only console probe confirms PNG data URLs and image
+load events work for visible and hidden elements. The first real host cover was
+downloaded through pinned TLS (Desktop, 8231 bytes). The user reported repeated
+slow loads, so the cache now survives Refresh and returning to Host for the same
+host; browser checks assert that both requests and image elements are reused.
+
+Persistent artwork cache (2026-11-08): closing the UI previously discarded all
+cached covers, causing another download on the next load. The app now stores
+checked PNG bytes and an index inside `save:/moonlight-experiment/artwork/`,
+with a 16 MiB limit. `artwork-persistence-warm.txt` records all three real covers
+downloaded and saved (131,742 bytes total). `artwork-persistence-cold.txt` records
+fresh modules and a new native transport/store loading all three from disk:
+three cache hits, zero `/appasset` requests, no cache errors, and successful
+loader completion. Reads took 67, 178, and 684 ms respectively.
+
+`artwork-write-diagnostic.txt` locates an earlier native disconnect at CreateFile
+with a 68-character filename. `artwork-write-short-filename.txt` confirms that
+60-character filenames allow binary writes, readback, index writes, and commit
+to complete successfully. The isolated fixture was subsequently removed
+(`artwork-fixture-cleanup.txt`). Cache filenames now use 56 hex characters plus
+`.png`; full SHA-256 keys and byte digests remain in the index. Local cache tests
+exercise reloads, corrupt/missing PNGs, quota eviction, invalid indexes, and failed
+writes. `artwork-persistence-ui-tests.txt` records browser regression results.
+The updated streaming UI was then loaded (`artwork-persistence-ui.txt`); its
+`MOONLIGHT_ARTWORK_CACHED` events confirm the Games screen uses the disk cache.
+
+Stream settings (2026-11-08): `settings-local-tests.txt` records all 23 local
+tests passing, including mode validation, persistence across store instances,
+corrupt preferences, and write/commit/readback failures. `settings-ui-tests.txt`
+checks controller/keyboard navigation, Host and Games entry points, save errors,
+return navigation with cover reuse, and the chosen mode reaching the stream
+client. `settings-screen-preview.png` shows the separate screen at 1280×720.
+`settings-persistence-switch.txt` verifies native write/commit/reload of
+960×540, 60 FPS, 8000 kbit/s using a new native transport, then restores the prior
+720p/30 FPS/5000 kbit/s mode. Only the experiment's `settings.json` was written.

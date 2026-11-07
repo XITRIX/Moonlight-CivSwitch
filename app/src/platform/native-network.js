@@ -73,6 +73,9 @@
                 throw new Error("For now, enter an IPv4 address, optionally followed by :port.");
             if (!Number.isInteger(options.port) || options.port < 1 || options.port > 65535) throw new Error("Invalid host port.");
             if (!/^\/[\x21-\x7e]*$/.test(options.path)) throw new Error("Invalid request path.");
+            var binary = options.responseType === "binary";
+            var limit = options.maxResponseBytes === undefined ? 131072 : options.maxResponseBytes;
+            if (!Number.isInteger(limit) || limit < 1 || limit > 2097152) throw new Error("Invalid response size limit.");
             var allocated = [], fd = -1n, context, connection, hasContext = false, hasConnection = false;
             var deadline = Date.now() + (options.timeoutMs || 10000);
             active(options, deadline);
@@ -138,7 +141,7 @@
                     var leafSize = Number(read32(certSize));
                     if (leafSize !== pinnedDer.length || ascii(read_buffer(serverCert, leafSize)) !== pinnedDer) throw new Error("Sunshine TLS certificate changed.");
                 }
-                var wire = text_encode("GET " + options.path + " HTTP/1.1\r\nHost: " + options.host + ":" + options.port + "\r\nConnection: close\r\nAccept: application/xml\r\n\r\n");
+                var wire = text_encode("GET " + options.path + " HTTP/1.1\r\nHost: " + options.host + ":" + options.port + "\r\nConnection: close\r\nAccept: " + (binary ? "image/png" : "application/xml") + "\r\n\r\n");
                 var requestBuffer = data(wire), offset = 0;
                 while (offset < wire.length) {
                     active(options, deadline);
@@ -153,7 +156,7 @@
                     }
                     if (written > 0) offset += written; else await pause();
                 }
-                var response = "", headerEnd = -1, bodyLength = null;
+                var response = "", headerEnd = -1, bodyLength = null, lastYield = 0;
                 while (true) {
                     active(options, deadline);
                     var received;
@@ -168,8 +171,9 @@
                     if (received === 0) break;
                     if (received > 0) {
                         response += ascii(read_buffer(buffer, received));
-                        if (response.length > 131072) throw new Error("Sunshine response exceeds 128 KiB.");
+                        if (response.length > limit + 16384) throw new Error("Sunshine response exceeds its size limit.");
                         if (headerEnd < 0 && (headerEnd = response.indexOf("\r\n\r\n")) >= 0) {
+                            if (headerEnd > 16380) throw new Error("Sunshine HTTP headers are too large.");
                             var headers = response.slice(0, headerEnd), match = /^HTTP\/1\.[01] (\d{3})\b/.exec(headers);
                             if (!match || match[1] !== "200") throw new Error("Sunshine HTTP status " + (match ? match[1] : "invalid") + ".");
                             if (/transfer-encoding:/i.test(headers)) throw new Error("Chunked responses are not supported yet.");
@@ -177,16 +181,21 @@
                             if (lengths.length > 1) throw new Error("Duplicate Sunshine content length.");
                             if (lengths.length) {
                                 var length = /^content-length:[ \t]*(\d+)[ \t]*$/i.exec(lengths[0]);
-                                if (!length || !Number.isSafeInteger(Number(length[1])) || Number(length[1]) > 131072)
+                                if (!length || !Number.isSafeInteger(Number(length[1])) || Number(length[1]) > limit)
                                     throw new Error("Invalid Sunshine content length.");
                                 bodyLength = Number(length[1]);
                             }
                         }
+                        if (headerEnd < 0 && response.length > 16384) throw new Error("Sunshine HTTP headers are too large.");
+                        if (headerEnd >= 0 && response.length - headerEnd - 4 > limit) throw new Error("Sunshine response exceeds its size limit.");
                         if (headerEnd >= 0 && bodyLength !== null && response.length >= headerEnd + 4 + bodyLength) break;
+                        // Large images must not monopolize the UI thread while the socket is readable.
+                        if (response.length - lastYield >= 65536) {lastYield=response.length;await pause();}
                     } else await pause();
                 }
                 if (headerEnd < 0 || (bodyLength !== null && response.length < headerEnd + 4 + bodyLength)) throw new Error("Incomplete Sunshine response.");
-                return decodeURIComponent(escape(response.slice(headerEnd + 4, bodyLength === null ? undefined : headerEnd + 4 + bodyLength)));
+                var body = response.slice(headerEnd + 4, bodyLength === null ? undefined : headerEnd + 4 + bodyLength);
+                return binary ? body : decodeURIComponent(escape(body));
             } finally {
                 try { if (hasConnection) call(S + "10Connection7DestroyEv", connection); }
                 finally {
@@ -217,7 +226,7 @@
             if (parts.some(function (part) { return !part || part === "." || part === ".." || /[\\:\x00]/.test(part); }))
                 throw new Error("Refusing a noncanonical experiment path.");
         }
-        function readStateFile(path) {
+        function readStateFile(path, maxBytes, binary) {
             requireExperimentPath(path, false);
             var p = alloc_string(path), handle = malloc(8), size = malloc(8), buffer, opened = false;
             try {
@@ -227,18 +236,19 @@
                 opened = true;
                 checked("_ZN2nn2fs11GetFileSizeEPlNS0_10FileHandleE", size, read64(handle));
                 var length = Number(read64(size));
-                if (length < 0 || length > 65536) throw new Error("Invalid pairing store size; file left intact.");
+                if (length < 0 || length > (maxBytes || 65536)) throw new Error("Invalid experiment file size; file left intact.");
                 if (!length) return "";
                 buffer = malloc(length);
                 checked("_ZN2nn2fs8ReadFileENS0_10FileHandleElPvm", read64(handle), 0, buffer, length);
-                return bytes_to_string(read_buffer(buffer, length));
+                var bytes=read_buffer(buffer,length);
+                return binary?ascii(bytes):bytes_to_string(bytes);
             } finally { if (opened) call("_ZN2nn2fs9CloseFileENS0_10FileHandleE", read64(handle)); if (buffer) free(buffer); free(size); free(handle); free(p); }
         }
-        function writeStateFile(path, text) {
+        function writeStateFile(path, text, binary) {
             requireExperimentPath(path, false);
-            var bytes = text_encode(text);
-            if (bytes.length > 65536) throw new Error("Pairing store is full.");
-            var p = alloc_string(path), handle = malloc(8), option = malloc(8), buffer = malloc(bytes.length), opened = false;
+            var bytes = binary ? binaryBytes(text) : text_encode(text);
+            if (bytes.length > (binary ? 2097152 : 65536)) throw new Error("Experiment file size limit exceeded.");
+            var p = alloc_string(path), handle = malloc(8), option = malloc(8), buffer = malloc(bytes.length+1), opened = false;
             try {
                 var createResult = code(call("_ZN2nn2fs10CreateFileEPKcl", p, bytes.length));
                 if (createResult && createResult !== 0x402) throw new Error("Pairing store create failed: 0x" + createResult.toString(16));
@@ -264,7 +274,37 @@
             },
             commit: function () { pathOperation("_ZN2nn2fs6CommitEPKc", "save", 0); }
         });
+        var artworkRoot=window.MoonlightStore.root+"/artwork";
+        var settingsPath=window.MoonlightStore.root+"/settings.json";
+        var settingsStore=window.MoonlightSettings?window.MoonlightSettings.create({
+            read:function(){return readStateFile(settingsPath);},
+            write:function(text){requireExperimentPath(settingsPath,false);pathOperation("_ZN2nn2fs15CreateDirectoryEPKc",window.MoonlightStore.root,0x402);writeStateFile(settingsPath,text);},
+            commit:function(){pathOperation("_ZN2nn2fs6CommitEPKc","save",0);}
+        }):null;
+        function artworkPath(name){
+            if(typeof name!=="string"||! /^(?:index\.json|[0-9a-f]{56}\.png)$/.test(name))throw new Error("Invalid artwork cache filename.");
+            return artworkRoot+"/"+name;
+        }
+        var artworkCache=window.MoonlightArtworkStore?window.MoonlightArtworkStore.create({
+            read:function(name,limit){
+                var path=artworkPath(name);
+                if(!Number.isInteger(limit)||limit<1||limit>(name==="index.json"?65536:2097152))throw new Error("Invalid artwork read limit.");
+                return readStateFile(path,limit,name!=="index.json");
+            },
+            write:function(name,data){writeStateFile(artworkPath(name),data,name!=="index.json");},
+            ensureDirectory:function(){
+                pathOperation("_ZN2nn2fs15CreateDirectoryEPKc",window.MoonlightStore.root,0x402);
+                pathOperation("_ZN2nn2fs15CreateDirectoryEPKc",artworkRoot,0x402);
+            },
+            remove:function(name){pathOperation("_ZN2nn2fs10DeleteFileEPKc",artworkPath(name),0x202);},
+            clear:function(){pathOperation("_ZN2nn2fs26DeleteDirectoryRecursivelyEPKc",artworkRoot,0x202);},
+            commit:function(){pathOperation("_ZN2nn2fs6CommitEPKc","save",0);}
+        }):null;
         return {
+            loadStreamSettings:settingsStore?settingsStore.load:undefined,
+            saveStreamSettings:settingsStore?settingsStore.save:undefined,
+            artworkCache: artworkCache,
+            resolveNativeSymbol: resolve,
             requestHttp: function (options) { return request(options, false); },
             requestHttps: async function (options) {
                 // Sunshine can briefly reject the first handshake while its client trust

@@ -1,0 +1,8 @@
+{
+  "moonlight-common-c": {"url": "https://github.com/moonlight-stream/moonlight-common-c.git", "commit": "e80a786afedeaccff63e839e68c8f3d8a057c13d"},
+  "enet": "aca87840b57f045a1f7f9299e4b1b9b8e2a5e2f1",
+  "nanors": "a9b1636f9c98dbfdd0daeaf6982ccd24d1c30f29",
+  "mbedtls": {"url": "https://github.com/Mbed-TLS/mbedtls.git", "commit": "c765c831e5c2a0971410692f92f7a81d6ec65ec2"},
+  "mbedtls-framework": "2a3e2c5ea053c14b745dbdf41f609b1edc6a72fa",
+  "emsdk": {"url": "https://github.com/emscripten-core/emsdk.git", "commit": "1693ce7359fc9694f198694f902a2cc061239b86", "version": "3.1.74"}
+}

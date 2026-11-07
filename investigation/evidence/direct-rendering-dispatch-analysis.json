@@ -1,0 +1,3073 @@
+{
+  "result": {
+    "procedure": {
+      "address": "0x21603f0",
+      "name": "EntryPoint",
+      "classification": null,
+      "body": {
+        "available": false,
+        "reason": "Hopper's public Python API does not expose complete function body ranges"
+      },
+      "signature": "int EntryPoint(int arg0, int arg1, int arg2, int arg3)",
+      "locals": [
+        {
+          "description": "<__main__.LocalVariable object at 0x116a6e330>",
+          "provenance": "hopper-public-python-api"
+        },
+        {
+          "description": "<__main__.LocalVariable object at 0x116a41040>",
+          "provenance": "hopper-public-python-api"
+        },
+        {
+          "description": "<__main__.LocalVariable object at 0x116a40e20>",
+          "provenance": "hopper-public-python-api"
+        },
+        {
+          "description": "<__main__.LocalVariable object at 0x1169aa050>",
+          "provenance": "hopper-public-python-api"
+        },
+        {
+          "description": "<__main__.LocalVariable object at 0x1169a9c50>",
+          "provenance": "hopper-public-python-api"
+        },
+        {
+          "description": "<__main__.LocalVariable object at 0x1169b9400>",
+          "provenance": "hopper-public-python-api"
+        },
+        {
+          "description": "<__main__.LocalVariable object at 0x1169b9040>",
+          "provenance": "hopper-public-python-api"
+        },
+        {
+          "description": "<__main__.LocalVariable object at 0x1169b1c50>",
+          "provenance": "hopper-public-python-api"
+        },
+        {
+          "description": "<__main__.LocalVariable object at 0x116b15630>",
+          "provenance": "hopper-public-python-api"
+        }
+      ]
+    },
+    "pseudocode": "    r31 = r31 - 0x100;\n    saved_fp = r29;\n    decomp_var_m8 = r30;\n    saved_regs_10 = r25;\n    saved_regs_20 = r24;\n    decomp_var_m28 = r23;\n    saved_regs_30 = r22;\n    decomp_var_m38 = r21;\n    saved_regs_40 = r20;\n    decomp_var_m48 = r19;\n    r20 = arg1;\n    r1 = arg0[0x9];\n    r24 = arg0[0x59];\n    r22 = arg2;\n    r19 = arg0;\n    arg0[0x59] = 0x1;\n    r21 = arg3;\n    loc_215db20(&var_90, r1, 0x0, arg3);\n    loc_215d760(arg0 + 0x98, &var_90);\n    loc_215d9a8(&var_90);\n    r8 = r19[0x23];\n    r9 = r19[0x1f];\n    if ((r8 | r9) == 0x0) {\n            r10 = r19[0x27];\n            var_A8 = 0x0;\n            r8 = r19[0x2d];\n            r9 = r19[0x2f];\n            var_98 = 0x0;\n            if (r10 == 0x0) {\n                    var_90 = r8;\n                    loc_2169770(r19 + 0x138, &var_90, 0x1, &var_A8);\n                    r8 = r21[0x4];\n                    if (r8 >= 0x1) {\n                            r23 = r19 + 0xe8;\n                            while (true) {\n                                    r25 = r8 - 0x1;\n                                    if (r8 > sign_extend_64(r21[0x4])) {\n                                            r8 = *r21;\n                                            r8 = r8[0x1];\n                                            r8 = r8 + 0xa0;\n                                            r11 = r19[0x1d];\n                                            var_A8 = r8;\n                                            r10 = r19[0x23];\n                                            r9 = r19[0x25];\n                                            if (r11 == 0x0) {\n                                                    var_90 = r10;\n                                                    loc_2168800(r23, &var_90, 0x1, &var_A8);\n                                                    r8 = r25;\n                                                    if (r25 >= 0x0) {\n                                                            continue;\n                                                    }\n                                                    temp_0 = 0x0;\n                                                    break;\n                                            }\n                                            else {\n                                                    if (r10 != r9 - 0x8) {\n                                                            *r10 = r8;\n                                                            r19[0x23] = r19[0x23] + 0x8;\n                                                            r8 = r25;\n                                                            if (r25 > 0x0) {\n                                                                    continue;\n                                                            }\n                                                            temp_0 = 0x1;\n                                                            break;\n                                                    }\n                                                    else {\n                                                            var_90 = r10;\n                                                            loc_2168800(r23, &var_90, 0x1, &var_A8);\n                                                            r8 = r25;\n                                                            if (r25 >= 0x0) {\n                                                                    continue;\n                                                            }\n                                                            temp_0 = 0x0;\n                                                            break;\n                                                    }\n                                            }\n                                    }\n                                    else {\n                                            r8 = r21[0x1];\n                                            r8 = r8 + zero_extend_64(r25) * 0x8;\n                                            r11 = r19[0x1d];\n                                            var_A8 = r8;\n                                            r10 = r19[0x23];\n                                            r9 = r19[0x25];\n                                            if (r11 != 0x0) {\n                                                    if (r10 != r9 - 0x8) {\n                                                            *r10 = r8;\n                                                            r19[0x23] = r19[0x23] + 0x8;\n                                                            r8 = r25;\n                                                            if (r25 > 0x0) {\n                                                                    continue;\n                                                            }\n                                                            temp_0 = 0x1;\n                                                            break;\n                                                    }\n                                                    else {\n                                                            var_90 = r10;\n                                                            loc_2168800(r23, &var_90, 0x1, &var_A8);\n                                                            r8 = r25;\n                                                            if (r25 >= 0x0) {\n                                                                    continue;\n                                                            }\n                                                            temp_0 = 0x0;\n                                                            break;\n                                                    }\n                                            }\n                                            else {\n                                                    var_90 = r10;\n                                                    loc_2168800(r23, &var_90, 0x1, &var_A8);\n                                                    r8 = r25;\n                                                    if (r25 >= 0x0) {\n                                                            continue;\n                                                    }\n                                                    temp_0 = 0x0;\n                                                    break;\n                                            }\n                                    }\n                            }\n                    }\n            }\n            else {\n                    if (r8 != r9 - 0x18) {\n                            r8[0x2] = var_98;\n                            *(int128_t *)r8 = var_A8;\n                            r19[0x2d] = r19[0x2d] + 0x18;\n                            r8 = r21[0x4];\n                            if (r8 >= 0x1) {\n                                    r23 = r19 + 0xe8;\n                                    while (true) {\n                                            r25 = r8 - 0x1;\n                                            if (r8 > sign_extend_64(r21[0x4])) {\n                                                    r8 = *r21;\n                                                    r8 = r8[0x1];\n                                                    r8 = r8 + 0xa0;\n                                                    r11 = r19[0x1d];\n                                                    var_A8 = r8;\n                                                    r10 = r19[0x23];\n                                                    r9 = r19[0x25];\n                                                    if (r11 == 0x0) {\n                                                            var_90 = r10;\n                                                            loc_2168800(r23, &var_90, 0x1, &var_A8);\n                                                            r8 = r25;\n                                                            if (r25 >= 0x0) {\n                                                                    continue;\n                                                            }\n                                                            temp_0 = 0x0;\n                                                            break;\n                                                    }\n                                                    else {\n                                                            if (r10 != r9 - 0x8) {\n                                                                    *r10 = r8;\n                                                                    r19[0x23] = r19[0x23] + 0x8;\n                                                                    r8 = r25;\n                                                                    if (r25 > 0x0) {\n                                                                            continue;\n                                                                    }\n                                                                    temp_0 = 0x1;\n                                                                    break;\n                                                            }\n                                                            else {\n                                                                    var_90 = r10;\n                                                                    loc_2168800(r23, &var_90, 0x1, &var_A8);\n                                                                    r8 = r25;\n                                                                    if (r25 >= 0x0) {\n                                                                            continue;\n                                                                    }\n                                                                    temp_0 = 0x0;\n                                                                    break;\n                                                            }\n                                                    }\n                                            }\n                                            else {\n                                                    r8 = r21[0x1];\n                                                    r8 = r8 + zero_extend_64(r25) * 0x8;\n                                                    r11 = r19[0x1d];\n                                                    var_A8 = r8;\n                                                    r10 = r19[0x23];\n                                                    r9 = r19[0x25];\n                                                    if (r11 != 0x0) {\n                                                            if (r10 != r9 - 0x8) {\n                                                                    *r10 = r8;\n                                                                    r19[0x23] = r19[0x23] + 0x8;\n                                                                    r8 = r25;\n                                                                    if (r25 > 0x0) {\n                                                                            continue;\n                                                                    }\n                                                                    temp_0 = 0x1;\n                                                                    break;\n                                                            }\n                                                            else {\n                                                                    var_90 = r10;\n                                                                    loc_2168800(r23, &var_90, 0x1, &var_A8);\n                                                                    r8 = r25;\n                                                                    if (r25 >= 0x0) {\n                                                                            continue;\n                                                                    }\n                                                                    temp_0 = 0x0;\n                                                                    break;\n                                                            }\n                                                    }\n                                                    else {\n                                                            var_90 = r10;\n                                                            loc_2168800(r23, &var_90, 0x1, &var_A8);\n                                                            r8 = r25;\n                                                            if (r25 >= 0x0) {\n                                                                    continue;\n                                                            }\n                                                            temp_0 = 0x0;\n                                                            break;\n                                                    }\n                                            }\n                                    }\n                            }\n                    }\n                    else {\n                            var_90 = r8;\n                            loc_2169770(r19 + 0x138, &var_90, 0x1, &var_A8);\n                            r8 = r21[0x4];\n                            if (r8 >= 0x1) {\n                                    r23 = r19 + 0xe8;\n                                    while (true) {\n                                            r25 = r8 - 0x1;\n                                            if (r8 > sign_extend_64(r21[0x4])) {\n                                                    r8 = *r21;\n                                                    r8 = r8[0x1];\n                                                    r8 = r8 + 0xa0;\n                                                    r11 = r19[0x1d];\n                                                    var_A8 = r8;\n                                                    r10 = r19[0x23];\n                                                    r9 = r19[0x25];\n                                                    if (r11 == 0x0) {\n                                                            var_90 = r10;\n                                                            loc_2168800(r23, &var_90, 0x1, &var_A8);\n                                                            r8 = r25;\n                                                            if (r25 >= 0x0) {\n                                                                    continue;\n                                                            }\n                                                            temp_0 = 0x0;\n                                                            break;\n                                                    }\n                                                    else {\n                                                            if (r10 != r9 - 0x8) {\n                                                                    *r10 = r8;\n                                                                    r19[0x23] = r19[0x23] + 0x8;\n                                                                    r8 = r25;\n                                                                    if (r25 > 0x0) {\n                                                                            continue;\n                                                                    }\n                                                                    temp_0 = 0x1;\n                                                                    break;\n                                                            }\n                                                            else {\n                                                                    var_90 = r10;\n                                                                    loc_2168800(r23, &var_90, 0x1, &var_A8);\n                                                                    r8 = r25;\n                                                                    if (r25 >= 0x0) {\n                                                                            continue;\n                                                                    }\n                                                                    temp_0 = 0x0;\n                                                                    break;\n                                                            }\n                                                    }\n                                            }\n                                            else {\n                                                    r8 = r21[0x1];\n                                                    r8 = r8 + zero_extend_64(r25) * 0x8;\n                                                    r11 = r19[0x1d];\n                                                    var_A8 = r8;\n                                                    r10 = r19[0x23];\n                                                    r9 = r19[0x25];\n                                                    if (r11 != 0x0) {\n                                                            if (r10 != r9 - 0x8) {\n                                                                    *r10 = r8;\n                                                                    r19[0x23] = r19[0x23] + 0x8;\n                                                                    r8 = r25;\n                                                                    if (r25 > 0x0) {\n                                                                            continue;\n                                                                    }\n                                                                    temp_0 = 0x1;\n                                                                    break;\n                                                            }\n                                                            else {\n                                                                    var_90 = r10;\n                                                                    loc_2168800(r23, &var_90, 0x1, &var_A8);\n                                                                    r8 = r25;\n                                                                    if (r25 >= 0x0) {\n                                                                            continue;\n                                                                    }\n                                                                    temp_0 = 0x0;\n                                                                    break;\n                                                            }\n                                                    }\n                                                    else {\n                                                            var_90 = r10;\n                                                            loc_2168800(r23, &var_90, 0x1, &var_A8);\n                                                            r8 = r25;\n                                                            if (r25 >= 0x0) {\n                                                                    continue;\n                                                            }\n                                                            temp_0 = 0x0;\n                                                            break;\n                                                    }\n                                            }\n                                    }\n                            }\n                    }\n            }\n    }\n    else {\n            r14 = r19[0x21];\n            r13 = r19[0x22];\n            r11 = r19[0x24];\n            r8 = (SAR(r19[0x25] - r11, 0x3)) + ((SAR(r14 - r9, 0x3)) + (r8 - r11) / 0x8) * ((SAR(r19[0x26] - r13, 0x3)) - 0x1);\n            r10 = r19[0x27];\n            var_A8 = r8;\n            r8 = r19[0x2d];\n            r9 = r19[0x2f];\n            var_98 = 0x0;\n            if (r10 != 0x0) {\n                    if (r8 != r9 - 0x18) {\n                            r8[0x2] = var_98;\n                            *(int128_t *)r8 = var_A8;\n                            r19[0x2d] = r19[0x2d] + 0x18;\n                            r8 = r21[0x4];\n                            if (r8 >= 0x1) {\n                                    r23 = r19 + 0xe8;\n                                    while (true) {\n                                            r25 = r8 - 0x1;\n                                            if (r8 > sign_extend_64(r21[0x4])) {\n                                                    r8 = *r21;\n                                                    r8 = r8[0x1];\n                                                    r8 = r8 + 0xa0;\n                                                    r11 = r19[0x1d];\n                                                    var_A8 = r8;\n                                                    r10 = r19[0x23];\n                                                    r9 = r19[0x25];\n                                                    if (r11 == 0x0) {\n                                                            var_90 = r10;\n                                                            loc_2168800(r23, &var_90, 0x1, &var_A8);\n                                                            r8 = r25;\n                                                            if (r25 >= 0x0) {\n                                                                    continue;\n                                                            }\n                                                            temp_0 = 0x0;\n                                                            break;\n                                                    }\n                                                    else {\n                                                            if (r10 != r9 - 0x8) {\n                                                                    *r10 = r8;\n                                                                    r19[0x23] = r19[0x23] + 0x8;\n                                                                    r8 = r25;\n                                                                    if (r25 > 0x0) {\n                                                                            continue;\n                                                                    }\n                                                                    temp_0 = 0x1;\n                                                                    break;\n                                                            }\n                                                            else {\n                                                                    var_90 = r10;\n                                                                    loc_2168800(r23, &var_90, 0x1, &var_A8);\n                                                                    r8 = r25;\n                                                                    if (r25 >= 0x0) {\n                                                                            continue;\n                                                                    }\n                                                                    temp_0 = 0x0;\n                                                                    break;\n                                                            }\n                                                    }\n                                            }\n                                            else {\n                                                    r8 = r21[0x1];\n                                                    r8 = r8 + zero_extend_64(r25) * 0x8;\n                                                    r11 = r19[0x1d];\n                                                    var_A8 = r8;\n                                                    r10 = r19[0x23];\n                                                    r9 = r19[0x25];\n                                                    if (r11 != 0x0) {\n                                                            if (r10 != r9 - 0x8) {\n                                                                    *r10 = r8;\n                                                                    r19[0x23] = r19[0x23] + 0x8;\n                                                                    r8 = r25;\n                                                                    if (r25 > 0x0) {\n                                                                            continue;\n                                                                    }\n                                                                    temp_0 = 0x1;\n                                                                    break;\n                                                            }\n                                                            else {\n                                                                    var_90 = r10;\n                                                                    loc_2168800(r23, &var_90, 0x1, &var_A8);\n                                                                    r8 = r25;\n                                                                    if (r25 >= 0x0) {\n                                                                            continue;\n                                                                    }\n                                                                    temp_0 = 0x0;\n                                                                    break;\n                                                            }\n                                                    }\n                                                    else {\n                                                            var_90 = r10;\n                                                            loc_2168800(r23, &var_90, 0x1, &var_A8);\n                                                            r8 = r25;\n                                                            if (r25 >= 0x0) {\n                                                                    continue;\n                                                            }\n                                                            temp_0 = 0x0;\n                                                            break;\n                                                    }\n                                            }\n                                    }\n                            }\n                    }\n                    else {\n                            var_90 = r8;\n                            loc_2169770(r19 + 0x138, &var_90, 0x1, &var_A8);\n                            r8 = r21[0x4];\n                            if (r8 >= 0x1) {\n                                    r23 = r19 + 0xe8;\n                                    while (true) {\n                                            r25 = r8 - 0x1;\n                                            if (r8 > sign_extend_64(r21[0x4])) {\n                                                    r8 = *r21;\n                                                    r8 = r8[0x1];\n                                                    r8 = r8 + 0xa0;\n                                                    r11 = r19[0x1d];\n                                                    var_A8 = r8;\n                                                    r10 = r19[0x23];\n                                                    r9 = r19[0x25];\n                                                    if (r11 == 0x0) {\n                                                            var_90 = r10;\n                                                            loc_2168800(r23, &var_90, 0x1, &var_A8);\n                                                            r8 = r25;\n                                                            if (r25 >= 0x0) {\n                                                                    continue;\n                                                            }\n                                                            temp_0 = 0x0;\n                                                            break;\n                                                    }\n                                                    else {\n                                                            if (r10 != r9 - 0x8) {\n                                                                    *r10 = r8;\n                                                                    r19[0x23] = r19[0x23] + 0x8;\n                                                                    r8 = r25;\n                                                                    if (r25 > 0x0) {\n                                                                            continue;\n                                                                    }\n                                                                    temp_0 = 0x1;\n                                                                    break;\n                                                            }\n                                                            else {\n                                                                    var_90 = r10;\n                                                                    loc_2168800(r23, &var_90, 0x1, &var_A8);\n                                                                    r8 = r25;\n                                                                    if (r25 >= 0x0) {\n                                                                            continue;\n                                                                    }\n                                                                    temp_0 = 0x0;\n                                                                    break;\n                                                            }\n                                                    }\n                                            }\n                                            else {\n                                                    r8 = r21[0x1];\n                                                    r8 = r8 + zero_extend_64(r25) * 0x8;\n                                                    r11 = r19[0x1d];\n                                                    var_A8 = r8;\n                                                    r10 = r19[0x23];\n                                                    r9 = r19[0x25];\n                                                    if (r11 != 0x0) {\n                                                            if (r10 != r9 - 0x8) {\n                                                                    *r10 = r8;\n                                                                    r19[0x23] = r19[0x23] + 0x8;\n                                                                    r8 = r25;\n                                                                    if (r25 > 0x0) {\n                                                                            continue;\n                                                                    }\n                                                                    temp_0 = 0x1;\n                                                                    break;\n                                                            }\n                                                            else {\n                                                                    var_90 = r10;\n                                                                    loc_2168800(r23, &var_90, 0x1, &var_A8);\n                                                                    r8 = r25;\n                                                                    if (r25 >= 0x0) {\n                                                                            continue;\n                                                                    }\n                                                                    temp_0 = 0x0;\n                                                                    break;\n                                                            }\n                                                    }\n                                                    else {\n                                                            var_90 = r10;\n                                                            loc_2168800(r23, &var_90, 0x1, &var_A8);\n                                                            r8 = r25;\n                                                            if (r25 >= 0x0) {\n                                                                    continue;\n                                                            }\n                                                            temp_0 = 0x0;\n                                                            break;\n                                                    }\n                                            }\n                                    }\n                            }\n                    }\n            }\n            else {\n                    var_90 = r8;\n                    loc_2169770(r19 + 0x138, &var_90, 0x1, &var_A8);\n                    r8 = r21[0x4];\n                    if (r8 >= 0x1) {\n                            r23 = r19 + 0xe8;\n                            while (true) {\n                                    r25 = r8 - 0x1;\n                                    if (r8 > sign_extend_64(r21[0x4])) {\n                                            r8 = *r21;\n                                            r8 = r8[0x1];\n                                            r8 = r8 + 0xa0;\n                                            r11 = r19[0x1d];\n                                            var_A8 = r8;\n                                            r10 = r19[0x23];\n                                            r9 = r19[0x25];\n                                            if (r11 == 0x0) {\n                                                    var_90 = r10;\n                                                    loc_2168800(r23, &var_90, 0x1, &var_A8);\n                                                    r8 = r25;\n                                                    if (r25 >= 0x0) {\n                                                            continue;\n                                                    }\n                                                    temp_0 = 0x0;\n                                                    break;\n                                            }\n                                            else {\n                                                    if (r10 != r9 - 0x8) {\n                                                            *r10 = r8;\n                                                            r19[0x23] = r19[0x23] + 0x8;\n                                                            r8 = r25;\n                                                            if (r25 > 0x0) {\n                                                                    continue;\n                                                            }\n                                                            temp_0 = 0x1;\n                                                            break;\n                                                    }\n                                                    else {\n                                                            var_90 = r10;\n                                                            loc_2168800(r23, &var_90, 0x1, &var_A8);\n                                                            r8 = r25;\n                                                            if (r25 >= 0x0) {\n                                                                    continue;\n                                                            }\n                                                            temp_0 = 0x0;\n                                                            break;\n                                                    }\n                                            }\n                                    }\n                                    else {\n                                            r8 = r21[0x1];\n                                            r8 = r8 + zero_extend_64(r25) * 0x8;\n                                            r11 = r19[0x1d];\n                                            var_A8 = r8;\n                                            r10 = r19[0x23];\n                                            r9 = r19[0x25];\n                                            if (r11 != 0x0) {\n                                                    if (r10 != r9 - 0x8) {\n                                                            *r10 = r8;\n                                                            r19[0x23] = r19[0x23] + 0x8;\n                                                            r8 = r25;\n                                                            if (r25 > 0x0) {\n                                                                    continue;\n                                                            }\n                                                            temp_0 = 0x1;\n                                                            break;\n                                                    }\n                                                    else {\n                                                            var_90 = r10;\n                                                            loc_2168800(r23, &var_90, 0x1, &var_A8);\n                                                            r8 = r25;\n                                                            if (r25 >= 0x0) {\n                                                                    continue;\n                                                            }\n                                                            temp_0 = 0x0;\n                                                            break;\n                                                    }\n                                            }\n                                            else {\n                                                    var_90 = r10;\n                                                    loc_2168800(r23, &var_90, 0x1, &var_A8);\n                                                    r8 = r25;\n                                                    if (r25 >= 0x0) {\n                                                            continue;\n                                                    }\n                                                    temp_0 = 0x0;\n                                                    break;\n                                            }\n                                    }\n                            }\n                    }\n            }\n    }\n    (*(*r22 + 0x10))(r22, r19 + 0x10);\n    loc_215fc50(r19, r20, sign_extend_64(r21[0x4]));\n    r8 = r19[0x23];\n    r9 = r19[0x1f];\n    if ((r8 | r9) == 0x0) {\n            r9 = 0x0;\n    }\n    else {\n            r9 = (SAR(r19[0x25] - r19[0x24], 0x3)) + (SAR(r19[0x21] - r9, 0x3)) * ((SAR(r19[0x26] - r19[0x22], 0x3)) - 0x1);\n    }\n    r8 = r19[0x2d];\n    r20 = r19[0x2e];\n    r11 = r19[0x2f];\n    r10 = r19[0x30];\n    r13 = r8 - r20;\n    r12 = (SAR(r13, 0x3)) * 0xaaaaaaaaaaaaaaab;\n    r11 = (SAR(r11 - r20, 0x3)) * 0xaaaaaaaaaaaaaaab;\n    if (r13 >= 0x1) {\n            if (r12 <= r11) {\n                    if (r9 != *(r8 - 0x18)) {\n                            loc_1a6f938();\n                            loc_1a66f64();\n                            r8 = r19[0x2d];\n                            r20 = r19[0x2e];\n                    }\n            }\n            else {\n                    r14 = r12 - 0x1;\n                    if (r13 >= 0x19) {\n                            r12 = r14 / r11;\n                    }\n                    else {\n                            r12 = r12 / r11 - 0x1;\n                    }\n                    if (r9 != *(0x18 + *(r10 + r12 * 0x8) * (r14 - r12 * r11))) {\n                            loc_1a6f938();\n                            loc_1a66f64();\n                            r8 = r19[0x2d];\n                            r20 = r19[0x2e];\n                    }\n            }\n    }\n    else {\n            r14 = r12 - 0x1;\n            if (r13 >= 0x19) {\n                    r12 = r14 / r11;\n                    if (r9 != *(0x18 + *(r10 + r12 * 0x8) * (r14 - r12 * r11))) {\n                            loc_1a6f938();\n                            loc_1a66f64();\n                            r8 = r19[0x2d];\n                            r20 = r19[0x2e];\n                    }\n            }\n            else {\n                    r12 = r12 / r11 - 0x1;\n                    if (r9 != *(0x18 + *(r10 + r12 * 0x8) * (r14 - r12 * r11))) {\n                            loc_1a6f938();\n                            loc_1a66f64();\n                            r8 = r19[0x2d];\n                            r20 = r19[0x2e];\n                    }\n            }\n    }\n    if (r8 != r20) {\n            r19[0x2d] = r8 - 0x18;\n            if (((*(*r19 + 0x2c8))(r19) & 0x1) != 0x0) {\n                    r20 = r19[0x19];\n                    if (r20 != r19[0x1a]) {\n                            r0 = r20 - 0x70;\n                    }\n                    else {\n                            if ((loc_1a66ec4(*0x8c75ab8, r20) & 0x1) == 0x0) {\n                                    r0 = *0x8c809e8;\n                                    (*(*r0 + 0x10))(r0, r20, 0x11);\n                            }\n                            r8 = r19[0x1c];\n                            r19[0x1c] = r8 - 0x8;\n                            r8 = r8[0xffffffffffffffff];\n                            r0 = r8 + 0x150;\n                            r19[0x1a] = r8;\n                            r19[0x1b] = r8 + 0x1c0;\n                    }\n                    r19[0x19] = r0;\n                    loc_215d9a8();\n                    r20 = r19[0x9] + 0xa0;\n                    loc_215fec0(r19);\n                    r19[0x59] = r24;\n                    r0 = r20;\n            }\n            else {\n                    r20 = loc_2158628(r19);\n                    loc_215fec0(r19);\n                    r19[0x59] = r24;\n                    r0 = r20;\n            }\n    }\n    else {\n            if ((loc_1a66ec4(*0x8c75ab8, r20) & 0x1) == 0x0) {\n                    r0 = *0x8c809e8;\n                    (*(*r0 + 0x10))(r0, r20, 0x11);\n            }\n            r8 = r19[0x30];\n            r19[0x30] = r8 - 0x8;\n            r8 = r8[0xffffffffffffffff];\n            r19[0x2e] = r8;\n            r19[0x2f] = r8 + 0x1f8;\n            r19[0x2d] = r8 + 0x1e0;\n            if (((*(*r19 + 0x2c8))(r19) & 0x1) == 0x0) {\n                    r20 = loc_2158628(r19);\n                    loc_215fec0(r19);\n                    r19[0x59] = r24;\n                    r0 = r20;\n            }\n            else {\n                    r20 = r19[0x19];\n                    if (r20 != r19[0x1a]) {\n                            r0 = r20 - 0x70;\n                    }\n                    else {\n                            if ((loc_1a66ec4(*0x8c75ab8, r20) & 0x1) == 0x0) {\n                                    r0 = *0x8c809e8;\n                                    (*(*r0 + 0x10))(r0, r20, 0x11);\n                            }\n                            r8 = r19[0x1c];\n                            r19[0x1c] = r8 - 0x8;\n                            r8 = r8[0xffffffffffffffff];\n                            r0 = r8 + 0x150;\n                            r19[0x1a] = r8;\n                            r19[0x1b] = r8 + 0x1c0;\n                    }\n                    r19[0x19] = r0;\n                    loc_215d9a8();\n                    r20 = r19[0x9] + 0xa0;\n                    loc_215fec0(r19);\n                    r19[0x59] = r24;\n                    r0 = r20;\n            }\n    }\n    return r0;\n",
+    "assembly": [
+      "0x21603f0: sub sp, sp, #0x100",
+      "0x21603f4: stp fp, lr, [sp, #0xb0]",
+      "0x21603f8: str x25, [sp, #0xb0 + saved_regs_10]",
+      "0x21603fc: stp x24, x23, [sp, #0xd0]",
+      "0x2160400: stp x22, x21, [sp, #0xe0]",
+      "0x2160404: stp x20, x19, [sp, #0xf0]",
+      "0x2160408: add fp, sp, #0xb0",
+      "0x216040c: mov x20, x1",
+      "0x2160410: ldr x1, [x0, #0x48]",
+      "0x2160414: mov w8, #0x1",
+      "0x2160418: ldrb w24, [x0, #0x59]",
+      "0x216041c: mov x22, x2",
+      "0x2160420: mov x19, x0",
+      "0x2160424: strb w8, [x0, #0x59]",
+      "0x2160428: add x23, x0, #0x98",
+      "0x216042c: add x0, sp, #0x20",
+      "0x2160430: mov w2, wzr",
+      "0x2160434: mov x21, x3",
+      "0x2160438: bl 0x215db20",
+      "0x216043c: add x1, sp, #0x20",
+      "0x2160440: mov x0, x23",
+      "0x2160444: bl 0x215d760",
+      "0x2160448: add x0, sp, #0x20",
+      "0x216044c: bl 0x215d9a8",
+      "0x2160450: ldr x8, [x19, #0x118]",
+      "0x2160454: ldr x9, [x19, #0xf8]",
+      "0x2160458: orr x10, x8, x9",
+      "0x2160460: mov x8, xzr",
+      "0x2160464: ldr x10, [x19, #0x138]",
+      "0x2160468: stp xzr, x20, [sp, #0x8]",
+      "0x216046c: ldr x8, [x19, #0x168]",
+      "0x2160470: ldr x9, [x19, #0x178]",
+      "0x2160474: str wzr, [sp, #0xb0 + var_98]",
+      "0x2160504: ldr x10, [x19, #0x170]",
+      "0x2160508: add x0, x19, #0x138",
+      "0x216050c: add x1, sp, #0x20",
+      "0x2160510: add x3, sp, #0x8",
+      "0x2160514: mov w2, #0x1",
+      "0x2160518: stp x8, x10, [sp, #0x20]",
+      "0x216051c: ldr x8, [x19, #0x180]",
+      "0x2160520: stp x9, x8, [sp, #0x30]",
+      "0x2160524: sub x8, fp, #0x20",
+      "0x2160528: bl 0x2169770",
+      "0x216052c: ldr w8, [x21, #0x10]",
+      "0x2160530: cmp w8, #0x1",
+      "0x2160538: add x23, x19, #0xe8",
+      "0x2160578: ldrsw x9, [x21, #0x10]",
+      "0x216057c: sub x25, x8, #0x1",
+      "0x2160580: cmp x8, x9",
+      "0x2160588: ldr x8, [x21]",
+      "0x216058c: ldr x8, [x8, #0x8]",
+      "0x2160590: add x8, x8, #0xa0",
+      "0x2160594: ldr x11, [x19, #0xe8]",
+      "0x2160598: str x8, [sp, #0xb0 + var_A8]",
+      "0x216059c: ldr x10, [x19, #0x118]",
+      "0x21605a0: ldr x9, [x19, #0x128]",
+      "0x2160540: ldr x8, [x19, #0x120]",
+      "0x2160544: add x1, sp, #0x20",
+      "0x2160548: add x3, sp, #0x8",
+      "0x216054c: mov x0, x23",
+      "0x2160550: mov w2, #0x1",
+      "0x2160554: stp x10, x8, [sp, #0x20]",
+      "0x2160558: ldr x8, [x19, #0x130]",
+      "0x216055c: stp x9, x8, [sp, #0x30]",
+      "0x2160560: sub x8, fp, #0x20",
+      "0x2160564: bl 0x2168800",
+      "0x2160568: add x8, x25, #0x1",
+      "0x216056c: cmp x8, #0x1",
+      "0x2160570: mov x8, x25",
+      "0x21605f8: ldr x8, [x22]",
+      "0x21605fc: add x1, x19, #0x10",
+      "0x2160600: mov x0, x22",
+      "0x2160604: ldr x8, [x8, #0x10]",
+      "0x2160608: blr x8",
+      "0x216060c: ldrsw x2, [x21, #0x10]",
+      "0x2160610: mov x0, x19",
+      "0x2160614: mov x1, x20",
+      "0x2160618: bl 0x215fc50",
+      "0x216061c: ldr x8, [x19, #0x118]",
+      "0x2160620: ldr x9, [x19, #0xf8]",
+      "0x2160624: orr x10, x8, x9",
+      "0x216062c: mov x9, xzr",
+      "0x2160668: ldp x8, x20, [x19, #0x168]",
+      "0x216066c: orr x14, xzr, #0xaaaaaaaaaaaaaaaa",
+      "0x2160670: ldp x11, x10, [x19, #0x178]",
+      "0x2160674: movk x14, #0xaaab",
+      "0x2160678: sub x13, x8, x20",
+      "0x216067c: sub x11, x11, x20",
+      "0x2160680: asr x12, x13, #0x3",
+      "0x2160684: asr x11, x11, #0x3",
+      "0x2160688: cmp x13, #0x1",
+      "0x216068c: mul x12, x12, x14",
+      "0x2160690: mul x11, x11, x14",
+      "0x2160698: cmp x12, x11",
+      "0x21606a0: sub x10, x8, #0x18",
+      "0x21606a4: ldr x10, [x10]",
+      "0x21606a8: cmp x9, x10",
+      "0x2160714: cmp x8, x20",
+      "0x216071c: sub x8, x8, #0x18",
+      "0x2160720: str x8, [x19, #0x168]",
+      "0x2160724: ldr x8, [x19]",
+      "0x2160728: mov x0, x19",
+      "0x216072c: ldr x8, [x8, #0x2c8]",
+      "0x2160730: blr x8",
+      "0x2160738: ldp x20, x8, [x19, #0xc8]",
+      "0x216073c: cmp x20, x8",
+      "0x2160744: sub x0, x20, #0x70",
+      "0x216081c: str x0, [x19, #0xc8]",
+      "0x2160820: bl 0x215d9a8",
+      "0x2160824: ldr x8, [x19, #0x48]",
+      "0x21607c8: adrp x8, #0x8c75000",
+      "0x21607cc: add x8, x8, #0xab8",
+      "0x21607d0: ldr x0, [x8]",
+      "0x21607d4: mov x1, x20",
+      "0x21607d8: bl 0x1a66ec4",
+      "0x21607e0: adrp x8, #0x8c80000",
+      "0x21607e4: add x8, x8, #0x9e8",
+      "0x21607e8: ldr x0, [x8]",
+      "0x21607ec: ldr x8, [x0]",
+      "0x21607f0: ldr x8, [x8, #0x10]",
+      "0x21607f4: mov w2, #0x11",
+      "0x21607f8: mov x1, x20",
+      "0x2160800: ldr x8, [x19, #0xe0]",
+      "0x2160804: sub x9, x8, #0x8",
+      "0x2160808: str x9, [x19, #0xe0]",
+      "0x216080c: ldur x8, [x8, #-0x8]",
+      "0x2160810: add x9, x8, #0x1c0",
+      "0x2160814: add x0, x8, #0x150",
+      "0x21607b8: mov x0, x19",
+      "0x21607bc: bl 0x2158628",
+      "0x21607c0: mov x20, x0",
+      "0x216082c: mov x0, x19",
+      "0x2160830: bl 0x215fec0",
+      "0x2160834: strb w24, [x19, #0x59]",
+      "0x2160838: mov x0, x20",
+      "0x216083c: ldr x25, [sp, #0xb0 + saved_regs_10]",
+      "0x2160840: ldp x20, x19, [sp, #0xf0]",
+      "0x2160844: ldp x22, x21, [sp, #0xe0]",
+      "0x2160848: ldp x24, x23, [sp, #0xd0]",
+      "0x216084c: ldp fp, lr, [sp, #0xb0]",
+      "0x2160850: add sp, sp, #0x100",
+      "0x216074c: adrp x8, #0x8c75000",
+      "0x2160750: add x8, x8, #0xab8",
+      "0x2160754: ldr x0, [x8]",
+      "0x2160758: mov x1, x20",
+      "0x216075c: bl 0x1a66ec4",
+      "0x2160764: adrp x8, #0x8c80000",
+      "0x2160768: add x8, x8, #0x9e8",
+      "0x216076c: ldr x0, [x8]",
+      "0x2160770: ldr x8, [x0]",
+      "0x2160774: ldr x8, [x8, #0x10]",
+      "0x2160778: mov w2, #0x11",
+      "0x216077c: mov x1, x20",
+      "0x2160784: ldr x8, [x19, #0x180]",
+      "0x2160788: sub x9, x8, #0x8",
+      "0x216078c: str x9, [x19, #0x180]",
+      "0x2160790: ldur x8, [x8, #-0x8]",
+      "0x2160794: add x9, x8, #0x1f8",
+      "0x2160798: stp x8, x9, [x19, #0x170]",
+      "0x216079c: add x8, x8, #0x1e0",
+      "0x21607a0: str x8, [x19, #0x168]",
+      "0x21607a4: ldr x8, [x19]",
+      "0x21607a8: mov x0, x19",
+      "0x21607ac: ldr x8, [x8, #0x2c8]",
+      "0x21607b0: blr x8",
+      "0x21606ec: bl 0x1a6f938",
+      "0x21606f0: adrp x3, #0x3f91000",
+      "0x21606f4: add x3, x3, #0xd34",
+      "0x21606f8: adrp x4, #0x3f5c000",
+      "0x21606fc: add x4, x4, #0x7f5",
+      "0x2160700: mov w1, #0x5",
+      "0x2160704: mov w2, #0x1",
+      "0x2160708: mov w5, #0x20",
+      "0x216070c: bl 0x1a66f64",
+      "0x21606b4: sub x14, x12, #0x1",
+      "0x21606b8: cmp x13, #0x19",
+      "0x21606c0: sdiv x12, x14, x11",
+      "0x21606d0: msub x11, x12, x11, x14",
+      "0x21606d4: ldr x10, [x10, x12, lsl #3]",
+      "0x21606d8: mov w12, #0x18",
+      "0x21606dc: madd x10, x11, x12, x10",
+      "0x21606e0: ldr x10, [x10]",
+      "0x21606e4: cmp x9, x10",
+      "0x21606c8: sdiv x12, x12, x11",
+      "0x2160634: ldp x14, x13, [x19, #0x108]",
+      "0x2160638: sub x9, x14, x9",
+      "0x216063c: ldp x11, x10, [x19, #0x120]",
+      "0x2160640: ldr x12, [x19, #0x130]",
+      "0x2160644: sub x12, x12, x13",
+      "0x2160648: sub x8, x8, x11",
+      "0x216064c: sub x10, x10, x11",
+      "0x2160650: asr x9, x9, #0x3",
+      "0x2160654: asr x12, x12, #0x3",
+      "0x2160658: asr x10, x10, #0x3",
+      "0x216065c: add x8, x9, x8, asr #3",
+      "0x2160660: sub x12, x12, #0x1",
+      "0x21605cc: sub x11, x9, #0x8",
+      "0x21605d0: cmp x10, x11",
+      "0x21605d8: str x8, [x10]",
+      "0x21605dc: ldr x8, [x19, #0x118]",
+      "0x21605e0: add x8, x8, #0x8",
+      "0x21605e4: str x8, [x19, #0x118]",
+      "0x21605e8: add x8, x25, #0x1",
+      "0x21605ec: cmp x8, #0x1",
+      "0x21605f0: mov x8, x25",
+      "0x21605b0: ldr x8, [x21, #0x8]",
+      "0x21605b4: add x8, x8, w25, uxtw #3",
+      "0x21605b8: ldr x11, [x19, #0xe8]",
+      "0x21605bc: str x8, [sp, #0xb0 + var_A8]",
+      "0x21605c0: ldr x10, [x19, #0x118]",
+      "0x21605c4: ldr x9, [x19, #0x128]",
+      "0x21604cc: sub x10, x9, #0x18",
+      "0x21604d0: cmp x8, x10",
+      "0x21604d8: ldur q0, [sp, #0xb0 + var_A8]",
+      "0x21604dc: ldr x9, [sp, #0xb0 + var_98]",
+      "0x21604e0: str x9, [x8, #0x10]",
+      "0x21604e4: str q0, [x8]",
+      "0x21604e8: ldr x8, [x19, #0x168]",
+      "0x21604ec: add x8, x8, #0x18",
+      "0x21604f0: str x8, [x19, #0x168]",
+      "0x21604f4: ldr w8, [x21, #0x10]",
+      "0x21604f8: cmp w8, #0x1",
+      "0x2160480: ldp x14, x13, [x19, #0x108]",
+      "0x2160484: sub x9, x14, x9",
+      "0x2160488: ldp x11, x10, [x19, #0x120]",
+      "0x216048c: ldr x12, [x19, #0x130]",
+      "0x2160490: sub x12, x12, x13",
+      "0x2160494: sub x8, x8, x11",
+      "0x2160498: sub x10, x10, x11",
+      "0x216049c: asr x9, x9, #0x3",
+      "0x21604a0: asr x12, x12, #0x3",
+      "0x21604a4: asr x10, x10, #0x3",
+      "0x21604a8: add x8, x9, x8, asr #3",
+      "0x21604ac: sub x12, x12, #0x1",
+      "0x21604b0: madd x8, x12, x10, x8",
+      "0x21604b4: ldr x10, [x19, #0x138]",
+      "0x21604b8: stp x8, x20, [sp, #0x8]",
+      "0x21604bc: ldr x8, [x19, #0x168]",
+      "0x21604c0: ldr x9, [x19, #0x178]",
+      "0x21604c4: str wzr, [sp, #0xb0 + var_98]"
+    ],
+    "comments": [],
+    "callers": [],
+    "callees": [],
+    "incoming_references": [
+      {
+        "source_address": "0x1a6ee4c",
+        "target_address": "0x21603f0",
+        "source_procedure": {
+          "address": "0x1a6eda0",
+          "name": "sub_1a6eda0",
+          "classification": null,
+          "body": {
+            "available": false,
+            "reason": "Hopper's public Python API does not expose complete function body ranges"
+          }
+        },
+        "target_procedure": {
+          "address": "0x21603f0",
+          "name": "EntryPoint",
+          "classification": null,
+          "body": {
+            "available": false,
+            "reason": "Hopper's public Python API does not expose complete function body ranges"
+          }
+        },
+        "kind": {
+          "available": false,
+          "reason": "Hopper's public Python API does not classify reference kinds"
+        }
+      },
+      {
+        "source_address": "0x216045c",
+        "target_address": "0x2160480",
+        "source_procedure": {
+          "address": "0x21603f0",
+          "name": "EntryPoint",
+          "classification": null,
+          "body": {
+            "available": false,
+            "reason": "Hopper's public Python API does not expose complete function body ranges"
+          }
+        },
+        "target_procedure": {
+          "address": "0x21603f0",
+          "name": "EntryPoint",
+          "classification": null,
+          "body": {
+            "available": false,
+            "reason": "Hopper's public Python API does not expose complete function body ranges"
+          }
+        },
+        "kind": {
+          "available": false,
+          "reason": "Hopper's public Python API does not classify reference kinds"
+        }
+      },
+      {
+        "source_address": "0x2160478",
+        "target_address": "0x21604cc",
+        "source_procedure": {
+          "address": "0x21603f0",
+          "name": "EntryPoint",
+          "classification": null,
+          "body": {
+            "available": false,
+            "reason": "Hopper's public Python API does not expose complete function body ranges"
+          }
+        },
+        "target_procedure": {
+          "address": "0x21603f0",
+          "name": "EntryPoint",
+          "classification": null,
+          "body": {
+            "available": false,
+            "reason": "Hopper's public Python API does not expose complete function body ranges"
+          }
+        },
+        "kind": {
+          "available": false,
+          "reason": "Hopper's public Python API does not classify reference kinds"
+        }
+      },
+      {
+        "source_address": "0x216047c",
+        "target_address": "0x2160504",
+        "source_procedure": {
+          "address": "0x21603f0",
+          "name": "EntryPoint",
+          "classification": null,
+          "body": {
+            "available": false,
+            "reason": "Hopper's public Python API does not expose complete function body ranges"
+          }
+        },
+        "target_procedure": {
+          "address": "0x21603f0",
+          "name": "EntryPoint",
+          "classification": null,
+          "body": {
+            "available": false,
+            "reason": "Hopper's public Python API does not expose complete function body ranges"
+          }
+        },
+        "kind": {
+          "available": false,
+          "reason": "Hopper's public Python API does not classify reference kinds"
+        }
+      },
+      {
+        "source_address": "0x21604c8",
+        "target_address": "0x2160504",
+        "source_procedure": {
+          "address": "0x21603f0",
+          "name": "EntryPoint",
+          "classification": null,
+          "body": {
+            "available": false,
+            "reason": "Hopper's public Python API does not expose complete function body ranges"
+          }
+        },
+        "target_procedure": {
+          "address": "0x21603f0",
+          "name": "EntryPoint",
+          "classification": null,
+          "body": {
+            "available": false,
+            "reason": "Hopper's public Python API does not expose complete function body ranges"
+          }
+        },
+        "kind": {
+          "available": false,
+          "reason": "Hopper's public Python API does not classify reference kinds"
+        }
+      },
+      {
+        "source_address": "0x21604d4",
+        "target_address": "0x2160504",
+        "source_procedure": {
+          "address": "0x21603f0",
+          "name": "EntryPoint",
+          "classification": null,
+          "body": {
+            "available": false,
+            "reason": "Hopper's public Python API does not expose complete function body ranges"
+          }
+        },
+        "target_procedure": {
+          "address": "0x21603f0",
+          "name": "EntryPoint",
+          "classification": null,
+          "body": {
+            "available": false,
+            "reason": "Hopper's public Python API does not expose complete function body ranges"
+          }
+        },
+        "kind": {
+          "available": false,
+          "reason": "Hopper's public Python API does not classify reference kinds"
+        }
+      },
+      {
+        "source_address": "0x21604fc",
+        "target_address": "0x2160538",
+        "source_procedure": {
+          "address": "0x21603f0",
+          "name": "EntryPoint",
+          "classification": null,
+          "body": {
+            "available": false,
+            "reason": "Hopper's public Python API does not expose complete function body ranges"
+          }
+        },
+        "target_procedure": {
+          "address": "0x21603f0",
+          "name": "EntryPoint",
+          "classification": null,
+          "body": {
+            "available": false,
+            "reason": "Hopper's public Python API does not expose complete function body ranges"
+          }
+        },
+        "kind": {
+          "available": false,
+          "reason": "Hopper's public Python API does not classify reference kinds"
+        }
+      },
+      {
+        "source_address": "0x2160500",
+        "target_address": "0x21605f8",
+        "source_procedure": {
+          "address": "0x21603f0",
+          "name": "EntryPoint",
+          "classification": null,
+          "body": {
+            "available": false,
+            "reason": "Hopper's public Python API does not expose complete function body ranges"
+          }
+        },
+        "target_procedure": {
+          "address": "0x21603f0",
+          "name": "EntryPoint",
+          "classification": null,
+          "body": {
+            "available": false,
+            "reason": "Hopper's public Python API does not expose complete function body ranges"
+          }
+        },
+        "kind": {
+          "available": false,
+          "reason": "Hopper's public Python API does not classify reference kinds"
+        }
+      },
+      {
+        "source_address": "0x2160534",
+        "target_address": "0x21605f8",
+        "source_procedure": {
+          "address": "0x21603f0",
+          "name": "EntryPoint",
+          "classification": null,
+          "body": {
+            "available": false,
+            "reason": "Hopper's public Python API does not expose complete function body ranges"
+          }
+        },
+        "target_procedure": {
+          "address": "0x21603f0",
+          "name": "EntryPoint",
+          "classification": null,
+          "body": {
+            "available": false,
+            "reason": "Hopper's public Python API does not expose complete function body ranges"
+          }
+        },
+        "kind": {
+          "available": false,
+          "reason": "Hopper's public Python API does not classify reference kinds"
+        }
+      },
+      {
+        "source_address": "0x216053c",
+        "target_address": "0x2160578",
+        "source_procedure": {
+          "address": "0x21603f0",
+          "name": "EntryPoint",
+          "classification": null,
+          "body": {
+            "available": false,
+            "reason": "Hopper's public Python API does not expose complete function body ranges"
+          }
+        },
+        "target_procedure": {
+          "address": "0x21603f0",
+          "name": "EntryPoint",
+          "classification": null,
+          "body": {
+            "available": false,
+            "reason": "Hopper's public Python API does not expose complete function body ranges"
+          }
+        },
+        "kind": {
+          "available": false,
+          "reason": "Hopper's public Python API does not classify reference kinds"
+        }
+      },
+      {
+        "source_address": "0x2160574",
+        "target_address": "0x21605f8",
+        "source_procedure": {
+          "address": "0x21603f0",
+          "name": "EntryPoint",
+          "classification": null,
+          "body": {
+            "available": false,
+            "reason": "Hopper's public Python API does not expose complete function body ranges"
+          }
+        },
+        "target_procedure": {
+          "address": "0x21603f0",
+          "name": "EntryPoint",
+          "classification": null,
+          "body": {
+            "available": false,
+            "reason": "Hopper's public Python API does not expose complete function body ranges"
+          }
+        },
+        "kind": {
+          "available": false,
+          "reason": "Hopper's public Python API does not classify reference kinds"
+        }
+      },
+      {
+        "source_address": "0x2160584",
+        "target_address": "0x21605b0",
+        "source_procedure": {
+          "address": "0x21603f0",
+          "name": "EntryPoint",
+          "classification": null,
+          "body": {
+            "available": false,
+            "reason": "Hopper's public Python API does not expose complete function body ranges"
+          }
+        },
+        "target_procedure": {
+          "address": "0x21603f0",
+          "name": "EntryPoint",
+          "classification": null,
+          "body": {
+            "available": false,
+            "reason": "Hopper's public Python API does not expose complete function body ranges"
+          }
+        },
+        "kind": {
+          "available": false,
+          "reason": "Hopper's public Python API does not classify reference kinds"
+        }
+      },
+      {
+        "source_address": "0x21605a4",
+        "target_address": "0x21605cc",
+        "source_procedure": {
+          "address": "0x21603f0",
+          "name": "EntryPoint",
+          "classification": null,
+          "body": {
+            "available": false,
+            "reason": "Hopper's public Python API does not expose complete function body ranges"
+          }
+        },
+        "target_procedure": {
+          "address": "0x21603f0",
+          "name": "EntryPoint",
+          "classification": null,
+          "body": {
+            "available": false,
+            "reason": "Hopper's public Python API does not expose complete function body ranges"
+          }
+        },
+        "kind": {
+          "available": false,
+          "reason": "Hopper's public Python API does not classify reference kinds"
+        }
+      },
+      {
+        "source_address": "0x21605a8",
+        "target_address": "0x2160540",
+        "source_procedure": {
+          "address": "0x21603f0",
+          "name": "EntryPoint",
+          "classification": null,
+          "body": {
+            "available": false,
+            "reason": "Hopper's public Python API does not expose complete function body ranges"
+          }
+        },
+        "target_procedure": {
+          "address": "0x21603f0",
+          "name": "EntryPoint",
+          "classification": null,
+          "body": {
+            "available": false,
+            "reason": "Hopper's public Python API does not expose complete function body ranges"
+          }
+        },
+        "kind": {
+          "available": false,
+          "reason": "Hopper's public Python API does not classify reference kinds"
+        }
+      },
+      {
+        "source_address": "0x21605c8",
+        "target_address": "0x2160540",
+        "source_procedure": {
+          "address": "0x21603f0",
+          "name": "EntryPoint",
+          "classification": null,
+          "body": {
+            "available": false,
+            "reason": "Hopper's public Python API does not expose complete function body ranges"
+          }
+        },
+        "target_procedure": {
+          "address": "0x21603f0",
+          "name": "EntryPoint",
+          "classification": null,
+          "body": {
+            "available": false,
+            "reason": "Hopper's public Python API does not expose complete function body ranges"
+          }
+        },
+        "kind": {
+          "available": false,
+          "reason": "Hopper's public Python API does not classify reference kinds"
+        }
+      },
+      {
+        "source_address": "0x21605d4",
+        "target_address": "0x2160540",
+        "source_procedure": {
+          "address": "0x21603f0",
+          "name": "EntryPoint",
+          "classification": null,
+          "body": {
+            "available": false,
+            "reason": "Hopper's public Python API does not expose complete function body ranges"
+          }
+        },
+        "target_procedure": {
+          "address": "0x21603f0",
+          "name": "EntryPoint",
+          "classification": null,
+          "body": {
+            "available": false,
+            "reason": "Hopper's public Python API does not expose complete function body ranges"
+          }
+        },
+        "kind": {
+          "available": false,
+          "reason": "Hopper's public Python API does not classify reference kinds"
+        }
+      },
+      {
+        "source_address": "0x21605f4",
+        "target_address": "0x2160578",
+        "source_procedure": {
+          "address": "0x21603f0",
+          "name": "EntryPoint",
+          "classification": null,
+          "body": {
+            "available": false,
+            "reason": "Hopper's public Python API does not expose complete function body ranges"
+          }
+        },
+        "target_procedure": {
+          "address": "0x21603f0",
+          "name": "EntryPoint",
+          "classification": null,
+          "body": {
+            "available": false,
+            "reason": "Hopper's public Python API does not expose complete function body ranges"
+          }
+        },
+        "kind": {
+          "available": false,
+          "reason": "Hopper's public Python API does not classify reference kinds"
+        }
+      },
+      {
+        "source_address": "0x2160628",
+        "target_address": "0x2160634",
+        "source_procedure": {
+          "address": "0x21603f0",
+          "name": "EntryPoint",
+          "classification": null,
+          "body": {
+            "available": false,
+            "reason": "Hopper's public Python API does not expose complete function body ranges"
+          }
+        },
+        "target_procedure": {
+          "address": "0x21603f0",
+          "name": "EntryPoint",
+          "classification": null,
+          "body": {
+            "available": false,
+            "reason": "Hopper's public Python API does not expose complete function body ranges"
+          }
+        },
+        "kind": {
+          "available": false,
+          "reason": "Hopper's public Python API does not classify reference kinds"
+        }
+      },
+      {
+        "source_address": "0x2160630",
+        "target_address": "0x2160668",
+        "source_procedure": {
+          "address": "0x21603f0",
+          "name": "EntryPoint",
+          "classification": null,
+          "body": {
+            "available": false,
+            "reason": "Hopper's public Python API does not expose complete function body ranges"
+          }
+        },
+        "target_procedure": {
+          "address": "0x21603f0",
+          "name": "EntryPoint",
+          "classification": null,
+          "body": {
+            "available": false,
+            "reason": "Hopper's public Python API does not expose complete function body ranges"
+          }
+        },
+        "kind": {
+          "available": false,
+          "reason": "Hopper's public Python API does not classify reference kinds"
+        }
+      },
+      {
+        "source_address": "0x2160694",
+        "target_address": "0x21606b4",
+        "source_procedure": {
+          "address": "0x21603f0",
+          "name": "EntryPoint",
+          "classification": null,
+          "body": {
+            "available": false,
+            "reason": "Hopper's public Python API does not expose complete function body ranges"
+          }
+        },
+        "target_procedure": {
+          "address": "0x21603f0",
+          "name": "EntryPoint",
+          "classification": null,
+          "body": {
+            "available": false,
+            "reason": "Hopper's public Python API does not expose complete function body ranges"
+          }
+        },
+        "kind": {
+          "available": false,
+          "reason": "Hopper's public Python API does not classify reference kinds"
+        }
+      },
+      {
+        "source_address": "0x216069c",
+        "target_address": "0x21606b4",
+        "source_procedure": {
+          "address": "0x21603f0",
+          "name": "EntryPoint",
+          "classification": null,
+          "body": {
+            "available": false,
+            "reason": "Hopper's public Python API does not expose complete function body ranges"
+          }
+        },
+        "target_procedure": {
+          "address": "0x21603f0",
+          "name": "EntryPoint",
+          "classification": null,
+          "body": {
+            "available": false,
+            "reason": "Hopper's public Python API does not expose complete function body ranges"
+          }
+        },
+        "kind": {
+          "available": false,
+          "reason": "Hopper's public Python API does not classify reference kinds"
+        }
+      },
+      {
+        "source_address": "0x21606ac",
+        "target_address": "0x21606ec",
+        "source_procedure": {
+          "address": "0x21603f0",
+          "name": "EntryPoint",
+          "classification": null,
+          "body": {
+            "available": false,
+            "reason": "Hopper's public Python API does not expose complete function body ranges"
+          }
+        },
+        "target_procedure": {
+          "address": "0x21603f0",
+          "name": "EntryPoint",
+          "classification": null,
+          "body": {
+            "available": false,
+            "reason": "Hopper's public Python API does not expose complete function body ranges"
+          }
+        },
+        "kind": {
+          "available": false,
+          "reason": "Hopper's public Python API does not classify reference kinds"
+        }
+      },
+      {
+        "source_address": "0x21606b0",
+        "target_address": "0x2160714",
+        "source_procedure": {
+          "address": "0x21603f0",
+          "name": "EntryPoint",
+          "classification": null,
+          "body": {
+            "available": false,
+            "reason": "Hopper's public Python API does not expose complete function body ranges"
+          }
+        },
+        "target_procedure": {
+          "address": "0x21603f0",
+          "name": "EntryPoint",
+          "classification": null,
+          "body": {
+            "available": false,
+            "reason": "Hopper's public Python API does not expose complete function body ranges"
+          }
+        },
+        "kind": {
+          "available": false,
+          "reason": "Hopper's public Python API does not classify reference kinds"
+        }
+      },
+      {
+        "source_address": "0x21606bc",
+        "target_address": "0x21606c8",
+        "source_procedure": {
+          "address": "0x21603f0",
+          "name": "EntryPoint",
+          "classification": null,
+          "body": {
+            "available": false,
+            "reason": "Hopper's public Python API does not expose complete function body ranges"
+          }
+        },
+        "target_procedure": {
+          "address": "0x21603f0",
+          "name": "EntryPoint",
+          "classification": null,
+          "body": {
+            "available": false,
+            "reason": "Hopper's public Python API does not expose complete function body ranges"
+          }
+        },
+        "kind": {
+          "available": false,
+          "reason": "Hopper's public Python API does not classify reference kinds"
+        }
+      },
+      {
+        "source_address": "0x21606c4",
+        "target_address": "0x21606d0",
+        "source_procedure": {
+          "address": "0x21603f0",
+          "name": "EntryPoint",
+          "classification": null,
+          "body": {
+            "available": false,
+            "reason": "Hopper's public Python API does not expose complete function body ranges"
+          }
+        },
+        "target_procedure": {
+          "address": "0x21603f0",
+          "name": "EntryPoint",
+          "classification": null,
+          "body": {
+            "available": false,
+            "reason": "Hopper's public Python API does not expose complete function body ranges"
+          }
+        },
+        "kind": {
+          "available": false,
+          "reason": "Hopper's public Python API does not classify reference kinds"
+        }
+      },
+      {
+        "source_address": "0x21606e8",
+        "target_address": "0x2160714",
+        "source_procedure": {
+          "address": "0x21603f0",
+          "name": "EntryPoint",
+          "classification": null,
+          "body": {
+            "available": false,
+            "reason": "Hopper's public Python API does not expose complete function body ranges"
+          }
+        },
+        "target_procedure": {
+          "address": "0x21603f0",
+          "name": "EntryPoint",
+          "classification": null,
+          "body": {
+            "available": false,
+            "reason": "Hopper's public Python API does not expose complete function body ranges"
+          }
+        },
+        "kind": {
+          "available": false,
+          "reason": "Hopper's public Python API does not classify reference kinds"
+        }
+      },
+      {
+        "source_address": "0x2160718",
+        "target_address": "0x216074c",
+        "source_procedure": {
+          "address": "0x21603f0",
+          "name": "EntryPoint",
+          "classification": null,
+          "body": {
+            "available": false,
+            "reason": "Hopper's public Python API does not expose complete function body ranges"
+          }
+        },
+        "target_procedure": {
+          "address": "0x21603f0",
+          "name": "EntryPoint",
+          "classification": null,
+          "body": {
+            "available": false,
+            "reason": "Hopper's public Python API does not expose complete function body ranges"
+          }
+        },
+        "kind": {
+          "available": false,
+          "reason": "Hopper's public Python API does not classify reference kinds"
+        }
+      },
+      {
+        "source_address": "0x2160734",
+        "target_address": "0x21607b8",
+        "source_procedure": {
+          "address": "0x21603f0",
+          "name": "EntryPoint",
+          "classification": null,
+          "body": {
+            "available": false,
+            "reason": "Hopper's public Python API does not expose complete function body ranges"
+          }
+        },
+        "target_procedure": {
+          "address": "0x21603f0",
+          "name": "EntryPoint",
+          "classification": null,
+          "body": {
+            "available": false,
+            "reason": "Hopper's public Python API does not expose complete function body ranges"
+          }
+        },
+        "kind": {
+          "available": false,
+          "reason": "Hopper's public Python API does not classify reference kinds"
+        }
+      },
+      {
+        "source_address": "0x2160740",
+        "target_address": "0x21607c8",
+        "source_procedure": {
+          "address": "0x21603f0",
+          "name": "EntryPoint",
+          "classification": null,
+          "body": {
+            "available": false,
+            "reason": "Hopper's public Python API does not expose complete function body ranges"
+          }
+        },
+        "target_procedure": {
+          "address": "0x21603f0",
+          "name": "EntryPoint",
+          "classification": null,
+          "body": {
+            "available": false,
+            "reason": "Hopper's public Python API does not expose complete function body ranges"
+          }
+        },
+        "kind": {
+          "available": false,
+          "reason": "Hopper's public Python API does not classify reference kinds"
+        }
+      },
+      {
+        "source_address": "0x2160748",
+        "target_address": "0x216081c",
+        "source_procedure": {
+          "address": "0x21603f0",
+          "name": "EntryPoint",
+          "classification": null,
+          "body": {
+            "available": false,
+            "reason": "Hopper's public Python API does not expose complete function body ranges"
+          }
+        },
+        "target_procedure": {
+          "address": "0x21603f0",
+          "name": "EntryPoint",
+          "classification": null,
+          "body": {
+            "available": false,
+            "reason": "Hopper's public Python API does not expose complete function body ranges"
+          }
+        },
+        "kind": {
+          "available": false,
+          "reason": "Hopper's public Python API does not classify reference kinds"
+        }
+      },
+      {
+        "source_address": "0x2160760",
+        "target_address": "0x2160784",
+        "source_procedure": {
+          "address": "0x21603f0",
+          "name": "EntryPoint",
+          "classification": null,
+          "body": {
+            "available": false,
+            "reason": "Hopper's public Python API does not expose complete function body ranges"
+          }
+        },
+        "target_procedure": {
+          "address": "0x21603f0",
+          "name": "EntryPoint",
+          "classification": null,
+          "body": {
+            "available": false,
+            "reason": "Hopper's public Python API does not expose complete function body ranges"
+          }
+        },
+        "kind": {
+          "available": false,
+          "reason": "Hopper's public Python API does not classify reference kinds"
+        }
+      },
+      {
+        "source_address": "0x21607b4",
+        "target_address": "0x2160738",
+        "source_procedure": {
+          "address": "0x21603f0",
+          "name": "EntryPoint",
+          "classification": null,
+          "body": {
+            "available": false,
+            "reason": "Hopper's public Python API does not expose complete function body ranges"
+          }
+        },
+        "target_procedure": {
+          "address": "0x21603f0",
+          "name": "EntryPoint",
+          "classification": null,
+          "body": {
+            "available": false,
+            "reason": "Hopper's public Python API does not expose complete function body ranges"
+          }
+        },
+        "kind": {
+          "available": false,
+          "reason": "Hopper's public Python API does not classify reference kinds"
+        }
+      },
+      {
+        "source_address": "0x21607c4",
+        "target_address": "0x216082c",
+        "source_procedure": {
+          "address": "0x21603f0",
+          "name": "EntryPoint",
+          "classification": null,
+          "body": {
+            "available": false,
+            "reason": "Hopper's public Python API does not expose complete function body ranges"
+          }
+        },
+        "target_procedure": {
+          "address": "0x21603f0",
+          "name": "EntryPoint",
+          "classification": null,
+          "body": {
+            "available": false,
+            "reason": "Hopper's public Python API does not expose complete function body ranges"
+          }
+        },
+        "kind": {
+          "available": false,
+          "reason": "Hopper's public Python API does not classify reference kinds"
+        }
+      },
+      {
+        "source_address": "0x21607dc",
+        "target_address": "0x2160800",
+        "source_procedure": {
+          "address": "0x21603f0",
+          "name": "EntryPoint",
+          "classification": null,
+          "body": {
+            "available": false,
+            "reason": "Hopper's public Python API does not expose complete function body ranges"
+          }
+        },
+        "target_procedure": {
+          "address": "0x21603f0",
+          "name": "EntryPoint",
+          "classification": null,
+          "body": {
+            "available": false,
+            "reason": "Hopper's public Python API does not expose complete function body ranges"
+          }
+        },
+        "kind": {
+          "available": false,
+          "reason": "Hopper's public Python API does not classify reference kinds"
+        }
+      }
+    ],
+    "outgoing_references": [],
+    "referenced_strings": [],
+    "referenced_names": [],
+    "basic_blocks": [
+      {
+        "start": "0x21603f0",
+        "end": "0x216045c",
+        "successors": [
+          "0x2160460",
+          "0x2160480"
+        ]
+      },
+      {
+        "start": "0x2160460",
+        "end": "0x2160478",
+        "successors": [
+          "0x216047c",
+          "0x21604cc"
+        ]
+      },
+      {
+        "start": "0x216047c",
+        "end": "0x216047c",
+        "successors": [
+          "0x2160504"
+        ]
+      },
+      {
+        "start": "0x2160504",
+        "end": "0x2160534",
+        "successors": [
+          "0x2160538",
+          "0x21605f8"
+        ]
+      },
+      {
+        "start": "0x2160538",
+        "end": "0x216053c",
+        "successors": [
+          "0x2160578"
+        ]
+      },
+      {
+        "start": "0x2160578",
+        "end": "0x2160584",
+        "successors": [
+          "0x2160588",
+          "0x21605b0"
+        ]
+      },
+      {
+        "start": "0x2160588",
+        "end": "0x21605a4",
+        "successors": [
+          "0x21605a8",
+          "0x21605cc"
+        ]
+      },
+      {
+        "start": "0x21605a8",
+        "end": "0x21605a8",
+        "successors": [
+          "0x2160540"
+        ]
+      },
+      {
+        "start": "0x2160540",
+        "end": "0x2160574",
+        "successors": [
+          "0x2160578",
+          "0x21605f8"
+        ]
+      },
+      {
+        "start": "0x21605f8",
+        "end": "0x2160628",
+        "successors": [
+          "0x216062c",
+          "0x2160634"
+        ]
+      },
+      {
+        "start": "0x216062c",
+        "end": "0x2160630",
+        "successors": [
+          "0x2160668"
+        ]
+      },
+      {
+        "start": "0x2160668",
+        "end": "0x2160694",
+        "successors": [
+          "0x2160698",
+          "0x21606b4"
+        ]
+      },
+      {
+        "start": "0x2160698",
+        "end": "0x216069c",
+        "successors": [
+          "0x21606a0",
+          "0x21606b4"
+        ]
+      },
+      {
+        "start": "0x21606a0",
+        "end": "0x21606ac",
+        "successors": [
+          "0x21606b0",
+          "0x21606ec"
+        ]
+      },
+      {
+        "start": "0x21606b0",
+        "end": "0x21606b0",
+        "successors": [
+          "0x2160714"
+        ]
+      },
+      {
+        "start": "0x2160714",
+        "end": "0x2160718",
+        "successors": [
+          "0x216071c",
+          "0x216074c"
+        ]
+      },
+      {
+        "start": "0x216071c",
+        "end": "0x2160734",
+        "successors": [
+          "0x2160738",
+          "0x21607b8"
+        ]
+      },
+      {
+        "start": "0x2160738",
+        "end": "0x2160740",
+        "successors": [
+          "0x2160744",
+          "0x21607c8"
+        ]
+      },
+      {
+        "start": "0x2160744",
+        "end": "0x2160748",
+        "successors": [
+          "0x216081c"
+        ]
+      },
+      {
+        "start": "0x216081c",
+        "end": "0x2160828",
+        "successors": [
+          "0x216082c"
+        ]
+      },
+      {
+        "start": "0x21607c8",
+        "end": "0x21607dc",
+        "successors": [
+          "0x21607e0",
+          "0x2160800"
+        ]
+      },
+      {
+        "start": "0x21607e0",
+        "end": "0x21607fc",
+        "successors": [
+          "0x2160800"
+        ]
+      },
+      {
+        "start": "0x2160800",
+        "end": "0x2160818",
+        "successors": [
+          "0x216081c"
+        ]
+      },
+      {
+        "start": "0x21607b8",
+        "end": "0x21607c4",
+        "successors": [
+          "0x216082c"
+        ]
+      },
+      {
+        "start": "0x216082c",
+        "end": "0x2160854",
+        "successors": []
+      },
+      {
+        "start": "0x216074c",
+        "end": "0x2160760",
+        "successors": [
+          "0x2160764",
+          "0x2160784"
+        ]
+      },
+      {
+        "start": "0x2160764",
+        "end": "0x2160780",
+        "successors": [
+          "0x2160784"
+        ]
+      },
+      {
+        "start": "0x2160784",
+        "end": "0x21607b4",
+        "successors": [
+          "0x2160738",
+          "0x21607b8"
+        ]
+      },
+      {
+        "start": "0x21606ec",
+        "end": "0x2160710",
+        "successors": [
+          "0x2160714"
+        ]
+      },
+      {
+        "start": "0x21606b4",
+        "end": "0x21606bc",
+        "successors": [
+          "0x21606c0",
+          "0x21606c8"
+        ]
+      },
+      {
+        "start": "0x21606c0",
+        "end": "0x21606c4",
+        "successors": [
+          "0x21606d0"
+        ]
+      },
+      {
+        "start": "0x21606d0",
+        "end": "0x21606e8",
+        "successors": [
+          "0x21606ec",
+          "0x2160714"
+        ]
+      },
+      {
+        "start": "0x21606c8",
+        "end": "0x21606cc",
+        "successors": [
+          "0x21606d0"
+        ]
+      },
+      {
+        "start": "0x2160634",
+        "end": "0x2160664",
+        "successors": [
+          "0x2160668"
+        ]
+      },
+      {
+        "start": "0x21605cc",
+        "end": "0x21605d4",
+        "successors": [
+          "0x2160540",
+          "0x21605d8"
+        ]
+      },
+      {
+        "start": "0x21605d8",
+        "end": "0x21605f4",
+        "successors": [
+          "0x2160578",
+          "0x21605f8"
+        ]
+      },
+      {
+        "start": "0x21605b0",
+        "end": "0x21605c8",
+        "successors": [
+          "0x2160540",
+          "0x21605cc"
+        ]
+      },
+      {
+        "start": "0x21604cc",
+        "end": "0x21604d4",
+        "successors": [
+          "0x21604d8",
+          "0x2160504"
+        ]
+      },
+      {
+        "start": "0x21604d8",
+        "end": "0x21604fc",
+        "successors": [
+          "0x2160500",
+          "0x2160538"
+        ]
+      },
+      {
+        "start": "0x2160500",
+        "end": "0x2160500",
+        "successors": [
+          "0x21605f8"
+        ]
+      },
+      {
+        "start": "0x2160480",
+        "end": "0x21604c8",
+        "successors": [
+          "0x21604cc",
+          "0x2160504"
+        ]
+      }
+    ],
+    "native_api": null,
+    "native_value_flow": null,
+    "limitations": [
+      "Hopper's public Python API does not classify reference kinds.",
+      "Hopper's public Python API does not expose equivalent external or thunk classification in this dossier.",
+      "Unresolved indirect calls without reported target addresses are not represented as call edges.",
+      "Pseudocode and assembly are provider-specific representations, not original source."
+    ]
+  },
+  "evidence_id": "ev_7c8b186149e630570137f84b7a13ea2cc87fb9ad5875992113c86846a61c6e1a",
+  "evidence": {
+    "evidence_id": "ev_7c8b186149e630570137f84b7a13ea2cc87fb9ad5875992113c86846a61c6e1a",
+    "subject": {
+      "name": "render-dispatch.elf",
+      "digest": {
+        "sha256": "c52638727dda1c9051a1ff4e21ee10d36b7bd449e081454b92d15a000016edfd"
+      },
+      "format": "elf",
+      "architecture": "arm64",
+      "local_path": "/Users/daniilvinogradov/Documents/Dev/NS2-experiments/investigation/artifacts/render-dispatch.elf"
+    },
+    "provider": {
+      "id": "rea-workflow",
+      "name": "REA composed investigation workflow",
+      "version": "1"
+    },
+    "predicate_type": "rea.analysis",
+    "operation": "analyze_function",
+    "parameters": {
+      "procedure": "0x21603f0"
+    },
+    "raw_result": null,
+    "normalized_result": {
+      "procedure": {
+        "address": "0x21603f0",
+        "name": "EntryPoint",
+        "classification": null,
+        "body": {
+          "available": false,
+          "reason": "Hopper's public Python API does not expose complete function body ranges"
+        },
+        "signature": "int EntryPoint(int arg0, int arg1, int arg2, int arg3)",
+        "locals": [
+          {
+            "description": "<__main__.LocalVariable object at 0x116a6e330>",
+            "provenance": "hopper-public-python-api"
+          },
+          {
+            "description": "<__main__.LocalVariable object at 0x116a41040>",
+            "provenance": "hopper-public-python-api"
+          },
+          {
+            "description": "<__main__.LocalVariable object at 0x116a40e20>",
+            "provenance": "hopper-public-python-api"
+          },
+          {
+            "description": "<__main__.LocalVariable object at 0x1169aa050>",
+            "provenance": "hopper-public-python-api"
+          },
+          {
+            "description": "<__main__.LocalVariable object at 0x1169a9c50>",
+            "provenance": "hopper-public-python-api"
+          },
+          {
+            "description": "<__main__.LocalVariable object at 0x1169b9400>",
+            "provenance": "hopper-public-python-api"
+          },
+          {
+            "description": "<__main__.LocalVariable object at 0x1169b9040>",
+            "provenance": "hopper-public-python-api"
+          },
+          {
+            "description": "<__main__.LocalVariable object at 0x1169b1c50>",
+            "provenance": "hopper-public-python-api"
+          },
+          {
+            "description": "<__main__.LocalVariable object at 0x116b15630>",
+            "provenance": "hopper-public-python-api"
+          }
+        ]
+      },
+      "pseudocode": "    r31 = r31 - 0x100;\n    saved_fp = r29;\n    decomp_var_m8 = r30;\n    saved_regs_10 = r25;\n    saved_regs_20 = r24;\n    decomp_var_m28 = r23;\n    saved_regs_30 = r22;\n    decomp_var_m38 = r21;\n    saved_regs_40 = r20;\n    decomp_var_m48 = r19;\n    r20 = arg1;\n    r1 = arg0[0x9];\n    r24 = arg0[0x59];\n    r22 = arg2;\n    r19 = arg0;\n    arg0[0x59] = 0x1;\n    r21 = arg3;\n    loc_215db20(&var_90, r1, 0x0, arg3);\n    loc_215d760(arg0 + 0x98, &var_90);\n    loc_215d9a8(&var_90);\n    r8 = r19[0x23];\n    r9 = r19[0x1f];\n    if ((r8 | r9) == 0x0) {\n            r10 = r19[0x27];\n            var_A8 = 0x0;\n            r8 = r19[0x2d];\n            r9 = r19[0x2f];\n            var_98 = 0x0;\n            if (r10 == 0x0) {\n                    var_90 = r8;\n                    loc_2169770(r19 + 0x138, &var_90, 0x1, &var_A8);\n                    r8 = r21[0x4];\n                    if (r8 >= 0x1) {\n                            r23 = r19 + 0xe8;\n                            while (true) {\n                                    r25 = r8 - 0x1;\n                                    if (r8 > sign_extend_64(r21[0x4])) {\n                                            r8 = *r21;\n                                            r8 = r8[0x1];\n                                            r8 = r8 + 0xa0;\n                                            r11 = r19[0x1d];\n                                            var_A8 = r8;\n                                            r10 = r19[0x23];\n                                            r9 = r19[0x25];\n                                            if (r11 == 0x0) {\n                                                    var_90 = r10;\n                                                    loc_2168800(r23, &var_90, 0x1, &var_A8);\n                                                    r8 = r25;\n                                                    if (r25 >= 0x0) {\n                                                            continue;\n                                                    }\n                                                    temp_0 = 0x0;\n                                                    break;\n                                            }\n                                            else {\n                                                    if (r10 != r9 - 0x8) {\n                                                            *r10 = r8;\n                                                            r19[0x23] = r19[0x23] + 0x8;\n                                                            r8 = r25;\n                                                            if (r25 > 0x0) {\n                                                                    continue;\n                                                            }\n                                                            temp_0 = 0x1;\n                                                            break;\n                                                    }\n                                                    else {\n                                                            var_90 = r10;\n                                                            loc_2168800(r23, &var_90, 0x1, &var_A8);\n                                                            r8 = r25;\n                                                            if (r25 >= 0x0) {\n                                                                    continue;\n                                                            }\n                                                            temp_0 = 0x0;\n                                                            break;\n                                                    }\n                                            }\n                                    }\n                                    else {\n                                            r8 = r21[0x1];\n                                            r8 = r8 + zero_extend_64(r25) * 0x8;\n                                            r11 = r19[0x1d];\n                                            var_A8 = r8;\n                                            r10 = r19[0x23];\n                                            r9 = r19[0x25];\n                                            if (r11 != 0x0) {\n                                                    if (r10 != r9 - 0x8) {\n                                                            *r10 = r8;\n                                                            r19[0x23] = r19[0x23] + 0x8;\n                                                            r8 = r25;\n                                                            if (r25 > 0x0) {\n                                                                    continue;\n                                                            }\n                                                            temp_0 = 0x1;\n                                                            break;\n                                                    }\n                                                    else {\n                                                            var_90 = r10;\n                                                            loc_2168800(r23, &var_90, 0x1, &var_A8);\n                                                            r8 = r25;\n                                                            if (r25 >= 0x0) {\n                                                                    continue;\n                                                            }\n                                                            temp_0 = 0x0;\n                                                            break;\n                                                    }\n                                            }\n                                            else {\n                                                    var_90 = r10;\n                                                    loc_2168800(r23, &var_90, 0x1, &var_A8);\n                                                    r8 = r25;\n                                                    if (r25 >= 0x0) {\n                                                            continue;\n                                                    }\n                                                    temp_0 = 0x0;\n                                                    break;\n                                            }\n                                    }\n                            }\n                    }\n            }\n            else {\n                    if (r8 != r9 - 0x18) {\n                            r8[0x2] = var_98;\n                            *(int128_t *)r8 = var_A8;\n                            r19[0x2d] = r19[0x2d] + 0x18;\n                            r8 = r21[0x4];\n                            if (r8 >= 0x1) {\n                                    r23 = r19 + 0xe8;\n                                    while (true) {\n                                            r25 = r8 - 0x1;\n                                            if (r8 > sign_extend_64(r21[0x4])) {\n                                                    r8 = *r21;\n                                                    r8 = r8[0x1];\n                                                    r8 = r8 + 0xa0;\n                                                    r11 = r19[0x1d];\n                                                    var_A8 = r8;\n                                                    r10 = r19[0x23];\n                                                    r9 = r19[0x25];\n                                                    if (r11 == 0x0) {\n                                                            var_90 = r10;\n                                                            loc_2168800(r23, &var_90, 0x1, &var_A8);\n                                                            r8 = r25;\n                                                            if (r25 >= 0x0) {\n                                                                    continue;\n                                                            }\n                                                            temp_0 = 0x0;\n                                                            break;\n                                                    }\n                                                    else {\n                                                            if (r10 != r9 - 0x8) {\n                                                                    *r10 = r8;\n                                                                    r19[0x23] = r19[0x23] + 0x8;\n                                                                    r8 = r25;\n                                                                    if (r25 > 0x0) {\n                                                                            continue;\n                                                                    }\n                                                                    temp_0 = 0x1;\n                                                                    break;\n                                                            }\n                                                            else {\n                                                                    var_90 = r10;\n                                                                    loc_2168800(r23, &var_90, 0x1, &var_A8);\n                                                                    r8 = r25;\n                                                                    if (r25 >= 0x0) {\n                                                                            continue;\n                                                                    }\n                                                                    temp_0 = 0x0;\n                                                                    break;\n                                                            }\n                                                    }\n                                            }\n                                            else {\n                                                    r8 = r21[0x1];\n                                                    r8 = r8 + zero_extend_64(r25) * 0x8;\n                                                    r11 = r19[0x1d];\n                                                    var_A8 = r8;\n                                                    r10 = r19[0x23];\n                                                    r9 = r19[0x25];\n                                                    if (r11 != 0x0) {\n                                                            if (r10 != r9 - 0x8) {\n                                                                    *r10 = r8;\n                                                                    r19[0x23] = r19[0x23] + 0x8;\n                                                                    r8 = r25;\n                                                                    if (r25 > 0x0) {\n                                                                            continue;\n                                                                    }\n                                                                    temp_0 = 0x1;\n                                                                    break;\n                                                            }\n                                                            else {\n                                                                    var_90 = r10;\n                                                                    loc_2168800(r23, &var_90, 0x1, &var_A8);\n                                                                    r8 = r25;\n                                                                    if (r25 >= 0x0) {\n                                                                            continue;\n                                                                    }\n                                                                    temp_0 = 0x0;\n                                                                    break;\n                                                            }\n                                                    }\n                                                    else {\n                                                            var_90 = r10;\n                                                            loc_2168800(r23, &var_90, 0x1, &var_A8);\n                                                            r8 = r25;\n                                                            if (r25 >= 0x0) {\n                                                                    continue;\n                                                            }\n                                                            temp_0 = 0x0;\n                                                            break;\n                                                    }\n                                            }\n                                    }\n                            }\n                    }\n                    else {\n                            var_90 = r8;\n                            loc_2169770(r19 + 0x138, &var_90, 0x1, &var_A8);\n                            r8 = r21[0x4];\n                            if (r8 >= 0x1) {\n                                    r23 = r19 + 0xe8;\n                                    while (true) {\n                                            r25 = r8 - 0x1;\n                                            if (r8 > sign_extend_64(r21[0x4])) {\n                                                    r8 = *r21;\n                                                    r8 = r8[0x1];\n                                                    r8 = r8 + 0xa0;\n                                                    r11 = r19[0x1d];\n                                                    var_A8 = r8;\n                                                    r10 = r19[0x23];\n                                                    r9 = r19[0x25];\n                                                    if (r11 == 0x0) {\n                                                            var_90 = r10;\n                                                            loc_2168800(r23, &var_90, 0x1, &var_A8);\n                                                            r8 = r25;\n                                                            if (r25 >= 0x0) {\n                                                                    continue;\n                                                            }\n                                                            temp_0 = 0x0;\n                                                            break;\n                                                    }\n                                                    else {\n                                                            if (r10 != r9 - 0x8) {\n                                                                    *r10 = r8;\n                                                                    r19[0x23] = r19[0x23] + 0x8;\n                                                                    r8 = r25;\n                                                                    if (r25 > 0x0) {\n                                                                            continue;\n                                                                    }\n                                                                    temp_0 = 0x1;\n                                                                    break;\n                                                            }\n                                                            else {\n                                                                    var_90 = r10;\n                                                                    loc_2168800(r23, &var_90, 0x1, &var_A8);\n                                                                    r8 = r25;\n                                                                    if (r25 >= 0x0) {\n                                                                            continue;\n                                                                    }\n                                                                    temp_0 = 0x0;\n                                                                    break;\n                                                            }\n                                                    }\n                                            }\n                                            else {\n                                                    r8 = r21[0x1];\n                                                    r8 = r8 + zero_extend_64(r25) * 0x8;\n                                                    r11 = r19[0x1d];\n                                                    var_A8 = r8;\n                                                    r10 = r19[0x23];\n                                                    r9 = r19[0x25];\n                                                    if (r11 != 0x0) {\n                                                            if (r10 != r9 - 0x8) {\n                                                                    *r10 = r8;\n                                                                    r19[0x23] = r19[0x23] + 0x8;\n                                                                    r8 = r25;\n                                                                    if (r25 > 0x0) {\n                                                                            continue;\n                                                                    }\n                                                                    temp_0 = 0x1;\n                                                                    break;\n                                                            }\n                                                            else {\n                                                                    var_90 = r10;\n                                                                    loc_2168800(r23, &var_90, 0x1, &var_A8);\n                                                                    r8 = r25;\n                                                                    if (r25 >= 0x0) {\n                                                                            continue;\n                                                                    }\n                                                                    temp_0 = 0x0;\n                                                                    break;\n                                                            }\n                                                    }\n                                                    else {\n                                                            var_90 = r10;\n                                                            loc_2168800(r23, &var_90, 0x1, &var_A8);\n                                                            r8 = r25;\n                                                            if (r25 >= 0x0) {\n                                                                    continue;\n                                                            }\n                                                            temp_0 = 0x0;\n                                                            break;\n                                                    }\n                                            }\n                                    }\n                            }\n                    }\n            }\n    }\n    else {\n            r14 = r19[0x21];\n            r13 = r19[0x22];\n            r11 = r19[0x24];\n            r8 = (SAR(r19[0x25] - r11, 0x3)) + ((SAR(r14 - r9, 0x3)) + (r8 - r11) / 0x8) * ((SAR(r19[0x26] - r13, 0x3)) - 0x1);\n            r10 = r19[0x27];\n            var_A8 = r8;\n            r8 = r19[0x2d];\n            r9 = r19[0x2f];\n            var_98 = 0x0;\n            if (r10 != 0x0) {\n                    if (r8 != r9 - 0x18) {\n                            r8[0x2] = var_98;\n                            *(int128_t *)r8 = var_A8;\n                            r19[0x2d] = r19[0x2d] + 0x18;\n                            r8 = r21[0x4];\n                            if (r8 >= 0x1) {\n                                    r23 = r19 + 0xe8;\n                                    while (true) {\n                                            r25 = r8 - 0x1;\n                                            if (r8 > sign_extend_64(r21[0x4])) {\n                                                    r8 = *r21;\n                                                    r8 = r8[0x1];\n                                                    r8 = r8 + 0xa0;\n                                                    r11 = r19[0x1d];\n                                                    var_A8 = r8;\n                                                    r10 = r19[0x23];\n                                                    r9 = r19[0x25];\n                                                    if (r11 == 0x0) {\n                                                            var_90 = r10;\n                                                            loc_2168800(r23, &var_90, 0x1, &var_A8);\n                                                            r8 = r25;\n                                                            if (r25 >= 0x0) {\n                                                                    continue;\n                                                            }\n                                                            temp_0 = 0x0;\n                                                            break;\n                                                    }\n                                                    else {\n                                                            if (r10 != r9 - 0x8) {\n                                                                    *r10 = r8;\n                                                                    r19[0x23] = r19[0x23] + 0x8;\n                                                                    r8 = r25;\n                                                                    if (r25 > 0x0) {\n                                                                            continue;\n                                                                    }\n                                                                    temp_0 = 0x1;\n                                                                    break;\n                                                            }\n                                                            else {\n                                                                    var_90 = r10;\n                                                                    loc_2168800(r23, &var_90, 0x1, &var_A8);\n                                                                    r8 = r25;\n                                                                    if (r25 >= 0x0) {\n                                                                            continue;\n                                                                    }\n                                                                    temp_0 = 0x0;\n                                                                    break;\n                                                            }\n                                                    }\n                                            }\n                                            else {\n                                                    r8 = r21[0x1];\n                                                    r8 = r8 + zero_extend_64(r25) * 0x8;\n                                                    r11 = r19[0x1d];\n                                                    var_A8 = r8;\n                                                    r10 = r19[0x23];\n                                                    r9 = r19[0x25];\n                                                    if (r11 != 0x0) {\n                                                            if (r10 != r9 - 0x8) {\n                                                                    *r10 = r8;\n                                                                    r19[0x23] = r19[0x23] + 0x8;\n                                                                    r8 = r25;\n                                                                    if (r25 > 0x0) {\n                                                                            continue;\n                                                                    }\n                                                                    temp_0 = 0x1;\n                                                                    break;\n                                                            }\n                                                            else {\n                                                                    var_90 = r10;\n                                                                    loc_2168800(r23, &var_90, 0x1, &var_A8);\n                                                                    r8 = r25;\n                                                                    if (r25 >= 0x0) {\n                                                                            continue;\n                                                                    }\n                                                                    temp_0 = 0x0;\n                                                                    break;\n                                                            }\n                                                    }\n                                                    else {\n                                                            var_90 = r10;\n                                                            loc_2168800(r23, &var_90, 0x1, &var_A8);\n                                                            r8 = r25;\n                                                            if (r25 >= 0x0) {\n                                                                    continue;\n                                                            }\n                                                            temp_0 = 0x0;\n                                                            break;\n                                                    }\n                                            }\n                                    }\n                            }\n                    }\n                    else {\n                            var_90 = r8;\n                            loc_2169770(r19 + 0x138, &var_90, 0x1, &var_A8);\n                            r8 = r21[0x4];\n                            if (r8 >= 0x1) {\n                                    r23 = r19 + 0xe8;\n                                    while (true) {\n                                            r25 = r8 - 0x1;\n                                            if (r8 > sign_extend_64(r21[0x4])) {\n                                                    r8 = *r21;\n                                                    r8 = r8[0x1];\n                                                    r8 = r8 + 0xa0;\n                                                    r11 = r19[0x1d];\n                                                    var_A8 = r8;\n                                                    r10 = r19[0x23];\n                                                    r9 = r19[0x25];\n                                                    if (r11 == 0x0) {\n                                                            var_90 = r10;\n                                                            loc_2168800(r23, &var_90, 0x1, &var_A8);\n                                                            r8 = r25;\n                                                            if (r25 >= 0x0) {\n                                                                    continue;\n                                                            }\n                                                            temp_0 = 0x0;\n                                                            break;\n                                                    }\n                                                    else {\n                                                            if (r10 != r9 - 0x8) {\n                                                                    *r10 = r8;\n                                                                    r19[0x23] = r19[0x23] + 0x8;\n                                                                    r8 = r25;\n                                                                    if (r25 > 0x0) {\n                                                                            continue;\n                                                                    }\n                                                                    temp_0 = 0x1;\n                                                                    break;\n                                                            }\n                                                            else {\n                                                                    var_90 = r10;\n                                                                    loc_2168800(r23, &var_90, 0x1, &var_A8);\n                                                                    r8 = r25;\n                                                                    if (r25 >= 0x0) {\n                                                                            continue;\n                                                                    }\n                                                                    temp_0 = 0x0;\n                                                                    break;\n                                                            }\n                                                    }\n                                            }\n                                            else {\n                                                    r8 = r21[0x1];\n                                                    r8 = r8 + zero_extend_64(r25) * 0x8;\n                                                    r11 = r19[0x1d];\n                                                    var_A8 = r8;\n                                                    r10 = r19[0x23];\n                                                    r9 = r19[0x25];\n                                                    if (r11 != 0x0) {\n                                                            if (r10 != r9 - 0x8) {\n                                                                    *r10 = r8;\n                                                                    r19[0x23] = r19[0x23] + 0x8;\n                                                                    r8 = r25;\n                                                                    if (r25 > 0x0) {\n                                                                            continue;\n                                                                    }\n                                                                    temp_0 = 0x1;\n                                                                    break;\n                                                            }\n                                                            else {\n                                                                    var_90 = r10;\n                                                                    loc_2168800(r23, &var_90, 0x1, &var_A8);\n                                                                    r8 = r25;\n                                                                    if (r25 >= 0x0) {\n                                                                            continue;\n                                                                    }\n                                                                    temp_0 = 0x0;\n                                                                    break;\n                                                            }\n                                                    }\n                                                    else {\n                                                            var_90 = r10;\n                                                            loc_2168800(r23, &var_90, 0x1, &var_A8);\n                                                            r8 = r25;\n                                                            if (r25 >= 0x0) {\n                                                                    continue;\n                                                            }\n                                                            temp_0 = 0x0;\n                                                            break;\n                                                    }\n                                            }\n                                    }\n                            }\n                    }\n            }\n            else {\n                    var_90 = r8;\n                    loc_2169770(r19 + 0x138, &var_90, 0x1, &var_A8);\n                    r8 = r21[0x4];\n                    if (r8 >= 0x1) {\n                            r23 = r19 + 0xe8;\n                            while (true) {\n                                    r25 = r8 - 0x1;\n                                    if (r8 > sign_extend_64(r21[0x4])) {\n                                            r8 = *r21;\n                                            r8 = r8[0x1];\n                                            r8 = r8 + 0xa0;\n                                            r11 = r19[0x1d];\n                                            var_A8 = r8;\n                                            r10 = r19[0x23];\n                                            r9 = r19[0x25];\n                                            if (r11 == 0x0) {\n                                                    var_90 = r10;\n                                                    loc_2168800(r23, &var_90, 0x1, &var_A8);\n                                                    r8 = r25;\n                                                    if (r25 >= 0x0) {\n                                                            continue;\n                                                    }\n                                                    temp_0 = 0x0;\n                                                    break;\n                                            }\n                                            else {\n                                                    if (r10 != r9 - 0x8) {\n                                                            *r10 = r8;\n                                                            r19[0x23] = r19[0x23] + 0x8;\n                                                            r8 = r25;\n                                                            if (r25 > 0x0) {\n                                                                    continue;\n                                                            }\n                                                            temp_0 = 0x1;\n                                                            break;\n                                                    }\n                                                    else {\n                                                            var_90 = r10;\n                                                            loc_2168800(r23, &var_90, 0x1, &var_A8);\n                                                            r8 = r25;\n                                                            if (r25 >= 0x0) {\n                                                                    continue;\n                                                            }\n                                                            temp_0 = 0x0;\n                                                            break;\n                                                    }\n                                            }\n                                    }\n                                    else {\n                                            r8 = r21[0x1];\n                                            r8 = r8 + zero_extend_64(r25) * 0x8;\n                                            r11 = r19[0x1d];\n                                            var_A8 = r8;\n                                            r10 = r19[0x23];\n                                            r9 = r19[0x25];\n                                            if (r11 != 0x0) {\n                                                    if (r10 != r9 - 0x8) {\n                                                            *r10 = r8;\n                                                            r19[0x23] = r19[0x23] + 0x8;\n                                                            r8 = r25;\n                                                            if (r25 > 0x0) {\n                                                                    continue;\n                                                            }\n                                                            temp_0 = 0x1;\n                                                            break;\n                                                    }\n                                                    else {\n                                                            var_90 = r10;\n                                                            loc_2168800(r23, &var_90, 0x1, &var_A8);\n                                                            r8 = r25;\n                                                            if (r25 >= 0x0) {\n                                                                    continue;\n                                                            }\n                                                            temp_0 = 0x0;\n                                                            break;\n                                                    }\n                                            }\n                                            else {\n                                                    var_90 = r10;\n                                                    loc_2168800(r23, &var_90, 0x1, &var_A8);\n                                                    r8 = r25;\n                                                    if (r25 >= 0x0) {\n                                                            continue;\n                                                    }\n                                                    temp_0 = 0x0;\n                                                    break;\n                                            }\n                                    }\n                            }\n                    }\n            }\n    }\n    (*(*r22 + 0x10))(r22, r19 + 0x10);\n    loc_215fc50(r19, r20, sign_extend_64(r21[0x4]));\n    r8 = r19[0x23];\n    r9 = r19[0x1f];\n    if ((r8 | r9) == 0x0) {\n            r9 = 0x0;\n    }\n    else {\n            r9 = (SAR(r19[0x25] - r19[0x24], 0x3)) + (SAR(r19[0x21] - r9, 0x3)) * ((SAR(r19[0x26] - r19[0x22], 0x3)) - 0x1);\n    }\n    r8 = r19[0x2d];\n    r20 = r19[0x2e];\n    r11 = r19[0x2f];\n    r10 = r19[0x30];\n    r13 = r8 - r20;\n    r12 = (SAR(r13, 0x3)) * 0xaaaaaaaaaaaaaaab;\n    r11 = (SAR(r11 - r20, 0x3)) * 0xaaaaaaaaaaaaaaab;\n    if (r13 >= 0x1) {\n            if (r12 <= r11) {\n                    if (r9 != *(r8 - 0x18)) {\n                            loc_1a6f938();\n                            loc_1a66f64();\n                            r8 = r19[0x2d];\n                            r20 = r19[0x2e];\n                    }\n            }\n            else {\n                    r14 = r12 - 0x1;\n                    if (r13 >= 0x19) {\n                            r12 = r14 / r11;\n                    }\n                    else {\n                            r12 = r12 / r11 - 0x1;\n                    }\n                    if (r9 != *(0x18 + *(r10 + r12 * 0x8) * (r14 - r12 * r11))) {\n                            loc_1a6f938();\n                            loc_1a66f64();\n                            r8 = r19[0x2d];\n                            r20 = r19[0x2e];\n                    }\n            }\n    }\n    else {\n            r14 = r12 - 0x1;\n            if (r13 >= 0x19) {\n                    r12 = r14 / r11;\n                    if (r9 != *(0x18 + *(r10 + r12 * 0x8) * (r14 - r12 * r11))) {\n                            loc_1a6f938();\n                            loc_1a66f64();\n                            r8 = r19[0x2d];\n                            r20 = r19[0x2e];\n                    }\n            }\n            else {\n                    r12 = r12 / r11 - 0x1;\n                    if (r9 != *(0x18 + *(r10 + r12 * 0x8) * (r14 - r12 * r11))) {\n                            loc_1a6f938();\n                            loc_1a66f64();\n                            r8 = r19[0x2d];\n                            r20 = r19[0x2e];\n                    }\n            }\n    }\n    if (r8 != r20) {\n            r19[0x2d] = r8 - 0x18;\n            if (((*(*r19 + 0x2c8))(r19) & 0x1) != 0x0) {\n                    r20 = r19[0x19];\n                    if (r20 != r19[0x1a]) {\n                            r0 = r20 - 0x70;\n                    }\n                    else {\n                            if ((loc_1a66ec4(*0x8c75ab8, r20) & 0x1) == 0x0) {\n                                    r0 = *0x8c809e8;\n                                    (*(*r0 + 0x10))(r0, r20, 0x11);\n                            }\n                            r8 = r19[0x1c];\n                            r19[0x1c] = r8 - 0x8;\n                            r8 = r8[0xffffffffffffffff];\n                            r0 = r8 + 0x150;\n                            r19[0x1a] = r8;\n                            r19[0x1b] = r8 + 0x1c0;\n                    }\n                    r19[0x19] = r0;\n                    loc_215d9a8();\n                    r20 = r19[0x9] + 0xa0;\n                    loc_215fec0(r19);\n                    r19[0x59] = r24;\n                    r0 = r20;\n            }\n            else {\n                    r20 = loc_2158628(r19);\n                    loc_215fec0(r19);\n                    r19[0x59] = r24;\n                    r0 = r20;\n            }\n    }\n    else {\n            if ((loc_1a66ec4(*0x8c75ab8, r20) & 0x1) == 0x0) {\n                    r0 = *0x8c809e8;\n                    (*(*r0 + 0x10))(r0, r20, 0x11);\n            }\n            r8 = r19[0x30];\n            r19[0x30] = r8 - 0x8;\n            r8 = r8[0xffffffffffffffff];\n            r19[0x2e] = r8;\n            r19[0x2f] = r8 + 0x1f8;\n            r19[0x2d] = r8 + 0x1e0;\n            if (((*(*r19 + 0x2c8))(r19) & 0x1) == 0x0) {\n                    r20 = loc_2158628(r19);\n                    loc_215fec0(r19);\n                    r19[0x59] = r24;\n                    r0 = r20;\n            }\n            else {\n                    r20 = r19[0x19];\n                    if (r20 != r19[0x1a]) {\n                            r0 = r20 - 0x70;\n                    }\n                    else {\n                            if ((loc_1a66ec4(*0x8c75ab8, r20) & 0x1) == 0x0) {\n                                    r0 = *0x8c809e8;\n                                    (*(*r0 + 0x10))(r0, r20, 0x11);\n                            }\n                            r8 = r19[0x1c];\n                            r19[0x1c] = r8 - 0x8;\n                            r8 = r8[0xffffffffffffffff];\n                            r0 = r8 + 0x150;\n                            r19[0x1a] = r8;\n                            r19[0x1b] = r8 + 0x1c0;\n                    }\n                    r19[0x19] = r0;\n                    loc_215d9a8();\n                    r20 = r19[0x9] + 0xa0;\n                    loc_215fec0(r19);\n                    r19[0x59] = r24;\n                    r0 = r20;\n            }\n    }\n    return r0;\n",
+      "assembly": [
+        "0x21603f0: sub sp, sp, #0x100",
+        "0x21603f4: stp fp, lr, [sp, #0xb0]",
+        "0x21603f8: str x25, [sp, #0xb0 + saved_regs_10]",
+        "0x21603fc: stp x24, x23, [sp, #0xd0]",
+        "0x2160400: stp x22, x21, [sp, #0xe0]",
+        "0x2160404: stp x20, x19, [sp, #0xf0]",
+        "0x2160408: add fp, sp, #0xb0",
+        "0x216040c: mov x20, x1",
+        "0x2160410: ldr x1, [x0, #0x48]",
+        "0x2160414: mov w8, #0x1",
+        "0x2160418: ldrb w24, [x0, #0x59]",
+        "0x216041c: mov x22, x2",
+        "0x2160420: mov x19, x0",
+        "0x2160424: strb w8, [x0, #0x59]",
+        "0x2160428: add x23, x0, #0x98",
+        "0x216042c: add x0, sp, #0x20",
+        "0x2160430: mov w2, wzr",
+        "0x2160434: mov x21, x3",
+        "0x2160438: bl 0x215db20",
+        "0x216043c: add x1, sp, #0x20",
+        "0x2160440: mov x0, x23",
+        "0x2160444: bl 0x215d760",
+        "0x2160448: add x0, sp, #0x20",
+        "0x216044c: bl 0x215d9a8",
+        "0x2160450: ldr x8, [x19, #0x118]",
+        "0x2160454: ldr x9, [x19, #0xf8]",
+        "0x2160458: orr x10, x8, x9",
+        "0x2160460: mov x8, xzr",
+        "0x2160464: ldr x10, [x19, #0x138]",
+        "0x2160468: stp xzr, x20, [sp, #0x8]",
+        "0x216046c: ldr x8, [x19, #0x168]",
+        "0x2160470: ldr x9, [x19, #0x178]",
+        "0x2160474: str wzr, [sp, #0xb0 + var_98]",
+        "0x2160504: ldr x10, [x19, #0x170]",
+        "0x2160508: add x0, x19, #0x138",
+        "0x216050c: add x1, sp, #0x20",
+        "0x2160510: add x3, sp, #0x8",
+        "0x2160514: mov w2, #0x1",
+        "0x2160518: stp x8, x10, [sp, #0x20]",
+        "0x216051c: ldr x8, [x19, #0x180]",
+        "0x2160520: stp x9, x8, [sp, #0x30]",
+        "0x2160524: sub x8, fp, #0x20",
+        "0x2160528: bl 0x2169770",
+        "0x216052c: ldr w8, [x21, #0x10]",
+        "0x2160530: cmp w8, #0x1",
+        "0x2160538: add x23, x19, #0xe8",
+        "0x2160578: ldrsw x9, [x21, #0x10]",
+        "0x216057c: sub x25, x8, #0x1",
+        "0x2160580: cmp x8, x9",
+        "0x2160588: ldr x8, [x21]",
+        "0x216058c: ldr x8, [x8, #0x8]",
+        "0x2160590: add x8, x8, #0xa0",
+        "0x2160594: ldr x11, [x19, #0xe8]",
+        "0x2160598: str x8, [sp, #0xb0 + var_A8]",
+        "0x216059c: ldr x10, [x19, #0x118]",
+        "0x21605a0: ldr x9, [x19, #0x128]",
+        "0x2160540: ldr x8, [x19, #0x120]",
+        "0x2160544: add x1, sp, #0x20",
+        "0x2160548: add x3, sp, #0x8",
+        "0x216054c: mov x0, x23",
+        "0x2160550: mov w2, #0x1",
+        "0x2160554: stp x10, x8, [sp, #0x20]",
+        "0x2160558: ldr x8, [x19, #0x130]",
+        "0x216055c: stp x9, x8, [sp, #0x30]",
+        "0x2160560: sub x8, fp, #0x20",
+        "0x2160564: bl 0x2168800",
+        "0x2160568: add x8, x25, #0x1",
+        "0x216056c: cmp x8, #0x1",
+        "0x2160570: mov x8, x25",
+        "0x21605f8: ldr x8, [x22]",
+        "0x21605fc: add x1, x19, #0x10",
+        "0x2160600: mov x0, x22",
+        "0x2160604: ldr x8, [x8, #0x10]",
+        "0x2160608: blr x8",
+        "0x216060c: ldrsw x2, [x21, #0x10]",
+        "0x2160610: mov x0, x19",
+        "0x2160614: mov x1, x20",
+        "0x2160618: bl 0x215fc50",
+        "0x216061c: ldr x8, [x19, #0x118]",
+        "0x2160620: ldr x9, [x19, #0xf8]",
+        "0x2160624: orr x10, x8, x9",
+        "0x216062c: mov x9, xzr",
+        "0x2160668: ldp x8, x20, [x19, #0x168]",
+        "0x216066c: orr x14, xzr, #0xaaaaaaaaaaaaaaaa",
+        "0x2160670: ldp x11, x10, [x19, #0x178]",
+        "0x2160674: movk x14, #0xaaab",
+        "0x2160678: sub x13, x8, x20",
+        "0x216067c: sub x11, x11, x20",
+        "0x2160680: asr x12, x13, #0x3",
+        "0x2160684: asr x11, x11, #0x3",
+        "0x2160688: cmp x13, #0x1",
+        "0x216068c: mul x12, x12, x14",
+        "0x2160690: mul x11, x11, x14",
+        "0x2160698: cmp x12, x11",
+        "0x21606a0: sub x10, x8, #0x18",
+        "0x21606a4: ldr x10, [x10]",
+        "0x21606a8: cmp x9, x10",
+        "0x2160714: cmp x8, x20",
+        "0x216071c: sub x8, x8, #0x18",
+        "0x2160720: str x8, [x19, #0x168]",
+        "0x2160724: ldr x8, [x19]",
+        "0x2160728: mov x0, x19",
+        "0x216072c: ldr x8, [x8, #0x2c8]",
+        "0x2160730: blr x8",
+        "0x2160738: ldp x20, x8, [x19, #0xc8]",
+        "0x216073c: cmp x20, x8",
+        "0x2160744: sub x0, x20, #0x70",
+        "0x216081c: str x0, [x19, #0xc8]",
+        "0x2160820: bl 0x215d9a8",
+        "0x2160824: ldr x8, [x19, #0x48]",
+        "0x21607c8: adrp x8, #0x8c75000",
+        "0x21607cc: add x8, x8, #0xab8",
+        "0x21607d0: ldr x0, [x8]",
+        "0x21607d4: mov x1, x20",
+        "0x21607d8: bl 0x1a66ec4",
+        "0x21607e0: adrp x8, #0x8c80000",
+        "0x21607e4: add x8, x8, #0x9e8",
+        "0x21607e8: ldr x0, [x8]",
+        "0x21607ec: ldr x8, [x0]",
+        "0x21607f0: ldr x8, [x8, #0x10]",
+        "0x21607f4: mov w2, #0x11",
+        "0x21607f8: mov x1, x20",
+        "0x2160800: ldr x8, [x19, #0xe0]",
+        "0x2160804: sub x9, x8, #0x8",
+        "0x2160808: str x9, [x19, #0xe0]",
+        "0x216080c: ldur x8, [x8, #-0x8]",
+        "0x2160810: add x9, x8, #0x1c0",
+        "0x2160814: add x0, x8, #0x150",
+        "0x21607b8: mov x0, x19",
+        "0x21607bc: bl 0x2158628",
+        "0x21607c0: mov x20, x0",
+        "0x216082c: mov x0, x19",
+        "0x2160830: bl 0x215fec0",
+        "0x2160834: strb w24, [x19, #0x59]",
+        "0x2160838: mov x0, x20",
+        "0x216083c: ldr x25, [sp, #0xb0 + saved_regs_10]",
+        "0x2160840: ldp x20, x19, [sp, #0xf0]",
+        "0x2160844: ldp x22, x21, [sp, #0xe0]",
+        "0x2160848: ldp x24, x23, [sp, #0xd0]",
+        "0x216084c: ldp fp, lr, [sp, #0xb0]",
+        "0x2160850: add sp, sp, #0x100",
+        "0x216074c: adrp x8, #0x8c75000",
+        "0x2160750: add x8, x8, #0xab8",
+        "0x2160754: ldr x0, [x8]",
+        "0x2160758: mov x1, x20",
+        "0x216075c: bl 0x1a66ec4",
+        "0x2160764: adrp x8, #0x8c80000",
+        "0x2160768: add x8, x8, #0x9e8",
+        "0x216076c: ldr x0, [x8]",
+        "0x2160770: ldr x8, [x0]",
+        "0x2160774: ldr x8, [x8, #0x10]",
+        "0x2160778: mov w2, #0x11",
+        "0x216077c: mov x1, x20",
+        "0x2160784: ldr x8, [x19, #0x180]",
+        "0x2160788: sub x9, x8, #0x8",
+        "0x216078c: str x9, [x19, #0x180]",
+        "0x2160790: ldur x8, [x8, #-0x8]",
+        "0x2160794: add x9, x8, #0x1f8",
+        "0x2160798: stp x8, x9, [x19, #0x170]",
+        "0x216079c: add x8, x8, #0x1e0",
+        "0x21607a0: str x8, [x19, #0x168]",
+        "0x21607a4: ldr x8, [x19]",
+        "0x21607a8: mov x0, x19",
+        "0x21607ac: ldr x8, [x8, #0x2c8]",
+        "0x21607b0: blr x8",
+        "0x21606ec: bl 0x1a6f938",
+        "0x21606f0: adrp x3, #0x3f91000",
+        "0x21606f4: add x3, x3, #0xd34",
+        "0x21606f8: adrp x4, #0x3f5c000",
+        "0x21606fc: add x4, x4, #0x7f5",
+        "0x2160700: mov w1, #0x5",
+        "0x2160704: mov w2, #0x1",
+        "0x2160708: mov w5, #0x20",
+        "0x216070c: bl 0x1a66f64",
+        "0x21606b4: sub x14, x12, #0x1",
+        "0x21606b8: cmp x13, #0x19",
+        "0x21606c0: sdiv x12, x14, x11",
+        "0x21606d0: msub x11, x12, x11, x14",
+        "0x21606d4: ldr x10, [x10, x12, lsl #3]",
+        "0x21606d8: mov w12, #0x18",
+        "0x21606dc: madd x10, x11, x12, x10",
+        "0x21606e0: ldr x10, [x10]",
+        "0x21606e4: cmp x9, x10",
+        "0x21606c8: sdiv x12, x12, x11",
+        "0x2160634: ldp x14, x13, [x19, #0x108]",
+        "0x2160638: sub x9, x14, x9",
+        "0x216063c: ldp x11, x10, [x19, #0x120]",
+        "0x2160640: ldr x12, [x19, #0x130]",
+        "0x2160644: sub x12, x12, x13",
+        "0x2160648: sub x8, x8, x11",
+        "0x216064c: sub x10, x10, x11",
+        "0x2160650: asr x9, x9, #0x3",
+        "0x2160654: asr x12, x12, #0x3",
+        "0x2160658: asr x10, x10, #0x3",
+        "0x216065c: add x8, x9, x8, asr #3",
+        "0x2160660: sub x12, x12, #0x1",
+        "0x21605cc: sub x11, x9, #0x8",
+        "0x21605d0: cmp x10, x11",
+        "0x21605d8: str x8, [x10]",
+        "0x21605dc: ldr x8, [x19, #0x118]",
+        "0x21605e0: add x8, x8, #0x8",
+        "0x21605e4: str x8, [x19, #0x118]",
+        "0x21605e8: add x8, x25, #0x1",
+        "0x21605ec: cmp x8, #0x1",
+        "0x21605f0: mov x8, x25",
+        "0x21605b0: ldr x8, [x21, #0x8]",
+        "0x21605b4: add x8, x8, w25, uxtw #3",
+        "0x21605b8: ldr x11, [x19, #0xe8]",
+        "0x21605bc: str x8, [sp, #0xb0 + var_A8]",
+        "0x21605c0: ldr x10, [x19, #0x118]",
+        "0x21605c4: ldr x9, [x19, #0x128]",
+        "0x21604cc: sub x10, x9, #0x18",
+        "0x21604d0: cmp x8, x10",
+        "0x21604d8: ldur q0, [sp, #0xb0 + var_A8]",
+        "0x21604dc: ldr x9, [sp, #0xb0 + var_98]",
+        "0x21604e0: str x9, [x8, #0x10]",
+        "0x21604e4: str q0, [x8]",
+        "0x21604e8: ldr x8, [x19, #0x168]",
+        "0x21604ec: add x8, x8, #0x18",
+        "0x21604f0: str x8, [x19, #0x168]",
+        "0x21604f4: ldr w8, [x21, #0x10]",
+        "0x21604f8: cmp w8, #0x1",
+        "0x2160480: ldp x14, x13, [x19, #0x108]",
+        "0x2160484: sub x9, x14, x9",
+        "0x2160488: ldp x11, x10, [x19, #0x120]",
+        "0x216048c: ldr x12, [x19, #0x130]",
+        "0x2160490: sub x12, x12, x13",
+        "0x2160494: sub x8, x8, x11",
+        "0x2160498: sub x10, x10, x11",
+        "0x216049c: asr x9, x9, #0x3",
+        "0x21604a0: asr x12, x12, #0x3",
+        "0x21604a4: asr x10, x10, #0x3",
+        "0x21604a8: add x8, x9, x8, asr #3",
+        "0x21604ac: sub x12, x12, #0x1",
+        "0x21604b0: madd x8, x12, x10, x8",
+        "0x21604b4: ldr x10, [x19, #0x138]",
+        "0x21604b8: stp x8, x20, [sp, #0x8]",
+        "0x21604bc: ldr x8, [x19, #0x168]",
+        "0x21604c0: ldr x9, [x19, #0x178]",
+        "0x21604c4: str wzr, [sp, #0xb0 + var_98]"
+      ],
+      "comments": [],
+      "callers": [],
+      "callees": [],
+      "incoming_references": [
+        {
+          "source_address": "0x1a6ee4c",
+          "target_address": "0x21603f0",
+          "source_procedure": {
+            "address": "0x1a6eda0",
+            "name": "sub_1a6eda0",
+            "classification": null,
+            "body": {
+              "available": false,
+              "reason": "Hopper's public Python API does not expose complete function body ranges"
+            }
+          },
+          "target_procedure": {
+            "address": "0x21603f0",
+            "name": "EntryPoint",
+            "classification": null,
+            "body": {
+              "available": false,
+              "reason": "Hopper's public Python API does not expose complete function body ranges"
+            }
+          },
+          "kind": {
+            "available": false,
+            "reason": "Hopper's public Python API does not classify reference kinds"
+          }
+        },
+        {
+          "source_address": "0x216045c",
+          "target_address": "0x2160480",
+          "source_procedure": {
+            "address": "0x21603f0",
+            "name": "EntryPoint",
+            "classification": null,
+            "body": {
+              "available": false,
+              "reason": "Hopper's public Python API does not expose complete function body ranges"
+            }
+          },
+          "target_procedure": {
+            "address": "0x21603f0",
+            "name": "EntryPoint",
+            "classification": null,
+            "body": {
+              "available": false,
+              "reason": "Hopper's public Python API does not expose complete function body ranges"
+            }
+          },
+          "kind": {
+            "available": false,
+            "reason": "Hopper's public Python API does not classify reference kinds"
+          }
+        },
+        {
+          "source_address": "0x2160478",
+          "target_address": "0x21604cc",
+          "source_procedure": {
+            "address": "0x21603f0",
+            "name": "EntryPoint",
+            "classification": null,
+            "body": {
+              "available": false,
+              "reason": "Hopper's public Python API does not expose complete function body ranges"
+            }
+          },
+          "target_procedure": {
+            "address": "0x21603f0",
+            "name": "EntryPoint",
+            "classification": null,
+            "body": {
+              "available": false,
+              "reason": "Hopper's public Python API does not expose complete function body ranges"
+            }
+          },
+          "kind": {
+            "available": false,
+            "reason": "Hopper's public Python API does not classify reference kinds"
+          }
+        },
+        {
+          "source_address": "0x216047c",
+          "target_address": "0x2160504",
+          "source_procedure": {
+            "address": "0x21603f0",
+            "name": "EntryPoint",
+            "classification": null,
+            "body": {
+              "available": false,
+              "reason": "Hopper's public Python API does not expose complete function body ranges"
+            }
+          },
+          "target_procedure": {
+            "address": "0x21603f0",
+            "name": "EntryPoint",
+            "classification": null,
+            "body": {
+              "available": false,
+              "reason": "Hopper's public Python API does not expose complete function body ranges"
+            }
+          },
+          "kind": {
+            "available": false,
+            "reason": "Hopper's public Python API does not classify reference kinds"
+          }
+        },
+        {
+          "source_address": "0x21604c8",
+          "target_address": "0x2160504",
+          "source_procedure": {
+            "address": "0x21603f0",
+            "name": "EntryPoint",
+            "classification": null,
+            "body": {
+              "available": false,
+              "reason": "Hopper's public Python API does not expose complete function body ranges"
+            }
+          },
+          "target_procedure": {
+            "address": "0x21603f0",
+            "name": "EntryPoint",
+            "classification": null,
+            "body": {
+              "available": false,
+              "reason": "Hopper's public Python API does not expose complete function body ranges"
+            }
+          },
+          "kind": {
+            "available": false,
+            "reason": "Hopper's public Python API does not classify reference kinds"
+          }
+        },
+        {
+          "source_address": "0x21604d4",
+          "target_address": "0x2160504",
+          "source_procedure": {
+            "address": "0x21603f0",
+            "name": "EntryPoint",
+            "classification": null,
+            "body": {
+              "available": false,
+              "reason": "Hopper's public Python API does not expose complete function body ranges"
+            }
+          },
+          "target_procedure": {
+            "address": "0x21603f0",
+            "name": "EntryPoint",
+            "classification": null,
+            "body": {
+              "available": false,
+              "reason": "Hopper's public Python API does not expose complete function body ranges"
+            }
+          },
+          "kind": {
+            "available": false,
+            "reason": "Hopper's public Python API does not classify reference kinds"
+          }
+        },
+        {
+          "source_address": "0x21604fc",
+          "target_address": "0x2160538",
+          "source_procedure": {
+            "address": "0x21603f0",
+            "name": "EntryPoint",
+            "classification": null,
+            "body": {
+              "available": false,
+              "reason": "Hopper's public Python API does not expose complete function body ranges"
+            }
+          },
+          "target_procedure": {
+            "address": "0x21603f0",
+            "name": "EntryPoint",
+            "classification": null,
+            "body": {
+              "available": false,
+              "reason": "Hopper's public Python API does not expose complete function body ranges"
+            }
+          },
+          "kind": {
+            "available": false,
+            "reason": "Hopper's public Python API does not classify reference kinds"
+          }
+        },
+        {
+          "source_address": "0x2160500",
+          "target_address": "0x21605f8",
+          "source_procedure": {
+            "address": "0x21603f0",
+            "name": "EntryPoint",
+            "classification": null,
+            "body": {
+              "available": false,
+              "reason": "Hopper's public Python API does not expose complete function body ranges"
+            }
+          },
+          "target_procedure": {
+            "address": "0x21603f0",
+            "name": "EntryPoint",
+            "classification": null,
+            "body": {
+              "available": false,
+              "reason": "Hopper's public Python API does not expose complete function body ranges"
+            }
+          },
+          "kind": {
+            "available": false,
+            "reason": "Hopper's public Python API does not classify reference kinds"
+          }
+        },
+        {
+          "source_address": "0x2160534",
+          "target_address": "0x21605f8",
+          "source_procedure": {
+            "address": "0x21603f0",
+            "name": "EntryPoint",
+            "classification": null,
+            "body": {
+              "available": false,
+              "reason": "Hopper's public Python API does not expose complete function body ranges"
+            }
+          },
+          "target_procedure": {
+            "address": "0x21603f0",
+            "name": "EntryPoint",
+            "classification": null,
+            "body": {
+              "available": false,
+              "reason": "Hopper's public Python API does not expose complete function body ranges"
+            }
+          },
+          "kind": {
+            "available": false,
+            "reason": "Hopper's public Python API does not classify reference kinds"
+          }
+        },
+        {
+          "source_address": "0x216053c",
+          "target_address": "0x2160578",
+          "source_procedure": {
+            "address": "0x21603f0",
+            "name": "EntryPoint",
+            "classification": null,
+            "body": {
+              "available": false,
+              "reason": "Hopper's public Python API does not expose complete function body ranges"
+            }
+          },
+          "target_procedure": {
+            "address": "0x21603f0",
+            "name": "EntryPoint",
+            "classification": null,
+            "body": {
+              "available": false,
+              "reason": "Hopper's public Python API does not expose complete function body ranges"
+            }
+          },
+          "kind": {
+            "available": false,
+            "reason": "Hopper's public Python API does not classify reference kinds"
+          }
+        },
+        {
+          "source_address": "0x2160574",
+          "target_address": "0x21605f8",
+          "source_procedure": {
+            "address": "0x21603f0",
+            "name": "EntryPoint",
+            "classification": null,
+            "body": {
+              "available": false,
+              "reason": "Hopper's public Python API does not expose complete function body ranges"
+            }
+          },
+          "target_procedure": {
+            "address": "0x21603f0",
+            "name": "EntryPoint",
+            "classification": null,
+            "body": {
+              "available": false,
+              "reason": "Hopper's public Python API does not expose complete function body ranges"
+            }
+          },
+          "kind": {
+            "available": false,
+            "reason": "Hopper's public Python API does not classify reference kinds"
+          }
+        },
+        {
+          "source_address": "0x2160584",
+          "target_address": "0x21605b0",
+          "source_procedure": {
+            "address": "0x21603f0",
+            "name": "EntryPoint",
+            "classification": null,
+            "body": {
+              "available": false,
+              "reason": "Hopper's public Python API does not expose complete function body ranges"
+            }
+          },
+          "target_procedure": {
+            "address": "0x21603f0",
+            "name": "EntryPoint",
+            "classification": null,
+            "body": {
+              "available": false,
+              "reason": "Hopper's public Python API does not expose complete function body ranges"
+            }
+          },
+          "kind": {
+            "available": false,
+            "reason": "Hopper's public Python API does not classify reference kinds"
+          }
+        },
+        {
+          "source_address": "0x21605a4",
+          "target_address": "0x21605cc",
+          "source_procedure": {
+            "address": "0x21603f0",
+            "name": "EntryPoint",
+            "classification": null,
+            "body": {
+              "available": false,
+              "reason": "Hopper's public Python API does not expose complete function body ranges"
+            }
+          },
+          "target_procedure": {
+            "address": "0x21603f0",
+            "name": "EntryPoint",
+            "classification": null,
+            "body": {
+              "available": false,
+              "reason": "Hopper's public Python API does not expose complete function body ranges"
+            }
+          },
+          "kind": {
+            "available": false,
+            "reason": "Hopper's public Python API does not classify reference kinds"
+          }
+        },
+        {
+          "source_address": "0x21605a8",
+          "target_address": "0x2160540",
+          "source_procedure": {
+            "address": "0x21603f0",
+            "name": "EntryPoint",
+            "classification": null,
+            "body": {
+              "available": false,
+              "reason": "Hopper's public Python API does not expose complete function body ranges"
+            }
+          },
+          "target_procedure": {
+            "address": "0x21603f0",
+            "name": "EntryPoint",
+            "classification": null,
+            "body": {
+              "available": false,
+              "reason": "Hopper's public Python API does not expose complete function body ranges"
+            }
+          },
+          "kind": {
+            "available": false,
+            "reason": "Hopper's public Python API does not classify reference kinds"
+          }
+        },
+        {
+          "source_address": "0x21605c8",
+          "target_address": "0x2160540",
+          "source_procedure": {
+            "address": "0x21603f0",
+            "name": "EntryPoint",
+            "classification": null,
+            "body": {
+              "available": false,
+              "reason": "Hopper's public Python API does not expose complete function body ranges"
+            }
+          },
+          "target_procedure": {
+            "address": "0x21603f0",
+            "name": "EntryPoint",
+            "classification": null,
+            "body": {
+              "available": false,
+              "reason": "Hopper's public Python API does not expose complete function body ranges"
+            }
+          },
+          "kind": {
+            "available": false,
+            "reason": "Hopper's public Python API does not classify reference kinds"
+          }
+        },
+        {
+          "source_address": "0x21605d4",
+          "target_address": "0x2160540",
+          "source_procedure": {
+            "address": "0x21603f0",
+            "name": "EntryPoint",
+            "classification": null,
+            "body": {
+              "available": false,
+              "reason": "Hopper's public Python API does not expose complete function body ranges"
+            }
+          },
+          "target_procedure": {
+            "address": "0x21603f0",
+            "name": "EntryPoint",
+            "classification": null,
+            "body": {
+              "available": false,
+              "reason": "Hopper's public Python API does not expose complete function body ranges"
+            }
+          },
+          "kind": {
+            "available": false,
+            "reason": "Hopper's public Python API does not classify reference kinds"
+          }
+        },
+        {
+          "source_address": "0x21605f4",
+          "target_address": "0x2160578",
+          "source_procedure": {
+            "address": "0x21603f0",
+            "name": "EntryPoint",
+            "classification": null,
+            "body": {
+              "available": false,
+              "reason": "Hopper's public Python API does not expose complete function body ranges"
+            }
+          },
+          "target_procedure": {
+            "address": "0x21603f0",
+            "name": "EntryPoint",
+            "classification": null,
+            "body": {
+              "available": false,
+              "reason": "Hopper's public Python API does not expose complete function body ranges"
+            }
+          },
+          "kind": {
+            "available": false,
+            "reason": "Hopper's public Python API does not classify reference kinds"
+          }
+        },
+        {
+          "source_address": "0x2160628",
+          "target_address": "0x2160634",
+          "source_procedure": {
+            "address": "0x21603f0",
+            "name": "EntryPoint",
+            "classification": null,
+            "body": {
+              "available": false,
+              "reason": "Hopper's public Python API does not expose complete function body ranges"
+            }
+          },
+          "target_procedure": {
+            "address": "0x21603f0",
+            "name": "EntryPoint",
+            "classification": null,
+            "body": {
+              "available": false,
+              "reason": "Hopper's public Python API does not expose complete function body ranges"
+            }
+          },
+          "kind": {
+            "available": false,
+            "reason": "Hopper's public Python API does not classify reference kinds"
+          }
+        },
+        {
+          "source_address": "0x2160630",
+          "target_address": "0x2160668",
+          "source_procedure": {
+            "address": "0x21603f0",
+            "name": "EntryPoint",
+            "classification": null,
+            "body": {
+              "available": false,
+              "reason": "Hopper's public Python API does not expose complete function body ranges"
+            }
+          },
+          "target_procedure": {
+            "address": "0x21603f0",
+            "name": "EntryPoint",
+            "classification": null,
+            "body": {
+              "available": false,
+              "reason": "Hopper's public Python API does not expose complete function body ranges"
+            }
+          },
+          "kind": {
+            "available": false,
+            "reason": "Hopper's public Python API does not classify reference kinds"
+          }
+        },
+        {
+          "source_address": "0x2160694",
+          "target_address": "0x21606b4",
+          "source_procedure": {
+            "address": "0x21603f0",
+            "name": "EntryPoint",
+            "classification": null,
+            "body": {
+              "available": false,
+              "reason": "Hopper's public Python API does not expose complete function body ranges"
+            }
+          },
+          "target_procedure": {
+            "address": "0x21603f0",
+            "name": "EntryPoint",
+            "classification": null,
+            "body": {
+              "available": false,
+              "reason": "Hopper's public Python API does not expose complete function body ranges"
+            }
+          },
+          "kind": {
+            "available": false,
+            "reason": "Hopper's public Python API does not classify reference kinds"
+          }
+        },
+        {
+          "source_address": "0x216069c",
+          "target_address": "0x21606b4",
+          "source_procedure": {
+            "address": "0x21603f0",
+            "name": "EntryPoint",
+            "classification": null,
+            "body": {
+              "available": false,
+              "reason": "Hopper's public Python API does not expose complete function body ranges"
+            }
+          },
+          "target_procedure": {
+            "address": "0x21603f0",
+            "name": "EntryPoint",
+            "classification": null,
+            "body": {
+              "available": false,
+              "reason": "Hopper's public Python API does not expose complete function body ranges"
+            }
+          },
+          "kind": {
+            "available": false,
+            "reason": "Hopper's public Python API does not classify reference kinds"
+          }
+        },
+        {
+          "source_address": "0x21606ac",
+          "target_address": "0x21606ec",
+          "source_procedure": {
+            "address": "0x21603f0",
+            "name": "EntryPoint",
+            "classification": null,
+            "body": {
+              "available": false,
+              "reason": "Hopper's public Python API does not expose complete function body ranges"
+            }
+          },
+          "target_procedure": {
+            "address": "0x21603f0",
+            "name": "EntryPoint",
+            "classification": null,
+            "body": {
+              "available": false,
+              "reason": "Hopper's public Python API does not expose complete function body ranges"
+            }
+          },
+          "kind": {
+            "available": false,
+            "reason": "Hopper's public Python API does not classify reference kinds"
+          }
+        },
+        {
+          "source_address": "0x21606b0",
+          "target_address": "0x2160714",
+          "source_procedure": {
+            "address": "0x21603f0",
+            "name": "EntryPoint",
+            "classification": null,
+            "body": {
+              "available": false,
+              "reason": "Hopper's public Python API does not expose complete function body ranges"
+            }
+          },
+          "target_procedure": {
+            "address": "0x21603f0",
+            "name": "EntryPoint",
+            "classification": null,
+            "body": {
+              "available": false,
+              "reason": "Hopper's public Python API does not expose complete function body ranges"
+            }
+          },
+          "kind": {
+            "available": false,
+            "reason": "Hopper's public Python API does not classify reference kinds"
+          }
+        },
+        {
+          "source_address": "0x21606bc",
+          "target_address": "0x21606c8",
+          "source_procedure": {
+            "address": "0x21603f0",
+            "name": "EntryPoint",
+            "classification": null,
+            "body": {
+              "available": false,
+              "reason": "Hopper's public Python API does not expose complete function body ranges"
+            }
+          },
+          "target_procedure": {
+            "address": "0x21603f0",
+            "name": "EntryPoint",
+            "classification": null,
+            "body": {
+              "available": false,
+              "reason": "Hopper's public Python API does not expose complete function body ranges"
+            }
+          },
+          "kind": {
+            "available": false,
+            "reason": "Hopper's public Python API does not classify reference kinds"
+          }
+        },
+        {
+          "source_address": "0x21606c4",
+          "target_address": "0x21606d0",
+          "source_procedure": {
+            "address": "0x21603f0",
+            "name": "EntryPoint",
+            "classification": null,
+            "body": {
+              "available": false,
+              "reason": "Hopper's public Python API does not expose complete function body ranges"
+            }
+          },
+          "target_procedure": {
+            "address": "0x21603f0",
+            "name": "EntryPoint",
+            "classification": null,
+            "body": {
+              "available": false,
+              "reason": "Hopper's public Python API does not expose complete function body ranges"
+            }
+          },
+          "kind": {
+            "available": false,
+            "reason": "Hopper's public Python API does not classify reference kinds"
+          }
+        },
+        {
+          "source_address": "0x21606e8",
+          "target_address": "0x2160714",
+          "source_procedure": {
+            "address": "0x21603f0",
+            "name": "EntryPoint",
+            "classification": null,
+            "body": {
+              "available": false,
+              "reason": "Hopper's public Python API does not expose complete function body ranges"
+            }
+          },
+          "target_procedure": {
+            "address": "0x21603f0",
+            "name": "EntryPoint",
+            "classification": null,
+            "body": {
+              "available": false,
+              "reason": "Hopper's public Python API does not expose complete function body ranges"
+            }
+          },
+          "kind": {
+            "available": false,
+            "reason": "Hopper's public Python API does not classify reference kinds"
+          }
+        },
+        {
+          "source_address": "0x2160718",
+          "target_address": "0x216074c",
+          "source_procedure": {
+            "address": "0x21603f0",
+            "name": "EntryPoint",
+            "classification": null,
+            "body": {
+              "available": false,
+              "reason": "Hopper's public Python API does not expose complete function body ranges"
+            }
+          },
+          "target_procedure": {
+            "address": "0x21603f0",
+            "name": "EntryPoint",
+            "classification": null,
+            "body": {
+              "available": false,
+              "reason": "Hopper's public Python API does not expose complete function body ranges"
+            }
+          },
+          "kind": {
+            "available": false,
+            "reason": "Hopper's public Python API does not classify reference kinds"
+          }
+        },
+        {
+          "source_address": "0x2160734",
+          "target_address": "0x21607b8",
+          "source_procedure": {
+            "address": "0x21603f0",
+            "name": "EntryPoint",
+            "classification": null,
+            "body": {
+              "available": false,
+              "reason": "Hopper's public Python API does not expose complete function body ranges"
+            }
+          },
+          "target_procedure": {
+            "address": "0x21603f0",
+            "name": "EntryPoint",
+            "classification": null,
+            "body": {
+              "available": false,
+              "reason": "Hopper's public Python API does not expose complete function body ranges"
+            }
+          },
+          "kind": {
+            "available": false,
+            "reason": "Hopper's public Python API does not classify reference kinds"
+          }
+        },
+        {
+          "source_address": "0x2160740",
+          "target_address": "0x21607c8",
+          "source_procedure": {
+            "address": "0x21603f0",
+            "name": "EntryPoint",
+            "classification": null,
+            "body": {
+              "available": false,
+              "reason": "Hopper's public Python API does not expose complete function body ranges"
+            }
+          },
+          "target_procedure": {
+            "address": "0x21603f0",
+            "name": "EntryPoint",
+            "classification": null,
+            "body": {
+              "available": false,
+              "reason": "Hopper's public Python API does not expose complete function body ranges"
+            }
+          },
+          "kind": {
+            "available": false,
+            "reason": "Hopper's public Python API does not classify reference kinds"
+          }
+        },
+        {
+          "source_address": "0x2160748",
+          "target_address": "0x216081c",
+          "source_procedure": {
+            "address": "0x21603f0",
+            "name": "EntryPoint",
+            "classification": null,
+            "body": {
+              "available": false,
+              "reason": "Hopper's public Python API does not expose complete function body ranges"
+            }
+          },
+          "target_procedure": {
+            "address": "0x21603f0",
+            "name": "EntryPoint",
+            "classification": null,
+            "body": {
+              "available": false,
+              "reason": "Hopper's public Python API does not expose complete function body ranges"
+            }
+          },
+          "kind": {
+            "available": false,
+            "reason": "Hopper's public Python API does not classify reference kinds"
+          }
+        },
+        {
+          "source_address": "0x2160760",
+          "target_address": "0x2160784",
+          "source_procedure": {
+            "address": "0x21603f0",
+            "name": "EntryPoint",
+            "classification": null,
+            "body": {
+              "available": false,
+              "reason": "Hopper's public Python API does not expose complete function body ranges"
+            }
+          },
+          "target_procedure": {
+            "address": "0x21603f0",
+            "name": "EntryPoint",
+            "classification": null,
+            "body": {
+              "available": false,
+              "reason": "Hopper's public Python API does not expose complete function body ranges"
+            }
+          },
+          "kind": {
+            "available": false,
+            "reason": "Hopper's public Python API does not classify reference kinds"
+          }
+        },
+        {
+          "source_address": "0x21607b4",
+          "target_address": "0x2160738",
+          "source_procedure": {
+            "address": "0x21603f0",
+            "name": "EntryPoint",
+            "classification": null,
+            "body": {
+              "available": false,
+              "reason": "Hopper's public Python API does not expose complete function body ranges"
+            }
+          },
+          "target_procedure": {
+            "address": "0x21603f0",
+            "name": "EntryPoint",
+            "classification": null,
+            "body": {
+              "available": false,
+              "reason": "Hopper's public Python API does not expose complete function body ranges"
+            }
+          },
+          "kind": {
+            "available": false,
+            "reason": "Hopper's public Python API does not classify reference kinds"
+          }
+        },
+        {
+          "source_address": "0x21607c4",
+          "target_address": "0x216082c",
+          "source_procedure": {
+            "address": "0x21603f0",
+            "name": "EntryPoint",
+            "classification": null,
+            "body": {
+              "available": false,
+              "reason": "Hopper's public Python API does not expose complete function body ranges"
+            }
+          },
+          "target_procedure": {
+            "address": "0x21603f0",
+            "name": "EntryPoint",
+            "classification": null,
+            "body": {
+              "available": false,
+              "reason": "Hopper's public Python API does not expose complete function body ranges"
+            }
+          },
+          "kind": {
+            "available": false,
+            "reason": "Hopper's public Python API does not classify reference kinds"
+          }
+        },
+        {
+          "source_address": "0x21607dc",
+          "target_address": "0x2160800",
+          "source_procedure": {
+            "address": "0x21603f0",
+            "name": "EntryPoint",
+            "classification": null,
+            "body": {
+              "available": false,
+              "reason": "Hopper's public Python API does not expose complete function body ranges"
+            }
+          },
+          "target_procedure": {
+            "address": "0x21603f0",
+            "name": "EntryPoint",
+            "classification": null,
+            "body": {
+              "available": false,
+              "reason": "Hopper's public Python API does not expose complete function body ranges"
+            }
+          },
+          "kind": {
+            "available": false,
+            "reason": "Hopper's public Python API does not classify reference kinds"
+          }
+        }
+      ],
+      "outgoing_references": [],
+      "referenced_strings": [],
+      "referenced_names": [],
+      "basic_blocks": [
+        {
+          "start": "0x21603f0",
+          "end": "0x216045c",
+          "successors": [
+            "0x2160460",
+            "0x2160480"
+          ]
+        },
+        {
+          "start": "0x2160460",
+          "end": "0x2160478",
+          "successors": [
+            "0x216047c",
+            "0x21604cc"
+          ]
+        },
+        {
+          "start": "0x216047c",
+          "end": "0x216047c",
+          "successors": [
+            "0x2160504"
+          ]
+        },
+        {
+          "start": "0x2160504",
+          "end": "0x2160534",
+          "successors": [
+            "0x2160538",
+            "0x21605f8"
+          ]
+        },
+        {
+          "start": "0x2160538",
+          "end": "0x216053c",
+          "successors": [
+            "0x2160578"
+          ]
+        },
+        {
+          "start": "0x2160578",
+          "end": "0x2160584",
+          "successors": [
+            "0x2160588",
+            "0x21605b0"
+          ]
+        },
+        {
+          "start": "0x2160588",
+          "end": "0x21605a4",
+          "successors": [
+            "0x21605a8",
+            "0x21605cc"
+          ]
+        },
+        {
+          "start": "0x21605a8",
+          "end": "0x21605a8",
+          "successors": [
+            "0x2160540"
+          ]
+        },
+        {
+          "start": "0x2160540",
+          "end": "0x2160574",
+          "successors": [
+            "0x2160578",
+            "0x21605f8"
+          ]
+        },
+        {
+          "start": "0x21605f8",
+          "end": "0x2160628",
+          "successors": [
+            "0x216062c",
+            "0x2160634"
+          ]
+        },
+        {
+          "start": "0x216062c",
+          "end": "0x2160630",
+          "successors": [
+            "0x2160668"
+          ]
+        },
+        {
+          "start": "0x2160668",
+          "end": "0x2160694",
+          "successors": [
+            "0x2160698",
+            "0x21606b4"
+          ]
+        },
+        {
+          "start": "0x2160698",
+          "end": "0x216069c",
+          "successors": [
+            "0x21606a0",
+            "0x21606b4"
+          ]
+        },
+        {
+          "start": "0x21606a0",
+          "end": "0x21606ac",
+          "successors": [
+            "0x21606b0",
+            "0x21606ec"
+          ]
+        },
+        {
+          "start": "0x21606b0",
+          "end": "0x21606b0",
+          "successors": [
+            "0x2160714"
+          ]
+        },
+        {
+          "start": "0x2160714",
+          "end": "0x2160718",
+          "successors": [
+            "0x216071c",
+            "0x216074c"
+          ]
+        },
+        {
+          "start": "0x216071c",
+          "end": "0x2160734",
+          "successors": [
+            "0x2160738",
+            "0x21607b8"
+          ]
+        },
+        {
+          "start": "0x2160738",
+          "end": "0x2160740",
+          "successors": [
+            "0x2160744",
+            "0x21607c8"
+          ]
+        },
+        {
+          "start": "0x2160744",
+          "end": "0x2160748",
+          "successors": [
+            "0x216081c"
+          ]
+        },
+        {
+          "start": "0x216081c",
+          "end": "0x2160828",
+          "successors": [
+            "0x216082c"
+          ]
+        },
+        {
+          "start": "0x21607c8",
+          "end": "0x21607dc",
+          "successors": [
+            "0x21607e0",
+            "0x2160800"
+          ]
+        },
+        {
+          "start": "0x21607e0",
+          "end": "0x21607fc",
+          "successors": [
+            "0x2160800"
+          ]
+        },
+        {
+          "start": "0x2160800",
+          "end": "0x2160818",
+          "successors": [
+            "0x216081c"
+          ]
+        },
+        {
+          "start": "0x21607b8",
+          "end": "0x21607c4",
+          "successors": [
+            "0x216082c"
+          ]
+        },
+        {
+          "start": "0x216082c",
+          "end": "0x2160854",
+          "successors": []
+        },
+        {
+          "start": "0x216074c",
+          "end": "0x2160760",
+          "successors": [
+            "0x2160764",
+            "0x2160784"
+          ]
+        },
+        {
+          "start": "0x2160764",
+          "end": "0x2160780",
+          "successors": [
+            "0x2160784"
+          ]
+        },
+        {
+          "start": "0x2160784",
+          "end": "0x21607b4",
+          "successors": [
+            "0x2160738",
+            "0x21607b8"
+          ]
+        },
+        {
+          "start": "0x21606ec",
+          "end": "0x2160710",
+          "successors": [
+            "0x2160714"
+          ]
+        },
+        {
+          "start": "0x21606b4",
+          "end": "0x21606bc",
+          "successors": [
+            "0x21606c0",
+            "0x21606c8"
+          ]
+        },
+        {
+          "start": "0x21606c0",
+          "end": "0x21606c4",
+          "successors": [
+            "0x21606d0"
+          ]
+        },
+        {
+          "start": "0x21606d0",
+          "end": "0x21606e8",
+          "successors": [
+            "0x21606ec",
+            "0x2160714"
+          ]
+        },
+        {
+          "start": "0x21606c8",
+          "end": "0x21606cc",
+          "successors": [
+            "0x21606d0"
+          ]
+        },
+        {
+          "start": "0x2160634",
+          "end": "0x2160664",
+          "successors": [
+            "0x2160668"
+          ]
+        },
+        {
+          "start": "0x21605cc",
+          "end": "0x21605d4",
+          "successors": [
+            "0x2160540",
+            "0x21605d8"
+          ]
+        },
+        {
+          "start": "0x21605d8",
+          "end": "0x21605f4",
+          "successors": [
+            "0x2160578",
+            "0x21605f8"
+          ]
+        },
+        {
+          "start": "0x21605b0",
+          "end": "0x21605c8",
+          "successors": [
+            "0x2160540",
+            "0x21605cc"
+          ]
+        },
+        {
+          "start": "0x21604cc",
+          "end": "0x21604d4",
+          "successors": [
+            "0x21604d8",
+            "0x2160504"
+          ]
+        },
+        {
+          "start": "0x21604d8",
+          "end": "0x21604fc",
+          "successors": [
+            "0x2160500",
+            "0x2160538"
+          ]
+        },
+        {
+          "start": "0x2160500",
+          "end": "0x2160500",
+          "successors": [
+            "0x21605f8"
+          ]
+        },
+        {
+          "start": "0x2160480",
+          "end": "0x21604c8",
+          "successors": [
+            "0x21604cc",
+            "0x2160504"
+          ]
+        }
+      ],
+      "native_api": null,
+      "native_value_flow": null,
+      "limitations": [
+        "Hopper's public Python API does not classify reference kinds.",
+        "Hopper's public Python API does not expose equivalent external or thunk classification in this dossier.",
+        "Unresolved indirect calls without reported target addresses are not represented as call edges.",
+        "Pseudocode and assembly are provider-specific representations, not original source."
+      ]
+    },
+    "confidence": "derived",
+    "authority": "shipped-artifact",
+    "environment": null,
+    "limitations": [
+      "Derived by an REA workflow from one or more provider observations."
+    ],
+    "locations": [],
+    "evidence_links": [],
+    "analysis_profile": {
+      "provider": {
+        "id": "rea-workflow",
+        "name": "REA composed investigation workflow",
+        "version": "1"
+      },
+      "parameters": {
+        "upstream_analysis_profile": {
+          "provider": {
+            "id": "hopper",
+            "name": "Hopper Disassembler",
+            "version": "launcher-sha256:dad6f886261fad0d4cdd01aee6fcf57439c60d7b5c54e62fc97f0180116690e0"
+          },
+          "parameters": {
+            "target_kind": "executable",
+            "target_format": "elf",
+            "architecture": "arm64",
+            "available_architectures": [
+              "arm64"
+            ],
+            "loader": {
+              "source": "derived",
+              "argument_count": 3,
+              "arguments_sha256": "c3ff6b5a7f3b0c7cec7685924ab1532ea79a6b8921458239491a37b14c59040c"
+            }
+          },
+          "digest": "b0ba568e9120019acb82cf039da601e25ec3824a56db4ff2cfaa67f412b1f337"
+        }
+      },
+      "digest": "92b0eed0d44061eaeb493eb23559fafde4ac4ad19ca601cc6ec984f6fc6ef517"
+    }
+  }
+}

@@ -1,0 +1,26 @@
+Executing payload...
+MOONLIGHT_WASM2JS_UPLOAD: 1/5
+Executed successfully
+Executing payload...
+MOONLIGHT_WASM2JS_UPLOAD: 2/5
+Executed successfully
+Executing payload...
+MOONLIGHT_WASM2JS_UPLOAD: 3/5
+Executed successfully
+Executing payload...
+MOONLIGHT_WASM2JS_UPLOAD: 4/5
+Executed successfully
+Executing payload...
+MOONLIGHT_WASM2JS_UPLOAD: 5/5
+Executed successfully
+Executing payload...
+MOONLIGHT_WASM2JS_ENVIRONMENT: {"webAssembly":"undefined","worker":"undefined","sourceBytes":740701,"sha256":"ff54c9387058805351cb2e50f4dcc71ce74863d901a2c2b2d2e3043cb96123e0"}
+MOONLIGHT_WASM2JS_INITIALIZED: {"elapsedMs":90,"upstreamExports":54}
+MOONLIGHT_WASM2JS_RTSP: {"result":0,"elapsedMs":9}
+MOONLIGHT_WASM2JS_FEC: {"result":0,"elapsedMs":31}
+MOONLIGHT_WASM2JS_CRYPTO: {"result":0,"elapsedMs":34}
+MOONLIGHT_WASM2JS_ENTROPY: {"result":0,"distinctBytes":62}
+MOONLIGHT_WASM2JS_THREAD_BACKEND: {"result":6,"expected":"nonzero: scheduler adapter still required"}
+MOONLIGHT_WASM2JS_PASSED: true
+MOONLIGHT_WASM2JS_END: true
+Executed successfully

@@ -41,20 +41,41 @@ Games shows Sunshine's configured games and applications in host order. The
 current host returns Desktop, Steam Big Picture, and Virtual Display; this is
 Sunshine's app list, not an automatic scan of the PC's installed games.
 
-- D-pad up/down moves through entries, Refresh, and Back, wrapping at the ends.
-- Six entries appear per page; moving past the last visible entry changes page.
-- A selects an entry or activates Refresh/Back. Selecting an entry only shows its
-  name; it does not launch an application or start a stream.
+- D-pad left/right moves across portrait cards. Up/down moves between rows;
+  moving to a row on another page changes the page automatically.
+- The grid adapts its column count and shows one or two rows per page to fit
+  the viewport. A short final row keeps your intended column when moving back up.
+- Down from the last row enters the footer. Left/right switches between Refresh,
+  Settings and Back; Up returns to the last card. Tab/Shift+Tab cycles all controls.
+- Cards fetch Sunshine's PNG covers through `/appasset`, using the saved client
+  identity and pinned native TLS. Covers fill the card above its bottom title
+  band. Title initials remain visible while loading or if downloading/decoding fails.
+- Only visible-page artwork is queued, with one download at a time and an 8 MiB
+  LRU cache of encoded URLs in memory. Each PNG is limited to 2 MiB and 4 megapixels.
+  Changing pages replaces queued work; Refresh retries failed images and retains
+  successful ones. Returning to Host cancels downloads, retaining the cache for
+  the same host. Cached image elements are reused across pages and reconnects.
+  Closing the UI or switching hosts releases the memory cache. A separate 16 MiB
+  disk cache under `save:/moonlight-experiment/artwork/` survives UI reloads.
+  Its keys include the host address, HTTPS port, client identity, pinned host
+  certificate, and app ID. PNGs are checked against their saved size and SHA-256
+  digest before reuse; missing, corrupt, or rejected images are downloaded again.
+  Cache failures leave covers usable through the normal download path. Invalid
+  indexes reset only the disposable artwork directory. No migration is performed.
+- A selects an entry or activates Refresh/Back. With the streaming core loaded,
+  selecting an entry launches or resumes it; see [streaming](streaming.md).
 - B returns to the Host screen. B there closes the UI and releases the loader.
 - Refresh requests a fresh list over pinned native HTTPS.
 
 Loading, an empty list, and request errors are displayed on this screen. Returning
 to Host cancels pending work; a late response cannot reopen Games. Closing still
-waits for native sockets to be released. No application list or image cache is
-written to the Switch. Existing credentials remain in the dedicated directory.
+waits for native sockets to be released. The application list remains in memory;
+cached covers and existing credentials stay in the dedicated experiment directory.
 
-Verified on the user's Switch: the host list appears, D-pad navigation works,
-and B returns to Host.
+Verified on the user's Switch: the portrait grid appears, four-way D-pad
+navigation and horizontal Refresh/Back controls work, and B returns to Host.
+All three real host covers display on the Switch. The user verified that cached
+covers appear immediately after Refresh and returning through Host to Games.
 
 The cartridge has no DOMParser. `sunshine-apps.js` contains a bounded XML parser
 for the app-list response, including entity/CDATA decoding, matching tags,
@@ -68,6 +89,10 @@ All files created by this experiment on the Switch stay inside **one directory**
 save:/moonlight-experiment/
     pairing-0.json
     pairing-1.json
+    settings.json
+    artwork/
+        index.json
+        <56 hex characters>.png
 ```
 
 The native file writer rejects paths outside this directory, including traversal
@@ -81,6 +106,15 @@ PKCS#12 credential and authenticated host certificates. Writes alternate slots,
 commit the save mount and read back the result. The previous committed slot is
 retained if a newer write fails. These credentials are not encrypted by this
 prototype. The directory belongs to Civ VII's current save mount/user.
+
+The separate Settings screen is available from Host and Games. It selects
+640×360, 960×540, or 1280×720; 15/30/60 FPS; and 1/2/3/5/8/10 Mbps. D-pad
+up/down selects a row, left/right adjusts it, and A cycles the value. Back/B
+commits the preferences and returns to the previous screen. A failed save keeps
+Settings open with an error. The next stream uses a validated snapshot for both
+Sunshine launch negotiation and the core stream configuration; a running stream
+is unaffected. Unsupported or unreadable stored settings fall back to the
+720p/30 FPS/5 Mbps defaults with a diagnostic, without changing pairing data.
 
 To remove all experiment-owned Switch files, close the UI and run:
 

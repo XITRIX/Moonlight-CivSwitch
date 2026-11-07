@@ -1,0 +1,41 @@
+
+> test
+> node --test tests/test-apps.cjs tests/test-artwork.cjs tests/test-artwork-store.cjs tests/test-settings.cjs tests/test-network.cjs tests/test-pairing.cjs tests/test-store.cjs tests/test-streaming.cjs tests/test-native-texture.cjs tests/test-controller-input.cjs
+
+Application tests passed: XML parsing, pinned HTTPS and saved identity, PNG artwork bytes/dimensions/limits, cancellation, TLS failure.
+✔ tests/test-apps.cjs (193.934708ms)
+✔ PNG bytes survive a cold cache instance without touching unrelated files (1.879083ms)
+✔ checksum failures and missing PNGs become cache misses and remove stale entries (0.272667ms)
+✔ quota evicts least recently used files across reloads (0.196625ms)
+✔ bad or oversized indexes reset only disposable cover data (0.146542ms)
+✔ failed and short writes never produce a usable cached PNG (0.138125ms)
+Artwork queue tests passed: serial visible-page downloads, off-page queue replacement, bounded LRU, download/decode failure, cancellation and draining.
+✔ tests/test-artwork.cjs (177.054625ms)
+✔ native buttons follow standard positions and keep B available during play (0.976917ms)
+✔ both native sticks preserve orientation, dead zone and bounds (0.847541ms)
+✔ browser and native physical layouts agree, including triggers and exit chord (0.370042ms)
+✔ native adapter polls connected styles, handles disconnects, and frees only its buffers (1.004209ms)
+✔ NV12 respects row strides, plane offsets, alpha and limited-range luma (2.876459ms)
+✔ NV12 chroma conversion produces saturated red (0.15925ms)
+✔ NV12 rejects truncated planes and invalid coordinates before presenting (0.368834ms)
+✔ fast conversion preserves luma and bounds chroma approximation error (224.327625ms)
+✔ GPU presenter reuses its owned 720p texture without JS pixel buffers or CPU uploads (1.724791ms)
+✔ GPU presenter rejects a mismatched native getter and cleans its allocations (0.880292ms)
+Native transport tests passed: UTF-8/XML, binary bytes above 128 KiB, bounded headers/body, incomplete/chunked/duplicate lengths, cancellation, socket/allocation cleanup.
+✔ tests/test-network.cjs (338.514792ms)
+Pairing protocol tests passed: BigInt modular arithmetic vs OpenSSL at 1024/2048 bits, frozen Date and bounded RSA/witness loops, legacy URL, full handshake, saved identity/PKCS#12, reuse, wrong PIN, tampered hash/signature, malformed responses, HTTP rejection, TLS failure, HTTPS verification, cancellation, host validation, no Math.random.
+✔ tests/test-pairing.cjs (1798.974334ms)
+✔ stream settings survive a new store and reject unsupported stream modes (1.919209ms)
+✔ save failures are reported so the settings screen can remain open (0.222084ms)
+Storage tests passed: directory boundary, readback/commit failures, recovery, preserved identity, scoped cleanup.
+✔ tests/test-store.cjs (200.530375ms)
+Streaming negotiation tests passed: launch/resume, pinned TLS, session keys, permissions, host-bound RTSP URLs, cancellation.
+✔ tests/test-streaming.cjs (162.540417ms)
+ℹ tests 23
+ℹ suites 0
+ℹ pass 23
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 1819.040584

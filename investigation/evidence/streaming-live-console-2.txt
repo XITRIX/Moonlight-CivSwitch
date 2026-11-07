@@ -1,0 +1,30 @@
+Executing payload...
+MOONLIGHT_STREAM_UPLOAD: 1/7
+Executed successfully
+Executing payload...
+MOONLIGHT_STREAM_UPLOAD: 2/7
+Executed successfully
+Executing payload...
+MOONLIGHT_STREAM_UPLOAD: 3/7
+Executed successfully
+Executing payload...
+MOONLIGHT_STREAM_UPLOAD: 4/7
+Executed successfully
+Executing payload...
+MOONLIGHT_STREAM_UPLOAD: 5/7
+Executed successfully
+Executing payload...
+MOONLIGHT_STREAM_UPLOAD: 6/7
+Executed successfully
+Executing payload...
+MOONLIGHT_STREAM_UPLOAD: 7/7
+Executed successfully
+Executing payload...
+MOONLIGHT_STREAM_STATUS: "Preparing streaming runtime…"
+MOONLIGHT_STREAM_STATUS: "Starting application on Sunshine…"
+MOONLIGHT_STREAM_ERROR: "Error: Sunshine /launch returned 403: Permission denied\n    at request (eval at remote_js_loader (eval at <anonymous> (eval at onerror (unknown source))), <anonymous>:971:50)\n    at async Object.launch (eval at remote_js_loader (eval at <anonymous> (eval at onerror (unknown source))), <anonymous>:984:17)\n    at async run (eval at remote_js_loader (eval at <anonymous> (eval at onerror (unknown source))), <anonymous>:1147:17)\n    at async eval (eval at remote_js_loader (eval at <anonymous> (eval at onerror (unknown source))), <anonymous>:1201:14)\n    at async remote_js_loader (eval at <anonymous> (eval at onerror (unknown source)), <anonymous>:1:25385)"
+MOONLIGHT_STREAM_STATUS: "Stopping stream…"
+MOONLIGHT_STREAM_LIVE_RESULT: {"error":"Sunshine /launch returned 403: Permission denied","stats":{"submitted":0,"decoded":0,"presented":0,"audioDecoded":0,"audioQueued":0,"audioDropped":0},"displayed":0}
+MOONLIGHT_STREAM_ERROR: "Error: Sunshine /launch returned 403: Permission denied\n    at request (eval at remote_js_loader (eval at <anonymous> (eval at onerror (unknown source))), <anonymous>:971:50)\n    at async Object.launch (eval at remote_js_loader (eval at <anonymous> (eval at onerror (unknown source))), <anonymous>:984:17)\n    at async run (eval at remote_js_loader (eval at <anonymous> (eval at onerror (unknown source))), <anonymous>:1147:17)\n    at async eval (eval at remote_js_loader (eval at <anonymous> (eval at onerror (unknown source))), <anonymous>:1201:14)\n    at async remote_js_loader (eval at <anonymous> (eval at onerror (unknown source)), <anonymous>:1:25385)"
+MOONLIGHT_STREAM_LIVE_END: true
+Executed successfully

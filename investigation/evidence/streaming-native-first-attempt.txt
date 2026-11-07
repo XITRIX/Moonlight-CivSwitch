@@ -1,0 +1,7 @@
+Executing payload...
+MOONLIGHT_STREAM_NATIVE_BULK_PREREQUISITES: {"bulk":true,"symbols":23046,"stringBytes":1498416}
+
+The process crashed on the first memcpy into a normal Uint8Array using the
+loader backing-pointer helper. No successful bulk copy or UDP result occurred.
+The user restarted Civ VII. Follow-up probe uses read64-based copies and does
+not call memcpy with unverified typed-array pointers.

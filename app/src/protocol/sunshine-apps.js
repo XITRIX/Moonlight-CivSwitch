@@ -1,4 +1,4 @@
-/* Sunshine /applist, authenticated with the existing on-console pairing. */
+/* Sunshine application list and PNG covers, using the on-console pairing. */
 (function (global) {
     "use strict";
     function invalid() { throw new Error("Invalid Sunshine application list."); }
@@ -16,7 +16,7 @@
     }
     // Gameface has no DOMParser. Parse this small XML response with bounded
     // depth/size and exact tag matching; never interpret titles as markup.
-    function parseList(xml) {
+    function parseRoot(xml, allowError) {
         if (typeof xml !== "string" || xml.length > 131072) invalid();
         xml = xml.replace(/^\ufeff/, "");
         var stack = [], root = null, position = 0, nodes = 0;
@@ -69,8 +69,12 @@
             position += opening;
         }
         if (stack.length || !root || root.name !== "root" || root.text.trim()) invalid();
-        if (root.attributes.status_code !== "200")
+        if (!allowError && root.attributes.status_code !== "200")
             throw new Error("Sunshine application list returned status " + (root.attributes.status_code || "unknown") + ".");
+        return root;
+    }
+    function parseList(xml) {
+        var root = parseRoot(xml);
         function field(app, name, required) {
             var found = app.children.filter(function (node) { return node.name === name; });
             if (found.length > 1 || (!found.length && required) || (found.length && found[0].children.length)) invalid();
@@ -89,7 +93,7 @@
     }
     function create(options) {
         function checkCanceled() { if (options.signal && options.signal.aborted) throw new Error("Application-list request canceled."); }
-        return {listApps:async function (input, httpsPort) {
+        async function credentials(input, httpsPort) {
             checkCanceled();
             var address = global.MoonlightPairing.parseHost(input);
             var identity = await options.loadIdentity(), host = await options.loadHost(address.key);
@@ -97,6 +101,10 @@
                 throw new Error("Connect and pair with this host before loading its games.");
             var port = httpsPort === undefined ? host.httpsPort : httpsPort;
             if (!Number.isInteger(port) || port < 1 || port > 65535) throw new Error("Invalid Sunshine HTTPS port.");
+            checkCanceled();return {address:address,identity:identity,host:host,port:port};
+        }
+        async function request(input, httpsPort, endpoint, binary, prepared) {
+            var c=prepared||await credentials(input,httpsPort),address=c.address,identity=c.identity,host=c.host,port=c.port;
             var random = options.randomBytes(16), values = [];
             if (!random || random.length !== 16) throw new Error("Native secure random generator returned no request ID.");
             for (var i = 0; i < 16; i++) {
@@ -108,12 +116,52 @@
             var hex = values.map(function (v) { return ("0" + v.toString(16)).slice(-2); }).join("");
             var uuid = hex.slice(0,8)+"-"+hex.slice(8,12)+"-"+hex.slice(12,16)+"-"+hex.slice(16,20)+"-"+hex.slice(20);
             checkCanceled();
-            var xml = await options.requestHttps({host:address.host,port:port,
-                path:"/applist?uniqueid="+encodeURIComponent(identity.uniqueId)+"&uuid="+uuid,
-                identity:identity,pinnedCertificatePem:host.certificatePem,timeoutMs:15000,signal:options.signal});
+            var response = await options.requestHttps({host:address.host,port:port,
+                path:endpoint+(endpoint.indexOf("?")<0?"?":"&")+"uniqueid="+encodeURIComponent(identity.uniqueId)+"&uuid="+uuid,
+                identity:identity,pinnedCertificatePem:host.certificatePem,timeoutMs:15000,signal:options.signal,
+                responseType:binary?"binary":"text",maxResponseBytes:binary?2097152:131072});
             checkCanceled();
-            return {apps:parseList(xml),hostname:host.hostname || address.host,host:address.key};
-        }};
+            return {body:response,hostname:host.hostname || address.host,host:address.key};
+        }
+        function decodeArtwork(bytes) {
+            // Apply the same bounds to network images and persistent cache hits.
+            if (typeof bytes !== "string" || bytes.length < 33 || bytes.length > 2097152 ||
+                bytes.slice(0,8) !== "\x89PNG\r\n\x1a\n" || bytes.slice(8,16) !== "\x00\x00\x00\x0dIHDR")
+                throw new Error("Sunshine returned invalid PNG artwork.");
+            function uint32(offset) {
+                return bytes.charCodeAt(offset)*16777216+bytes.charCodeAt(offset+1)*65536+
+                    bytes.charCodeAt(offset+2)*256+bytes.charCodeAt(offset+3);
+            }
+            var width=uint32(16),height=uint32(20);
+            if (!width || !height || width>4096 || height>4096 || width*height>4194304)
+                throw new Error("Sunshine artwork dimensions are too large.");
+            return {url:"data:image/png;base64,"+global.forge.util.encode64(bytes),width:width,height:height,bytes:bytes.length};
+        }
+        function cacheError(error){if(options.onArtworkCacheError)options.onArtworkCacheError(error);}
+        return {
+            listApps:async function (input, httpsPort) {
+                var result = await request(input,httpsPort,"/applist",false);
+                return {apps:parseList(result.body),hostname:result.hostname,host:result.host};
+            },
+            loadArtwork:async function (input, appId, httpsPort) {
+                if (!Number.isInteger(appId) || appId < 1 || appId > 0xffffffff) throw new Error("Invalid application ID.");
+                var c=await credentials(input,httpsPort),key=null;
+                if(options.artworkCache){
+                    key=global.forge.md.sha256.create().update(c.address.key+"\n"+c.port+"\n"+c.identity.uniqueId+"\n"+c.host.certificatePem+"\n"+appId).digest().toHex();
+                    try{
+                        var bytes=options.artworkCache.get(key);checkCanceled();
+                        if(bytes!==null){var cached=decodeArtwork(bytes);cached.cacheHit=true;cached.invalidateCache=function(){try{options.artworkCache.remove(key);}catch(error){cacheError(error);}};return cached;}
+                    }catch(error){
+                        checkCanceled();cacheError(error);
+                        try{options.artworkCache.remove(key);}catch(_){}
+                    }
+                }
+                var result=await request(input,httpsPort,"/appasset?appid="+appId+"&AssetType=2&AssetIdx=0",true,c),cover=decodeArtwork(result.body);
+                if(key)try{options.artworkCache.put(key,result.body);}catch(error){cacheError(error);}
+                if(key)cover.invalidateCache=function(){try{options.artworkCache.remove(key);}catch(error){cacheError(error);}};
+                checkCanceled();return cover;
+            }
+        };
     }
-    global.MoonlightApps = {create:create,parseList:parseList};
+    global.MoonlightApps = {create:create,parseList:parseList,parseRoot:parseRoot};
 })(typeof window !== "undefined" ? window : globalThis);

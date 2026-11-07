@@ -1,0 +1,15 @@
+Executing payload...
+MOONLIGHT_STREAM_WEB_INVENTORY: {"WebAssembly":"undefined","Worker":"undefined","SharedWorker":"undefined","SharedArrayBuffer":"function","Atomics":"object","Blob":"function","URL":"function","fetch":"undefined","VideoDecoder":"undefined","EncodedVideoChunk":"undefined","VideoFrame":"undefined","AudioDecoder":"undefined","EncodedAudioChunk":"undefined","AudioContext":"undefined","webkitAudioContext":"undefined","OfflineAudioContext":"undefined","MediaSource":"undefined","SourceBuffer":"undefined","RTCPeerConnection":"undefined","WebTransport":"undefined","OffscreenCanvas":"undefined","ImageData":"undefined","gpu":"undefined","gamepads":"function"}
+MOONLIGHT_STREAM_WEB_WASM_ERROR: "WebAssembly is absent"
+MOONLIGHT_STREAM_WEB_ATOMICS: {"old":17,"value":42,"wait":"not-equal"}
+MOONLIGHT_STREAM_WEB_WORKER_ERROR: "Worker is absent"
+MOONLIGHT_STREAM_WEB_CANVAS_2D_ERROR: "ctx.getImageData is not a function"
+MOONLIGHT_STREAM_WEB_CANVAS_WEBGL: {"available":false}
+MOONLIGHT_STREAM_WEB_CANVAS_WEBGL2: {"available":false}
+MOONLIGHT_STREAM_WEB_CANVAS_WEBGPU: {"available":false}
+MOONLIGHT_STREAM_WEB_VIDEO_TYPES: {"video/mp4; codecs=\"avc1.42E01E\"":"","video/mp4; codecs=\"hvc1.1.6.L93.B0\"":"","video/webm; codecs=\"vp8\"":"probably","video/webm; codecs=\"vp9\"":"probably","audio/ogg; codecs=\"opus\"":"","audio/webm; codecs=\"opus\"":"","audio/wav; codecs=\"1\"":"","play":"function","requestVideoFrameCallback":"undefined"}
+MOONLIGHT_STREAM_WEB_AUDIO_TYPES: {"video/mp4; codecs=\"avc1.42E01E\"":"API absent","video/mp4; codecs=\"hvc1.1.6.L93.B0\"":"API absent","video/webm; codecs=\"vp8\"":"API absent","video/webm; codecs=\"vp9\"":"API absent","audio/ogg; codecs=\"opus\"":"API absent","audio/webm; codecs=\"opus\"":"API absent","audio/wav; codecs=\"1\"":"API absent","play":"undefined","requestVideoFrameCallback":"undefined"}
+MOONLIGHT_STREAM_WEB_AUDIO_OFFLINE_ERROR: "OfflineAudioContext absent"
+MOONLIGHT_STREAM_WEB_AUDIO_LIVE_ERROR: "AudioContext absent"
+MOONLIGHT_STREAM_WEB_END: true
+Executed successfully

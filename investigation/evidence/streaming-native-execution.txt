@@ -1,0 +1,10 @@
+Executing payload...
+MOONLIGHT_STREAM_EXEC_COPY_POINTERS_VERIFIED: true
+MOONLIGHT_STREAM_EXEC_BULK_COPY: {"bytes":1048576,"writeMs":0,"readMs":0,"mismatch":-1}
+MOONLIGHT_STREAM_EXEC_OPUS_DECODE: {"stateBytes":26548,"initialized":0,"packets":[{"packetBytes":454,"samplesPerChannel":960,"peak":588,"decodeMs":1},{"packetBytes":295,"samplesPerChannel":960,"peak":584,"decodeMs":0},{"packetBytes":294,"samplesPerChannel":960,"peak":581,"decodeMs":0}]}
+
+Connection ended before the original thread-creation result. SDK code inspection
+shows thread priority is translated by +28; the test passed 44 (outside the SDK
+range). Corrected priority0 was tested separately in streaming-thread.txt and
+completed creation, execution, waiting and destruction. The unsafe priority was
+removed from the probe. The code permission test was not reached in this attempt.

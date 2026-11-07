@@ -1,0 +1,140 @@
+Executing payload...
+MOONLIGHT_STREAM_UPLOAD: 1/7
+Executed successfully
+Executing payload...
+MOONLIGHT_STREAM_UPLOAD: 2/7
+Executed successfully
+Executing payload...
+MOONLIGHT_STREAM_UPLOAD: 3/7
+Executed successfully
+Executing payload...
+MOONLIGHT_STREAM_UPLOAD: 4/7
+Executed successfully
+Executing payload...
+MOONLIGHT_STREAM_UPLOAD: 5/7
+Executed successfully
+Executing payload...
+MOONLIGHT_STREAM_UPLOAD: 6/7
+Executed successfully
+Executing payload...
+MOONLIGHT_STREAM_UPLOAD: 7/7
+Executed successfully
+UI sent. Keep this terminal open; press B outside editing to close the UI.
+Executing payload...
+MOONLIGHT_UI_READY
+MOONLIGHT_SETTINGS_SAVED: {"width":1280,"height":720,"fps":60,"bitrate":5000}
+MOONLIGHT_SUNSHINE_CHECKING
+MOONLIGHT_SUNSHINE_ONLINE
+MOONLIGHT_SUNSHINE_CHECKING_PAIR
+MOONLIGHT_SUNSHINE_PAIRED
+MOONLIGHT_PAIRING_SAVED: reused
+MOONLIGHT_APPLIST_LOADING
+MOONLIGHT_APPLIST_LOADED: 3
+MOONLIGHT_ARTWORK_CACHED: 881448767 (8231 bytes)
+MOONLIGHT_ARTWORK_CACHED: 1093255277 (24833 bytes)
+MOONLIGHT_ARTWORK_CACHED: 382300562 (98678 bytes)
+MOONLIGHT_ARTWORK_DISPLAYED: 881448767
+MOONLIGHT_ARTWORK_DISPLAYED: 1093255277
+MOONLIGHT_ARTWORK_DISPLAYED: 382300562
+MOONLIGHT_STREAM_CORE: RTSP port: 48010
+
+MOONLIGHT_STREAM_CORE: Initializing platform...
+MOONLIGHT_STREAM_CORE: Event 1: 1, 0
+MOONLIGHT_STREAM_CORE: Event 2: 1, 0
+MOONLIGHT_STREAM_CORE: done
+
+MOONLIGHT_STREAM_CORE: Resolving host name...
+MOONLIGHT_STREAM_CORE: Event 1: 2, 0
+MOONLIGHT_STREAM_CORE: Event 2: 2, 0
+MOONLIGHT_STREAM_CORE: done
+
+MOONLIGHT_STREAM_CORE: Initializing audio stream...
+MOONLIGHT_STREAM_CORE: Event 1: 3, 0
+MOONLIGHT_STREAM_CORE: Event 2: 3, 0
+MOONLIGHT_STREAM_CORE: done
+
+MOONLIGHT_STREAM_CORE: Starting RTSP handshake...
+MOONLIGHT_STREAM_CORE: Event 1: 4, 0
+MOONLIGHT_STREAM_STATS: {"state":1,"tasks":1,"network":{"calls":8,"sentBytes":0,"receivedBytes":0,"lastError":115,"rtpTypes":{}},"renderer":"png","submitted":0,"decoded":0,"presented":0,"conversionMs":0,"maxConversionMs":0,"audioDecoded":0,"audioQueued":0,"audioDropped":0}
+MOONLIGHT_STREAM_CORE: Audio port: 48000
+
+MOONLIGHT_STREAM_CORE: setsockopt(SO_PRIORITY, 6) failed: 50
+
+MOONLIGHT_STREAM_CORE: Video port: 47998
+
+MOONLIGHT_STREAM_CORE: Control port: 47999
+
+MOONLIGHT_STREAM_CORE: Event 2: 4, 0
+MOONLIGHT_STREAM_CORE: done
+
+MOONLIGHT_STREAM_CORE: Initializing control stream...
+MOONLIGHT_STREAM_CORE: Event 1: 5, 0
+MOONLIGHT_STREAM_CORE: Event 2: 5, 0
+MOONLIGHT_STREAM_CORE: done
+
+MOONLIGHT_STREAM_CORE: Initializing video stream...
+MOONLIGHT_STREAM_CORE: Event 1: 6, 0
+MOONLIGHT_STREAM_CORE: Event 2: 6, 0
+MOONLIGHT_STREAM_CORE: done
+
+MOONLIGHT_STREAM_CORE: Initializing input stream...
+MOONLIGHT_STREAM_CORE: Event 1: 7, 0
+MOONLIGHT_STREAM_CORE: Event 2: 7, 0
+MOONLIGHT_STREAM_CORE: done
+
+MOONLIGHT_STREAM_CORE: Starting control stream...
+MOONLIGHT_STREAM_CORE: Event 1: 8, 0
+MOONLIGHT_STREAM_CORE: Event 2: 8, 0
+MOONLIGHT_STREAM_CORE: done
+
+MOONLIGHT_STREAM_CORE: Starting video stream...
+MOONLIGHT_STREAM_CORE: Event 1: 9, 0
+MOONLIGHT_STREAM_CORE: setsockopt(SO_PRIORITY, 5) failed: 50
+
+MOONLIGHT_STREAM_CORE: Event 2: 9, 0
+MOONLIGHT_STREAM_CORE: done
+
+MOONLIGHT_STREAM_CORE: Starting audio stream...
+MOONLIGHT_STREAM_CORE: Event 1: 10, 0
+MOONLIGHT_STREAM_CORE: Event 2: 10, 0
+MOONLIGHT_STREAM_CORE: done
+
+MOONLIGHT_STREAM_CORE: Starting input stream...
+MOONLIGHT_STREAM_CORE: Event 1: 11, 0
+MOONLIGHT_STREAM_CORE: Event 2: 11, 0
+MOONLIGHT_STREAM_CORE: done
+
+MOONLIGHT_STREAM_CORE: Event 4: 0, 0
+MOONLIGHT_STREAM_CORE: Received first video packet after 200 ms
+
+MOONLIGHT_STREAM_CORE: Received first audio packet after 700 ms
+
+MOONLIGHT_STREAM_CORE: Initial audio resync period: 500 milliseconds
+
+MOONLIGHT_STREAM_STATS: {"state":2,"tasks":10,"network":{"calls":1016,"sentBytes":3814,"receivedBytes":457091,"lastError":11,"rtpTypes":{"80:0":4,"0:0":1,"90:0":431,"80:61":66,"80:7f":32}},"renderer":"native-gpu-texture","submitted":56,"decoded":55,"presented":55,"conversionMs":66,"maxConversionMs":11,"audioDecoded":0,"audioQueued":0,"audioDropped":0,"textureFrames":55,"textureUploadMs":0,"maxTextureUploadMs":0}
+MOONLIGHT_STREAM_STATS: {"state":2,"tasks":10,"network":{"calls":2742,"sentBytes":5946,"receivedBytes":1254395,"lastError":11,"rtpTypes":{"80:0":4,"0:0":3,"90:0":1153,"80:61":470,"80:7f":234}},"renderer":"native-gpu-texture","submitted":177,"decoded":177,"presented":177,"conversionMs":166,"maxConversionMs":11,"audioDecoded":370,"audioQueued":92,"audioDropped":0,"textureFrames":177,"textureUploadMs":0,"maxTextureUploadMs":0}
+MOONLIGHT_STREAM_STATS: {"state":2,"tasks":10,"network":{"calls":4276,"sentBytes":8964,"receivedBytes":1800147,"lastError":11,"rtpTypes":{"80:0":4,"0:0":7,"90:0":1633,"80:61":874,"80:7f":436}},"renderer":"native-gpu-texture","submitted":297,"decoded":297,"presented":297,"conversionMs":249,"maxConversionMs":11,"audioDecoded":774,"audioQueued":193,"audioDropped":0,"textureFrames":297,"textureUploadMs":0,"maxTextureUploadMs":0}
+MOONLIGHT_STREAM_STATS: {"state":2,"tasks":10,"network":{"calls":5836,"sentBytes":11778,"receivedBytes":2385985,"lastError":11,"rtpTypes":{"80:0":4,"0:0":13,"90:0":2152,"80:61":1274,"80:7f":636}},"renderer":"native-gpu-texture","submitted":419,"decoded":417,"presented":417,"conversionMs":341,"maxConversionMs":11,"audioDecoded":1174,"audioQueued":293,"audioDropped":0,"textureFrames":417,"textureUploadMs":0,"maxTextureUploadMs":0}
+MOONLIGHT_STREAM_STATS: {"state":2,"tasks":10,"network":{"calls":7336,"sentBytes":13820,"receivedBytes":2833119,"lastError":11,"rtpTypes":{"80:0":4,"0:0":15,"90:0":2537,"80:61":1680,"80:7f":840}},"renderer":"native-gpu-texture","submitted":504,"decoded":504,"presented":504,"conversionMs":404,"maxConversionMs":11,"audioDecoded":1580,"audioQueued":395,"audioDropped":0,"textureFrames":504,"textureUploadMs":0,"maxTextureUploadMs":0}
+MOONLIGHT_STREAM_STATS: {"state":2,"tasks":10,"network":{"calls":8982,"sentBytes":15858,"receivedBytes":3541103,"lastError":11,"rtpTypes":{"80:0":4,"0:0":16,"90:0":3174,"80:61":2076,"80:7f":1038}},"renderer":"native-gpu-texture","submitted":625,"decoded":624,"presented":624,"conversionMs":492,"maxConversionMs":11,"audioDecoded":1976,"audioQueued":494,"audioDropped":0,"textureFrames":624,"textureUploadMs":0,"maxTextureUploadMs":0}
+MOONLIGHT_STREAM_STATS: {"state":2,"tasks":10,"network":{"calls":11068,"sentBytes":19302,"receivedBytes":4713449,"lastError":11,"rtpTypes":{"80:0":27,"0:0":23,"90:0":4254,"80:61":2484,"80:7f":1242}},"renderer":"native-gpu-texture","submitted":745,"decoded":745,"presented":745,"conversionMs":593,"maxConversionMs":11,"audioDecoded":2384,"audioQueued":596,"audioDropped":0,"textureFrames":745,"textureUploadMs":0,"maxTextureUploadMs":0}
+MOONLIGHT_STREAM_STATS: {"state":2,"tasks":10,"network":{"calls":13109,"sentBytes":23404,"receivedBytes":5897399,"lastError":11,"rtpTypes":{"80:0":72,"0:0":32,"90:0":5343,"80:61":2878,"80:7f":1438}},"renderer":"native-gpu-texture","submitted":866,"decoded":866,"presented":866,"conversionMs":706,"maxConversionMs":11,"audioDecoded":2778,"audioQueued":694,"audioDropped":0,"textureFrames":866,"textureUploadMs":0,"maxTextureUploadMs":0}
+MOONLIGHT_STREAM_STATS: {"state":2,"tasks":10,"network":{"calls":15187,"sentBytes":27504,"receivedBytes":7079295,"lastError":11,"rtpTypes":{"80:0":108,"0:0":41,"90:0":6432,"80:61":3272,"80:7f":1636}},"renderer":"native-gpu-texture","submitted":987,"decoded":987,"presented":987,"conversionMs":795,"maxConversionMs":11,"audioDecoded":3172,"audioQueued":793,"audioDropped":0,"textureFrames":987,"textureUploadMs":0,"maxTextureUploadMs":0}
+MOONLIGHT_STREAM_STATS: {"state":2,"tasks":10,"network":{"calls":17250,"sentBytes":31072,"receivedBytes":8245131,"lastError":11,"rtpTypes":{"80:0":148,"0:0":49,"90:0":7503,"80:61":3686,"80:7f":1842}},"renderer":"native-gpu-texture","submitted":1106,"decoded":1106,"presented":1106,"conversionMs":885,"maxConversionMs":11,"audioDecoded":3586,"audioQueued":896,"audioDropped":0,"textureFrames":1106,"textureUploadMs":0,"maxTextureUploadMs":0}
+MOONLIGHT_STREAM_STATS: {"state":2,"tasks":10,"network":{"calls":19340,"sentBytes":35156,"receivedBytes":9435027,"lastError":11,"rtpTypes":{"80:0":172,"0:0":61,"90:0":8601,"80:61":4084,"80:7f":2042}},"renderer":"native-gpu-texture","submitted":1228,"decoded":1228,"presented":1228,"conversionMs":979,"maxConversionMs":11,"audioDecoded":3984,"audioQueued":996,"audioDropped":0,"textureFrames":1228,"textureUploadMs":0,"maxTextureUploadMs":0}
+MOONLIGHT_STREAM_STATS: {"state":2,"tasks":10,"network":{"calls":21395,"sentBytes":38716,"receivedBytes":10599099,"lastError":11,"rtpTypes":{"80:0":219,"0:0":66,"90:0":9668,"80:61":4488,"80:7f":2244}},"renderer":"native-gpu-texture","submitted":1349,"decoded":1349,"presented":1349,"conversionMs":1081,"maxConversionMs":11,"audioDecoded":4388,"audioQueued":1097,"audioDropped":0,"textureFrames":1349,"textureUploadMs":0,"maxTextureUploadMs":0}
+MOONLIGHT_STREAM_STATS: {"state":2,"tasks":10,"network":{"calls":23185,"sentBytes":39806,"receivedBytes":11513043,"lastError":11,"rtpTypes":{"80:0":220,"0:0":66,"90:0":10502,"80:61":4894,"80:7f":2446}},"renderer":"native-gpu-texture","submitted":1470,"decoded":1469,"presented":1469,"conversionMs":1179,"maxConversionMs":11,"audioDecoded":4794,"audioQueued":1198,"audioDropped":0,"textureFrames":1469,"textureUploadMs":0,"maxTextureUploadMs":0}
+MOONLIGHT_STREAM_STATS: {"state":2,"tasks":10,"network":{"calls":24692,"sentBytes":40738,"receivedBytes":12062499,"lastError":11,"rtpTypes":{"80:0":220,"0:0":66,"90:0":10986,"80:61":5296,"80:7f":2648}},"renderer":"native-gpu-texture","submitted":1591,"decoded":1590,"presented":1590,"conversionMs":1265,"maxConversionMs":11,"audioDecoded":5196,"audioQueued":1299,"audioDropped":0,"textureFrames":1590,"textureUploadMs":0,"maxTextureUploadMs":0}
+MOONLIGHT_STREAM_STATS: {"state":2,"tasks":10,"network":{"calls":26180,"sentBytes":41634,"receivedBytes":12608413,"lastError":11,"rtpTypes":{"80:0":220,"0:0":66,"90:0":11466,"80:61":5704,"80:7f":2852}},"renderer":"native-gpu-texture","submitted":1711,"decoded":1711,"presented":1711,"conversionMs":1359,"maxConversionMs":11,"audioDecoded":5604,"audioQueued":1401,"audioDropped":0,"textureFrames":1711,"textureUploadMs":0,"maxTextureUploadMs":0}
+MOONLIGHT_STREAM_STATS: {"state":2,"tasks":10,"network":{"calls":27664,"sentBytes":42566,"receivedBytes":13161727,"lastError":11,"rtpTypes":{"80:0":220,"0:0":66,"90:0":11954,"80:61":6104,"80:7f":3052}},"renderer":"native-gpu-texture","submitted":1833,"decoded":1831,"presented":1831,"conversionMs":1445,"maxConversionMs":11,"audioDecoded":6004,"audioQueued":1501,"audioDropped":0,"textureFrames":1831,"textureUploadMs":0,"maxTextureUploadMs":0}
+MOONLIGHT_STREAM_STATS: {"state":2,"tasks":10,"network":{"calls":29100,"sentBytes":43416,"receivedBytes":13706699,"lastError":11,"rtpTypes":{"80:0":220,"0:0":66,"90:0":12434,"80:61":6504,"80:7f":3252}},"renderer":"native-gpu-texture","submitted":1953,"decoded":1952,"presented":1952,"conversionMs":1534,"maxConversionMs":11,"audioDecoded":6404,"audioQueued":1601,"audioDropped":0,"textureFrames":1952,"textureUploadMs":0,"maxTextureUploadMs":0}
+MOONLIGHT_STREAM_STATS: {"state":2,"tasks":10,"network":{"calls":30594,"sentBytes":44322,"receivedBytes":14252293,"lastError":11,"rtpTypes":{"80:0":220,"0:0":66,"90:0":12914,"80:61":6910,"80:7f":3454}},"renderer":"native-gpu-texture","submitted":2073,"decoded":2073,"presented":2073,"conversionMs":1639,"maxConversionMs":11,"audioDecoded":6810,"audioQueued":1702,"audioDropped":0,"textureFrames":2073,"textureUploadMs":0,"maxTextureUploadMs":0}
+MOONLIGHT_STREAM_STATS: {"state":2,"tasks":10,"network":{"calls":32071,"sentBytes":45272,"receivedBytes":14805613,"lastError":11,"rtpTypes":{"80:0":220,"0:0":66,"90:0":13402,"80:61":7310,"80:7f":3654}},"renderer":"native-gpu-texture","submitted":2195,"decoded":2193,"presented":2193,"conversionMs":1733,"maxConversionMs":11,"audioDecoded":7210,"audioQueued":1802,"audioDropped":0,"textureFrames":2193,"textureUploadMs":0,"maxTextureUploadMs":0}
+MOONLIGHT_STREAM_STATS: {"state":2,"tasks":10,"network":{"calls":33565,"sentBytes":46158,"receivedBytes":15351063,"lastError":11,"rtpTypes":{"80:0":220,"0:0":66,"90:0":13882,"80:61":7714,"80:7f":3856}},"renderer":"native-gpu-texture","submitted":2315,"decoded":2315,"presented":2315,"conversionMs":1826,"maxConversionMs":11,"audioDecoded":7614,"audioQueued":1903,"audioDropped":0,"textureFrames":2315,"textureUploadMs":0,"maxTextureUploadMs":0}
+MOONLIGHT_STREAM_STATS: {"state":2,"tasks":10,"network":{"calls":35040,"sentBytes":47100,"receivedBytes":15900225,"lastError":11,"rtpTypes":{"80:0":220,"0:0":66,"90:0":14366,"80:61":8114,"80:7f":4056}},"renderer":"native-gpu-texture","submitted":2436,"decoded":2435,"presented":2435,"conversionMs":1917,"maxConversionMs":11,"audioDecoded":8014,"audioQueued":2003,"audioDropped":0,"textureFrames":2435,"textureUploadMs":0,"maxTextureUploadMs":0}
+MOONLIGHT_STREAM_STATS: {"state":2,"tasks":10,"network":{"calls":36531,"sentBytes":47950,"receivedBytes":16445975,"lastError":11,"rtpTypes":{"80:0":220,"0:0":66,"90:0":14846,"80:61":8520,"80:7f":4260}},"renderer":"native-gpu-texture","submitted":2556,"decoded":2556,"presented":2556,"conversionMs":2015,"maxConversionMs":11,"audioDecoded":8420,"audioQueued":2105,"audioDropped":0,"textureFrames":2556,"textureUploadMs":0,"maxTextureUploadMs":0}
+MOONLIGHT_STREAM_STATS: {"state":2,"tasks":10,"network":{"calls":38011,"sentBytes":48866,"receivedBytes":16995583,"lastError":11,"rtpTypes":{"80:0":220,"0:0":66,"90:0":15330,"80:61":8924,"80:7f":4462}},"renderer":"native-gpu-texture","submitted":2677,"decoded":2677,"presented":2677,"conversionMs":2108,"maxConversionMs":11,"audioDecoded":8824,"audioQueued":2206,"audioDropped":0,"textureFrames":2677,"textureUploadMs":0,"maxTextureUploadMs":0}
+MOONLIGHT_STREAM_STATS: {"state":2,"tasks":10,"network":{"calls":39492,"sentBytes":49808,"receivedBytes":17548895,"lastError":11,"rtpTypes":{"80:0":220,"0:0":66,"90:0":15818,"80:61":9324,"80:7f":4662}},"renderer":"native-gpu-texture","submitted":2799,"decoded":2797,"presented":2797,"conversionMs":2210,"maxConversionMs":11,"audioDecoded":9224,"audioQueued":2306,"audioDropped":0,"textureFrames":2797,"textureUploadMs":0,"maxTextureUploadMs":0}
+MOONLIGHT_STREAM_STATS: {"state":2,"tasks":10,"network":{"calls":40995,"sentBytes":50740,"receivedBytes":18098203,"lastError":11,"rtpTypes":{"80:0":220,"0:0":66,"90:0":16302,"80:61":9726,"80:7f":4862}},"renderer":"native-gpu-texture","submitted":2920,"decoded":2919,"presented":2919,"conversionMs":2310,"maxConversionMs":11,"audioDecoded":9626,"audioQueued":2406,"audioDropped":0,"textureFrames":2919,"textureUploadMs":0,"maxTextureUploadMs":0}
+MOONLIGHT_STREAM_STATS: {"state":2,"tasks":10,"network":{"calls":42483,"sentBytes":51590,"receivedBytes":18648257,"lastError":11,"rtpTypes":{"80:0":220,"0:0":66,"90:0":16786,"80:61":10134,"80:7f":5066}},"renderer":"native-gpu-texture","submitted":3041,"decoded":3041,"presented":3041,"conversionMs":2402,"maxConversionMs":11,"audioDecoded":10034,"audioQueued":2508,"audioDropped":0,"textureFrames":3041,"textureUploadMs":0,"maxTextureUploadMs":0}
+MOONLIGHT_STREAM_STATS: {"state":2,"tasks":10,"network":{"calls":43945,"sentBytes":52476,"receivedBytes":19197857,"lastError":11,"rtpTypes":{"80:0":220,"0:0":66,"90:0":17270,"80:61":10538,"80:7f":5268}},"renderer":"native-gpu-texture","submitted":3162,"decoded":3162,"presented":3162,"conversionMs":2489,"maxConversionMs":11,"audioDecoded":10438,"audioQueued":2609,"audioDropped":0,"textureFrames":3162,"textureUploadMs":0,"maxTextureUploadMs":0}

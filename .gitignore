@@ -4,3 +4,9 @@ __pycache__/
 node_modules/
 # Local upstream checkout; provenance is recorded in the references README.
 /investigation/references/CivSwitch/
+/investigation/references/moonlight-common-c/
+/investigation/references/mbedtls/
+/investigation/toolchains/
+/investigation/wasm2js/build/
+/investigation/wasm2js/dist/
+/investigation/artifacts/

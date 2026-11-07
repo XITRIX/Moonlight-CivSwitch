@@ -1,0 +1,1268 @@
+
+FUNCTION _ZN5movie7Decoder15GetOutputBufferEiPNS_6BufferEPNS_9MediaDataE
+02b5bf10 pacibsp  
+02b5bf14 sub      sp, sp, #0x80
+02b5bf18 stp      x29, x30, [sp, #0x40]
+02b5bf1c str      x23, [sp, #0x50]
+02b5bf20 stp      x22, x21, [sp, #0x60]
+02b5bf24 stp      x20, x19, [sp, #0x70]
+02b5bf28 add      x29, sp, #0x40
+02b5bf2c ldr      x22, [x0, #8]
+02b5bf30 cbz      x22, #0x2b5bfb8
+02b5bf34 mov      x19, x3
+02b5bf38 mov      x21, x2
+02b5bf3c mov      w20, w1
+02b5bf40 mov      x23, x0
+02b5bf44 bl       #0x2b530b0
+02b5bf48 tbz      w0, #0, #0x2b5bfc0
+02b5bf4c mov      x0, sp
+02b5bf50 stp      xzr, xzr, [sp, #0x30]
+02b5bf54 stp      xzr, xzr, [sp, #0x20]
+02b5bf58 stp      xzr, xzr, [sp, #0x10]
+02b5bf5c stp      xzr, xzr, [sp]
+02b5bf60 bl       #0x2bdb5c0
+02b5bf64 mov      x0, sp
+02b5bf68 mov      x1, x21
+02b5bf6c bl       #0x2b53210
+02b5bf70 ldr      x8, [x22]
+02b5bf74 mov      x2, sp
+02b5bf78 mov      x0, x22
+02b5bf7c mov      w1, w20
+02b5bf80 mov      x3, x19
+02b5bf84 ldr      x8, [x8, #0x98]
+02b5bf88 blr      x8
+02b5bf8c bl       #0x2b69b60
+02b5bf90 mov      w22, w0
+02b5bf94 cbnz     w0, #0x2b5bfa4
+02b5bf98 mov      x1, sp
+02b5bf9c mov      x0, x21
+02b5bfa0 bl       #0x2b53380
+02b5bfa4 mov      x0, sp
+02b5bfa8 bl       #0x2bdb5f0
+02b5bfac mov      w0, w22
+02b5bfb0 cbnz     w22, #0x2b5c098
+02b5bfb4 b        #0x2b5bfe4
+02b5bfb8 mov      w0, #0x1000
+02b5bfbc b        #0x2b5c098
+02b5bfc0 ldr      x8, [x22]
+02b5bfc4 mov      x0, x22
+02b5bfc8 mov      w1, w20
+02b5bfcc mov      x2, x21
+02b5bfd0 mov      x3, x19
+02b5bfd4 ldr      x8, [x8, #0x98]
+02b5bfd8 blr      x8
+02b5bfdc bl       #0x2b69b60
+02b5bfe0 cbnz     w0, #0x2b5c098
+02b5bfe4 mov      w0, #6
+02b5bfe8 mov      w1, #4
+02b5bfec mov      w2, wzr
+02b5bff0 bl       #0x2b53070
+02b5bff4 mov      w8, w0
+02b5bff8 mov      w0, wzr
+02b5bffc tbz      w8, #0, #0x2b5c098
+02b5c000 adrp     x1, #0x31fe000
+02b5c004 add      x1, x1, #0x5b7
+02b5c008 add      x2, x29, #0x1c
+02b5c00c str      wzr, [x29, #0x1c]
+02b5c010 mov      x0, x19
+02b5c014 bl       #0x2bdb660
+02b5c018 mov      w8, w0
+02b5c01c mov      w0, wzr
+02b5c020 tbz      w8, #0, #0x2b5c098
+02b5c024 mov      x0, sp
+02b5c028 str      xzr, [sp]
+02b5c02c bl       #0x2bdb730
+02b5c030 ldr      x0, [x23, #8]
+02b5c034 mov      x2, sp
+02b5c038 mov      w1, w20
+02b5c03c ldr      x8, [x0]
+02b5c040 ldr      x8, [x8, #0xa0]
+02b5c044 blr      x8
+02b5c048 bl       #0x2b69b60
+02b5c04c mov      w20, w0
+02b5c050 cbnz     w0, #0x2b5c08c
+02b5c054 adrp     x1, #0x31fe000
+02b5c058 add      x1, x1, #0x5b7
+02b5c05c mov      x0, sp
+02b5c060 add      x2, x29, #0x18
+02b5c064 str      wzr, [x29, #0x18]
+02b5c068 bl       #0x2bdb660
+02b5c06c tbz      w0, #0, #0x2b5c08c
+02b5c070 ldp      w2, w8, [x29, #0x18]
+02b5c074 cmp      w2, w8
+02b5c078 b.eq     #0x2b5c08c
+02b5c07c adrp     x1, #0x31fe000
+02b5c080 add      x1, x1, #0x5b7
+02b5c084 mov      x0, x19
+02b5c088 bl       #0x2bdb650
+02b5c08c mov      x0, sp
+02b5c090 bl       #0x2bdb740
+02b5c094 mov      w0, w20
+02b5c098 ldp      x20, x19, [sp, #0x70]
+02b5c09c ldp      x22, x21, [sp, #0x60]
+02b5c0a0 ldr      x23, [sp, #0x50]
+02b5c0a4 ldp      x29, x30, [sp, #0x40]
+02b5c0a8 add      sp, sp, #0x80
+02b5c0ac retab    
+
+FUNCTION _ZN5movie9MediaData8SetInt32EPKci
+02b50e50 ldr      x0, [x0]
+02b50e54 cbz      x0, #0x2b50e5c
+02b50e58 b        #0x1bab80
+02b50e5c ret      
+
+FUNCTION _ZN5movie6BufferC1ERKS0_
+02b4f4f0 pacibsp  
+02b4f4f4 stp      x29, x30, [sp, #-0x40]!
+02b4f4f8 str      x23, [sp, #0x10]
+02b4f4fc stp      x22, x21, [sp, #0x20]
+02b4f500 stp      x20, x19, [sp, #0x30]
+02b4f504 mov      x29, sp
+02b4f508 mov      x20, x0
+02b4f50c mov      w0, #3
+02b4f510 mov      x19, x1
+02b4f514 mov      w1, wzr
+02b4f518 mov      w2, wzr
+02b4f51c bl       #0x2b53070
+02b4f520 tbz      w0, #0, #0x2b4f554
+02b4f524 mov      w0, #0x40
+02b4f528 bl       #0x2b4f840
+02b4f52c mov      x21, x0
+02b4f530 str      x0, [x20]
+02b4f534 cbz      x0, #0x2b4f568
+02b4f538 str      wzr, [x21, #0x18]
+02b4f53c stp      xzr, xzr, [x21, #8]
+02b4f540 str      xzr, [x21]
+02b4f544 stp      xzr, xzr, [x21, #0x20]
+02b4f548 str      xzr, [x21, #0x30]
+02b4f54c strb     wzr, [x21, #0x38]
+02b4f550 b        #0x2b4f568
+02b4f554 strb     wzr, [x20, #0x10]
+02b4f558 stp      xzr, xzr, [x20]
+02b4f55c mov      x21, x20
+02b4f560 stp      xzr, xzr, [x20, #0x18]
+02b4f564 str      xzr, [x20, #0x28]
+02b4f568 mov      w0, #3
+02b4f56c mov      w1, wzr
+02b4f570 mov      w2, wzr
+02b4f574 bl       #0x2b53070
+02b4f578 ldr      x8, [x19]
+02b4f57c tst      w0, #1
+02b4f580 csel     x22, x8, x19, ne
+02b4f584 bl       #0x2b530b0
+02b4f588 tbnz     w0, #0, #0x2b4f590
+02b4f58c stp      xzr, xzr, [x20, #0x30]
+02b4f590 cbz      x21, #0x2b4f5d4
+02b4f594 cbz      x22, #0x2b4f5d4
+02b4f598 mov      w0, #3
+02b4f59c mov      w1, wzr
+02b4f5a0 mov      w2, wzr
+02b4f5a4 bl       #0x2b53070
+02b4f5a8 tst      w0, #1
+02b4f5ac mov      w8, #0x10
+02b4f5b0 mov      w9, #0x38
+02b4f5b4 mov      x0, x20
+02b4f5b8 mov      x1, x19
+02b4f5bc csel     x23, x9, x8, ne
+02b4f5c0 ldrb     w2, [x21, x23]
+02b4f5c4 ldrb     w22, [x22, x23]
+02b4f5c8 mov      w3, w22
+02b4f5cc bl       #0x2b50670
+02b4f5d0 strb     w22, [x21, x23]
+02b4f5d4 ldp      x20, x19, [sp, #0x30]
+02b4f5d8 ldp      x22, x21, [sp, #0x20]
+02b4f5dc ldr      x23, [sp, #0x10]
+02b4f5e0 ldp      x29, x30, [sp], #0x40
+02b4f5e4 retab    
+
+FUNCTION _ZN5movie7Decoder21GetOutputBufferFormatEiPNS_9MediaDataE
+02b5c0b0 ldr      x0, [x0, #8]
+02b5c0b4 cbz      x0, #0x2b5c0f4
+02b5c0b8 pacibsp  
+02b5c0bc sub      sp, sp, #0x30
+02b5c0c0 stp      x29, x30, [sp, #0x10]
+02b5c0c4 str      x19, [sp, #0x20]
+02b5c0c8 add      x29, sp, #0x10
+02b5c0cc ldr      x8, [x0]
+02b5c0d0 mov      x19, x2
+02b5c0d4 ldr      x8, [x8, #0xa0]
+02b5c0d8 blr      x8
+02b5c0dc bl       #0x2b69b60
+02b5c0e0 cbz      w0, #0x2b5c0fc
+02b5c0e4 ldr      x19, [sp, #0x20]
+02b5c0e8 ldp      x29, x30, [sp, #0x10]
+02b5c0ec add      sp, sp, #0x30
+02b5c0f0 retab    
+02b5c0f4 mov      w0, #0x1000
+02b5c0f8 ret      
+02b5c0fc mov      w0, #6
+02b5c100 mov      w1, #4
+02b5c104 mov      w2, wzr
+02b5c108 bl       #0x2b53070
+02b5c10c mov      w8, w0
+02b5c110 mov      w0, wzr
+02b5c114 tbz      w8, #0, #0x2b5c0e4
+02b5c118 adrp     x1, #0x31f1000
+02b5c11c add      x1, x1, #0xe4d
+02b5c120 add      x2, x29, #0x1c
+02b5c124 add      x3, x29, #0x18
+02b5c128 str      xzr, [x29, #0x18]
+02b5c12c stur     wzr, [x29, #-4]
+02b5c130 str      wzr, [sp, #8]
+02b5c134 sub      x4, x29, #4
+02b5c138 add      x5, sp, #8
+02b5c13c mov      x0, x19
+02b5c140 bl       #0x2bdb720
+02b5c144 tbz      w0, #0, #0x2b5c174
+02b5c148 ldur     w8, [x29, #-4]
+02b5c14c ldp      w3, w2, [x29, #0x18]
+02b5c150 adrp     x1, #0x31f1000
+02b5c154 add      x1, x1, #0xe4d
+02b5c158 mov      x0, x19
+02b5c15c sub      w8, w8, w2
+02b5c160 ldr      w9, [sp, #8]
+02b5c164 sub      w9, w9, w3
+02b5c168 add      w4, w8, #1
+02b5c16c add      w5, w9, #1
+02b5c170 bl       #0x2bdb6e0
+02b5c174 mov      w0, wzr
+02b5c178 ldr      x19, [sp, #0x20]
+02b5c17c ldp      x29, x30, [sp, #0x10]
+02b5c180 add      sp, sp, #0x30
+02b5c184 retab    
+
+FUNCTION _ZN5movie9MediaDataC1ERKS0_
+02b50bf0 pacibsp  
+02b50bf4 stp      x29, x30, [sp, #-0x30]!
+02b50bf8 str      x21, [sp, #0x10]
+02b50bfc stp      x20, x19, [sp, #0x20]
+02b50c00 mov      x29, sp
+02b50c04 mov      x21, x0
+02b50c08 mov      w0, #0x608
+02b50c0c mov      x20, x1
+02b50c10 bl       #0x2b52b70
+02b50c14 mov      x19, x0
+02b50c18 cbz      x0, #0x2b50c24
+02b50c1c mov      x0, x19
+02b50c20 bl       #0x1bab40
+02b50c24 str      x19, [x21]
+02b50c28 ldr      x1, [x20]
+02b50c2c cbz      x1, #0x2b50c54
+02b50c30 mov      w2, #0x608
+02b50c34 mov      x0, x19
+02b50c38 bl       #0x2bd2010
+02b50c3c mov      x0, x19
+02b50c40 ldp      x20, x19, [sp, #0x20]
+02b50c44 ldr      x21, [sp, #0x10]
+02b50c48 ldp      x29, x30, [sp], #0x30
+02b50c4c autibsp  
+02b50c50 b        #0x2b50c80
+02b50c54 ldp      x20, x19, [sp, #0x20]
+02b50c58 ldr      x21, [sp, #0x10]
+02b50c5c ldp      x29, x30, [sp], #0x30
+02b50c60 retab    
+
+FUNCTION _ZN5movie7Decoder24ReleaseOutputBufferIndexEi
+02b5bb80 ldr      x0, [x0, #8]
+02b5bb84 cbz      x0, #0x2b5bbac
+02b5bb88 pacibsp  
+02b5bb8c stp      x29, x30, [sp, #-0x10]!
+02b5bb90 mov      x29, sp
+02b5bb94 ldr      x8, [x0]
+02b5bb98 ldr      x8, [x8, #0x88]
+02b5bb9c blr      x8
+02b5bba0 ldp      x29, x30, [sp], #0x10
+02b5bba4 autibsp  
+02b5bba8 b        #0x2b69b60
+02b5bbac mov      w0, #0x1000
+02b5bbb0 ret      
+
+FUNCTION _ZNK5movie6Buffer13GetUint32DataEv
+02b503d0 pacibsp  
+02b503d4 stp      x29, x30, [sp, #-0x20]!
+02b503d8 str      x19, [sp, #0x10]
+02b503dc mov      x29, sp
+02b503e0 mov      x19, x0
+02b503e4 mov      w0, #3
+02b503e8 mov      w1, wzr
+02b503ec mov      w2, wzr
+02b503f0 bl       #0x2b53070
+02b503f4 tbz      w0, #0, #0x2b50400
+02b503f8 ldr      x19, [x19]
+02b503fc cbz      x19, #0x2b50430
+02b50400 mov      w0, #3
+02b50404 mov      w1, wzr
+02b50408 mov      w2, wzr
+02b5040c bl       #0x2b53070
+02b50410 tst      w0, #1
+02b50414 mov      w8, #0xc
+02b50418 mov      w9, #0x34
+02b5041c csel     x8, x9, x8, ne
+02b50420 ldr      w0, [x19, x8]
+02b50424 ldr      x19, [sp, #0x10]
+02b50428 ldp      x29, x30, [sp], #0x20
+02b5042c retab    
+02b50430 mov      w0, wzr
+02b50434 ldr      x19, [sp, #0x10]
+02b50438 ldp      x29, x30, [sp], #0x20
+02b5043c retab    
+
+FUNCTION _ZN5movie7DecoderC1ENS_11DecoderTypeENS_19DecoderOutputFormatE
+02b5b3f0 pacibsp  
+02b5b3f4 stp      x29, x30, [sp, #-0x30]!
+02b5b3f8 str      x21, [sp, #0x10]
+02b5b3fc stp      x20, x19, [sp, #0x20]
+02b5b400 mov      x29, sp
+02b5b404 mov      w19, w2
+02b5b408 mov      w20, w1
+02b5b40c mov      x21, x0
+02b5b410 bl       #0x2bdb600
+02b5b414 mov      w4, w0
+02b5b418 mov      x0, x21
+02b5b41c mov      w1, w20
+02b5b420 mov      w2, w19
+02b5b424 ldp      x20, x19, [sp, #0x20]
+02b5b428 ldr      x21, [sp, #0x10]
+02b5b42c mov      w3, #1
+02b5b430 ldp      x29, x30, [sp], #0x30
+02b5b434 autibsp  
+02b5b438 b        #0x2bdb830
+
+FUNCTION _ZN5movie7DecoderC1ENS_11DecoderTypeENS_19DecoderOutputFormatENS_11DecoderModeE
+02b5b850 pacibsp  
+02b5b854 stp      x29, x30, [sp, #-0x30]!
+02b5b858 stp      x22, x21, [sp, #0x10]
+02b5b85c stp      x20, x19, [sp, #0x20]
+02b5b860 mov      x29, sp
+02b5b864 mov      w19, w3
+02b5b868 mov      w20, w2
+02b5b86c mov      w21, w1
+02b5b870 mov      x22, x0
+02b5b874 bl       #0x2bdb600
+02b5b878 mov      w4, w0
+02b5b87c mov      x0, x22
+02b5b880 mov      w1, w21
+02b5b884 mov      w2, w20
+02b5b888 mov      w3, w19
+02b5b88c ldp      x20, x19, [sp, #0x20]
+02b5b890 ldp      x22, x21, [sp, #0x10]
+02b5b894 ldp      x29, x30, [sp], #0x30
+02b5b898 autibsp  
+02b5b89c b        #0x2bdb830
+
+FUNCTION _ZN5movie7Decoder19GetOutputBufferSizeEPiS1_
+02b5bc40 pacibsp  
+02b5bc44 stp      x29, x30, [sp, #-0x20]!
+02b5bc48 stp      x20, x19, [sp, #0x10]
+02b5bc4c mov      x29, sp
+02b5bc50 ldr      x0, [x0, #8]
+02b5bc54 cbz      x0, #0x2b5bc9c
+02b5bc58 ldr      x8, [x0]
+02b5bc5c mov      x19, x2
+02b5bc60 ldr      x8, [x8, #0x80]
+02b5bc64 blr      x8
+02b5bc68 bl       #0x2b69b60
+02b5bc6c mov      w20, w0
+02b5bc70 mov      w0, #4
+02b5bc74 mov      w1, wzr
+02b5bc78 mov      w2, wzr
+02b5bc7c bl       #0x2b53070
+02b5bc80 tbz      w0, #0, #0x2b5bc8c
+02b5bc84 bl       #0x2b53960
+02b5bc88 str      w0, [x19]
+02b5bc8c mov      w0, w20
+02b5bc90 ldp      x20, x19, [sp, #0x10]
+02b5bc94 ldp      x29, x30, [sp], #0x20
+02b5bc98 retab    
+02b5bc9c mov      w20, #0x1000
+02b5bca0 mov      w0, w20
+02b5bca4 ldp      x20, x19, [sp, #0x10]
+02b5bca8 ldp      x29, x30, [sp], #0x20
+02b5bcac retab    
+
+FUNCTION _ZN5movie7Decoder5StartEv
+02b5ba40 ldr      x0, [x0, #8]
+02b5ba44 cbz      x0, #0x2b5ba6c
+02b5ba48 pacibsp  
+02b5ba4c stp      x29, x30, [sp, #-0x10]!
+02b5ba50 mov      x29, sp
+02b5ba54 ldr      x8, [x0]
+02b5ba58 ldr      x8, [x8, #0x38]
+02b5ba5c blr      x8
+02b5ba60 ldp      x29, x30, [sp], #0x10
+02b5ba64 autibsp  
+02b5ba68 b        #0x2b69b60
+02b5ba6c mov      w0, #0x2002
+02b5ba70 ret      
+
+FUNCTION _ZN5movie7Decoder15GetOutputBufferEiPNS_6BufferE
+02b5bcb0 pacibsp  
+02b5bcb4 sub      sp, sp, #0x70
+02b5bcb8 stp      x29, x30, [sp, #0x40]
+02b5bcbc str      x21, [sp, #0x50]
+02b5bcc0 stp      x20, x19, [sp, #0x60]
+02b5bcc4 add      x29, sp, #0x40
+02b5bcc8 ldr      x21, [x0, #8]
+02b5bccc cbz      x21, #0x2b5bd54
+02b5bcd0 mov      x19, x2
+02b5bcd4 mov      w20, w1
+02b5bcd8 bl       #0x2b530b0
+02b5bcdc tbz      w0, #0, #0x2b5bd6c
+02b5bce0 mov      x0, sp
+02b5bce4 stp      xzr, xzr, [sp, #0x30]
+02b5bce8 stp      xzr, xzr, [sp, #0x20]
+02b5bcec stp      xzr, xzr, [sp, #0x10]
+02b5bcf0 stp      xzr, xzr, [sp]
+02b5bcf4 bl       #0x2bdb5c0
+02b5bcf8 mov      x0, sp
+02b5bcfc mov      x1, x19
+02b5bd00 bl       #0x2b53210
+02b5bd04 ldr      x8, [x21]
+02b5bd08 mov      x2, sp
+02b5bd0c mov      x0, x21
+02b5bd10 mov      w1, w20
+02b5bd14 ldr      x8, [x8, #0x78]
+02b5bd18 blr      x8
+02b5bd1c bl       #0x2b69b60
+02b5bd20 mov      w20, w0
+02b5bd24 cbnz     w0, #0x2b5bd34
+02b5bd28 mov      x1, sp
+02b5bd2c mov      x0, x19
+02b5bd30 bl       #0x2b53380
+02b5bd34 mov      x0, sp
+02b5bd38 bl       #0x2bdb5f0
+02b5bd3c mov      w0, w20
+02b5bd40 ldp      x20, x19, [sp, #0x60]
+02b5bd44 ldr      x21, [sp, #0x50]
+02b5bd48 ldp      x29, x30, [sp, #0x40]
+02b5bd4c add      sp, sp, #0x70
+02b5bd50 retab    
+02b5bd54 mov      w0, #0x1000
+02b5bd58 ldp      x20, x19, [sp, #0x60]
+02b5bd5c ldr      x21, [sp, #0x50]
+02b5bd60 ldp      x29, x30, [sp, #0x40]
+02b5bd64 add      sp, sp, #0x70
+02b5bd68 retab    
+02b5bd6c ldr      x8, [x21]
+02b5bd70 mov      x0, x21
+02b5bd74 mov      w1, w20
+02b5bd78 mov      x2, x19
+02b5bd7c ldr      x8, [x8, #0x78]
+02b5bd80 blr      x8
+02b5bd84 ldp      x20, x19, [sp, #0x60]
+02b5bd88 ldr      x21, [sp, #0x50]
+02b5bd8c ldp      x29, x30, [sp, #0x40]
+02b5bd90 add      sp, sp, #0x70
+02b5bd94 autibsp  
+02b5bd98 b        #0x2b69b60
+
+FUNCTION _ZN5movie9MediaData9SetDoubleEPKcd
+02b50f10 ldr      x0, [x0]
+02b50f14 cbz      x0, #0x2b50f1c
+02b50f18 b        #0x1bb580
+02b50f1c ret      
+
+FUNCTION _ZN5movie7Decoder9ConfigureEPNS_9MediaDataE
+02b5b9c0 ldr      x0, [x0, #8]
+02b5b9c4 cbz      x0, #0x2b5b9ec
+02b5b9c8 pacibsp  
+02b5b9cc stp      x29, x30, [sp, #-0x10]!
+02b5b9d0 mov      x29, sp
+02b5b9d4 ldr      x8, [x0]
+02b5b9d8 ldr      x8, [x8, #0x20]
+02b5b9dc blr      x8
+02b5b9e0 ldp      x29, x30, [sp], #0x10
+02b5b9e4 autibsp  
+02b5b9e8 b        #0x2b69b60
+02b5b9ec mov      w0, #0x100c
+02b5b9f0 ret      
+
+FUNCTION _ZN5movie7Decoder14GetInputBufferEiPNS_6BufferE
+02b5bde0 pacibsp  
+02b5bde4 sub      sp, sp, #0x70
+02b5bde8 stp      x29, x30, [sp, #0x40]
+02b5bdec str      x21, [sp, #0x50]
+02b5bdf0 stp      x20, x19, [sp, #0x60]
+02b5bdf4 add      x29, sp, #0x40
+02b5bdf8 ldr      x21, [x0, #8]
+02b5bdfc cbz      x21, #0x2b5be84
+02b5be00 mov      x19, x2
+02b5be04 mov      w20, w1
+02b5be08 bl       #0x2b530b0
+02b5be0c tbz      w0, #0, #0x2b5be9c
+02b5be10 mov      x0, sp
+02b5be14 stp      xzr, xzr, [sp, #0x30]
+02b5be18 stp      xzr, xzr, [sp, #0x20]
+02b5be1c stp      xzr, xzr, [sp, #0x10]
+02b5be20 stp      xzr, xzr, [sp]
+02b5be24 bl       #0x2bdb5c0
+02b5be28 mov      x0, sp
+02b5be2c mov      x1, x19
+02b5be30 bl       #0x2b53210
+02b5be34 ldr      x8, [x21]
+02b5be38 mov      x2, sp
+02b5be3c mov      x0, x21
+02b5be40 mov      w1, w20
+02b5be44 ldr      x8, [x8, #0x60]
+02b5be48 blr      x8
+02b5be4c bl       #0x2b69b60
+02b5be50 mov      w20, w0
+02b5be54 cbnz     w0, #0x2b5be64
+02b5be58 mov      x1, sp
+02b5be5c mov      x0, x19
+02b5be60 bl       #0x2b53380
+02b5be64 mov      x0, sp
+02b5be68 bl       #0x2bdb5f0
+02b5be6c mov      w0, w20
+02b5be70 ldp      x20, x19, [sp, #0x60]
+02b5be74 ldr      x21, [sp, #0x50]
+02b5be78 ldp      x29, x30, [sp, #0x40]
+02b5be7c add      sp, sp, #0x70
+02b5be80 retab    
+02b5be84 mov      w0, #0x1000
+02b5be88 ldp      x20, x19, [sp, #0x60]
+02b5be8c ldr      x21, [sp, #0x50]
+02b5be90 ldp      x29, x30, [sp, #0x40]
+02b5be94 add      sp, sp, #0x70
+02b5be98 retab    
+02b5be9c ldr      x8, [x21]
+02b5bea0 mov      x0, x21
+02b5bea4 mov      w1, w20
+02b5bea8 mov      x2, x19
+02b5beac ldr      x8, [x8, #0x60]
+02b5beb0 blr      x8
+02b5beb4 ldp      x20, x19, [sp, #0x60]
+02b5beb8 ldr      x21, [sp, #0x50]
+02b5bebc ldp      x29, x30, [sp, #0x40]
+02b5bec0 add      sp, sp, #0x70
+02b5bec4 autibsp  
+02b5bec8 b        #0x2b69b60
+
+FUNCTION _ZNK5movie6Buffer12GetInt32DataEv
+02b50230 pacibsp  
+02b50234 stp      x29, x30, [sp, #-0x20]!
+02b50238 str      x19, [sp, #0x10]
+02b5023c mov      x29, sp
+02b50240 mov      x19, x0
+02b50244 mov      w0, #3
+02b50248 mov      w1, wzr
+02b5024c mov      w2, wzr
+02b50250 bl       #0x2b53070
+02b50254 tbz      w0, #0, #0x2b50260
+02b50258 ldr      x19, [x19]
+02b5025c cbz      x19, #0x2b50290
+02b50260 mov      w0, #3
+02b50264 mov      w1, wzr
+02b50268 mov      w2, wzr
+02b5026c bl       #0x2b53070
+02b50270 tst      w0, #1
+02b50274 mov      w8, #8
+02b50278 mov      w9, #0x18
+02b5027c csel     x8, x9, x8, ne
+02b50280 ldr      w0, [x19, x8]
+02b50284 ldr      x19, [sp, #0x10]
+02b50288 ldp      x29, x30, [sp], #0x20
+02b5028c retab    
+02b50290 mov      w0, wzr
+02b50294 ldr      x19, [sp, #0x10]
+02b50298 ldp      x29, x30, [sp], #0x20
+02b5029c retab    
+
+FUNCTION _ZN5movie9MediaData7SetRectEPKciiii
+02b51200 pacibsp  
+02b51204 sub      sp, sp, #0x60
+02b51208 stp      x29, x30, [sp, #0x10]
+02b5120c str      x25, [sp, #0x20]
+02b51210 stp      x24, x23, [sp, #0x30]
+02b51214 stp      x22, x21, [sp, #0x40]
+02b51218 stp      x20, x19, [sp, #0x50]
+02b5121c add      x29, sp, #0x10
+02b51220 ldr      x22, [x0]
+02b51224 cbz      x22, #0x2b512b4
+02b51228 mov      x20, x1
+02b5122c add      x1, x29, #0x18
+02b51230 mov      w19, w5
+02b51234 mov      w21, w4
+02b51238 mov      w23, w3
+02b5123c mov      w24, w2
+02b51240 str      xzr, [x29, #0x18]
+02b51244 mov      x0, x22
+02b51248 mov      x2, x20
+02b5124c bl       #0x1bb9e0
+02b51250 tbz      w0, #0, #0x2b51288
+02b51254 ldr      x25, [x29, #0x18]
+02b51258 cbz      x25, #0x2b51288
+02b5125c ldr      w8, [x25]
+02b51260 str      x25, [sp, #8]
+02b51264 cmp      w8, #2
+02b51268 b.ne     #0x2b51280
+02b5126c ldr      x0, [x25, #8]!
+02b51270 cbz      x0, #0x2b51280
+02b51274 bl       #0x2bdb5f0
+02b51278 mov      x0, x25
+02b5127c bl       #0x2b52d20
+02b51280 add      x0, sp, #8
+02b51284 bl       #0x2b52d20
+02b51288 mov      w0, #0x18
+02b5128c bl       #0x2b52b70
+02b51290 cbz      x0, #0x2b512b4
+02b51294 mov      w8, #1
+02b51298 mov      x2, x0
+02b5129c stp      w24, w23, [x0, #8]
+02b512a0 stp      w21, w19, [x0, #0x10]
+02b512a4 mov      x1, x20
+02b512a8 str      w8, [x0]
+02b512ac mov      x0, x22
+02b512b0 bl       #0x1bb1c0
+02b512b4 ldp      x20, x19, [sp, #0x50]
+02b512b8 ldp      x22, x21, [sp, #0x40]
+02b512bc ldr      x25, [sp, #0x20]
+02b512c0 ldp      x24, x23, [sp, #0x30]
+02b512c4 ldp      x29, x30, [sp, #0x10]
+02b512c8 add      sp, sp, #0x60
+02b512cc retab    
+
+FUNCTION _ZN5movie7DecoderC1ENS_11DecoderTypeENS_19DecoderOutputFormatENS_11DecoderModeEi
+02b5b440 pacibsp  
+02b5b444 sub      sp, sp, #0x140
+02b5b448 stp      x29, x30, [sp, #0xe0]
+02b5b44c str      x28, [sp, #0xf0]
+02b5b450 stp      x26, x25, [sp, #0x100]
+02b5b454 stp      x24, x23, [sp, #0x110]
+02b5b458 stp      x22, x21, [sp, #0x120]
+02b5b45c stp      x20, x19, [sp, #0x130]
+02b5b460 add      x29, sp, #0xe0
+02b5b464 adrp     x8, #0x4038000
+02b5b468 mov      w20, w4
+02b5b46c mov      w21, w3
+02b5b470 mov      w22, w1
+02b5b474 mov      x19, x0
+02b5b478 ldr      x8, [x8, #0x5a0]
+02b5b47c add      x8, x8, #0x10
+02b5b480 stp      x8, xzr, [x0]
+02b5b484 mov      w0, w2
+02b5b488 bl       #0x2b537f0
+02b5b48c mov      w23, w0
+02b5b490 bl       #0x1ba530
+02b5b494 cbnz     w0, #0x2b5b7d4
+02b5b498 stp      xzr, xzr, [sp, #0xa0]
+02b5b49c stp      xzr, xzr, [sp, #0x90]
+02b5b4a0 adrp     x25, #0x4037000
+02b5b4a4 adrp     x24, #0x4037000
+02b5b4a8 stp      xzr, xzr, [sp, #0x80]
+02b5b4ac stp      xzr, xzr, [sp, #0x70]
+02b5b4b0 stp      xzr, xzr, [sp, #0x60]
+02b5b4b4 str      xzr, [sp, #0x58]
+02b5b4b8 ldr      x25, [x25, #0xb98]
+02b5b4bc ldaprb   w8, [x25]
+02b5b4c0 ldr      x24, [x24, #0xba0]
+02b5b4c4 tbz      w8, #0, #0x2b5b7f4
+02b5b4c8 mov      w8, #4
+02b5b4cc str      x24, [sp, #0x58]
+02b5b4d0 stp      xzr, xzr, [sp, #0x68]
+02b5b4d4 stp      xzr, xzr, [sp, #0x78]
+02b5b4d8 stp      xzr, xzr, [sp, #0x88]
+02b5b4dc stp      xzr, xzr, [sp, #0x98]
+02b5b4e0 str      w8, [sp, #0x60]
+02b5b4e4 mov      w8, #1
+02b5b4e8 str      x8, [sp, #0xa8]
+02b5b4ec ldaprb   w8, [x25]
+02b5b4f0 tbz      w8, #0, #0x2b5b81c
+02b5b4f4 ldr      x8, [x24]
+02b5b4f8 cbz      x8, #0x2b5b56c
+02b5b4fc mov      w0, w22
+02b5b500 bl       #0x2b61f80
+02b5b504 tbz      w0, #0, #0x2b5b58c
+02b5b508 add      x2, sp, #0x58
+02b5b50c mov      w0, #0x10
+02b5b510 mov      w1, #0x5b0
+02b5b514 stp      xzr, xzr, [sp, #0x40]
+02b5b518 stp      xzr, xzr, [sp, #0x30]
+02b5b51c stp      xzr, xzr, [sp, #0x20]
+02b5b520 stp      xzr, xzr, [sp, #0x10]
+02b5b524 stp      xzr, xzr, [sp]
+02b5b528 bl       #0x1bc360
+02b5b52c cbz      x0, #0x2b5b608
+02b5b530 mov      x24, x0
+02b5b534 bl       #0x2b5d0d0
+02b5b538 mov      x8, sp
+02b5b53c sub      x0, x29, #0x30
+02b5b540 str      x24, [sp]
+02b5b544 stur     xzr, [x29, #-0x10]
+02b5b548 sub      x24, x29, #0x30
+02b5b54c add      x1, x8, #0x10
+02b5b550 bl       #0x2b55b60
+02b5b554 ldur     x0, [x29, #-0x10]
+02b5b558 cmp      x0, x24
+02b5b55c b.eq     #0x2b5b5f0
+02b5b560 cbz      x0, #0x2b5b600
+02b5b564 mov      w8, #0x28
+02b5b568 b        #0x2b5b5f4
+02b5b56c mov      x0, xzr
+02b5b570 mov      x1, xzr
+02b5b574 mov      x2, xzr
+02b5b578 mov      x3, xzr
+02b5b57c bl       #0x2b53aa0
+02b5b580 mov      w0, w22
+02b5b584 bl       #0x2b61f80
+02b5b588 tbnz     w0, #0, #0x2b5b508
+02b5b58c add      x2, sp, #0x58
+02b5b590 mov      w0, #0x10
+02b5b594 mov      w1, #0x5b0
+02b5b598 stp      xzr, xzr, [sp, #0x40]
+02b5b59c stp      xzr, xzr, [sp, #0x30]
+02b5b5a0 stp      xzr, xzr, [sp, #0x20]
+02b5b5a4 stp      xzr, xzr, [sp, #0x10]
+02b5b5a8 stp      xzr, xzr, [sp]
+02b5b5ac bl       #0x1bc360
+02b5b5b0 cbz      x0, #0x2b5b6a0
+02b5b5b4 mov      x24, x0
+02b5b5b8 bl       #0x2b5f8d0
+02b5b5bc mov      x8, sp
+02b5b5c0 sub      x0, x29, #0x30
+02b5b5c4 str      x24, [sp]
+02b5b5c8 stur     xzr, [x29, #-0x10]
+02b5b5cc sub      x24, x29, #0x30
+02b5b5d0 add      x1, x8, #0x10
+02b5b5d4 bl       #0x2b55b60
+02b5b5d8 ldur     x0, [x29, #-0x10]
+02b5b5dc cmp      x0, x24
+02b5b5e0 b.eq     #0x2b5b688
+02b5b5e4 cbz      x0, #0x2b5b698
+02b5b5e8 mov      w8, #0x28
+02b5b5ec b        #0x2b5b68c
+02b5b5f0 mov      w8, #0x20
+02b5b5f4 ldr      x9, [x0]
+02b5b5f8 ldr      x8, [x9, x8]
+02b5b5fc blr      x8
+02b5b600 add      x8, sp, #0x58
+02b5b604 str      x8, [sp, #0x40]
+02b5b608 ldr      x24, [sp]
+02b5b60c ldr      x0, [sp, #0x30]
+02b5b610 mov      x8, sp
+02b5b614 str      xzr, [sp]
+02b5b618 add      x26, x8, #0x10
+02b5b61c str      xzr, [sp, #0x30]
+02b5b620 cmp      x0, x26
+02b5b624 b.eq     #0x2b5b634
+02b5b628 cbz      x0, #0x2b5b644
+02b5b62c mov      w8, #0x28
+02b5b630 b        #0x2b5b638
+02b5b634 mov      w8, #0x20
+02b5b638 ldr      x9, [x0]
+02b5b63c ldr      x8, [x9, x8]
+02b5b640 blr      x8
+02b5b644 cmp      x24, #0
+02b5b648 add      x8, sp, #0x58
+02b5b64c ldr      x0, [sp, #0x30]
+02b5b650 str      xzr, [sp, #0x40]
+02b5b654 csel     x25, xzr, x8, eq
+02b5b658 ldr      x8, [sp]
+02b5b65c cbz      x8, #0x2b5b730
+02b5b660 cbz      x0, #0x2b5b67c
+02b5b664 stur     x8, [x29, #-0x30]
+02b5b668 sub      x1, x29, #0x30
+02b5b66c ldr      x8, [x0]
+02b5b670 ldr      x8, [x8, #0x30]
+02b5b674 blr      x8
+02b5b678 ldr      x8, [sp]
+02b5b67c mov      x0, x8
+02b5b680 bl       #0x2b5d3a0
+02b5b684 b        #0x2b5b71c
+02b5b688 mov      w8, #0x20
+02b5b68c ldr      x9, [x0]
+02b5b690 ldr      x8, [x9, x8]
+02b5b694 blr      x8
+02b5b698 add      x8, sp, #0x58
+02b5b69c str      x8, [sp, #0x40]
+02b5b6a0 ldr      x24, [sp]
+02b5b6a4 ldr      x0, [sp, #0x30]
+02b5b6a8 mov      x8, sp
+02b5b6ac str      xzr, [sp]
+02b5b6b0 add      x26, x8, #0x10
+02b5b6b4 str      xzr, [sp, #0x30]
+02b5b6b8 cmp      x0, x26
+02b5b6bc b.eq     #0x2b5b6cc
+02b5b6c0 cbz      x0, #0x2b5b6dc
+02b5b6c4 mov      w8, #0x28
+02b5b6c8 b        #0x2b5b6d0
+02b5b6cc mov      w8, #0x20
+02b5b6d0 ldr      x9, [x0]
+02b5b6d4 ldr      x8, [x9, x8]
+02b5b6d8 blr      x8
+02b5b6dc cmp      x24, #0
+02b5b6e0 add      x8, sp, #0x58
+02b5b6e4 ldr      x0, [sp, #0x30]
+02b5b6e8 str      xzr, [sp, #0x40]
+02b5b6ec csel     x25, xzr, x8, eq
+02b5b6f0 ldr      x8, [sp]
+02b5b6f4 cbz      x8, #0x2b5b730
+02b5b6f8 cbz      x0, #0x2b5b714
+02b5b6fc stur     x8, [x29, #-0x30]
+02b5b700 sub      x1, x29, #0x30
+02b5b704 ldr      x8, [x0]
+02b5b708 ldr      x8, [x8, #0x30]
+02b5b70c blr      x8
+02b5b710 ldr      x8, [sp]
+02b5b714 mov      x0, x8
+02b5b718 bl       #0x2b5fba0
+02b5b71c ldr      x0, [sp]
+02b5b720 ldr      x1, [sp, #0x40]
+02b5b724 bl       #0x1ba9e0
+02b5b728 ldr      x0, [sp, #0x30]
+02b5b72c str      xzr, [sp]
+02b5b730 str      xzr, [sp, #0x30]
+02b5b734 cmp      x0, x26
+02b5b738 b.eq     #0x2b5b748
+02b5b73c cbz      x0, #0x2b5b784
+02b5b740 mov      w8, #0x28
+02b5b744 b        #0x2b5b74c
+02b5b748 mov      w8, #0x20
+02b5b74c ldr      x9, [x0]
+02b5b750 ldr      x8, [x9, x8]
+02b5b754 blr      x8
+02b5b758 ldr      x0, [sp, #0x30]
+02b5b75c str      xzr, [sp, #0x40]
+02b5b760 cmp      x0, x26
+02b5b764 b.eq     #0x2b5b774
+02b5b768 cbz      x0, #0x2b5b784
+02b5b76c mov      w8, #0x28
+02b5b770 b        #0x2b5b778
+02b5b774 mov      w8, #0x20
+02b5b778 ldr      x9, [x0]
+02b5b77c ldr      x8, [x9, x8]
+02b5b780 blr      x8
+02b5b784 cbz      x24, #0x2b5b7d0
+02b5b788 ldr      x8, [x24]
+02b5b78c mov      x0, x24
+02b5b790 mov      w1, w22
+02b5b794 mov      w2, w23
+02b5b798 mov      w3, w21
+02b5b79c mov      w4, w20
+02b5b7a0 ldr      x8, [x8, #0x10]
+02b5b7a4 blr      x8
+02b5b7a8 cbz      w0, #0x2b5b7cc
+02b5b7ac ldr      x8, [x24]
+02b5b7b0 mov      x0, x24
+02b5b7b4 ldr      x8, [x8]
+02b5b7b8 blr      x8
+02b5b7bc mov      x0, x24
+02b5b7c0 mov      x1, x25
+02b5b7c4 bl       #0x1ba9e0
+02b5b7c8 b        #0x2b5b7d0
+02b5b7cc str      x24, [x19, #8]
+02b5b7d0 bl       #0x1ba680
+02b5b7d4 ldp      x20, x19, [sp, #0x130]
+02b5b7d8 ldp      x22, x21, [sp, #0x120]
+02b5b7dc ldr      x28, [sp, #0xf0]
+02b5b7e0 ldp      x24, x23, [sp, #0x110]
+02b5b7e4 ldp      x26, x25, [sp, #0x100]
+02b5b7e8 ldp      x29, x30, [sp, #0xe0]
+02b5b7ec add      sp, sp, #0x140
+02b5b7f0 retab    
+02b5b7f4 adrp     x0, #0x4037000
+02b5b7f8 ldr      x0, [x0, #0xb98]
+02b5b7fc bl       #0x2bd2050
+02b5b800 cbz      w0, #0x2b5b4c8
+02b5b804 stp      xzr, xzr, [x24, #0x10]
+02b5b808 stp      xzr, xzr, [x24]
+02b5b80c adrp     x0, #0x4037000
+02b5b810 ldr      x0, [x0, #0xb98]
+02b5b814 bl       #0x2bd2060
+02b5b818 b        #0x2b5b4c8
+02b5b81c adrp     x0, #0x4037000
+02b5b820 ldr      x0, [x0, #0xb98]
+02b5b824 bl       #0x2bd2050
+02b5b828 cbz      w0, #0x2b5b4f4
+02b5b82c stp      xzr, xzr, [x24, #0x10]
+02b5b830 stp      xzr, xzr, [x24]
+02b5b834 adrp     x0, #0x4037000
+02b5b838 ldr      x0, [x0, #0xb98]
+02b5b83c bl       #0x2bd2060
+02b5b840 b        #0x2b5b4f4
+
+FUNCTION _ZN5movie7Decoder24SendInputBufferForDecodeEiiilj
+02b5bb40 ldr      x0, [x0, #8]
+02b5bb44 cbz      x0, #0x2b5bb6c
+02b5bb48 pacibsp  
+02b5bb4c stp      x29, x30, [sp, #-0x10]!
+02b5bb50 mov      x29, sp
+02b5bb54 ldr      x8, [x0]
+02b5bb58 ldr      x8, [x8, #0x68]
+02b5bb5c blr      x8
+02b5bb60 ldp      x29, x30, [sp], #0x10
+02b5bb64 autibsp  
+02b5bb68 b        #0x2b69b60
+02b5bb6c mov      w0, #0x1000
+02b5bb70 ret      
+
+FUNCTION _ZNK5movie6Buffer9GetNvnDevEv
+02b50510 pacibsp  
+02b50514 stp      x29, x30, [sp, #-0x20]!
+02b50518 str      x19, [sp, #0x10]
+02b5051c mov      x29, sp
+02b50520 mov      x19, x0
+02b50524 bl       #0x2b530b0
+02b50528 ldr      x8, [x19, #0x30]
+02b5052c ldr      x19, [sp, #0x10]
+02b50530 tst      w0, #1
+02b50534 csel     x0, xzr, x8, ne
+02b50538 ldp      x29, x30, [sp], #0x20
+02b5053c retab    
+
+FUNCTION _ZN5movie9MediaData9SetBufferEPKcPNS_6BufferE
+02b511e0 ldr      x0, [x0]
+02b511e4 cbz      x0, #0x2b511f0
+02b511e8 mov      w3, wzr
+02b511ec b        #0x2b510e0
+02b511f0 ret      
+
+FUNCTION _ZN5movie9MediaData7SetSizeEPKcm
+02b50eb0 ldr      x0, [x0]
+02b50eb4 cbz      x0, #0x2b50ebc
+02b50eb8 b        #0x1bb300
+02b50ebc ret      
+
+FUNCTION _ZN5movie9MediaData10SetPointerEPKcPv
+02b50f40 pacibsp  
+02b50f44 sub      sp, sp, #0x40
+02b50f48 stp      x29, x30, [sp, #0x10]
+02b50f4c stp      x22, x21, [sp, #0x20]
+02b50f50 stp      x20, x19, [sp, #0x30]
+02b50f54 add      x29, sp, #0x10
+02b50f58 mov      x20, x0
+02b50f5c ldr      x0, [x0]
+02b50f60 cbz      x0, #0x2b50fd8
+02b50f64 mov      x19, x1
+02b50f68 add      x1, sp, #8
+02b50f6c mov      x21, x2
+02b50f70 str      xzr, [sp, #8]
+02b50f74 mov      x2, x19
+02b50f78 bl       #0x1bb9e0
+02b50f7c tbz      w0, #0, #0x2b50fb4
+02b50f80 ldr      x22, [sp, #8]
+02b50f84 cbz      x22, #0x2b50fb4
+02b50f88 ldr      w8, [x22]
+02b50f8c str      x22, [sp]
+02b50f90 cmp      w8, #2
+02b50f94 b.ne     #0x2b50fac
+02b50f98 ldr      x0, [x22, #8]!
+02b50f9c cbz      x0, #0x2b50fac
+02b50fa0 bl       #0x2bdb5f0
+02b50fa4 mov      x0, x22
+02b50fa8 bl       #0x2b52d20
+02b50fac mov      x0, sp
+02b50fb0 bl       #0x2b52d20
+02b50fb4 mov      w0, #0x18
+02b50fb8 bl       #0x2b52b70
+02b50fbc cbz      x0, #0x2b50fd8
+02b50fc0 mov      x2, x0
+02b50fc4 str      wzr, [x0]
+02b50fc8 str      x21, [x0, #8]
+02b50fcc mov      x0, x20
+02b50fd0 mov      x1, x19
+02b50fd4 bl       #0x2bdb6b0
+02b50fd8 ldp      x20, x19, [sp, #0x30]
+02b50fdc ldp      x22, x21, [sp, #0x20]
+02b50fe0 ldp      x29, x30, [sp, #0x10]
+02b50fe4 add      sp, sp, #0x40
+02b50fe8 retab    
+
+FUNCTION _ZN5movie9MediaData8SetFloatEPKcf
+02b50ee0 ldr      x0, [x0]
+02b50ee4 cbz      x0, #0x2b50eec
+02b50ee8 b        #0x1bb440
+02b50eec ret      
+
+FUNCTION _ZN5movie7Decoder24AcquireOutputBufferIndexEPiPlPjS1_
+02b5bc00 ldr      x0, [x0, #8]
+02b5bc04 cbz      x0, #0x2b5bc2c
+02b5bc08 pacibsp  
+02b5bc0c stp      x29, x30, [sp, #-0x10]!
+02b5bc10 mov      x29, sp
+02b5bc14 ldr      x8, [x0]
+02b5bc18 ldr      x8, [x8, #0x70]
+02b5bc1c blr      x8
+02b5bc20 ldp      x29, x30, [sp], #0x10
+02b5bc24 autibsp  
+02b5bc28 b        #0x2b69b60
+02b5bc2c mov      w0, #0x1000
+02b5bc30 ret      
+
+FUNCTION _ZN5movie7Decoder23AcquireInputBufferIndexEPiS1_
+02b5bda0 ldr      x0, [x0, #8]
+02b5bda4 cbz      x0, #0x2b5bdcc
+02b5bda8 pacibsp  
+02b5bdac stp      x29, x30, [sp, #-0x10]!
+02b5bdb0 mov      x29, sp
+02b5bdb4 ldr      x8, [x0]
+02b5bdb8 ldr      x8, [x8, #0x58]
+02b5bdbc blr      x8
+02b5bdc0 ldp      x29, x30, [sp], #0x10
+02b5bdc4 autibsp  
+02b5bdc8 b        #0x2b69b60
+02b5bdcc mov      w0, #0x1000
+02b5bdd0 ret      
+
+FUNCTION _ZN5movie9MediaDataC1Ev
+02b50aa0 pacibsp  
+02b50aa4 stp      x29, x30, [sp, #-0x20]!
+02b50aa8 stp      x20, x19, [sp, #0x10]
+02b50aac mov      x29, sp
+02b50ab0 mov      x19, x0
+02b50ab4 str      xzr, [x0]
+02b50ab8 mov      w0, #0x608
+02b50abc bl       #0x2b52b70
+02b50ac0 cbz      x0, #0x2b50ad0
+02b50ac4 mov      x20, x0
+02b50ac8 bl       #0x1bab40
+02b50acc str      x20, [x19]
+02b50ad0 ldp      x20, x19, [sp, #0x10]
+02b50ad4 ldp      x29, x30, [sp], #0x20
+02b50ad8 retab    
+
+FUNCTION _ZN5movie9MediaData9SetStringEPKcS2_
+02b51060 pacibsp  
+02b51064 stp      x29, x30, [sp, #-0x30]!
+02b51068 str      x21, [sp, #0x10]
+02b5106c stp      x20, x19, [sp, #0x20]
+02b51070 mov      x29, sp
+02b51074 ldr      x20, [x0]
+02b51078 cbz      x20, #0x2b510b0
+02b5107c mov      x19, x1
+02b51080 mov      x0, x2
+02b51084 mov      x21, x2
+02b51088 bl       #0x2bd2020
+02b5108c mov      x3, x0
+02b51090 mov      x0, x20
+02b51094 mov      x1, x19
+02b51098 mov      x2, x21
+02b5109c ldp      x20, x19, [sp, #0x20]
+02b510a0 ldr      x21, [sp, #0x10]
+02b510a4 ldp      x29, x30, [sp], #0x30
+02b510a8 autibsp  
+02b510ac b        #0x1bb6c0
+02b510b0 ldp      x20, x19, [sp, #0x20]
+02b510b4 ldr      x21, [sp, #0x10]
+02b510b8 ldp      x29, x30, [sp], #0x30
+02b510bc retab    
+
+FUNCTION _ZNK5movie6Buffer12GetInt64DataEv
+02b50310 pacibsp  
+02b50314 stp      x29, x30, [sp, #-0x20]!
+02b50318 str      x19, [sp, #0x10]
+02b5031c mov      x29, sp
+02b50320 mov      x19, x0
+02b50324 mov      w0, #3
+02b50328 mov      w1, wzr
+02b5032c mov      w2, wzr
+02b50330 bl       #0x2b53070
+02b50334 tbz      w0, #0, #0x2b50340
+02b50338 ldr      x19, [x19]
+02b5033c cbz      x19, #0x2b50360
+02b50340 mov      w0, #3
+02b50344 mov      w1, wzr
+02b50348 mov      w2, wzr
+02b5034c bl       #0x2b53070
+02b50350 ldr      x0, [x19, #0x20]
+02b50354 ldr      x19, [sp, #0x10]
+02b50358 ldp      x29, x30, [sp], #0x20
+02b5035c retab    
+02b50360 mov      x0, xzr
+02b50364 ldr      x19, [sp, #0x10]
+02b50368 ldp      x29, x30, [sp], #0x20
+02b5036c retab    
+
+FUNCTION _ZN5movie6BufferC1Em
+02b4f740 pacibsp  
+02b4f744 stp      x29, x30, [sp, #-0x30]!
+02b4f748 stp      x22, x21, [sp, #0x10]
+02b4f74c stp      x20, x19, [sp, #0x20]
+02b4f750 mov      x29, sp
+02b4f754 mov      x19, x0
+02b4f758 mov      w0, #3
+02b4f75c mov      x20, x1
+02b4f760 mov      w1, wzr
+02b4f764 mov      w2, wzr
+02b4f768 bl       #0x2b53070
+02b4f76c tbz      w0, #0, #0x2b4f7a4
+02b4f770 mov      w0, #0x40
+02b4f774 bl       #0x2b4f840
+02b4f778 str      x0, [x19]
+02b4f77c cbz      x0, #0x2b4f818
+02b4f780 mov      x21, x0
+02b4f784 str      wzr, [x0, #0x18]
+02b4f788 stp      xzr, xzr, [x0, #8]
+02b4f78c str      xzr, [x0]
+02b4f790 stp      xzr, xzr, [x0, #0x20]
+02b4f794 str      xzr, [x0, #0x30]
+02b4f798 strb     wzr, [x0, #0x38]
+02b4f79c cbnz     x20, #0x2b4f7bc
+02b4f7a0 b        #0x2b4f818
+02b4f7a4 strb     wzr, [x19, #0x10]
+02b4f7a8 stp      xzr, xzr, [x19]
+02b4f7ac mov      x21, x19
+02b4f7b0 stp      xzr, xzr, [x19, #0x18]
+02b4f7b4 str      xzr, [x19, #0x28]
+02b4f7b8 cbz      x20, #0x2b4f818
+02b4f7bc mov      w0, #3
+02b4f7c0 mov      w1, wzr
+02b4f7c4 mov      w2, wzr
+02b4f7c8 bl       #0x2b53070
+02b4f7cc mov      w22, w0
+02b4f7d0 mov      x0, x20
+02b4f7d4 bl       #0x2b4f840
+02b4f7d8 tbz      w22, #0, #0x2b4f7f4
+02b4f7dc str      x0, [x21]
+02b4f7e0 cbz      x0, #0x2b4f818
+02b4f7e4 mov      w8, #0x38
+02b4f7e8 mov      w9, #8
+02b4f7ec mov      w10, #0x14
+02b4f7f0 b        #0x2b4f808
+02b4f7f4 str      x0, [x21, #0x28]
+02b4f7f8 cbz      x0, #0x2b4f818
+02b4f7fc mov      w8, #0x10
+02b4f800 mov      w9, #0x18
+02b4f804 mov      w10, #4
+02b4f808 str      w20, [x21, x10]
+02b4f80c str      x20, [x21, x9]
+02b4f810 mov      w9, #1
+02b4f814 strb     w9, [x21, x8]
+02b4f818 bl       #0x2b530b0
+02b4f81c tbnz     w0, #0, #0x2b4f824
+02b4f820 stp      xzr, xzr, [x19, #0x30]
+02b4f824 ldp      x20, x19, [sp, #0x20]
+02b4f828 ldp      x22, x21, [sp, #0x10]
+02b4f82c ldp      x29, x30, [sp], #0x30
+02b4f830 retab    
+
+FUNCTION _ZN5movie6BufferC1Ev
+02b4f6b0 pacibsp  
+02b4f6b4 stp      x29, x30, [sp, #-0x20]!
+02b4f6b8 str      x19, [sp, #0x10]
+02b4f6bc mov      x29, sp
+02b4f6c0 mov      x19, x0
+02b4f6c4 mov      w0, #3
+02b4f6c8 mov      w1, wzr
+02b4f6cc mov      w2, wzr
+02b4f6d0 bl       #0x2b53070
+02b4f6d4 tbz      w0, #0, #0x2b4f718
+02b4f6d8 mov      w0, #0x40
+02b4f6dc bl       #0x2b4f840
+02b4f6e0 str      x0, [x19]
+02b4f6e4 cbz      x0, #0x2b4f700
+02b4f6e8 str      wzr, [x0, #0x18]
+02b4f6ec stp      xzr, xzr, [x0, #8]
+02b4f6f0 str      xzr, [x0]
+02b4f6f4 stp      xzr, xzr, [x0, #0x20]
+02b4f6f8 str      xzr, [x0, #0x30]
+02b4f6fc strb     wzr, [x0, #0x38]
+02b4f700 bl       #0x2b530b0
+02b4f704 tbnz     w0, #0, #0x2b4f70c
+02b4f708 stp      xzr, xzr, [x19, #0x30]
+02b4f70c ldr      x19, [sp, #0x10]
+02b4f710 ldp      x29, x30, [sp], #0x20
+02b4f714 retab    
+02b4f718 strb     wzr, [x19, #0x10]
+02b4f71c stp      xzr, xzr, [x19]
+02b4f720 stp      xzr, xzr, [x19, #0x18]
+02b4f724 str      xzr, [x19, #0x28]
+02b4f728 bl       #0x2b530b0
+02b4f72c tbz      w0, #0, #0x2b4f708
+02b4f730 b        #0x2b4f70c
+
+FUNCTION _ZN5movie6BufferC1EPvm
+02b4f970 pacibsp  
+02b4f974 stp      x29, x30, [sp, #-0x30]!
+02b4f978 stp      x22, x21, [sp, #0x10]
+02b4f97c stp      x20, x19, [sp, #0x20]
+02b4f980 mov      x29, sp
+02b4f984 mov      x19, x0
+02b4f988 mov      w0, #3
+02b4f98c mov      x21, x2
+02b4f990 mov      x20, x1
+02b4f994 mov      w1, wzr
+02b4f998 mov      w2, wzr
+02b4f99c bl       #0x2b53070
+02b4f9a0 tbz      w0, #0, #0x2b4fa0c
+02b4f9a4 mov      w0, #0x40
+02b4f9a8 bl       #0x2b4f840
+02b4f9ac str      x0, [x19]
+02b4f9b0 cbz      x0, #0x2b4f9f0
+02b4f9b4 mov      x22, x0
+02b4f9b8 str      wzr, [x0, #0x18]
+02b4f9bc stp      xzr, xzr, [x0, #8]
+02b4f9c0 str      xzr, [x0]
+02b4f9c4 stp      xzr, xzr, [x0, #0x20]
+02b4f9c8 str      xzr, [x0, #0x30]
+02b4f9cc strb     wzr, [x0, #0x38]
+02b4f9d0 mov      w0, #3
+02b4f9d4 mov      w1, wzr
+02b4f9d8 mov      w2, wzr
+02b4f9dc bl       #0x2b53070
+02b4f9e0 tbnz     w0, #0, #0x2b4fa34
+02b4f9e4 str      w21, [x22, #4]
+02b4f9e8 str      x21, [x22, #0x18]
+02b4f9ec str      x20, [x22, #0x28]
+02b4f9f0 bl       #0x2b530b0
+02b4f9f4 tbnz     w0, #0, #0x2b4f9fc
+02b4f9f8 stp      xzr, xzr, [x19, #0x30]
+02b4f9fc ldp      x20, x19, [sp, #0x20]
+02b4fa00 ldp      x22, x21, [sp, #0x10]
+02b4fa04 ldp      x29, x30, [sp], #0x30
+02b4fa08 retab    
+02b4fa0c strb     wzr, [x19, #0x10]
+02b4fa10 stp      xzr, xzr, [x19]
+02b4fa14 mov      x22, x19
+02b4fa18 stp      xzr, xzr, [x19, #0x18]
+02b4fa1c str      xzr, [x19, #0x28]
+02b4fa20 mov      w0, #3
+02b4fa24 mov      w1, wzr
+02b4fa28 mov      w2, wzr
+02b4fa2c bl       #0x2b53070
+02b4fa30 tbz      w0, #0, #0x2b4f9e4
+02b4fa34 str      w21, [x22, #0x14]
+02b4fa38 stp      x20, x21, [x22]
+02b4fa3c bl       #0x2b530b0
+02b4fa40 tbz      w0, #0, #0x2b4f9f8
+02b4fa44 b        #0x2b4f9fc
+
+FUNCTION _ZNK5movie6Buffer10GetNvnSyncEv
+02b50540 pacibsp  
+02b50544 stp      x29, x30, [sp, #-0x20]!
+02b50548 str      x19, [sp, #0x10]
+02b5054c mov      x29, sp
+02b50550 mov      x19, x0
+02b50554 bl       #0x2b530b0
+02b50558 ldr      x8, [x19, #0x38]
+02b5055c ldr      x19, [sp, #0x10]
+02b50560 tst      w0, #1
+02b50564 csel     x0, xzr, x8, ne
+02b50568 ldp      x29, x30, [sp], #0x20
+02b5056c retab    
+
+FUNCTION _ZN5movie9MediaData8SetInt64EPKcl
+02b50e80 ldr      x0, [x0]
+02b50e84 cbz      x0, #0x2b50e8c
+02b50e88 b        #0x1bb080
+02b50e8c ret      
+
+FUNCTION _ZN5movie6detail16AudioDecoderImpl19GetInputBufferEventEPPN2nn2os15SystemEventTypeE
+02ba11b0 pacibsp  
+02ba11b4 stp      x29, x30, [sp, #-0x20]!
+02ba11b8 stp      x20, x19, [sp, #0x10]
+02ba11bc mov      x29, sp
+02ba11c0 mov      x19, x1
+02ba11c4 mov      x20, x0
+02ba11c8 add      x0, x0, #0xf0
+02ba11cc mov      w1, #4
+02ba11d0 bl       #0x2ba2cc0
+02ba11d4 cmp      w0, #5
+02ba11d8 ccmp     w0, #0, #4, ne
+02ba11dc b.ne     #0x2ba11ec
+02ba11e0 add      x8, x20, #0x48
+02ba11e4 mov      w0, wzr
+02ba11e8 str      x8, [x19]
+02ba11ec ldp      x20, x19, [sp, #0x10]
+02ba11f0 ldp      x29, x30, [sp], #0x20
+02ba11f4 retab    

@@ -1,0 +1,15 @@
+Executing payload...
+MOONLIGHT_STREAM_H264_CONSTRUCTING: true
+MOONLIGHT_STREAM_H264_CONFIGURING: true
+MOONLIGHT_STREAM_H264_CONFIGURED: {"code":0,"label":"Status_Success"}
+MOONLIGHT_STREAM_H264_STARTING: true
+MOONLIGHT_STREAM_H264_STARTED: {"code":0,"label":"Status_Success"}
+MOONLIGHT_STREAM_H264_INPUT_ACQUIRED: {"code":0,"label":"Status_Success"}
+MOONLIGHT_STREAM_H264_INPUT_BUFFER: {"code":0,"label":"Status_Success"}
+MOONLIGHT_STREAM_H264_SUBMITTING: {"bytes":642,"capacity":4096,"framing":"2-byte AVCC"}
+MOONLIGHT_STREAM_H264_SUBMITTED: {"code":0,"label":"Status_Success"}
+MOONLIGHT_STREAM_H264_OUTPUT_ACQUIRED: {"code":4110,"label":"Status_OutputBufferNotAvailable"}
+MOONLIGHT_STREAM_H264_LAST_ERROR: {"code":0,"label":"Status_Success"}
+MOONLIGHT_STREAM_H264_STOPPED: {"code":0,"label":"Status_Success"}
+MOONLIGHT_STREAM_H264_END: true
+Executed successfully

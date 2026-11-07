@@ -1,0 +1,13 @@
+Executing payload...
+MOONLIGHT_STREAM_AUDIO_SERVICE: {"name":"audout:u","result":"0x0","opened":true}
+MOONLIGHT_STREAM_AUDIO_SERVICE_CLOSED: {"name":"audout:u","result":"0x0"}
+MOONLIGHT_STREAM_AUDIO_SERVICE: {"name":"audren:u","result":"0x0","opened":true}
+MOONLIGHT_STREAM_AUDIO_SERVICE_CLOSED: {"name":"audren:u","result":"0x0"}
+MOONLIGHT_STREAM_AUDIO_OUTPUT_LIMIT: 2
+MOONLIGHT_STREAM_AUDIO_OPEN_ATTEMPT: {"sampleRate":48000,"channels":2}
+MOONLIGHT_STREAM_AUDIO_OPEN: {"result":"0x0","opened":true}
+MOONLIGHT_STREAM_AUDIO_FORMAT: {"sampleRate":48000,"channels":2,"format":2}
+MOONLIGHT_STREAM_AUDIO_BUFFER_APPENDED: true
+MOONLIGHT_STREAM_AUDIO_PCM_OUTPUT: {"playedSamples":4800,"releasedOwnBuffer":true,"state":0}
+MOONLIGHT_STREAM_AUDIO_END: true
+Executed successfully

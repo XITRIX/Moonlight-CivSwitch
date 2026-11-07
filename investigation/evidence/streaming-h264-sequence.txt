@@ -1,0 +1,7 @@
+Executing payload...
+MOONLIGHT_STREAM_H264_SEQUENCE_CONSTRUCTING: {"frames":30,"width":1280,"height":720,"fps":30}
+MOONLIGHT_STREAM_H264_SEQUENCE_FORMAT: {"width":1280,"height":720,"yStride":1280,"uvOffset":921600,"bufferBytes":1382400,"alignment":4096}
+MOONLIGHT_STREAM_H264_SEQUENCE_RESULT: {"submitted":30,"received":30,"correctBlueFrames":30,"eosReceived":true,"firstFrameMs":67,"lastFrameMs":991,"elapsedMs":1023,"uiTimerTicks":60,"maxUiTimerGapMs":29,"lastError":0}
+MOONLIGHT_STREAM_H264_SEQUENCE_STOPPED: 0
+MOONLIGHT_STREAM_H264_SEQUENCE_END: true
+Executed successfully

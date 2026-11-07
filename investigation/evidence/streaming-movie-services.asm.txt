@@ -1,0 +1,202 @@
+
+REGION 14cfc0
+14cfc0: adrp x8, #0x4140000
+14cfc4: add x8, x8, #0x208
+14cfc8: ldaprb w8, [x8]
+14cfcc: tbz w8, #0, #0x14cfdc
+14cfd0: adrp x0, #0x4140000
+14cfd4: add x0, x0, #0x210
+14cfd8: ret 
+14cfdc: pacibsp 
+14cfe0: stp x29, x30, [sp, #-0x20]!
+14cfe4: str x19, [sp, #0x10]
+14cfe8: mov x29, sp
+14cfec: adrp x19, #0x4140000
+14cff0: add x19, x19, #0x208
+14cff4: mov x0, x19
+14cff8: bl #0x2bd2050
+14cffc: cbz w0, #0x14d028
+14d000: add x0, x19, #8
+14d004: bl #0x14d130
+14d008: nop 
+14d00c: adr x0, #0x14d040
+14d010: adrp x2, #0x3c99000
+14d014: add x2, x2, #0x898
+14d018: add x1, x19, #8
+14d01c: bl #0x109850
+14d020: mov x0, x19
+14d024: bl #0x2bd2060
+14d028: ldr x19, [sp, #0x10]
+14d02c: ldp x29, x30, [sp], #0x20
+14d030: adrp x0, #0x4140000
+14d034: add x0, x0, #0x210
+14d038: retab 
+14d03c: udf #0
+14d040: pacibsp 
+14d044: stp x29, x30, [sp, #-0x20]!
+14d048: str x19, [sp, #0x10]
+14d04c: mov x29, sp
+14d050: ldrb w8, [x0, #0xb0]
+14d054: mov x19, x0
+14d058: cmp w8, #1
+14d05c: b.eq #0x14d0b0
+14d060: ldrb w8, [x19, #0xa8]
+14d064: cmp w8, #1
+14d068: b.eq #0x14d0c4
+14d06c: ldrb w8, [x19, #0xa0]
+14d070: cmp w8, #1
+14d074: b.eq #0x14d0d8
+14d078: ldrb w8, [x19, #0x98]
+14d07c: cmp w8, #1
+14d080: b.eq #0x14d0ec
+14d084: ldrb w8, [x19, #0x90]
+14d088: cmp w8, #1
+14d08c: b.eq #0x14d100
+14d090: ldrb w8, [x19, #0x88]
+14d094: cmp w8, #1
+14d098: b.eq #0x14d114
+14d09c: add x0, x19, #4
+14d0a0: ldr x19, [sp, #0x10]
+14d0a4: ldp x29, x30, [sp], #0x20
+14d0a8: autibsp 
+14d0ac: b #0x14d360
+14d0b0: add x0, x19, #0xb4
+14d0b4: bl #0x142570
+14d0b8: ldrb w8, [x19, #0xa8]
+14d0bc: cmp w8, #1
+14d0c0: b.ne #0x14d06c
+14d0c4: add x0, x19, #0xac
+14d0c8: bl #0x142570
+14d0cc: ldrb w8, [x19, #0xa0]
+14d0d0: cmp w8, #1
+14d0d4: b.ne #0x14d078
+14d0d8: add x0, x19, #0xa4
+14d0dc: bl #0x142570
+14d0e0: ldrb w8, [x19, #0x98]
+14d0e4: cmp w8, #1
+14d0e8: b.ne #0x14d084
+14d0ec: add x0, x19, #0x9c
+14d0f0: bl #0x142570
+14d0f4: ldrb w8, [x19, #0x90]
+14d0f8: cmp w8, #1
+14d0fc: b.ne #0x14d090
+14d100: add x0, x19, #0x94
+14d104: bl #0x142570
+14d108: ldrb w8, [x19, #0x88]
+14d10c: cmp w8, #1
+14d110: b.ne #0x14d09c
+14d114: add x0, x19, #0x8c
+14d118: bl #0x142570
+14d11c: add x0, x19, #4
+14d120: ldr x19, [sp, #0x10]
+14d124: ldp x29, x30, [sp], #0x20
+14d128: autibsp 
+14d12c: b #0x14d360
+14d130: str xzr, [x0, #0xc0]
+14d134: strb wzr, [x0, #0xc8]
+14d138: stp xzr, xzr, [x0]
+14d13c: stp xzr, xzr, [x0, #0x10]
+14d140: stp xzr, xzr, [x0, #0x20]
+14d144: stp xzr, xzr, [x0, #0x30]
+14d148: stp xzr, xzr, [x0, #0x40]
+14d14c: stp xzr, xzr, [x0, #0x50]
+14d150: stp xzr, xzr, [x0, #0x60]
+14d154: stp xzr, xzr, [x0, #0x70]
+14d158: stp xzr, xzr, [x0, #0x80]
+14d15c: stp xzr, xzr, [x0, #0x90]
+14d160: stp xzr, xzr, [x0, #0xa0]
+14d164: str xzr, [x0, #0xb0]
+14d168: str wzr, [x0, #0xb8]
+14d16c: ret 
+14d170: pacibsp 
+14d174: stp x29, x30, [sp, #-0x20]!
+14d178: stp x20, x19, [sp, #0x10]
+14d17c: mov x29, sp
+14d180: mov x19, x0
+14d184: bl #0x13dd10
+14d188: ldr x8, [x19, #0xc0]
+14d18c: cbz x8, #0x14d1a0
+14d190: add x8, x8, #1
+14d194: mov w20, wzr
+14d198: str x8, [x19, #0xc0]
+14d19c: b #0x14d214
+14d1a0: ldrb w0, [x19, #0xc8]
+14d1a4: adrp x1, #0x3252000
+14d1a8: add x1, x1, #0x908
+14d1ac: stur xzr, [x19, #0xb4]
+14d1b0: stur xzr, [x19, #0xac]
+14d1b4: stur xzr, [x19, #0xa4]
+14d1b8: stur xzr, [x19, #0x9c]
+14d1bc: stur xzr, [x19, #0x94]
+14d1c0: stur xzr, [x19, #0x8c]
+14d1c4: stur xzr, [x19, #0x84]
+14d1c8: stur xzr, [x19, #0x7c]
+14d1cc: stur xzr, [x19, #0x74]
+14d1d0: stur xzr, [x19, #0x6c]
+14d1d4: stur xzr, [x19, #0x64]
+14d1d8: stur xzr, [x19, #0x5c]
+14d1dc: stur xzr, [x19, #0x54]
+14d1e0: stur xzr, [x19, #0x4c]
+14d1e4: stur xzr, [x19, #0x44]
+14d1e8: stur xzr, [x19, #0x3c]
+14d1ec: stur xzr, [x19, #0x34]
+14d1f0: stur xzr, [x19, #0x2c]
+14d1f4: stur xzr, [x19, #0x24]
+14d1f8: stur xzr, [x19, #0x1c]
+14d1fc: stur xzr, [x19, #0x14]
+14d200: stur xzr, [x19, #0xc]
+14d204: stur xzr, [x19, #4]
+14d208: bl #0x14c760
+14d20c: mov w20, w0
+14d210: cbz w0, #0x14d22c
+14d214: mov x0, x19
+14d218: bl #0x13dd30
+14d21c: mov w0, w20
+14d220: ldp x20, x19, [sp, #0x10]
+14d224: ldp x29, x30, [sp], #0x20
+14d228: retab 
+14d22c: ldr x8, [x19, #0xc0]
+14d230: b #0x14d190
+14d234: udf #0
+14d238: udf #0
+14d23c: udf #0
+14d240: pacibsp 
+14d244: stp x29, x30, [sp, #-0x20]!
+14d248: str x19, [sp, #0x10]
+14d24c: mov x29, sp
+14d250: mov x19, x0
+14d254: bl #0x13dd10
+14d258: ldr x8, [x19, #0xc0]
+14d25c: subs x8, x8, #1
+14d260: str x8, [x19, #0xc0]
+14d264: b.eq #0x14d27c
+14d268: mov x0, x19
+14d26c: ldr x19, [sp, #0x10]
+14d270: ldp x29, x30, [sp], #0x20
+14d274: autibsp 
+14d278: b #0x13dd30
+14d27c: add x0, x19, #4
+14d280: bl #0x14d360
+14d284: ldrb w8, [x19, #0xb0]
+14d288: cmp w8, #1
+14d28c: b.eq #0x14d2ec
+14d290: ldrb w8, [x19, #0xa8]
+14d294: cmp w8, #1
+14d298: b.eq #0x14d300
+14d29c: ldrb w8, [x19, #0xa0]
+14d2a0: cmp w8, #1
+14d2a4: b.eq #0x14d314
+14d2a8: ldrb w8, [x19, #0x98]
+14d2ac: cmp w8, #1
+14d2b0: b.eq #0x14d328
+14d2b4: ldrb w8, [x19, #0x90]
+14d2b8: cmp w8, #1
+14d2bc: b.eq #0x14d33c
+14d2c0: ldrb w8, [x19, #0x88]
+14d2c4: cmp w8, #1
+14d2c8: b.ne #0x14d2d4
+14d2cc: add x0, x19, #0x8c
+14d2d0: bl #0x142570
+14d2d4: bl #0x14ccb0
+14d2d8: mov x0, x19
+14d2dc: ldr x19, [sp, #0x10]

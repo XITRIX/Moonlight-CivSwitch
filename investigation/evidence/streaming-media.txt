@@ -1,0 +1,11 @@
+Executing payload...
+MOONLIGHT_STREAM_MEDIA_URL_APIS: {"createObjectURL":"function","revokeObjectURL":"function","atob":"undefined"}
+MOONLIGHT_STREAM_MEDIA_H264_MP4_DATA: {"playReturn":"undefined","events":["play","loadstart","error"],"times":[0,0,0,0,0,0],"readyState":0,"networkState":3,"width":0,"height":0,"duration":null,"error":{"code":4,"message":""}}
+MOONLIGHT_STREAM_MEDIA_VP8_WEBM_DATA: {"playReturn":"undefined","events":["play","error","loadstart","error"],"times":[0,0,0,0,0,0],"readyState":0,"networkState":3,"width":0,"height":0,"duration":null,"error":{"code":4,"message":""}}
+MOONLIGHT_STREAM_MEDIA_VP8_WEBM_BLOB: {"playReturn":"undefined","events":["play","error","loadstart","error"],"times":[0,0,0,0,0,0],"readyState":0,"networkState":3,"width":0,"height":0,"duration":null,"error":{"code":4,"message":""}}
+MOONLIGHT_STREAM_MEDIA_VP8_VORBIS_WEBM_BLOB: {"playReturn":"undefined","events":["play","error","loadstart","error"],"times":[0,0,0,0,0,0],"readyState":0,"networkState":3,"width":0,"height":0,"duration":null,"error":{"code":4,"message":""}}
+MOONLIGHT_STREAM_MEDIA_CANVAS_METHODS: {"drawImage":"function","getImageData":"undefined","putImageData":"undefined","createImageData":"undefined","clearRect":"function","fillRect":"function","createPattern":"function","createLinearGradient":"function","toDataURL":"undefined","toBlob":"undefined"}
+MOONLIGHT_STREAM_MEDIA_CANVAS_DRAW_COMMAND: {"accepted":true}
+MOONLIGHT_STREAM_MEDIA_SOUND_API: {"prototype":["play","playOnIndex","volumeSetCheckpoint","volumeRestoreCheckpoint","volumeReset","volumeGetMaster","volumeGetVoice","volumeGetMusic","volumeGetSFX","volumeGetUI","volumeGetCinematics","volumeSetMaster","volumeSetVoice","volumeSetMusic","volumeSetSFX","volumeSetUI","volumeSetCinematics","volumeWriteSettings","getDynamicRangeOption","setDynamicRangeOption","getMuteOnFocusLoss","setMuteOnFocusLoss","getSubtitles","setSubtitles","onMainMenu","onEndOfAgeBanner","onNextCivSelect"]}
+MOONLIGHT_STREAM_MEDIA_END: true
+Executed successfully

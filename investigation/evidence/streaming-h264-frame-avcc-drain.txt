@@ -1,0 +1,21 @@
+Executing payload...
+MOONLIGHT_STREAM_H264_CONSTRUCTING: true
+MOONLIGHT_STREAM_H264_CONFIGURING: true
+MOONLIGHT_STREAM_H264_CONFIGURED: {"code":0,"label":"Status_Success"}
+MOONLIGHT_STREAM_H264_STARTING: true
+MOONLIGHT_STREAM_H264_STARTED: {"code":0,"label":"Status_Success"}
+MOONLIGHT_STREAM_H264_INPUT_ACQUIRED: {"code":0,"label":"Status_Success"}
+MOONLIGHT_STREAM_H264_INPUT_BUFFER: {"code":0,"label":"Status_Success"}
+MOONLIGHT_STREAM_H264_SUBMITTING: {"bytes":642,"capacity":4096,"framing":"2-byte AVCC"}
+MOONLIGHT_STREAM_H264_SUBMITTED: {"code":0,"label":"Status_Success"}
+MOONLIGHT_STREAM_H264_DRAIN_SUBMITTED: {"code":0,"label":"Status_Success"}
+MOONLIGHT_STREAM_H264_OUTPUT_ACQUIRED: {"code":0,"label":"Status_Success"}
+MOONLIGHT_STREAM_H264_OUTPUT_FORMAT: {"code":0,"label":"Status_Success"}
+MOONLIGHT_STREAM_H264_FORMAT: {"width":{"found":true,"value":64},"height":{"found":true,"value":64},"color-format":{"found":false,"value":0},"nv12-y-stride":{"found":true,"value":64},"nv12-y-offset":{"found":true,"value":0},"nv12-uv-stride":{"found":true,"value":64},"nv12-uv-offset":{"found":true,"value":4096},"slice-height":{"found":true,"value":64}}
+MOONLIGHT_STREAM_H264_OUTPUT_SIZE: {"code":0,"label":"Status_Success"}
+MOONLIGHT_STREAM_H264_OUTPUT_BUFFER: {"code":0,"label":"Status_Success"}
+MOONLIGHT_STREAM_H264_DECODED_PIXELS: {"bytes":6144,"allocation":6144,"mode":4096,"pts":"0","flags":4,"histogram":{"16":4096,"129":2048},"samples":{"0":16,"64":16,"4096":129,"4097":129,"6142":129,"6143":129}}
+MOONLIGHT_STREAM_H264_OUTPUT_RELEASED: {"code":0,"label":"Status_Success"}
+MOONLIGHT_STREAM_H264_STOPPED: {"code":0,"label":"Status_Success"}
+MOONLIGHT_STREAM_H264_END: true
+Executed successfully

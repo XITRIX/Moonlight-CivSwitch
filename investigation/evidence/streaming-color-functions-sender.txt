@@ -1,0 +1,5 @@
+Executing payload...
+MOONLIGHT_COLOR_FUNCTIONS: {"module":"sdk","matches":[{"name":"nvgr_is_yuv16","offset":"43cd50","size":52},{"name":"nvgr_is_yuv","offset":"43cd40","size":16}]}
+MOONLIGHT_COLOR_FUNCTIONS: {"module":"movie","matches":[{"name":"_glViewportSwizzleNV","offset":"20d4f70","size":120}]}
+MOONLIGHT_COLOR_FORMAT_TABLE: [0,4,1,65,66]
+Executed successfully
