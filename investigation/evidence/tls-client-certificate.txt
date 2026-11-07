@@ -1,0 +1,5 @@
+Executing payload...
+IDENTITY_RELOADED: true
+TLS_DIAGNOSTIC: <?xml version="1.0" encoding="utf-8"?>
+<root status_code="200"><hostname>DESKTOP-EEEE6K7</hostname><appversion>7.1.431.-1</appversion><GfeVersion>3.23.0.74</GfeVersion><uniqueid>2F7F0104-A129-692D-6B8B-036007DFBF4A</uniqueid><HttpsPort>47984</HttpsPort><ExternalPort>47989</ExternalPort><MaxLumaPixelsHEVC>1869449984</MaxLumaPixelsHEVC><mac>10:ff:e0:bd:0e:98</mac><Permission>50331648</Permission><VirtualDisplayCapable>true</VirtualDisplayCapable><VirtualDisplayDriverReady>true</VirtualDisplayDriverReady><LocalIP>192.168.1.4</LocalIP><ServerCodecModeSupport>2032385</ServerCodecModeSupport><PairStatus>1</PairStatus><currentgame>0</currentgame><currentgameuuid/><state>SUNSHINE_SERVER_FREE</state></root>
+Executed successfully

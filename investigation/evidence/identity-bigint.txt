@@ -1,0 +1,16 @@
+Executing payload...
+IDENTITY_PROBE: {"stage":"checking"}
+IDENTITY_PROBE: {"stage":"online"}
+IDENTITY_PROBE: {"stage":"generating_identity"}
+IDENTITY_PROBE: {"stage":"generating_identity","elapsedMs":285,"steps":16,"primesFound":0,"keygenPhase":0,"candidatePhase":1,"entropyCalls":32,"entropyBytes":14490,"entropyMs":88}
+IDENTITY_PROBE: {"stage":"generating_identity","elapsedMs":569,"steps":32,"primesFound":0,"keygenPhase":0,"candidatePhase":1,"entropyCalls":54,"entropyBytes":25754,"entropyMs":152}
+IDENTITY_PROBE: {"stage":"generating_identity","elapsedMs":849,"steps":48,"primesFound":0,"keygenPhase":0,"candidatePhase":1,"entropyCalls":80,"entropyBytes":39066,"entropyMs":229}
+IDENTITY_PROBE: {"stage":"generating_identity","elapsedMs":1131,"steps":64,"primesFound":0,"keygenPhase":0,"candidatePhase":1,"entropyCalls":107,"entropyBytes":52890,"entropyMs":306}
+IDENTITY_PROBE: {"stage":"generating_identity","elapsedMs":1441,"steps":80,"primesFound":0,"keygenPhase":0,"candidatePhase":2,"entropyCalls":135,"entropyBytes":67226,"entropyMs":388}
+IDENTITY_PROBE: {"stage":"key_generated","elapsedMs":1997,"steps":93,"primesFound":2,"keygenPhase":5,"candidatePhase":0,"entropyCalls":157,"entropyBytes":78107,"entropyMs":450}
+IDENTITY_PROBE: {"stage":"generating_certificate"}
+IDENTITY_PROBE: {"stage":"wrapping_credential"}
+IDENTITY_PROBE: {"stage":"saving_identity"}
+IDENTITY_PROBE: {"stage":"waiting_pin"}
+IDENTITY_PROBE_RESULT: IDENTITY_PROBE_COMPLETE_BEFORE_PAIR
+Executed successfully

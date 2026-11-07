@@ -1,0 +1,13 @@
+Executing payload...
+MOONLIGHT_NETWORK_PROBE_BEGIN
+XMLHttpRequest: function
+fetch: undefined
+WebSocket: function
+crypto: undefined
+localStorage: object
+native sockets: true
+Network APIs: lastMismatchVersion, joinCodeMaxLength, networkVersion, unitTestModeEnabled, isInSession
+SUNSHINE_XHR_STATUS: 404
+
+MOONLIGHT_NETWORK_PROBE_END
+Executed successfully

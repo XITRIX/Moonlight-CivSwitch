@@ -1,0 +1,110 @@
+test_background_buttons_do_not_close_the_app (test_app.AppScreenTests.test_background_buttons_do_not_close_the_app) ... ok
+test_disconnect_notice_clears_after_reconnect (test_app.AppScreenTests.test_disconnect_notice_clears_after_reconnect) ... ok
+test_error_screen_is_only_rendered_in_focus (test_app.AppScreenTests.test_error_screen_is_only_rendered_in_focus) ... ok
+test_instructions_follow_current_connection_state (test_app.AppScreenTests.test_instructions_follow_current_connection_state) ... ok
+test_non_result_errors_do_not_display_success_codes (test_app.AppScreenTests.test_non_result_errors_do_not_display_success_codes) ... ok
+test_reset_notice_clears_after_recovery (test_app.AppScreenTests.test_reset_notice_clears_after_recovery) ... ok
+test_startup_errors_identify_the_failed_service (test_app.AppScreenTests.test_startup_errors_identify_the_failed_service) ... ok
+test_b_cancels_local_playback (test_app.LocalPlaybackAppTests.test_b_cancels_local_playback) ... ok
+test_error_stage_is_visible_and_saved_then_clears_without_remote_client (test_app.LocalPlaybackAppTests.test_error_stage_is_visible_and_saved_then_clears_without_remote_client) ... ok
+test_leaving_foreground_cancels_playback (test_app.LocalPlaybackAppTests.test_leaving_foreground_cancels_playback) ... ok
+test_minus_runs_payload_beside_nro_without_wifi (test_app.LocalPlaybackAppTests.test_minus_runs_payload_beside_nro_without_wifi) ... ok
+test_missing_payload_has_a_clear_error (test_app.LocalPlaybackAppTests.test_missing_payload_has_a_clear_error) ... ok
+test_repeated_errors_back_off_instead_of_resetting_every_frame (test_app.LocalPlaybackAppTests.test_repeated_errors_back_off_instead_of_resetting_every_frame) ... ok
+test_waiting_status_names_the_blocked_interface (test_app.LocalPlaybackAppTests.test_waiting_status_names_the_blocked_interface) ... ok
+test_all_87_lines_have_controller_navigation_and_two_enters (test_civswitch.AutomaticMacroTests.test_all_87_lines_have_controller_navigation_and_two_enters) ... ok
+test_bad_payload_fails_before_network_connection (test_civswitch.AutomaticMacroTests.test_bad_payload_fails_before_network_connection) ... ok
+test_caps_response_is_checked_and_button_mapping_matches_pico (test_civswitch.AutomaticMacroTests.test_caps_response_is_checked_and_button_mapping_matches_pico) ... ok
+test_old_keyboard_build_stops_before_any_input (test_civswitch.AutomaticMacroTests.test_old_keyboard_build_stops_before_any_input) ... ok
+test_real_backend_with_two_interfaces (test_civswitch.CompositeUsbTests.test_real_backend_with_two_interfaces) ... composite USB descriptors, controls, transfers, suspend, timeout: PASS
+if0 OUT ep02 queue n=64 req=00/00 v=0000 len=0
+if0 control IN primary queue target1 n=63 req=81/06 v=2200 len=255
+shared EP0 keyboard descriptor routing: PASS
+shared EP0 keyboard descriptor routing: PASS
+delayed shared notification and genuine repeated SETUP: PASS
+nonblocking superseded SETUP handling: PASS
+readiness waits for descriptor acknowledgement: PASS
+host reconfiguration without software USB teardown: PASS
+host reset retires interrupted EP0 transfer: PASS
+keyboard interrupt LEDs and gamepad output echo: PASS
+configured=1 num=1 ready=1
+configured=1 num=1 ready=1
+readiness distinguishes keyboard and controller polling: PASS
+ok
+test_atomic_text_prefix_and_repeated_characters_round_trip (test_civswitch.GamepadServerTests.test_atomic_text_prefix_and_repeated_characters_round_trip) ... ok
+test_gamepad_tap_releases_without_a_second_packet (test_civswitch.GamepadServerTests.test_gamepad_tap_releases_without_a_second_packet) ... ok
+test_malformed_pad_drops_session_and_releases_both (test_civswitch.GamepadServerTests.test_malformed_pad_drops_session_and_releases_both) ... ok
+test_one_atomic_tap_releases_without_any_followup_packet (test_civswitch.GamepadServerTests.test_one_atomic_tap_releases_without_any_followup_packet) ... ok
+test_overlong_tap_is_rejected_before_pressing_a_key (test_civswitch.GamepadServerTests.test_overlong_tap_is_rejected_before_pressing_a_key) ... ok
+test_packet_delay_between_identical_eights_keeps_separate_short_taps (test_civswitch.GamepadServerTests.test_packet_delay_between_identical_eights_keeps_separate_short_taps) ... ok
+test_pad_tap_and_release_both_interfaces (test_civswitch.GamepadServerTests.test_pad_tap_and_release_both_interfaces) ... ok
+test_real_tcp_macro_and_resume_preserve_message_order (test_civswitch.GamepadServerTests.test_real_tcp_macro_and_resume_preserve_message_order) ... ok
+test_watchdog_releases_controller (test_civswitch.GamepadServerTests.test_watchdog_releases_controller) ... ok
+test_ascii_coverage_and_shift (test_nxhid.KeyMappingTests.test_ascii_coverage_and_shift) ... ok
+test_chords (test_nxhid.KeyMappingTests.test_chords) ... ok
+test_failed_cleanup_preserves_original_error (test_nxhid.KeyMappingTests.test_failed_cleanup_preserves_original_error) ... ok
+test_failed_final_release_does_not_report_success (test_nxhid.KeyMappingTests.test_failed_final_release_does_not_report_success) ... ok
+test_invalid_keys (test_nxhid.KeyMappingTests.test_invalid_keys) ... ok
+test_led_response_validation (test_nxhid.KeyMappingTests.test_led_response_validation) ... ok
+test_live_key_mapping_preserves_physical_keys (test_nxhid.KeyMappingTests.test_live_key_mapping_preserves_physical_keys) ... ok
+test_live_keypad_mapping_does_not_depend_on_local_num_lock (test_nxhid.KeyMappingTests.test_live_keypad_mapping_does_not_depend_on_local_num_lock) ... ok
+test_newline_sequence_follows_typing_delay (test_nxhid.KeyMappingTests.test_newline_sequence_follows_typing_delay) ... ok
+test_sequence_parsing (test_nxhid.KeyMappingTests.test_sequence_parsing) ... ok
+test_text_prevalidation (test_nxhid.KeyMappingTests.test_text_prevalidation) ... ok
+test_transport_timeout_closes_the_session (test_nxhid.KeyMappingTests.test_transport_timeout_closes_the_session) ... ok
+test_legacy_macos_tk_fails_before_opening_a_window (test_nxhid.LiveRuntimeTests.test_legacy_macos_tk_fails_before_opening_a_window) ... ok
+test_missing_macos_tk_reports_matching_python_command (test_nxhid.LiveRuntimeTests.test_missing_macos_tk_reports_matching_python_command) ... ok
+test_supported_runtimes_attempt_to_create_the_window (test_nxhid.LiveRuntimeTests.test_supported_runtimes_attempt_to_create_the_window) ... ok
+test_capslock_chord_toggles_target_and_raw_reports_stay_raw (test_nxhid.ServerIntegrationTests.test_capslock_chord_toggles_target_and_raw_reports_stay_raw) ... ok
+test_cli_carriage_return_streams_immediately_and_split_crlf_is_one_newline (test_nxhid.ServerIntegrationTests.test_cli_carriage_return_streams_immediately_and_split_crlf_is_one_newline) ... ok
+test_cli_disconnect_exits_with_stdin_still_open (test_nxhid.ServerIntegrationTests.test_cli_disconnect_exits_with_stdin_still_open) ... ok
+test_cli_file_dash_reads_stdin (test_nxhid.ServerIntegrationTests.test_cli_file_dash_reads_stdin) ... ok
+test_cli_invalid_newline_sequence_sends_nothing (test_nxhid.ServerIntegrationTests.test_cli_invalid_newline_sequence_sends_nothing) ... ok
+test_cli_invalid_stdin_stops_after_valid_prefix (test_nxhid.ServerIntegrationTests.test_cli_invalid_stdin_stops_after_valid_prefix) ... ok
+test_cli_invalid_utf8_keeps_valid_prefix_and_exits_with_stdin_open (test_nxhid.ServerIntegrationTests.test_cli_invalid_utf8_keeps_valid_prefix_and_exits_with_stdin_open) ... ok
+test_cli_literal_text_still_validates_before_sending (test_nxhid.ServerIntegrationTests.test_cli_literal_text_still_validates_before_sending) ... ok
+test_cli_newline_sequence_allow_explicit_enter_in_literal_text (test_nxhid.ServerIntegrationTests.test_cli_newline_sequence_allow_explicit_enter_in_literal_text) ... ok
+test_cli_newline_sequence_file_keeps_chords_raw_with_caps_on (test_nxhid.ServerIntegrationTests.test_cli_newline_sequence_file_keeps_chords_raw_with_caps_on) ... ok
+test_cli_newline_sequence_replace_each_streamed_newline (test_nxhid.ServerIntegrationTests.test_cli_newline_sequence_replace_each_streamed_newline) ... ok
+test_cli_piped_stdin_preserves_whitespace (test_nxhid.ServerIntegrationTests.test_cli_piped_stdin_preserves_whitespace) ... ok
+test_cli_regular_file_handles_caps_lock (test_nxhid.ServerIntegrationTests.test_cli_regular_file_handles_caps_lock) ... ok
+test_cli_rejects_multiple_text_sources (test_nxhid.ServerIntegrationTests.test_cli_rejects_multiple_text_sources) ... ok
+test_cli_rejects_removed_sequence_delay_options (test_nxhid.ServerIntegrationTests.test_cli_rejects_removed_sequence_delay_options) ... ok
+test_cli_stdin_streams_before_eof_and_survives_idle (test_nxhid.ServerIntegrationTests.test_cli_stdin_streams_before_eof_and_survives_idle) ... ok
+test_fragmented_and_coalesced_tcp_lines (test_nxhid.ServerIntegrationTests.test_fragmented_and_coalesced_tcp_lines) ... ok
+test_heartbeat_keeps_chord_held (test_nxhid.ServerIntegrationTests.test_heartbeat_keeps_chord_held) ... ok
+test_invalid_reports (test_nxhid.ServerIntegrationTests.test_invalid_reports) ... ok
+test_led_query_does_not_emit_keyboard_reports (test_nxhid.ServerIntegrationTests.test_led_query_does_not_emit_keyboard_reports) ... ok
+test_malformed_report_releases_keys (test_nxhid.ServerIntegrationTests.test_malformed_report_releases_keys) ... ok
+test_oversized_line_and_nul (test_nxhid.ServerIntegrationTests.test_oversized_line_and_nul) ... ok
+test_real_python_client_and_release (test_nxhid.ServerIntegrationTests.test_real_python_client_and_release) ... ok
+test_reconnect_after_closed_sender_is_accepted (test_nxhid.ServerIntegrationTests.test_reconnect_after_closed_sender_is_accepted) ... ok
+test_release_accepted_as_first_command (test_nxhid.ServerIntegrationTests.test_release_accepted_as_first_command) ... ok
+test_report_accepted_without_handshake (test_nxhid.ServerIntegrationTests.test_report_accepted_without_handshake) ... ok
+test_second_sender_rejected (test_nxhid.ServerIntegrationTests.test_second_sender_rejected) ... ok
+test_text_preserves_case_with_caps_lock_on (test_nxhid.ServerIntegrationTests.test_text_preserves_case_with_caps_lock_on) ... ok
+test_usb_failure_is_not_acknowledged (test_nxhid.ServerIntegrationTests.test_usb_failure_is_not_acknowledged) ... ok
+test_watchdog_releases_held_key (test_nxhid.ServerIntegrationTests.test_watchdog_releases_held_key) ... ok
+test_host_targets_do_not_require_switch_sdk (test_package.PackagingTests.test_host_targets_do_not_require_switch_sdk) ... ok
+test_package_excludes_stale_files_and_metadata (test_package.PackagingTests.test_package_excludes_stale_files_and_metadata) ... ok
+test_ascii_and_caps_lock_match_the_existing_client (test_playback.PlaybackTests.test_ascii_and_caps_lock_match_the_existing_client) ... ok
+test_cancel_usb_failure_and_focus_loss_release_all_input (test_playback.PlaybackTests.test_cancel_usb_failure_and_focus_loss_release_all_input) ... ok
+test_caps_are_compensated_during_offline_playback (test_playback.PlaybackTests.test_caps_are_compensated_during_offline_playback) ... ok
+test_full_87_line_macro_has_exact_order_and_short_local_holds (test_playback.PlaybackTests.test_full_87_line_macro_has_exact_order_and_short_local_holds) ... ok
+test_payload_path_follows_the_actual_nro_directory (test_playback.PlaybackTests.test_payload_path_follows_the_actual_nro_directory) ... ok
+test_payload_validation_rejects_corruption_and_accepts_crlf (test_playback.PlaybackTests.test_payload_validation_rejects_corruption_and_accepts_crlf) ... ok
+test_control_errors_latch_until_teardown (test_usb.UsbBackendTests.test_control_errors_latch_until_teardown) ... ok
+test_descriptors_and_partial_reads (test_usb.UsbBackendTests.test_descriptors_and_partial_reads) ... ok
+test_hid_controls_idle_and_disconnect (test_usb.UsbBackendTests.test_hid_controls_idle_and_disconnect) ... ok
+test_idle_reports_do_not_reset_a_host_that_stops_polling (test_usb.UsbBackendTests.test_idle_reports_do_not_reset_a_host_that_stops_polling) ... ok
+test_initialization_failure_cleanup_and_bus_reset (test_usb.UsbBackendTests.test_initialization_failure_cleanup_and_bus_reset) ... ok
+test_pending_transfers_control_requests_and_state_changes (test_usb.UsbBackendTests.test_pending_transfers_control_requests_and_state_changes) ... ok
+test_service_errors_short_transfers_and_timeouts (test_usb.UsbBackendTests.test_service_errors_short_transfers_and_timeouts) ... ok
+test_slow_enumeration_keeps_servicing_control_requests (test_usb.UsbBackendTests.test_slow_enumeration_keeps_servicing_control_requests) ... ok
+test_suspend_preserves_session_and_releases_keys_on_resume (test_usb.UsbBackendTests.test_suspend_preserves_session_and_releases_keys_on_resume) ... ok
+test_suspend_with_a_pending_report_does_not_reuse_its_buffer (test_usb.UsbBackendTests.test_suspend_with_a_pending_report_does_not_reuse_its_buffer) ... ok
+
+----------------------------------------------------------------------
+Ran 91 tests in 20.185s
+
+OK

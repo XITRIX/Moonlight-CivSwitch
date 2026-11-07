@@ -1,0 +1,10 @@
+NXHID v0.4.4 - unofficial experimental readiness / local playback build
+Upstream: hyln9/nxhid 68480849294c2335611c22ed73fb0912a5de34aa
+Built 2026-11-05 with devkitA64 GCC 16.1.0 and libnx 4.12.0.
+91 host tests passed, including native USB regression scenarios.
+NRO cross-compilation passed.
+Records successful keyboard report-descriptor delivery before handling a
+following SETUP request. Still requires actual keyboard and controller initial
+input completion. Adds explicit wait reasons and readiness details to UI/log.
+Physical console behavior still requires retesting.
+NRO SHA-256: 13c33b5598aba1a7cf2eb92871cd5c1229d686fcedfcf41d021eae47ab001408

@@ -1,0 +1,124 @@
+Executing payload...
+MOONLIGHT_NATIVE_PROBE_BEGIN
+SOCKET: 2
+SEND_TIMEOUT: 0
+CONNECT: 0
+SEND: 141
+SUNSHINE_NATIVE_RESPONSE: HTTP/1.1 200 OK
+Content-Length: 590
+
+<?xml version="1.0" encoding="utf-8"?>
+<root status_code="200"><hostname>DESKTOP-EEEE6K7</hostname><appversion>7.1.431.-1</appversion><GfeVersion>3.23.0.74</GfeVersion><uniqueid>2F7F0104-A129-692D-6B8B-036007DFBF4A</uniqueid><HttpsPort>47984</HttpsPort><ExternalPort>47989</ExternalPort><MaxLumaPixelsHEVC>1869449984</MaxLumaPixelsHEVC><mac>00:00:00:00:00:00</mac><Permission>0</Permission><LocalIP>192.168.1.4</LocalIP><ServerCodecModeSupport>2032385</ServerCodecModeSupport><PairStatus>0</PairStatus><currentgame>0</currentgame><currentgameuuid/><state>SUNSHINE_SERVER_FREE</state></root>
+SDK_MOD_OFFSET: 0x602010
+SDK_DYNAMIC_TAGS: 2,3,4,5,6,7,8,9,10,11,12,13,14,20,23,25,26,27,28,30,35,36,37,1879047925,1879048187
+SDK_SYMBOL_COUNT: 23046
+SDK_EXPORT: _ZN2nn6socket5FcntlEiNS0_12FcntlCommandEz @0x14d560 size=160
+SDK_EXPORT: nnsocketGetLastErrno @0x14df90 size=4
+SDK_EXPORT: _ZN2nn3ssl7Context9GetOptionEPiNS1_13ContextOptionE @0x3dd8ac size=168
+SDK_EXPORT: _ZN2nn6socket12GetLastErrnoEv @0x14d830 size=4
+SDK_EXPORT: _ZN2nn3ssl10Connection19SetServerCertBufferEPcj @0x3db50c size=200
+SDK_EXPORT: _ZN2nn3ssl10Connection16GetNextAlpnProtoEPNS1_14AlpnProtoStateEPhPjj @0x3dcd50 size=304
+SDK_EXPORT: nnsslConnectionGetServerCertDetail @0x3dabc0 size=48
+SDK_EXPORT: nnsslInitialize @0x3da790 size=24
+SDK_EXPORT: _ZN2nn3ssl7Context12AddPolicyOidEPKcj @0x3ddcd4 size=232
+SDK_EXPORT: _ZN2nn6socket6detail12GetLastErrnoEv @0x152d90 size=80
+SDK_EXPORT: _ZN2nn3ssl10Connection19GetVerifyCertErrorsEPNS_6ResultEPjS4_j @0x3dc86c size=288
+SDK_EXPORT: nnsslConnectionGetServerCertSize @0x3dac30 size=44
+SDK_EXPORT: _ZN2nn3ssl10Connection10CipherInfoC1Ev @0x3dcb90 size=24
+SDK_EXPORT: _ZN2nn3ssl7ContextC2Ev @0x3dd5e8 size=8
+SDK_EXPORT: _ZN2nn3ssl10Connection11DoHandshakeEPjS2_Pcj @0x3dbc9c size=284
+SDK_EXPORT: nnsslConnectionDestroy @0x3da900 size=80
+SDK_EXPORT: _ZN2nn3ssl10Connection7DestroyEv @0x3db290 size=192
+SDK_EXPORT: nnsslConnectionGetVerifyOption @0x3daad0 size=36
+SDK_EXPORT: nnsslConnectionGetServerCertCount @0x3dabf0 size=60
+SDK_EXPORT: _ZN2nn3ssl7ContextD1Ev @0x3dd5f0 size=4
+SDK_EXPORT: _ZN2nn3ssl10ConnectionC2Ev @0x3db100 size=24
+SDK_EXPORT: _ZN2nn6socket5FcntlEiiz @0x14d600 size=160
+SDK_EXPORT: nnsslConnectionPoll @0x3dad20 size=36
+SDK_EXPORT: _ZN2nn3ssl10Connection4ReadEPcj @0x3dc0a4 size=232
+SDK_EXPORT: _ZN2nn3ssl10ConnectionD1Ev @0x3db118 size=4
+SDK_EXPORT: _ZN2nn3ssl10Connection4PeekEPcPij @0x3dc5a4 size=248
+SDK_EXPORT: _ZN2nn3ssl10Connection15SetVerifyOptionENS1_12VerifyOptionE @0x3db494 size=120
+SDK_EXPORT: _ZN2nn4htcs6detail25virtual_socket_collection5FcntlEiiiRi @0x373990 size=528
+SDK_EXPORT: nnsslConnectionSetOption @0x3dade0 size=40
+SDK_EXPORT: nnsslConnectionGetConnectionId @0x3dadb0 size=36
+SDK_EXPORT: nnsslConnectionGetIoMode @0x3dab00 size=36
+SDK_EXPORT: nnsslConnectionPeek @0x3dacf0 size=36
+SDK_EXPORT: _ZN2nn3ssl10Connection13GetCipherInfoEPNS1_10CipherInfoE @0x3dcba8 size=192
+SDK_EXPORT: _ZN2nn3ssl7Context15ImportClientPkiEPmPKcS4_jj @0x3dda4c size=296
+SDK_EXPORT: _ZN2nn3ssl10Connection10CipherInfoC2Ev @0x3dcb90 size=24
+SDK_EXPORT: _ZN2nn3ssl10Connection18GetVerifyCertErrorEPNS_6ResultE @0x3dc7d4 size=152
+SDK_EXPORT: _ZN2nn3ssl10Connection19GetSessionCacheModeEPNS1_16SessionCacheModeE @0x3dba08 size=192
+SDK_EXPORT: nnsslConnectionSetVerifyOption @0x3da9b0 size=36
+SDK_EXPORT: _ZN2nn3ssl10Connection19SetSocketDescriptorEi @0x3db350 size=124
+SDK_EXPORT: nnsslConnectionWrite @0x3dac90 size=36
+SDK_EXPORT: _ZN2nn6crypto36GenerateCryptographicallyRandomBytesEPvm @0x98240 size=352
+SDK_EXPORT: nnsslConnectionSetSessionCacheMode @0x3daa40 size=36
+SDK_EXPORT: _ZN2nn3ssl10Connection11SetHostNameEPKcj @0x3db3cc size=200
+SDK_EXPORT: _ZN2nn3ssl7ContextD2Ev @0x3dd5f0 size=4
+SDK_EXPORT: _ZN2nn3ssl10Connection16SetNextAlpnProtoEPKhj @0x3dcc68 size=232
+SDK_EXPORT: _ZN2nn3ssl7Context9ImportCrlEPmPKcj @0x3dddbc size=192
+SDK_EXPORT: nnsslConnectionGetContextId @0x3dad80 size=36
+SDK_EXPORT: _ZN2nn3ssl10Connection5WriteEPKcj @0x3dc288 size=232
+SDK_EXPORT: nnsslConnectionDoHandshakeWithBuffer @0x3dab90 size=36
+SDK_EXPORT: _ZN2nn3ssl10ConnectionD2Ev @0x3db118 size=4
+SDK_EXPORT: _ZN2nn3ssl10Connection9GetIoModeEPNS1_6IoModeE @0x3db948 size=192
+SDK_EXPORT: _ZN2nn3ssl10Connection7PendingEv @0x3dc46c size=152
+SDK_EXPORT: _ZN2nn3ssl10Connection11GetHostNameEPcPjj @0x3db7c8 size=192
+SDK_EXPORT: _ZN2nn3ssl10Connection15GetConnectionIdEPm @0x3dca38 size=32
+SDK_EXPORT: nnsslConnectionGetVerifyCertError @0x3dad50 size=36
+SDK_EXPORT: _ZN2nn3ssl7Context9SetOptionENS1_13ContextOptionEi @0x3dd81c size=144
+SDK_EXPORT: _ZN2nn3ssl10Connection9SetIoModeENS1_6IoModeE @0x3db5d4 size=120
+SDK_EXPORT: _ZN2nn4htcs5FcntlEiii @0x36fad0 size=100
+SDK_EXPORT: _ZN2nn3ssl10Connection11DoHandshakeEv @0x3dbbf8 size=164
+SDK_EXPORT: _ZN2nn3ssl10Connection17FlushSessionCacheEv @0x3dbb88 size=112
+SDK_EXPORT: _ZN2nn3ssl10Connection6CreateEPNS0_7ContextE @0x3db11c size=372
+SDK_EXPORT: _ZN2nn3ssl7Context7DestroyEv @0x3dd724 size=248
+SDK_EXPORT: _ZN2nn3ssl10Connection12GetContextIdEPm @0x3dca18 size=32
+SDK_EXPORT: nnsslConnectionDoHandshakeWithCertBuffer @0x3dab60 size=36
+SDK_EXPORT: nnsslContextGetContextId @0x3da880 size=44
+SDK_EXPORT: _ZN2nn6socket6detail5FcntlEiNS0_12FcntlCommandEz @0x156610 size=468
+SDK_EXPORT: nnsslContextDestroy @0x3da830 size=80
+SDK_EXPORT: nnsocketFcntl @0x14de50 size=160
+SDK_EXPORT: nnsslConnectionDoHandshake @0x3dab30 size=36
+SDK_EXPORT: _ZN2nn3ssl10Connection15GetVerifyOptionEPNS1_12VerifyOptionE @0x3db888 size=192
+SDK_EXPORT: nnsslConnectionGetOption @0x3dae10 size=36
+SDK_EXPORT: nnsslConnectionCreate @0x3da8b0 size=68
+SDK_EXPORT: _ZN2nn3ssl10Connection11DoHandshakeEPjS2_ @0x3dbdb8 size=240
+SDK_EXPORT: _ZN2nn3ssl7Context15ImportServerPkiEPmPKcjNS0_17CertificateFormatE @0x3dd974 size=216
+SDK_EXPORT: _ZN2nn3ssl10Connection4PollEPNS1_9PollEventES3_j @0x3dc69c size=220
+SDK_EXPORT: nnsslConnectionSetHostName @0x3da980 size=36
+SDK_EXPORT: _ZN2nn3ssl7Context9RemovePkiEm @0x3ddb74 size=208
+SDK_EXPORT: _ZN2nn3ssl7Context19RegisterInternalPkiEPmNS1_11InternalPkiE @0x3ddc44 size=144
+SDK_EXPORT: nnsslConnectionSetNextAlpnProto @0x3dae40 size=36
+SDK_EXPORT: nnsslConnectionGetHostName @0x3daaa0 size=36
+SDK_EXPORT: nnsslContextCreate @0x3da7f0 size=64
+SDK_EXPORT: nnsslConnectionRead @0x3dac60 size=36
+SDK_EXPORT: nnsslConnectionSetServerCertBuffer @0x3da9e0 size=36
+SDK_EXPORT: nnsslConnectionGetNextAlpnProto @0x3dae70 size=36
+SDK_EXPORT: _ZN2nn3ssl10Connection19SetSessionCacheModeENS1_16SessionCacheModeE @0x3db64c size=120
+SDK_EXPORT: _ZN2nn3ssl10Connection29GetNeededServerCertBufferSizeEPj @0x3dc98c size=140
+SDK_EXPORT: nnsslSetDebugOption @0x3daea0 size=24
+SDK_EXPORT: _ZN2nn3ssl10Connection9SetOptionENS1_10OptionTypeEb @0x3dca58 size=144
+SDK_EXPORT: _ZN2nn3ssl10Connection19GetSocketDescriptorEPi @0x3db73c size=140
+SDK_EXPORT: _ZN2nn3ssl7Context12GetContextIdEPm @0x3dd954 size=32
+SDK_EXPORT: _ZN2nn3ssl10Connection12GetLastErrorEPNS_6ResultE @0x3dc778 size=92
+SDK_EXPORT: nnsslConnectionSetSocketDescriptor @0x3da950 size=36
+SDK_EXPORT: _ZN2nn3ssl7Context6CreateENS1_10SslVersionE @0x3dd5f4 size=304
+SDK_EXPORT: _ZN2nn3ssl10Connection20SetRenegotiationModeENS1_17RenegotiationModeE @0x3db6c4 size=120
+SDK_EXPORT: nnsslConnectionPending @0x3dacc0 size=36
+SDK_EXPORT: _ZN2nn3ssl10Connection7PendingEPi @0x3dc504 size=160
+SDK_EXPORT: nnsslGetDebugOption @0x3daec0 size=24
+SDK_EXPORT: _ZN2nn6socket6detail5FcntlEiiz @0x1567f0 size=468
+SDK_EXPORT: _ZN2nn3ssl10Connection4ReadEPcPij @0x3dc18c size=252
+SDK_EXPORT: nnsslInitializeWithConcurrencyLimit @0x3da7b0 size=24
+SDK_EXPORT: nnsslConnectionSetIoMode @0x3daa10 size=36
+SDK_EXPORT: _ZN2nn3ssl7ContextC1Ev @0x3dd5e8 size=8
+SDK_EXPORT: nnsslFinalize @0x3da7d0 size=24
+SDK_EXPORT: _ZN2nn3ssl10Connection20GetRenegotiationModeEPNS1_17RenegotiationModeE @0x3dbac8 size=192
+SDK_EXPORT: nnsslConnectionGetSocketDescriptor @0x3daa70 size=36
+SDK_EXPORT: _ZN2nn3ssl10Connection9GetOptionEPbNS1_10OptionTypeE @0x3dcae8 size=168
+SDK_EXPORT: _ZN2nn3ssl10Connection5WriteEPKcPij @0x3dc370 size=252
+SDK_EXPORT: _ZN2nn3ssl10ConnectionC1Ev @0x3db100 size=24
+MOONLIGHT_NATIVE_PROBE_END
+Executed successfully

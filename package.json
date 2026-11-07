@@ -1,0 +1,12 @@
+{
+  "name": "civswitch-moonlight",
+  "private": true,
+  "description": "Moonlight UI and Sunshine pairing experiment for CivSwitch on Switch 2",
+  "scripts": {
+    "test": "node --test tests/test-apps.cjs tests/test-pairing.cjs tests/test-store.cjs",
+    "test:ui": "node tests/test-ui.cjs"
+  },
+  "engines": {
+    "node": ">=22"
+  }
+}

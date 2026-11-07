@@ -1,0 +1,6 @@
+.DS_Store
+__pycache__/
+*.py[cod]
+node_modules/
+# Local upstream checkout; provenance is recorded in the references README.
+/investigation/references/CivSwitch/

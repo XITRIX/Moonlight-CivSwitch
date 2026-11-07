@@ -1,0 +1,10 @@
+Executing payload...
+MOONLIGHT_RNG_CLOCK_PROBE_BEGIN
+CLOCK_IN_CALLBACK: now_delta=265 date_delta=265 work=997412507
+CLOCK_AFTER_YIELD: now_delta=333 date_delta=333
+IDENTITY_ALREADY_SAVED: false
+NATIVE_RNG_HEALTH: bytes=32 distinct=31 nonzero=32 ms=1
+NATIVE_RNG_HEALTH: bytes=32 distinct=30 nonzero=32 ms=1
+NATIVE_RNG_HEALTH: bytes=32 distinct=32 nonzero=32 ms=1
+MOONLIGHT_RNG_CLOCK_PROBE_END
+Executed successfully

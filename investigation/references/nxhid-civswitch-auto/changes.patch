@@ -1,0 +1,2971 @@
+diff --git a/CIVSWITCH-AUTO.md b/CIVSWITCH-AUTO.md
+new file mode 100644
+index 0000000..46556dc
+--- /dev/null
++++ b/CIVSWITCH-AUTO.md
+@@ -0,0 +1,194 @@
++# NXHID v0.4.4: local CivSwitch playback (unofficial experimental build)
++
++Place CivSwitch's generated `payload.txt` beside `nxhid.nro` on the SOURCE
++homebrewed Switch 1. Press **- (Minus)** in NXHID to run the whole keyboard and
++controller macro locally. A computer, Python client, and Wi-Fi connection to
++the sender are not needed during local playback.
++
++## Readiness update in v0.4.4
++
++A successful keyboard report-descriptor transfer could be forgotten when the
++host queued its next SETUP request before the application processed completion.
++That left the app waiting even with the bus Configured and Num Lock on. The
++completion is now recorded before retiring the transfer for the next request.
++Both keyboard and controller initial input deliveries are still required;
++this does not bypass USB readiness.
++
++The screen and usb.log now identify the blocked check, with messages such as
++`Waiting for keyboard descriptor delivery` or `Waiting for controller input
++polling`. A `Readiness:` line reports descriptor, keyboard, controller and
++control-transfer state. If playback remains blocked, report both lines.
++
++Host regression tests reproduce Configured plus Num on with readiness stuck
++false, then verify that descriptor completion survives the following LED
++request. They also verify that missing controller polling still blocks input.
++All 91 host tests pass. This build still needs a physical-console retest.
++Replace only the NRO and retain your payload.txt.
++
++## Bus-reconfiguration update in v0.4.3
++
++The reported `00001559` at `read USB state` decodes to libnx I/O error 10.
++The previous backend generated it whenever USB left Configured after having
++been configured once. Treating that transition as fatal could force repeated
++USB teardown and repeat the keyboard LED initialization.
++
++This version lets the host move through Default/Address and reconfigure without
++closing usb:ds. Pending interrupt transfers are cancelled before their buffers
++are reused; interrupted control transfers retire ownership before another
++reply. The app sends neutral input again when configuration returns. A valid
++report descriptor is retained across a soft reconfiguration on the same physical
++connection, and invalidated on physical detach. A disconnect during payload
++playback stops that run rather than silently skipping input or resuming.
++
++The screen and usb.log now include USB bus transitions and a restart count.
++Real IPC/transfer failures still produce Stage diagnostics. The keyboard's
++interrupt OUT endpoint (EP03) and gamepad output echo now follow the PicoSwitch
++layout/behavior as well. Keyboard LED updates work on EP0 and EP03; gamepad
++output echo works on control and interrupt OUT requests.
++
++New simulated cases cover Configured -> Default -> Address -> Configured,
++interrupted EP0 requests, cancelled DMA buffers, keyboard interrupt LEDs, and
++gamepad echo. This removes the application's forced-reset path for ordinary bus
++transitions; the reason a physical host transitions or resets may still need
++hardware diagnosis. Replace only the NRO and retain your payload.txt.
++
++## Control-transfer update in v0.4.2
++
++The reported stage `if1 control IN queue n=63 req=81/06 v=2200 len=63`
++means the host requested the keyboard HID report descriptor and usb:ds rejected
++queueing that reply. Both lengths are correct; changing payload.txt cannot fix
++this stage because payload typing has not started.
++
++This version routes control requests by their target wIndex while preserving
++the interface through which the notification arrived. A valid request for our
++other interface no longer stalls EP0. Duplicate notifications from both
++interfaces are consumed once, including notifications on later polling ticks.
++If usb:ds rejects the keyboard report-descriptor IN queue on interface 1 with
++00025c8c before accepting a URB, it tries the primary control session once with
++the same descriptor bytes and target interface.
++
++Control transfers are now nonblocking and serialized on the shared default
++control endpoint. IN data completes before OUT status is queued. New SETUP
++requests supersede old requests only after pending DMA completion is retired.
++Keyboard ready additionally requires acknowledgement of the keyboard descriptor.
++
++New simulated service cases cover shared notifications, the primary-session
++fallback, delayed duplicates, interrupted requests, and readiness gating.
++These correct software handling paths consistent with the failure; they do not
++prove which usb:ds behavior occurs on the physical console. A hardware retest
++is required. Diagnostics and usb.log are retained.
++
++## USB error diagnosis in v0.4.1
++
++If the USB line stays at `Waiting for USB host`, payload playback is disabled.
++Code `00025c8c` decodes to USB module 140 / description 302 (2140-0302).
++Its exact cause is not identified by that number alone. This build shows a
++`Stage:` line with the failed interface, operation, transfer size and latest
++control request. It also writes `usb.log` beside the NRO (no payload contents).
++The file is replaced at launch and records at most 64 errors per run.
++
++Recovery waits 500 ms between attempts, instead of repeatedly tearing down USB
++on consecutive loop iterations. Error notices clear when USB actually recovers.
++The gamepad endpoint ordering now matches CivSwitch's PicoSwitch OUT-then-IN
++layout. This is a compatibility adjustment, not a verified diagnosis of the
++reported hardware error. If the failure persists, report the exact `Stage:` line
++or provide `usb.log`. Retain the same `payload.txt`; it is not read until USB
++is ready and Minus is pressed.
++
++## Install and run without a remote PC
++
++1. Exit the previous NXHID application on Switch 1.
++2. Copy this ZIP's `switch/nxhid/nxhid.nro` to `/switch/nxhid/nxhid.nro` on its SD.
++3. Copy your existing generated `CivSwitch/PicoSwitch/payload.txt` to
++   `/switch/nxhid/payload.txt` on the SAME Switch 1 SD card.
++   Use the generated chat transport file, not raw `core.js`.
++4. Launch NXHID in full application mode (hold R while launching a game).
++5. Connect Switch 1 USB-C to the target Switch 2 dock's USB-A port with a data
++   cable. Wait for `Keyboard ready`. The screen should say `NXHID v0.4.4` and
++   show the payload path next to the NRO. Custom NRO directories are supported
++   when the homebrew loader supplies the NRO path.
++6. On Switch 2, use the original Switch Civ7 cartridge, game version 1.0.0.
++   Use English (US) USB keyboard layout and follow CivSwitch's English (US)
++   system-language setup. Open MULTIPLAYER -> WIRELESS -> CREATE GAME ->
++   HOST LOBBY -> CHAT, then focus its empty chat input.
++7. Press **- on the SOURCE Switch 1**. After a five-second countdown, it sends
++   the five initial A presses, then Escape, A, each message, and Enter twice,
++   with the separator A presses used by CivSwitch's PicoSwitch macro.
++
++The existing target-side wireless lobby requirement remains. Only the sender's
++connection to a computer is removed. Keep your existing update/network blocking.
++
++## Controls and progress
++
++- **-** starts from line 1 and reloads `payload.txt` each time. It is ignored
++  while playback is already running.
++- **B** stops playback and releases keyboard keys/controller buttons.
++- **+** exits and releases input.
++- The screen shows the current line, character count, status, and payload path.
++- Leaving NXHID's foreground or losing USB stops the run and releases input.
++- Other remote senders are disconnected/rejected during local playback.
++- A missing file or invalid generated payload produces an error before typing.
++
++The full file is validated before playback: printable ASCII, correct message
++indices, at most 253 characters per message, no blank messages, and bounded
++memory use. CRLF and LF files work. The file is loaded into memory for the run.
++
++Keyboard taps use 40 ms key-down plus 40 ms key-up spacing. Both the press and
++release are scheduled locally. This removes the old failure mode where a
++Wi-Fi delay between separate key-down/key-up commands could cause auto-repeat.
++Screen/Wi-Fi status rendering is deferred while an input is held. This cannot
++verify what Civ7 actually displays; stop the run if the target behaves incorrectly.
++
++This local mode restarts the entire file rather than resuming a partial run.
++For a clean retry, restart Civ7 and reopen the lobby chat before starting again.
++After the default payload succeeds, the TARGET Switch 2 loader should listen
++on TCP 9026 for subsequent JavaScript files; that later network step is separate
++from this initial typing sequence.
++
++## Optional remote client
++
++The matching `client/nxhid.py` still supports ordinary keyboard forwarding,
++controller taps, and automatic CivSwitch playback. Both the new NRO and client
++are needed for locally timed remote taps.
++
++To test the previous duplicate-input example in an empty target text field:
++
++```sh
++python3 client/nxhid.py 192.168.1.148 text '9/87 8888 1122334455' --atomic
++```
++
++To run the whole macro remotely:
++
++```sh
++python3 client/nxhid.py 192.168.1.148 civ CivSwitch/PicoSwitch/payload.txt
++```
++
++The IP is the SOURCE Switch 1 NXHID address. Remote `civ` supports `--limit 1`,
++`--start N`, `--no-preamble`, `--check`, and Ctrl-C. Resume only in the same game
++session with exactly the same payload file. The older standalone
++`send_civ_nxhid.py` helper uses the previous separate network press/release method.
++
++## Validation and source
++
++The release includes full source, a patch against upstream NXHID commit
++`68480849294c2335611c22ed73fb0912a5de34aa`, build information and test results.
++Host tests exercise all 87 lines, ASCII/Caps Lock mappings, local hold durations,
++missing/invalid files, Minus-to-start without Wi-Fi, B-to-stop, USB/focus errors,
++and remote taps during simulated delayed client follow-up.
++
++The NRO was cross-compiled with devkitA64 GCC 16.1.0 and libnx 4.12.0. Physical
++Switch 1 / Switch 2 USB compatibility and Civ7 UI timing have not been tested
++here. This is an unofficial experimental build.
++
++With devkitPro's `switch-dev` installed, build the source with `make test` and
++`make -j4`. To build the original keyboard-only USB backend, run `make clean`
++then `make CIVSWITCH=0`; local CivSwitch playback requires the composite build.
++
++Primary sources and attribution:
++
++- NXHID: https://github.com/hyln9/nxhid
++- Controller descriptor: https://github.com/Gezine/CivSwitch/blob/main/PicoSwitch/include/SwitchConsts.h
++- Macro: https://github.com/Gezine/CivSwitch/blob/main/PicoSwitch/tools/payload_to_macro.py
++
++This build changes input automation. It does not add filesystem escalation or
++install a persistent Civ7 save trigger. See LICENSE and THIRD-PARTY-NOTICES.md.
+diff --git a/Makefile b/Makefile
+index e854f1f..3a0ef5e 100644
+--- a/Makefile
++++ b/Makefile
+@@ -5,7 +5,8 @@ TARGET := nxhid
+ BUILD := build
+ APP_TITLE := NXHID Wi-Fi Keyboard
+ APP_AUTHOR := NXHID
+-APP_VERSION := 0.2.0
++APP_VERSION := 0.4.4-civswitch
++CIVSWITCH ?= 1
+ PYTHON ?= python3
+ 
+ .PHONY: test clean
+@@ -21,7 +22,11 @@ TOPDIR ?= $(CURDIR)
+ include $(DEVKITPRO)/libnx/switch_rules
+ 
+ ARCH := -march=armv8-a+crc+crypto -mtune=cortex-a57 -mtp=soft -fPIE
+-CFLAGS := -g -O2 -Wall -Wextra -Werror -std=gnu11 -ffunction-sections $(ARCH) $(INCLUDE) -D__SWITCH__
++ifeq ($(CIVSWITCH),1)
++AUTO_FLAGS := -DNXHID_GAMEPAD
++endif
++
++CFLAGS := $(AUTO_FLAGS) -g -O2 -Wall -Wextra -Werror -std=gnu11 -ffunction-sections $(ARCH) $(INCLUDE) -D__SWITCH__
+ LDFLAGS = -specs=$(DEVKITPRO)/libnx/switch.specs -g $(ARCH) -Wl,-Map,$(notdir $*.map)
+ LIBS := -lnx
+ 
+diff --git a/THIRD-PARTY-NOTICES.md b/THIRD-PARTY-NOTICES.md
+new file mode 100644
+index 0000000..8292b70
+--- /dev/null
++++ b/THIRD-PARTY-NOTICES.md
+@@ -0,0 +1,25 @@
++# Third-party notices
++
++The gamepad report descriptor is adapted from CivSwitch PicoSwitch/include/SwitchConsts.h, attributed to Jason Skuby under the MIT license.
++
++MIT License
++
++Copyright (c) 2021 Jason Skuby (mytechtoybox.com)
++
++Permission is hereby granted, free of charge, to any person obtaining a copy
++of this software and associated documentation files (the "Software"), to deal
++in the Software without restriction, including without limitation the rights
++to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
++copies of the Software, and to permit persons to whom the Software is
++furnished to do so, subject to the following conditions:
++
++The above copyright notice and this permission notice shall be included in all
++copies or substantial portions of the Software.
++
++THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
++IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
++FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
++AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
++LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
++OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
++SOFTWARE.
+diff --git a/client/nxhid.py b/client/nxhid.py
+index 2b3eff2..f98c7fa 100644
+--- a/client/nxhid.py
++++ b/client/nxhid.py
+@@ -14,6 +14,10 @@ import time
+ 
+ PORT = 24872
+ RELEASE = bytes(8)
++PAD_NEUTRAL = bytes([0, 0, 8, 128, 128, 128, 128, 0])
++PAD_BUTTONS = {"y": 0, "b": 1, "a": 2, "x": 3, "l": 4, "r": 5,
++               "zl": 6, "zr": 7, "minus": 8, "plus": 9,
++               "l3": 10, "r3": 11, "home": 12, "capture": 13}
+ HEARTBEAT_INTERVAL = 0.5
+ SEQUENCE_HOLD = 0.05
+ MODIFIERS = {
+@@ -163,6 +167,37 @@ class Client:
+         if response != b"OK\n":
+             raise ConnectionError("Switch closed/rejected the session. Check USB status, focus, and whether another sender is connected.")
+ 
++    def require_gamepad(self):
++        try:
++            response = self.exchange("CAPS")
++        except (OSError, ConnectionError) as exc:
++            raise RuntimeError("Could not negotiate gamepad support. Install the matching composite NXHID NRO and wait for Keyboard ready.") from exc
++        if not response.startswith(b"CAPS ") or b"GAMEPAD" not in response.split():
++            raise RuntimeError("Automatic CivSwitch needs the matching composite NXHID NRO. Install the supplied build and reconnect USB.")
++
++    def require_taps(self):
++        try:
++            response = self.exchange("CAPS")
++        except (OSError, ConnectionError) as exc:
++            raise RuntimeError("Local key timing requires NXHID v0.3.1 or newer. Replace both the NRO and Python client.") from exc
++        if not response.startswith(b"CAPS ") or b"TAP" not in response.split():
++            raise RuntimeError("Local key timing requires NXHID v0.3.1 or newer. Replace both the NRO and Python client.")
++
++    def tap(self, report, hold=0.04, gap=0.04, pad=False):
++        if len(report) != 8:
++            raise ValueError("A HID report must be eight bytes")
++        if not 0.01 <= hold <= 0.08 or not 0 <= gap <= 1:
++            raise ValueError("Local tap hold must be 0.01..0.08 seconds and gap 0..1 second")
++        # One packet requests press, locally timed release, and key-up spacing.
++        # No retry: if an acknowledgement is lost, the tap may already have happened.
++        self.request("%s %d %d %s" % ("PTAP" if pad else "TAP",
++                     round(hold * 1000), round(gap * 1000), report.hex()))
++
++    def pad_report(self, report):
++        if len(report) != 8:
++            raise ValueError("A gamepad report must be eight bytes")
++        self.request("PAD " + report.hex())
++
+     def leds(self):
+         response = self.exchange("LEDS")
+         if (len(response) != 8 or not response.startswith(b"LEDS ") or
+@@ -454,6 +489,85 @@ def live(host, port):
+         thread.join(timeout=5)
+ 
+ 
++
++def pad_report(buttons):
++    mask = 0
++    if buttons.lower() not in ("none", "release"):
++        for button in buttons.lower().split("+"):
++            if button not in PAD_BUTTONS:
++                raise ValueError("Unknown gamepad button: " + button)
++            mask |= 1 << PAD_BUTTONS[button]
++    return bytes([mask & 255, mask >> 8, 8, 128, 128, 128, 128, 0])
++
++
++def tap_key(client, chord, hold=0.04, gap=0.2):
++    client.tap(chord_report(chord), hold, gap)
++
++
++def tap_pad(client, button="a", hold=0.05, gap=1.2):
++    client.tap(pad_report(button), hold, 0, pad=True)
++    wait_with_heartbeat(client, gap)
++
++
++def read_civ_payload(path):
++    import hashlib
++    raw = path.read_bytes()
++    lines = raw.decode("ascii").splitlines()
++    if not lines or any(not line for line in lines):
++        raise ValueError("Payload must contain indexed CivSwitch chat lines without blanks")
++    for i, line in enumerate(lines, 1):
++        if not line.startswith('%d/%d"' % (i, len(lines))):
++            raise ValueError("Line %d is not a generated CivSwitch chat line" % i)
++        if len(line) + 1 > 254 or any(not 32 <= ord(c) <= 126 for c in line):
++            raise ValueError("Line %d exceeds the size limit or contains control characters" % i)
++        for char in line:
++            character_key(char)
++    return lines, hashlib.sha256(raw).hexdigest()
++
++
++def send_civ(client, lines, start=1, limit=None, preamble=True, countdown=5,
++             hold=0.04, gap=0.04):
++    """Replay PicoSwitch's controller/keyboard sequence without per-line prompts."""
++    client.require_gamepad()  # Old builds stop here, before any keyboard/gamepad input.
++    client.require_taps()
++    client.request("RELEASE")
++    print("Starting in %g seconds; keep Civ7 chat open. Ctrl-C stops." % countdown, flush=True)
++    wait_with_heartbeat(client, countdown)
++    if preamble:
++        for _ in range(5):
++            tap_pad(client, gap=0.8)
++    end = len(lines) if limit is None else min(len(lines), start + limit - 1)
++    for index in range(start - 1, end):
++        line = lines[index]
++        print("Typing line %d/%d (%d characters)" % (index + 1, len(lines), len(line)), flush=True)
++        tap_key(client, "ESC", gap=0.8)
++        tap_pad(client, gap=1.2)
++        for char in line:
++            mod, key = character_key(char)
++            if 4 <= key <= 29 and client.leds() & 2:
++                mod ^= 2
++            client.tap(make_report(mod, [key]), hold, gap)
++        tap_key(client, "ENTER", gap=0.2)
++        tap_key(client, "ENTER", gap=0)
++        if index + 1 < end:
++            wait_with_heartbeat(client, 0.8)
++            tap_pad(client, gap=1.2)
++    print("Sent lines %d..%d. Check the target console." % (start, end), flush=True)
++
++def send_atomic_text(client, text, gap=0.04, newline_sequence=None):
++    text = text.replace("\r\n", "\n").replace("\r", "\n")
++    keys = [character_key(char) for char in text]
++    client.require_taps()
++    for mod, key in keys:
++        if key == 40 and newline_sequence is not None:
++            for report in newline_sequence:
++                client.tap(report, SEQUENCE_HOLD, gap)
++            continue
++        if 4 <= key <= 29 and client.leds() & 2:
++            mod ^= 2
++        client.tap(make_report(mod, [key]), 0.04, gap)
++
++
+ def main(argv=None):
+     parser = argparse.ArgumentParser(description=__doc__)
+     parser.add_argument("host", help="Switch Wi-Fi IPv4 address shown in NXHID")
+@@ -463,13 +577,26 @@ def main(argv=None):
+     text.add_argument("value", nargs="?", help="Text to send; streams stdin as it arrives when omitted without --file")
+     text.add_argument("--file", type=Path, help="Read UTF-8 text file, or - for stdin (characters must be supported ASCII)")
+     text.add_argument("--delay", type=float, default=0.02, help="Seconds after each character or newline sequence step (default 0.02)")
++    text.add_argument("--atomic", action="store_true", help="Time complete taps on Switch 1; needs v0.3.1 NRO, literal text or --file")
+     text.add_argument("--newline-sequence", type=parse_sequence, metavar="CHORDS",
+                       help='Replace each newline with a comma-separated key sequence, e.g. "ENTER,HOME,CTRL+DELETE"')
+     press = commands.add_parser("press", help="Press a chord, such as ctrl+alt+delete")
+     press.add_argument("chord")
+     press.add_argument("--hold", type=float, default=SEQUENCE_HOLD, help="Seconds to hold the chord (default 0.05)")
+     commands.add_parser("live", help="Forward keys typed into a focused desktop window (requires Tk)")
+-    commands.add_parser("release", help="Release all keys")
++    commands.add_parser("release", help="Release all keyboard keys and controller buttons")
++    pad = commands.add_parser("pad", help="Tap a gamepad button; requires composite NXHID build")
++    pad.add_argument("buttons", help="A, B, X, Y, L, R, etc.; combine with +, or use NONE")
++    pad.add_argument("--hold", type=float, default=0.05)
++    civ = commands.add_parser("civ", help="Automatically type a generated CivSwitch payload")
++    civ.add_argument("file", type=Path)
++    civ.add_argument("--start", type=int, default=1, help="Resume in the same chat with the same unchanged payload")
++    civ.add_argument("--limit", type=int, help="Send only this many lines (use 1 for an initial hardware test)")
++    civ.add_argument("--no-preamble", action="store_true", help="Skip the initial five A presses when resuming")
++    civ.add_argument("--countdown", type=float, default=5)
++    civ.add_argument("--hold", type=float, default=0.04)
++    civ.add_argument("--gap", type=float, default=0.04)
++    civ.add_argument("--check", action="store_true", help="Validate payload without connecting or sending input")
+     args = parser.parse_args(argv)
+     if not 1 <= args.port <= 65535:
+         parser.error("port must be between 1 and 65535")
+@@ -487,16 +614,39 @@ def main(argv=None):
+             if value is not None:
+                 for char in value:
+                     character_key(char)
++        if args.command == "text" and args.atomic:
++            if value is None:
++                parser.error("--atomic requires literal text or a named --file")
++            if not 0 <= args.delay <= 1:
++                parser.error("atomic text delay must be 0..1 second")
+         if args.command == "press":
+             report = chord_report(args.chord)
+             if not 0 <= args.hold <= 60:
+                 parser.error("hold must be between 0 and 60 seconds")
++        if args.command == "pad":
++            report = pad_report(args.buttons)
++            if not 0 <= args.hold <= 5:
++                parser.error("pad hold must be 0..5 seconds")
++        if args.command == "civ":
++            lines, digest = read_civ_payload(args.file)
++            if not 1 <= args.start <= len(lines):
++                parser.error("start must select an existing payload line")
++            if args.limit is not None and args.limit < 1:
++                parser.error("limit must be positive")
++            if not 0 <= args.countdown <= 60 or not 0.04 <= args.hold <= 0.08 or not 0.04 <= args.gap <= 1:
++                parser.error("countdown must be 0..60; hold 0.04..0.08; gap 0.04..1")
++            print("Payload: %d lines; SHA-256 %s" % (len(lines), digest), flush=True)
++            if args.check:
++                print("Validation passed; no input sent.")
++                return 0
+         if args.command == "live":
+             live(args.host, args.port)
+         else:
+             with Client(args.host, args.port) as client:
+                 if args.command == "text":
+-                    if value is None:
++                    if args.atomic:
++                        send_atomic_text(client, value, max(0.04, args.delay), args.newline_sequence)
++                    elif value is None:
+                         stream_text(client, sys.stdin, args.delay, args.newline_sequence)
+                     else:
+                         send_text(client, value, args.delay, args.newline_sequence)
+@@ -504,6 +654,14 @@ def main(argv=None):
+                     client.report(report)
+                     wait_with_heartbeat(client, args.hold)
+                     client.report(RELEASE)
++                elif args.command == "pad":
++                    client.require_gamepad()
++                    client.pad_report(report)
++                    wait_with_heartbeat(client, args.hold)
++                    client.pad_report(PAD_NEUTRAL)
++                elif args.command == "civ":
++                    send_civ(client, lines, args.start, args.limit, not args.no_preamble,
++                             args.countdown, args.hold, args.gap)
+                 else:
+                     client.request("RELEASE")
+         return 0
+diff --git a/include/playback.h b/include/playback.h
+new file mode 100644
+index 0000000..1933774
+--- /dev/null
++++ b/include/playback.h
+@@ -0,0 +1,33 @@
++#pragma once
++#include <stdbool.h>
++#include <stddef.h>
++#include <stdint.h>
++
++typedef bool (*PlaybackWriter)(const uint8_t report[8]);
++typedef uint8_t (*PlaybackLeds)(void);
++typedef uint64_t (*PlaybackClock)(void);
++typedef enum { PLAYBACK_IDLE, PLAYBACK_RUNNING, PLAYBACK_DONE, PLAYBACK_STOPPED, PLAYBACK_ERROR } PlaybackState;
++
++typedef struct {
++    char *data;
++    char **lines;
++    size_t count, line, character;
++    unsigned stage, preamble;
++    uint64_t deadline;
++    PlaybackState state;
++    PlaybackWriter keyboard, gamepad;
++    PlaybackLeds leds;
++    PlaybackClock clock;
++    char message[128];
++} Playback;
++
++bool playback_payload_path(char *out, size_t capacity, const char *nro_path);
++bool playback_load(Playback *p, const char *path);
++bool playback_start(Playback *p, PlaybackWriter keyboard, PlaybackWriter gamepad,
++                    PlaybackLeds leds, PlaybackClock clock, uint64_t now);
++void playback_tick(Playback *p, uint64_t now, bool enabled);
++void playback_stop(Playback *p);
++void playback_free(Playback *p);
++bool playback_ascii(uint8_t character, uint8_t leds, uint8_t report[8]);
++
++bool playback_holding(const Playback *p);
+diff --git a/include/protocol.h b/include/protocol.h
+index 6048ab8..d0ab9dc 100644
+--- a/include/protocol.h
++++ b/include/protocol.h
+@@ -6,11 +6,14 @@
+ #define NXHID_LINE_SIZE 96
+ #define NXHID_TIMEOUT_MS 3000
+ 
+-typedef enum { CMD_INVALID, CMD_PING, CMD_REPORT, CMD_LEDS } CommandType;
++typedef enum { CMD_INVALID, CMD_PING, CMD_REPORT, CMD_LEDS, CMD_PAD, CMD_CAPS, CMD_TAP, CMD_PAD_TAP } CommandType;
+ typedef struct {
+     CommandType type;
+     uint8_t report[8];
++    uint16_t hold_ms, gap_ms;
+ } Command;
+ 
++static const uint8_t NXHID_PAD_NEUTRAL[8] = {0, 0, 8, 128, 128, 128, 128, 0};
++
+ Command protocol_parse(const char *line);
+ 
+diff --git a/include/server.h b/include/server.h
+index 41d9c83..bd28392 100644
+--- a/include/server.h
++++ b/include/server.h
+@@ -4,13 +4,18 @@
+ 
+ typedef bool (*ReportWriter)(const uint8_t report[8]);
+ typedef uint8_t (*LedReader)(void);
++typedef uint64_t (*ClockReader)(void);
+ typedef struct {
+     int listener, client;
+-    uint64_t last_activity;
++    uint64_t last_activity, tap_deadline;
++    uint16_t tap_gap_ms;
++    uint8_t tap_phase;
++    bool tap_pad;
+     char line[NXHID_LINE_SIZE], output[64], peer[48];
+     size_t used, output_size, output_sent;
+-    ReportWriter write_report;
++    ReportWriter write_report, write_pad;
+     LedReader read_leds;
++    ClockReader clock_ms;
+     unsigned long reports;
+ } Server;
+ 
+diff --git a/include/usb_keyboard.h b/include/usb_keyboard.h
+index 988c192..5817d41 100644
+--- a/include/usb_keyboard.h
++++ b/include/usb_keyboard.h
+@@ -11,4 +11,13 @@ Result usb_keyboard_write(const uint8_t report[8]);
+ // True after the initial/resume neutral report completes, while configured.
+ bool usb_keyboard_ready(void);
+ uint8_t usb_keyboard_leds(void);
++// Context of the first failed USB operation, retained through teardown.
++const char *usb_keyboard_error_stage(void);
++const char *usb_keyboard_bus_status(void);
++const char *usb_keyboard_wait_reason(void);
++const char *usb_keyboard_readiness_detail(void);
+ 
++
++#ifdef NXHID_GAMEPAD
++Result usb_gamepad_write(const uint8_t report[8]);
++#endif
+diff --git a/source/main.c b/source/main.c
+index b728121..8264f80 100644
+--- a/source/main.c
++++ b/source/main.c
+@@ -6,19 +6,34 @@
+ #include <sys/socket.h>
+ #include "server.h"
+ #include "usb_keyboard.h"
++#ifdef NXHID_GAMEPAD
++#include "playback.h"
++#endif
+ 
+ static Result usb_fault;
+ 
+ static bool write_report(const uint8_t report[8]) {
+     // Never reuse a DMA buffer following a failed transfer before teardown.
+     if (R_FAILED(usb_fault)) return false;
+-    usb_fault = usb_keyboard_write(report);
++    Result rc = usb_keyboard_write(report);
++    if (rc == KERNELRESULT(InvalidState) && !usb_keyboard_ready()) return false;
++    usb_fault = rc;
+     return R_SUCCEEDED(usb_fault);
+ }
+ 
++#ifdef NXHID_GAMEPAD
++static bool write_pad(const uint8_t report[8]) {
++    if (R_FAILED(usb_fault)) return false;
++    Result rc = usb_gamepad_write(report);
++    if (rc == KERNELRESULT(InvalidState) && !usb_keyboard_ready()) return false;
++    usb_fault = rc;
++    return R_SUCCEEDED(usb_fault);
++}
++#endif
++
+ static u64 milliseconds(void) { return armTicksToNs(armGetSystemTick()) / 1000000; }
+ 
+-int main(void) {
++int main(int argc, char **argv) {
+     consoleInit(NULL);
+     padConfigureInput(1, HidNpadStyleSet_NpadStandard);
+     PadState pad;
+@@ -27,6 +42,15 @@ int main(void) {
+     Server server = {.listener = -1, .client = -1};
+     char message[160] = "";
+     Result rc = 0;
++#ifdef NXHID_GAMEPAD
++    FILE *usb_log = NULL;
++    Playback playback = {0};
++    char payload_path[1024] = {0};
++    const bool valid_payload_path = playback_payload_path(payload_path, sizeof(payload_path), argc > 0 ? argv[0] : NULL);
++#else
++    (void)argc;
++    (void)argv;
++#endif
+ 
+     if (appletGetAppletType() != AppletType_Application) {
+         snprintf(message, sizeof(message), "Full application mode required. Hold R while launching a game, then open NXHID.");
+@@ -59,37 +83,107 @@ int main(void) {
+         snprintf(message, sizeof(message), "Cannot listen on TCP %d: %s", NXHID_PORT, strerror(errno));
+         goto error;
+     }
++#ifdef NXHID_GAMEPAD
++    server.write_pad = write_pad;
++#endif
++    server.clock_ms = milliseconds;
+     appletSetAutoSleepDisabled(true);
+-    u64 next_draw = 0;
++    u64 next_draw = 0, usb_retry_at = 0;
++    bool usb_recovering = false, usb_notice = false;
++    Result last_usb_error = 0;
++    char last_usb_stage[128] = "";
++#ifdef NXHID_GAMEPAD
++    unsigned usb_errors_logged = 0;
++    char logged_bus_status[112] = "", logged_readiness[112] = "";
++    char log_path[1024] = {0};
++    if (valid_payload_path) {
++        snprintf(log_path, sizeof(log_path), "%s", payload_path);
++        char *name = strrchr(log_path, '/');
++        if (name) snprintf(name+1, sizeof(log_path)-(size_t)(name+1-log_path), "usb.log");
++        usb_log = fopen(log_path, "w");
++        if (usb_log) { fprintf(usb_log, "NXHID v0.4.4 USB diagnostics\n"); fflush(usb_log); }
++    }
++#endif
+     while (appletMainLoop()) {
+         padUpdate(&pad);
+         bool focused = appletGetFocusState() == AppletFocusState_InFocus;
+         u64 down = focused ? padGetButtonsDown(&pad) : 0;
+         if (down & HidNpadButton_Plus) break;
+         if (down & HidNpadButton_B) {
++#ifdef NXHID_GAMEPAD
++            playback_stop(&playback);
++#endif
+             server_drop(&server);
+             snprintf(message, sizeof(message), "Sender disconnected. Waiting for a new connection.");
+         }
+-        if (R_SUCCEEDED(usb_fault)) usb_fault = usb_keyboard_tick();
+-        bool ready = R_SUCCEEDED(usb_fault) && usb_keyboard_ready();
+-        server_tick(&server, milliseconds(), ready && focused);
+-        if (R_FAILED(usb_fault)) {
+-            ready = false;
+-            server_drop(&server);
+-            snprintf(message, sizeof(message), "USB reset (%08x). Reconnect the sender once USB is ready.", usb_fault);
+-            usb_keyboard_exit();
+-            usb = false;
++        if (!usb && usb_recovering && milliseconds() >= usb_retry_at) {
+             rc = usb_keyboard_init();
+             if (R_FAILED(rc)) {
+                 snprintf(message, sizeof(message), "Could not restart the USB keyboard.");
+                 goto error;
+             }
+             usb = true;
++            usb_recovering = false;
++        }
++        if (usb && R_SUCCEEDED(usb_fault)) usb_fault = usb_keyboard_tick();
++        bool ready = usb && R_SUCCEEDED(usb_fault) && usb_keyboard_ready();
++#ifdef NXHID_GAMEPAD
++        if ((down & HidNpadButton_Minus) && !(down & HidNpadButton_B) && playback.state != PLAYBACK_RUNNING) {
++            if (!ready) {
++                snprintf(message, sizeof(message), "Wait for Keyboard ready before starting payload.txt.");
++            } else if (!valid_payload_path) {
++                snprintf(message, sizeof(message), "Cannot resolve payload.txt path next to this NRO.");
++            } else {
++                server_drop(&server);
++                if (playback_load(&playback, payload_path))
++                    playback_start(&playback, write_report, write_pad, usb_keyboard_leds, milliseconds, milliseconds());
++                snprintf(message, sizeof(message), "%s", playback.message);
++            }
++        }
++        playback_tick(&playback, milliseconds(), ready && focused);
++        ready = usb && R_SUCCEEDED(usb_fault) && usb_keyboard_ready();
++        server_tick(&server, milliseconds(), ready && focused && playback.state != PLAYBACK_RUNNING);
++#else
++        server_tick(&server, milliseconds(), ready && focused);
++#endif
++        if (R_FAILED(usb_fault)) {
++            ready = false;
++            last_usb_error = usb_fault;
++            snprintf(last_usb_stage, sizeof(last_usb_stage), "%s", usb_keyboard_error_stage());
++            server_drop(&server);
++#ifdef NXHID_GAMEPAD
++            playback_stop(&playback);
++#endif
++            snprintf(message, sizeof(message), "USB error %08x; reconnecting.", usb_fault);
++            usb_keyboard_exit();
++            usb = false;
+             usb_fault = 0;
++            usb_notice = usb_recovering = true;
++            usb_retry_at = milliseconds() + 500;
++#ifdef NXHID_GAMEPAD
++            if (usb_log && usb_errors_logged++ < 64) {
++                fprintf(usb_log, "t=%llu error=%08x module=%u description=%u stage=%s\n",
++                        (unsigned long long)milliseconds(), last_usb_error,
++                        last_usb_error & 0x1ff, (last_usb_error >> 9) & 0x1fff, last_usb_stage);
++                fflush(usb_log);
++            }
++#endif
++        }
++        if (ready && usb_notice) {
++            usb_notice = false;
++            message[0] = 0;
++#ifdef NXHID_GAMEPAD
++            if (usb_log) { fprintf(usb_log, "USB ready at t=%llu\n", (unsigned long long)milliseconds()); fflush(usb_log); }
++#endif
+         }
+         if (server.client >= 0) message[0] = 0;
+         u64 now = milliseconds();
+-        if (focused && now >= next_draw) {
++        bool holding_input = server.tap_phase == 1;
++#ifdef NXHID_GAMEPAD
++        holding_input = holding_input || playback_holding(&playback);
++#endif
++        // Console rendering / Wi-Fi status calls must not lengthen a held tap.
++        if (focused && !holding_input && now >= next_draw) {
+             next_draw = now + 250;
+             u32 ip = 0;
+             char address[32] = "Wi-Fi not connected";
+@@ -102,17 +196,51 @@ int main(void) {
+                     status = "Connect the Switch USB-C port directly to the target device.";
+                 else if (server.client >= 0)
+                     status = "Forwarding keyboard input.";
++#ifdef NXHID_GAMEPAD
++                else if (!has_ip)
++                    status = "Ready. Press - for payload.txt; Wi-Fi is optional.";
++#else
+                 else if (!has_ip)
+                     status = "Connect the Switch to Wi-Fi.";
++#endif
+                 else
+                     status = "Ready. Connect a sender to the Switch IP shown above.";
+             }
+-            printf("\x1b[2J\x1b[HNXHID - Wi-Fi to USB keyboard\n\n");
++            printf("\x1b[2J\x1b[HNXHID v0.4.4 - USB diagnostics and local payload\n\n");
+             printf("Switch IP:  %s\nTCP port:   %d\n\n", address, NXHID_PORT);
+-            printf("USB:        %s\nSender:     %s\nReports:    %lu\n", ready ? "Keyboard ready" : "Waiting for USB host", server.client >= 0 ? server.peer : "Waiting", server.reports);
++            printf("USB:        %s\nSender:     %s\nReports:    %lu\n", ready ? "Keyboard ready" : usb_keyboard_wait_reason(), server.client >= 0 ? server.peer : "Waiting", server.reports);
+             u8 leds = usb_keyboard_leds();
++#ifdef NXHID_GAMEPAD
++            printf("Gamepad:    Hori-compatible (automatic CivSwitch enabled)\n");
++            const char *bus = usb_keyboard_bus_status();
++            printf("USB bus:    %.65s\n", bus);
++            const char *readiness = usb_keyboard_readiness_detail();
++            printf("Readiness:  %.65s\n", readiness);
++            if (usb_log && strcmp(logged_readiness, readiness)) {
++                snprintf(logged_readiness, sizeof(logged_readiness), "%s", readiness);
++                fprintf(usb_log, "t=%llu readiness=%s reason=%s\n", (unsigned long long)milliseconds(), readiness, usb_keyboard_wait_reason());
++                fflush(usb_log);
++            }
++            if (usb_log && strcmp(logged_bus_status, bus)) {
++                snprintf(logged_bus_status, sizeof(logged_bus_status), "%s", bus);
++                fprintf(usb_log, "t=%llu bus=%s\n", (unsigned long long)milliseconds(), bus);
++                fflush(usb_log);
++            }
++#endif
+             printf("Host LEDs:  Num %s  Caps %s  Scroll %s\n\n", leds & 1 ? "on" : "off", leds & 2 ? "on" : "off", leds & 4 ? "on" : "off");
++            if (!ready && last_usb_error) {
++                printf("USB error:  %08x\nStage:      %.67s\n\n", last_usb_error, last_usb_stage);
++            }
++#ifdef NXHID_GAMEPAD
++            printf("Payload:    %.65s\n", payload_path);
++            if (playback.count)
++                printf("Local:      line %lu/%lu, character %lu\n", (unsigned long)playback.line+1,
++                       (unsigned long)playback.count, (unsigned long)playback.character);
++            printf("-: run payload.txt    B: stop/disconnect    +: exit\n\n");
++            printf("%s\n\n", playback.state != PLAYBACK_IDLE ? playback.message : status);
++#else
+             printf("B: disconnect sender    +: exit\n\n%s\n\n", status);
++#endif
+             printf("Computer -> Wi-Fi -> Switch -> USB -> target device\n");
+             consoleUpdate(NULL);
+         }
+@@ -140,6 +268,11 @@ error:
+         svcSleepThread(10000000);
+     }
+ cleanup:
++#ifdef NXHID_GAMEPAD
++    playback_stop(&playback);
++    playback_free(&playback);
++    if (usb_log) fclose(usb_log);
++#endif
+     server_close(&server);
+     if (usb) usb_keyboard_exit();
+     if (network) nifmExit();
+diff --git a/source/playback.c b/source/playback.c
+new file mode 100644
+index 0000000..9d6659c
+--- /dev/null
++++ b/source/playback.c
+@@ -0,0 +1,229 @@
++#include "playback.h"
++#include <errno.h>
++#include <stdio.h>
++#include <stdlib.h>
++#include <string.h>
++
++#define MAX_PAYLOAD (1024 * 1024)
++#define MAX_LINES 4096
++static const uint8_t neutral_key[8] = {0};
++static const uint8_t neutral_pad[8] = {0,0,8,128,128,128,128,0};
++static const uint8_t pad_a[8] = {4,0,8,128,128,128,128,0};
++static const uint8_t escape_key[8] = {0,0,41};
++static const uint8_t enter_key[8] = {0,0,40};
++enum { PRE_DOWN, PRE_UP, ESC_DOWN, ESC_UP, OPEN_DOWN, OPEN_UP,
++       CHAR_DOWN, CHAR_UP, ENTER1_DOWN, ENTER1_UP, ENTER2_DOWN, ENTER2_UP,
++       SEPARATOR_DOWN, SEPARATOR_UP };
++
++bool playback_payload_path(char *out, size_t capacity, const char *nro_path) {
++    const char *slash = nro_path ? strrchr(nro_path, '/') : NULL;
++    int n;
++    if (slash) {
++        const size_t directory = (size_t)(slash - nro_path + 1);
++        if (directory >= capacity || directory > 4096) return false;
++        n = snprintf(out, capacity, "%.*spayload.txt", (int)directory, nro_path);
++    } else n = snprintf(out, capacity, "sdmc:/switch/nxhid/payload.txt");
++    return n >= 0 && (size_t)n < capacity;
++}
++
++void playback_free(Playback *p) {
++    free(p->lines);
++    free(p->data);
++    p->lines = NULL;
++    p->data = NULL;
++    p->count = 0;
++}
++
++static bool load_error(Playback *p, const char *text) {
++    playback_free(p);
++    p->state = PLAYBACK_ERROR;
++    snprintf(p->message, sizeof(p->message), "%s", text);
++    return false;
++}
++
++bool playback_load(Playback *p, const char *path) {
++    if (p->state == PLAYBACK_RUNNING) return false;
++    playback_free(p);
++    p->line = p->character = 0;
++    FILE *file = fopen(path, "rb");
++    if (!file) {
++        char error[128];
++        snprintf(error, sizeof(error), "Cannot open payload.txt: %.85s", strerror(errno));
++        return load_error(p, error);
++    }
++    if (fseek(file, 0, SEEK_END)) { fclose(file); return load_error(p, "Cannot measure payload.txt"); }
++    const long size = ftell(file);
++    if (size <= 0 || size > MAX_PAYLOAD || fseek(file, 0, SEEK_SET)) {
++        fclose(file); return load_error(p, "Payload must contain 1 byte to 1 MiB");
++    }
++    p->data = malloc((size_t)size + 1);
++    p->lines = malloc(MAX_LINES * sizeof(*p->lines));
++    if (!p->data || !p->lines) { fclose(file); return load_error(p, "Not enough memory for payload"); }
++    const size_t got = fread(p->data, 1, (size_t)size, file);
++    const bool read_error = ferror(file);
++    fclose(file);
++    if (got != (size_t)size || read_error) return load_error(p, "Cannot read all of payload.txt");
++    p->data[size] = 0;
++    for (long i = 0; i < size; i++) {
++        const unsigned char c = (unsigned char)p->data[i];
++        if (c != '\n' && c != '\r' && (c < 32 || c > 126))
++            return load_error(p, "Payload must be printable US ASCII with CRLF or LF line endings");
++    }
++    char *start = p->data;
++    for (long i = 0; i <= size; i++) {
++        if (i != size && p->data[i] != '\n') continue;
++        if (i == size && start == p->data + size) break; // Final newline is not a blank message.
++        char *end = p->data + i;
++        if (end > start && end[-1] == '\r') end--;
++        const size_t length = (size_t)(end - start);
++        if (!length || length > 253 || p->count >= MAX_LINES)
++            return load_error(p, "Payload has a blank/oversized line or more than 4096 lines");
++        *end = 0;
++        for (size_t j = 0; j < length; j++)
++            if ((unsigned char)start[j] < 32) return load_error(p, "Unexpected control character inside a payload line");
++        p->lines[p->count++] = start;
++        start = p->data + i + 1;
++    }
++    for (size_t i = 0; i < p->count; i++) {
++        char prefix[64];
++        snprintf(prefix, sizeof(prefix), "%zu/%zu\"", i+1, p->count);
++        if (strncmp(p->lines[i], prefix, strlen(prefix)))
++            return load_error(p, "Payload indices invalid; use CivSwitch's generated payload.txt");
++    }
++    p->state = PLAYBACK_IDLE;
++    snprintf(p->message, sizeof(p->message), "Payload loaded: %zu lines", p->count);
++    return true;
++}
++
++bool playback_ascii(uint8_t c, uint8_t leds, uint8_t report[8]) {
++    memset(report, 0, 8);
++    uint8_t mod = 0, key = 0;
++    if (c >= 'a' && c <= 'z') key = c - 'a' + 4;
++    else if (c >= 'A' && c <= 'Z') { key = c - 'A' + 4; mod = 2; }
++    else if (c >= '1' && c <= '9') key = c - '1' + 30;
++    else if (c == '0') key = 39;
++    else {
++        static const char plain[] = " -=[]\\;'`,./";
++        static const char shift[] = "!@#$%^&*()_+{}|:\"~<>?";
++        static const uint8_t plain_keys[] = {44,45,46,47,48,49,51,52,53,54,55,56};
++        static const uint8_t shift_keys[] = {30,31,32,33,34,35,36,37,38,39,45,46,47,48,49,51,52,53,54,55,56};
++        const char *found = c ? strchr(plain, c) : NULL;
++        if (found) key = plain_keys[found - plain];
++        else if (c && (found = strchr(shift, c))) { mod = 2; key = shift_keys[found - shift]; }
++        else return false;
++    }
++    if (key >= 4 && key <= 29 && (leds & 2)) mod ^= 2;
++    report[0] = mod;
++    report[2] = key;
++    return true;
++}
++
++static uint64_t current_time(Playback *p, uint64_t fallback) { return p->clock ? p->clock() : fallback; }
++static void release_all(Playback *p) {
++    if (p->keyboard) p->keyboard(neutral_key);
++    if (p->gamepad) p->gamepad(neutral_pad);
++}
++void playback_stop(Playback *p) {
++    if (p->state != PLAYBACK_RUNNING) return;
++    release_all(p);
++    p->state = PLAYBACK_STOPPED;
++    snprintf(p->message, sizeof(p->message), "Stopped at line %zu/%zu. Press - to restart from line 1.", p->line+1, p->count);
++}
++
++bool playback_start(Playback *p, PlaybackWriter keyboard, PlaybackWriter gamepad,
++                    PlaybackLeds leds, PlaybackClock clock, uint64_t now) {
++    if (!p->count || !keyboard || !gamepad || p->state == PLAYBACK_RUNNING) return false;
++    p->keyboard = keyboard;
++    p->gamepad = gamepad;
++    p->leds = leds;
++    p->clock = clock;
++    if (!keyboard(neutral_key) || !gamepad(neutral_pad)) {
++        p->state = PLAYBACK_ERROR;
++        snprintf(p->message, sizeof(p->message), "Cannot release input before playback");
++        release_all(p);
++        return false;
++    }
++    p->line = p->character = 0;
++    p->preamble = 0;
++    p->stage = PRE_DOWN;
++    p->deadline = current_time(p, now) + 5000;
++    p->state = PLAYBACK_RUNNING;
++    snprintf(p->message, sizeof(p->message), "Starting in 5 seconds. B stops playback.");
++    return true;
++}
++
++static bool send_report(Playback *p, bool pad, const uint8_t report[8], unsigned stage,
++                        unsigned delay, uint64_t now) {
++    if (!(pad ? p->gamepad : p->keyboard)(report)) {
++        p->state = PLAYBACK_ERROR;
++        snprintf(p->message, sizeof(p->message), "USB input failed at line %zu/%zu", p->line+1, p->count);
++        release_all(p);
++        return false;
++    }
++    p->stage = stage;
++    p->deadline = current_time(p, now) + delay;
++    return true;
++}
++
++void playback_tick(Playback *p, uint64_t now, bool enabled) {
++    if (p->state != PLAYBACK_RUNNING) return;
++    if (!enabled) {
++        playback_stop(p);
++        p->state = PLAYBACK_ERROR;
++        snprintf(p->message, sizeof(p->message), "Playback stopped: USB unavailable or NXHID not in foreground");
++        return;
++    }
++    if (now < p->deadline) return;
++    snprintf(p->message, sizeof(p->message), "Typing line %zu/%zu. B stops playback.", p->line+1, p->count);
++    switch (p->stage) {
++    case PRE_DOWN: send_report(p, true, pad_a, PRE_UP, 50, now); break;
++    case PRE_UP:
++        p->preamble++;
++        send_report(p, true, neutral_pad, p->preamble < 5 ? PRE_DOWN : ESC_DOWN, 800, now);
++        break;
++    case ESC_DOWN: send_report(p, false, escape_key, ESC_UP, 40, now); break;
++    case ESC_UP: send_report(p, false, neutral_key, OPEN_DOWN, 800, now); break;
++    case OPEN_DOWN: send_report(p, true, pad_a, OPEN_UP, 50, now); break;
++    case OPEN_UP: send_report(p, true, neutral_pad, CHAR_DOWN, 1200, now); break;
++    case CHAR_DOWN: {
++        uint8_t report[8];
++        if (!playback_ascii((uint8_t)p->lines[p->line][p->character], p->leds ? p->leds() : 0, report)) {
++            p->state = PLAYBACK_ERROR;
++            snprintf(p->message, sizeof(p->message), "Unsupported character in payload");
++            release_all(p);
++            return;
++        }
++        send_report(p, false, report, CHAR_UP, 40, now);
++        break;
++    }
++    case CHAR_UP:
++        p->character++;
++        send_report(p, false, neutral_key, p->lines[p->line][p->character] ? CHAR_DOWN : ENTER1_DOWN, 40, now);
++        break;
++    case ENTER1_DOWN: send_report(p, false, enter_key, ENTER1_UP, 40, now); break;
++    case ENTER1_UP: send_report(p, false, neutral_key, ENTER2_DOWN, 200, now); break;
++    case ENTER2_DOWN: send_report(p, false, enter_key, ENTER2_UP, 40, now); break;
++    case ENTER2_UP:
++        if (!send_report(p, false, neutral_key, SEPARATOR_DOWN, 800, now)) break;
++        if (p->line + 1 == p->count) {
++            p->state = PLAYBACK_DONE;
++            snprintf(p->message, sizeof(p->message), "All %zu lines sent. Check the target console.", p->count);
++        } else {
++            p->line++;
++            p->character = 0;
++        }
++        break;
++    case SEPARATOR_DOWN: send_report(p, true, pad_a, SEPARATOR_UP, 50, now); break;
++    case SEPARATOR_UP: send_report(p, true, neutral_pad, ESC_DOWN, 1200, now); break;
++    default:
++        playback_stop(p);
++        p->state = PLAYBACK_ERROR;
++        snprintf(p->message, sizeof(p->message), "Invalid local playback state");
++    }
++}
++
++bool playback_holding(const Playback *p) {
++    if (p->state != PLAYBACK_RUNNING) return false;
++    return p->stage == PRE_UP || p->stage == ESC_UP || p->stage == OPEN_UP ||
++        p->stage == CHAR_UP || p->stage == ENTER1_UP || p->stage == ENTER2_UP || p->stage == SEPARATOR_UP;
++}
+diff --git a/source/protocol.c b/source/protocol.c
+index a7e5c75..87007d9 100644
+--- a/source/protocol.c
++++ b/source/protocol.c
+@@ -8,11 +8,26 @@ static int unhex(char c) {
+     return -1;
+ }
+ 
++// Parse bounded, unsigned decimal milliseconds followed by one space.
++static const char *timing(const char *p, uint16_t *value) {
++    unsigned result = 0;
++    if (*p < '0' || *p > '9') return NULL;
++    do {
++        result = result * 10 + (unsigned)(*p++ - '0');
++        if (result > 1000) return NULL;
++    } while (*p >= '0' && *p <= '9');
++    if (*p++ != ' ') return NULL;
++    *value = (uint16_t)result;
++    return p;
++}
++
+ Command protocol_parse(const char *line) {
+     Command cmd = {0};
+     size_t len = strlen(line);
+     if (!strcmp(line, "PING")) {
+         cmd.type = CMD_PING;
++    } else if (!strcmp(line, "CAPS")) {
++        cmd.type = CMD_CAPS;
+     } else if (!strcmp(line, "LEDS")) {
+         cmd.type = CMD_LEDS;
+     } else if (!strcmp(line, "RELEASE")) {
+@@ -31,6 +46,32 @@ Command protocol_parse(const char *line) {
+                 if (cmd.report[j] == key) return (Command){0};
+         }
+         cmd.type = CMD_REPORT;
++    } else if (len == 20 && !memcmp(line, "PAD ", 4)) {
++        for (int i = 0; i < 8; i++) {
++            int hi = unhex(line[4 + 2*i]), lo = unhex(line[5 + 2*i]);
++            if (hi < 0 || lo < 0) return (Command){0};
++            cmd.report[i] = (uint8_t)((hi << 4) | lo);
++        }
++        if ((cmd.report[1] & 0xc0) || cmd.report[2] > 8 || cmd.report[7])
++            return (Command){0};
++        cmd.type = CMD_PAD;
++    } else if (!strncmp(line, "TAP ", 4) || !strncmp(line, "PTAP ", 5)) {
++        const bool pad = line[0] == 'P';
++        const char *p = timing(line + (pad ? 5 : 4), &cmd.hold_ms);
++        if (!p) return (Command){0};
++        p = timing(p, &cmd.gap_ms);
++        if (!p || cmd.hold_ms < 10 || cmd.hold_ms > 80 || strlen(p) != 16)
++            return (Command){0};
++        // Reuse exactly the same keyboard/gamepad report validation as raw commands.
++        char raw[24];
++        const char *prefix = pad ? "PAD " : "REPORT ";
++        const size_t n = strlen(prefix);
++        memcpy(raw, prefix, n);
++        memcpy(raw+n, p, 17);
++        Command report = protocol_parse(raw);
++        if (report.type != (pad ? CMD_PAD : CMD_REPORT)) return (Command){0};
++        memcpy(cmd.report, report.report, 8);
++        cmd.type = pad ? CMD_PAD_TAP : CMD_TAP;
+     }
+     return cmd;
+ }
+diff --git a/source/server.c b/source/server.c
+index cfe6dea..01580e4 100644
+--- a/source/server.c
++++ b/source/server.c
+@@ -21,7 +21,11 @@ void server_drop(Server *s) {
+     s->client = -1;
+     s->used = s->output_size = s->output_sent = 0;
+     s->peer[0] = 0;
+-    if (release) s->write_report((const uint8_t[8]){0});
++    s->tap_phase = 0;
++    if (release) {
++        s->write_report((const uint8_t[8]){0});
++        if (s->write_pad) s->write_pad(NXHID_PAD_NEUTRAL);
++    }
+ }
+ 
+ void server_close(Server *s) {
+@@ -52,17 +56,37 @@ static void reply(Server *s, const char *text) {
+     s->output_sent = 0;
+ }
+ 
++static uint64_t clock_now(Server *s, uint64_t fallback) {
++    return s->clock_ms ? s->clock_ms() : fallback;
++}
++
+ static void command(Server *s, uint64_t now) {
+     s->line[s->used] = 0;
+     Command c = protocol_parse(s->line);
+     s->used = 0;
+     if (c.type == CMD_PING) {
+         reply(s, "OK\n");
++    } else if (c.type == CMD_CAPS) {
++        reply(s, s->write_pad ? "CAPS KEYBOARD GAMEPAD TAP\n" : "CAPS KEYBOARD TAP\n");
+     } else if (c.type == CMD_LEDS) {
+         char response[16];
+         snprintf(response, sizeof(response), "LEDS %02x\n", s->read_leds() & 0x1f);
+         reply(s, response);
+-    } else if (c.type == CMD_REPORT && s->write_report(c.report)) {
++    } else if (c.type == CMD_TAP || c.type == CMD_PAD_TAP) {
++        ReportWriter writer = c.type == CMD_PAD_TAP ? s->write_pad : s->write_report;
++        if (!writer || !writer(c.report)) { server_drop(s); return; }
++        s->reports++;
++        s->tap_pad = c.type == CMD_PAD_TAP;
++        s->tap_gap_ms = c.gap_ms;
++        s->tap_phase = 1;
++        // Start the hold after USB delivery, never before a potentially slow transfer.
++        s->tap_deadline = clock_now(s, now) + c.hold_ms;
++        // Reply only after the local release and the local key-up gap have completed.
++    } else if (c.type == CMD_PAD && s->write_pad && s->write_pad(c.report)) {
++        s->reports++;
++        reply(s, "OK\n");
++    } else if (c.type == CMD_REPORT && s->write_report(c.report) &&
++            (strcmp(s->line, "RELEASE") || !s->write_pad || s->write_pad(NXHID_PAD_NEUTRAL))) {
+         s->reports++;
+         reply(s, "OK\n");
+     } else {
+@@ -70,12 +94,29 @@ static void command(Server *s, uint64_t now) {
+         server_drop(s);
+         return;
+     }
+-    s->last_activity = now;
++    s->last_activity = clock_now(s, now);
+ }
+ 
+ static void tick_client(Server *s, uint64_t now, bool enabled) {
+     if (s->client < 0) return;
+     if (!enabled || now - s->last_activity >= NXHID_TIMEOUT_MS) { server_drop(s); return; }
++    // Local tap timers run before network I/O. A delayed computer/ACK cannot
++    // stretch a held key or controller button; no further packet is required.
++    if (s->tap_phase) {
++        if (now < s->tap_deadline) return;
++        if (s->tap_phase == 1) {
++            ReportWriter writer = s->tap_pad ? s->write_pad : s->write_report;
++            const uint8_t *neutral = s->tap_pad ? NXHID_PAD_NEUTRAL : (const uint8_t[8]){0};
++            if (!writer || !writer(neutral)) { server_drop(s); return; }
++            s->reports++;
++            s->tap_phase = 2;
++            s->tap_deadline = clock_now(s, now) + s->tap_gap_ms;
++            if (s->tap_gap_ms) return;
++        }
++        s->tap_phase = 0;
++        s->last_activity = clock_now(s, now);
++        reply(s, "OK\n");
++    }
+     if (s->output_sent < s->output_size) {
+ #ifdef MSG_NOSIGNAL
+         const int flags = MSG_NOSIGNAL;
+diff --git a/source/usb_composite.c b/source/usb_composite.c
+new file mode 100644
+index 0000000..67c83c1
+--- /dev/null
++++ b/source/usb_composite.c
+@@ -0,0 +1,771 @@
++#ifdef NXHID_GAMEPAD
++/* Composite HID port derived from NXHID (MIT) and CivSwitch PicoSwitch.
++ * Copyright (c) 2021 Jason Skuby (gamepad report descriptor).
++ * See LICENSE and CIVSWITCH-AUTO.md for attribution and validation limits.
++ */
++#include "usb_keyboard.h"
++#include <string.h>
++#include <stdio.h>
++
++// The same wired controller identity/report format used by CivSwitch PicoSwitch.
++// Compatibility identity only; this unofficial build is not a Hori product.
++#define NXHID_USB_VID 0x0f0d
++#define NXHID_USB_PID 0x0092
++
++// Boot-compatible keyboard: modifiers, reserved byte, six key usages; LED output.
++static const u8 report_descriptor[] = {
++    0x05,0x01, 0x09,0x06, 0xA1,0x01, 0x05,0x07,
++    0x19,0xE0, 0x29,0xE7, 0x15,0x00, 0x25,0x01,
++    0x75,0x01, 0x95,0x08, 0x81,0x02,
++    0x95,0x01, 0x75,0x08, 0x81,0x01,
++    0x95,0x05, 0x75,0x01, 0x05,0x08,
++    0x19,0x01, 0x29,0x05, 0x91,0x02,
++    0x95,0x01, 0x75,0x03, 0x91,0x01,
++    0x95,0x06, 0x75,0x08, 0x15,0x00, 0x25,0x73,
++    0x05,0x07, 0x19,0x00, 0x29,0x73, 0x81,0x00, 0xC0
++};
++typedef struct {
++    UsbDsInterface *interface;
++    UsbDsEndpoint *endpoint, *out_endpoint;
++    bool was_ready, input_pending, release_pending, input_is_release, out_pending, descriptor_ready;
++    u32 input_id, out_id;
++    u8 control_buffer[0x1000] __attribute__((aligned(0x1000)));
++    u8 input_buffer[0x1000] __attribute__((aligned(0x1000)));
++    u8 output_buffer[0x1000] __attribute__((aligned(0x1000)));
++    u8 last_report[8], idle_rate, protocol, leds;
++    u8 echo_report[8];
++    bool echo_pending;
++    u64 last_sent;
++    struct usb_control_setup last_setup;
++} HidInterface;
++static HidInterface hid[2], *current = &hid[1];
++static bool initialized;
++static Result fault;
++static bool bus_known;
++static UsbState bus_state;
++static unsigned bus_restarts;
++static char bus_status[112] = "not attached";
++static Result read_state(UsbState *state);
++const char *usb_keyboard_bus_status(void) { return bus_status; }
++static char trace_context[128] = "USB initialization";
++static char fault_context[128];
++static void trace_stage(const char *operation, size_t bytes) {
++    const struct usb_control_setup *s = &current->last_setup;
++    snprintf(trace_context, sizeof(trace_context),
++             "if%u %.45s n=%zu req=%02x/%02x v=%04x len=%u",
++             current == &hid[0] ? 0u : 1u, operation, bytes,
++             s->bmRequestType, s->bRequest, s->wValue, s->wLength);
++}
++const char *usb_keyboard_error_stage(void) {
++    return *fault_context ? fault_context : trace_context;
++}
++static const u8 key_neutral[8] = {0};
++static const u8 pad_neutral[8] = {0, 0, 8, 128, 128, 128, 128, 0};
++// MIT, Jason Skuby / CivSwitch PicoSwitch/include/SwitchConsts.h.
++static const u8 pad_descriptor[] = {
++    0x05,0x01,0x09,0x05,0xa1,0x01,0x15,0x00,0x25,0x01,
++    0x35,0x00,0x45,0x01,0x75,0x01,0x95,0x10,0x05,0x09,
++    0x19,0x01,0x29,0x10,0x81,0x02,0x05,0x01,0x25,0x07,
++    0x46,0x3b,0x01,0x75,0x04,0x95,0x01,0x65,0x14,0x09,
++    0x39,0x81,0x42,0x65,0x00,0x95,0x01,0x81,0x01,0x26,
++    0xff,0x00,0x46,0xff,0x00,0x09,0x30,0x09,0x31,0x09,
++    0x32,0x09,0x35,0x75,0x08,0x95,0x04,0x81,0x02,0x06,
++    0x00,0xff,0x09,0x20,0x95,0x01,0x81,0x02,0x0a,0x21,
++    0x26,0x95,0x08,0x91,0x02,0xc0
++};
++
++static const u8 *neutral(void) { return current == &hid[0] ? pad_neutral : key_neutral; }
++
++// EP0 is shared by both HID interfaces. Only one control transfer owns the
++// DMA buffers at a time; completion is retired before another SETUP is served.
++enum { CTRL_IDLE, CTRL_IN_DATA, CTRL_OUT_STATUS, CTRL_OUT_DATA, CTRL_IN_STATUS };
++typedef struct {
++    HidInterface *wire, *target;
++    struct usb_control_setup request;
++    unsigned phase, notified;
++    bool pending, descriptor, update_leds, aborted;
++    u32 id, expected;
++    u64 started;
++} ControlTransfer;
++static ControlTransfer control;
++static struct {
++    bool valid;
++    unsigned notified;
++    HidInterface *wire;
++    struct usb_control_setup request;
++} next_setup;
++static u8 ctrl_in_buffer[0x1000] __attribute__((aligned(0x1000)));
++static u8 ctrl_out_buffer[0x1000] __attribute__((aligned(0x1000)));
++
++
++enum {
++    REPORT_TIMEOUT_MS = 250,
++    EVENT_POLL_NS = 1000000,
++};
++
++static u64 milliseconds(void) { return armTicksToNs(armGetSystemTick()) / 1000000; }
++static Result io_error(void) { return MAKERESULT(Module_Libnx, LibnxError_IoError); }
++static Result remember_error(Result rc) {
++    if (R_FAILED(rc)) {
++        if (R_SUCCEEDED(fault)) snprintf(fault_context, sizeof(fault_context), "%s", trace_context);
++        fault = rc;
++    }
++    return rc;
++}
++
++// Resetting an event that is not signaled fails with InvalidState; that is not a fault.
++static Result clear_event(Event *event) {
++    Result rc = eventClear(event);
++    return rc == KERNELRESULT(InvalidState) ? 0 : rc;
++}
++
++void usb_keyboard_exit(void) {
++    if (initialized) usbDsExit();
++    initialized = false;
++    fault = 0;
++    memset(hid, 0, sizeof(hid));
++    memset(&control, 0, sizeof(control));
++    memset(&next_setup, 0, sizeof(next_setup));
++    current = &hid[1];
++    bus_known = false;
++}
++
++Result usb_keyboard_init(void) {
++    if (initialized) return MAKERESULT(Module_Libnx, LibnxError_AlreadyInitialized);
++    if (hosversionBefore(5, 0, 0)) return MAKERESULT(Module_Libnx, LibnxError_IncompatSysVer);
++    fault_context[0] = 0;
++    trace_stage("usbDsInitialize", 0);
++    Result rc = usbDsInitialize();
++    if (R_FAILED(rc)) return rc;
++    initialized = true;
++#define TRY(expr) do { trace_stage(#expr, 0); rc = (expr); if (R_FAILED(rc)) { remember_error(rc); goto fail; } } while (0)
++    TRY(usbDsClearDeviceData());
++    u8 language, manufacturer, product;
++    const u16 langs[] = {0x0409};
++    TRY(usbDsAddUsbLanguageStringDescriptor(&language, langs, 1));
++    TRY(usbDsAddUsbStringDescriptor(&manufacturer, "NXHID"));
++    TRY(usbDsAddUsbStringDescriptor(&product, "NXHID CivSwitch Keyboard and Controller"));
++    struct usb_device_descriptor device = {
++        .bLength = USB_DT_DEVICE_SIZE, .bDescriptorType = USB_DT_DEVICE,
++        .bcdUSB = 0x0200, .bMaxPacketSize0 = 64,
++        .idVendor = NXHID_USB_VID, .idProduct = NXHID_USB_PID,
++        .bcdDevice = 0x0100, .iManufacturer = manufacturer, .iProduct = product,
++        .bNumConfigurations = 1
++    };
++    TRY(usbDsSetUsbDeviceDescriptor(UsbDeviceSpeed_Full, &device));
++    TRY(usbDsSetUsbDeviceDescriptor(UsbDeviceSpeed_High, &device));
++    device.bcdUSB = 0x0300;
++    device.bMaxPacketSize0 = 9;
++    TRY(usbDsSetUsbDeviceDescriptor(UsbDeviceSpeed_Super, &device));
++    const u8 bos[] = {5,USB_DT_BOS,22,0,2,7,USB_DT_DEVICE_CAPABILITY,2,2,0,0,0,
++                     10,USB_DT_DEVICE_CAPABILITY,3,0,0x0e,0,1,0,0,0};
++    TRY(usbDsSetBinaryObjectStore(bos, sizeof(bos)));
++    memset(hid, 0, sizeof(hid));
++    for (u8 index = 0; index < 2; index++) {
++        current = &hid[index];
++        const bool pad = index == 0;
++        TRY(usbDsRegisterInterfaceEx(&current->interface, index));
++        struct usb_interface_descriptor intf = {
++            .bLength = USB_DT_INTERFACE_SIZE, .bDescriptorType = USB_DT_INTERFACE,
++            .bInterfaceNumber = index, .bNumEndpoints = 2,
++            .bInterfaceClass = USB_CLASS_HID,
++            .bInterfaceSubClass = pad ? 0 : 1, .bInterfaceProtocol = pad ? 0 : 1
++        };
++        const size_t desc_size = pad ? sizeof(pad_descriptor) : sizeof(report_descriptor);
++        const u8 desc[] = {9,USB_DT_HID,0x11,0x01,0,1,USB_DT_REPORT,
++                          desc_size & 0xff, desc_size >> 8};
++        struct usb_endpoint_descriptor ep = {
++            .bLength = USB_DT_ENDPOINT_SIZE, .bDescriptorType = USB_DT_ENDPOINT,
++            .bEndpointAddress = pad ? 0x81 : 0x83,
++            .bmAttributes = USB_TRANSFER_TYPE_INTERRUPT,
++            .wMaxPacketSize = pad ? 64 : 8, .bInterval = 1
++        };
++        struct usb_ss_endpoint_companion_descriptor companion = {
++            .bLength = 6, .bDescriptorType = USB_DT_SS_ENDPOINT_COMPANION,
++            .wBytesPerInterval = pad ? 64 : 8
++        };
++        for (UsbDeviceSpeed speed = UsbDeviceSpeed_Full; speed <= UsbDeviceSpeed_Super; speed++) {
++            ep.bInterval = speed == UsbDeviceSpeed_Full ? 1 : 4;
++            TRY(usbDsInterface_AppendConfigurationData(current->interface, speed, &intf, sizeof(intf)));
++            TRY(usbDsInterface_AppendConfigurationData(current->interface, speed, desc, sizeof(desc)));
++            // Match PicoSwitch's gamepad descriptor ordering: OUT then IN.
++            if (pad) {
++                struct usb_endpoint_descriptor out = ep;
++                out.bEndpointAddress = 0x02;
++                TRY(usbDsInterface_AppendConfigurationData(current->interface, speed, &out, sizeof(out)));
++                if (speed == UsbDeviceSpeed_Super)
++                    TRY(usbDsInterface_AppendConfigurationData(current->interface, speed, &companion, sizeof(companion)));
++            }
++            TRY(usbDsInterface_AppendConfigurationData(current->interface, speed, &ep, sizeof(ep)));
++            if (speed == UsbDeviceSpeed_Super)
++                TRY(usbDsInterface_AppendConfigurationData(current->interface, speed, &companion, sizeof(companion)));
++            if (!pad) {
++                struct usb_endpoint_descriptor out = ep;
++                out.bEndpointAddress = 0x03;
++                TRY(usbDsInterface_AppendConfigurationData(current->interface, speed, &out, sizeof(out)));
++                if (speed == UsbDeviceSpeed_Super)
++                    TRY(usbDsInterface_AppendConfigurationData(current->interface, speed, &companion, sizeof(companion)));
++            }
++        }
++        if (pad) TRY(usbDsInterface_RegisterEndpoint(current->interface, &current->out_endpoint, 0x02));
++        TRY(usbDsInterface_RegisterEndpoint(current->interface, &current->endpoint, pad ? 0x81 : 0x83));
++        if (!pad) TRY(usbDsInterface_RegisterEndpoint(current->interface, &current->out_endpoint, 0x03));
++        TRY(usbDsInterface_EnableInterface(current->interface));
++        memcpy(current->last_report, neutral(), 8);
++        current->protocol = 1;
++        current->last_sent = milliseconds();
++        current->release_pending = true;
++    }
++    TRY(usbDsEnable());
++#undef TRY
++    return 0;
++fail:
++    usb_keyboard_exit();
++    return rc;
++}
++
++bool usb_keyboard_ready(void) {
++    if (!initialized || R_FAILED(fault) || !bus_known || bus_state != UsbState_Configured)
++        return false;
++    if (!hid[1].descriptor_ready) return false;
++    for (unsigned i = 0; i < 2; i++)
++        if (!hid[i].was_ready || hid[i].release_pending) return false;
++    return true;
++}
++
++const char *usb_keyboard_wait_reason(void) {
++    if (!initialized) return "USB not initialized";
++    if (R_FAILED(fault)) return "USB I/O error";
++    if (!bus_known || bus_state != UsbState_Configured) return "Waiting for USB configuration";
++    if (!hid[1].descriptor_ready) return "Waiting for keyboard descriptor delivery";
++    if (hid[1].release_pending) return "Waiting for keyboard input polling";
++    if (hid[0].release_pending) return "Waiting for controller input polling";
++    if (!hid[0].was_ready || !hid[1].was_ready) return "Waiting for interface configuration";
++    return "Keyboard ready";
++}
++
++const char *usb_keyboard_readiness_detail(void) {
++    static char detail[112];
++    static const char *phases[] = {"idle", "IN-data", "OUT-status", "OUT-data", "IN-status"};
++    snprintf(detail, sizeof(detail), "desc=%s key=%s pad=%s ctrl=%s",
++             hid[1].descriptor_ready ? "yes" : "no",
++             hid[1].release_pending ? "wait" : "ok",
++             hid[0].release_pending ? "wait" : "ok",
++             control.phase < 5 ? phases[control.phase] : "invalid");
++    return detail;
++}
++
++uint8_t usb_keyboard_leds(void) { current = &hid[1]; return current->leds; }
++
++static void trace_control(const char *operation, size_t size) {
++    char label[64];
++    snprintf(label, sizeof(label), "%s target%u", operation, control.target == &hid[0] ? 0u : 1u);
++    current = control.wire;
++    trace_stage(label, size);
++}
++
++static Result capture_setup(void) {
++    // Some usb:ds/host combinations can notify more than one interface about
++    // EP0. Consume notifications first and route by wIndex; never stall merely
++    // because a valid request names the other interface that we also own.
++    for (unsigned i = 0; i < 2; i++) {
++        HidInterface *port = &hid[i];
++        Result rc = eventWait(&port->interface->SetupEvent, 0);
++        if (rc == KERNELRESULT(TimedOut)) continue;
++        current = port;
++        if (R_FAILED(rc)) { trace_stage("SETUP event", 0); return rc; }
++        trace_stage("clear SETUP event", 0);
++        rc = clear_event(&port->interface->SetupEvent);
++        if (R_FAILED(rc)) return rc;
++        struct usb_control_setup request;
++        trace_stage("read SETUP packet", sizeof(request));
++        rc = usbDsInterface_GetSetupPacket(port->interface, &request, sizeof(request));
++        if (R_FAILED(rc)) return rc;
++        port->last_setup = request;
++        const unsigned bit = 1u << i;
++        if (next_setup.valid && !memcmp(&next_setup.request, &request, sizeof(request))) {
++            next_setup.notified |= bit;
++            continue; // Same shared EP0 notification, not a second request.
++        }
++        if (control.phase != CTRL_IDLE && !(control.notified & bit) &&
++                !memcmp(&control.request, &request, sizeof(request))) {
++            control.notified |= bit;
++            continue; // The second interface can be notified on a later tick.
++        }
++        // A different new SETUP supersedes the previous control transaction.
++        next_setup.valid = true;
++        next_setup.notified = bit;
++        next_setup.wire = port;
++        next_setup.request = request;
++    }
++    return 0;
++}
++
++static Result queue_control(bool in, size_t size, unsigned phase) {
++    if (control.pending) return io_error();
++    Event *event = in ? &control.wire->interface->CtrlInCompletionEvent
++                      : &control.wire->interface->CtrlOutCompletionEvent;
++    trace_control(in ? "control IN clear" : "control OUT clear", size);
++    Result rc = clear_event(event);
++    if (R_FAILED(rc)) return rc;
++    trace_control(in ? "control IN queue" : "control OUT queue", size);
++    rc = in ? usbDsInterface_CtrlInPostBufferAsync(control.wire->interface, ctrl_in_buffer, size, &control.id)
++            : usbDsInterface_CtrlOutPostBufferAsync(control.wire->interface, ctrl_out_buffer, size, &control.id);
++    if (R_FAILED(rc)) {
++        // A host may start a new SETUP between IN completion and OUT status.
++        // A rejected queue owns no DMA buffer; serve the new request if present.
++        char failed_stage[sizeof(trace_context)];
++        snprintf(failed_stage, sizeof(failed_stage), "%s", trace_context);
++        Result setup_rc = capture_setup();
++        if (R_SUCCEEDED(setup_rc) && next_setup.valid) { control.phase = CTRL_IDLE; return 0; }
++        // EP0 is physically shared. If usb:ds rejects the keyboard descriptor
++        // through interface 1 before accepting a URB, try its primary session
++        // once, preserving the requested target interface and descriptor bytes.
++        const bool descriptor_on_secondary = rc == 0x25c8c && in && phase == CTRL_IN_DATA &&
++            control.wire == &hid[1] && control.target == &hid[1] &&
++            control.request.bmRequestType == 0x81 && control.request.bRequest == USB_REQUEST_GET_DESCRIPTOR &&
++            control.request.wValue == (USB_DT_REPORT << 8);
++        if (!descriptor_on_secondary) {
++            snprintf(trace_context, sizeof(trace_context), "%s", failed_stage);
++            return rc;
++        }
++        control.wire = &hid[0];
++        control.wire->last_setup = control.request;
++        trace_control("control IN primary clear", size);
++        rc = clear_event(&control.wire->interface->CtrlInCompletionEvent);
++        if (R_FAILED(rc)) return rc;
++        trace_control("control IN primary queue", size);
++        rc = usbDsInterface_CtrlInPostBufferAsync(control.wire->interface, ctrl_in_buffer, size, &control.id);
++        if (R_FAILED(rc)) return rc;
++    }
++    control.phase = phase;
++    control.pending = true;
++    control.expected = (u32)size;
++    control.started = milliseconds();
++    return 0;
++}
++
++static Result reply_control(const void *data, size_t size) {
++    if (!control.request.wLength) return usbDsInterface_StallCtrl(control.wire->interface);
++    if (size > control.request.wLength) size = control.request.wLength;
++    if (size) memcpy(ctrl_in_buffer, data, size);
++    return queue_control(true, size, CTRL_IN_DATA);
++}
++
++static Result dispatch_setup(void) {
++    control.wire = next_setup.wire;
++    control.request = next_setup.request;
++    control.notified = next_setup.notified;
++    next_setup.valid = false;
++    control.descriptor = control.update_leds = control.aborted = false;
++    current = control.wire;
++    const struct usb_control_setup *s = &control.request;
++    if (s->wIndex >= 2) return usbDsInterface_StallCtrl(control.wire->interface);
++    control.target = &hid[s->wIndex];
++    control.target->last_setup = *s;
++    const u8 zero[8] = {0};
++    if (s->bmRequestType == 0x81 && s->bRequest == USB_REQUEST_GET_STATUS && !s->wValue && s->wLength == 2)
++        return reply_control(zero, 2);
++    if (s->bmRequestType == 0x81 && s->bRequest == USB_REQUEST_GET_INTERFACE && !s->wValue && s->wLength == 1)
++        return reply_control(zero, 1);
++    if (s->bmRequestType == 0x01 && s->bRequest == USB_REQUEST_SET_INTERFACE && !s->wValue && !s->wLength)
++        return queue_control(true, 0, CTRL_IN_STATUS);
++    if (s->bmRequestType == 0x81 && s->bRequest == USB_REQUEST_GET_DESCRIPTOR && !(s->wValue & 255)) {
++        const bool pad = control.target == &hid[0];
++        const size_t length = pad ? sizeof(pad_descriptor) : sizeof(report_descriptor);
++        if ((s->wValue >> 8) == USB_DT_REPORT) {
++            control.descriptor = s->wLength >= length;
++            return reply_control(pad ? pad_descriptor : report_descriptor, length);
++        }
++        if ((s->wValue >> 8) == USB_DT_HID) {
++            const u8 descriptor[] = {9, USB_DT_HID, 0x11, 0x01, 0, 1, USB_DT_REPORT, length & 255, length >> 8};
++            return reply_control(descriptor, sizeof(descriptor));
++        }
++    }
++    if (s->bmRequestType == 0xa1 && !(s->wValue & 255)) {
++        if (s->bRequest == 1 && s->wValue == 0x0100) return reply_control(control.target->last_report, 8);
++        if (s->bRequest == 1 && s->wValue == 0x0200)
++            return control.target == &hid[0] ? reply_control(zero, 8) : reply_control(&control.target->leds, 1);
++        if (s->bRequest == 2 && !s->wValue) return reply_control(&control.target->idle_rate, 1);
++        if (s->bRequest == 3 && !s->wValue) return reply_control(&control.target->protocol, 1);
++    }
++    if (s->bmRequestType == 0x21) {
++        if (s->bRequest == 9 && s->wValue == 0x0200 && s->wLength && s->wLength <= 64 &&
++                (control.target == &hid[0] || s->wLength == 1)) {
++            memset(ctrl_out_buffer, 0, sizeof(ctrl_out_buffer));
++            control.update_leds = control.target == &hid[1];
++            return queue_control(false, s->wLength, CTRL_OUT_DATA);
++        }
++        if (s->bRequest == 10 && !(s->wValue & 255) && !s->wLength) {
++            control.target->idle_rate = s->wValue >> 8;
++            return queue_control(true, 0, CTRL_IN_STATUS);
++        }
++        if (s->bRequest == 11 && s->wValue <= 1 && !s->wLength) {
++            control.target->protocol = (u8)s->wValue;
++            return queue_control(true, 0, CTRL_IN_STATUS);
++        }
++    }
++    trace_control("unsupported control request", 0);
++    return usbDsInterface_StallCtrl(control.wire->interface);
++}
++
++static Result poll_control(bool *progress) {
++    *progress = false;
++    if (!control.pending) return 0;
++    const bool in = control.phase == CTRL_IN_DATA || control.phase == CTRL_IN_STATUS;
++    Event *event = in ? &control.wire->interface->CtrlInCompletionEvent
++                      : &control.wire->interface->CtrlOutCompletionEvent;
++    trace_control(in ? "control IN completion" : "control OUT completion", control.expected);
++    Result rc = eventWait(event, 0);
++    if (rc == KERNELRESULT(TimedOut)) {
++        if (milliseconds() - control.started >= 1500) return rc;
++        return 0;
++    }
++    if (R_FAILED(rc)) return rc;
++    rc = clear_event(event);
++    if (R_FAILED(rc)) return rc;
++    UsbDsReportData reports;
++    trace_control(in ? "control IN result" : "control OUT result", control.expected);
++    rc = in ? usbDsInterface_GetCtrlInReportData(control.wire->interface, &reports)
++            : usbDsInterface_GetCtrlOutReportData(control.wire->interface, &reports);
++    if (R_FAILED(rc)) return rc;
++    u32 transferred = 0;
++    trace_control(in ? "control IN parse" : "control OUT parse", control.expected);
++    rc = usbDsParseReportData(&reports, control.id, NULL, &transferred);
++    if (rc == MAKERESULT(Module_Libnx, LibnxError_NotFound)) return 0;
++    // Commit successful descriptor delivery before looking at a following SETUP.
++    // The host can start its LED request before we process the completion event.
++    // Interrupt-IN delivery remains a separate requirement for overall readiness.
++    if (!control.aborted && R_SUCCEEDED(rc) && transferred == control.expected && control.descriptor &&
++            (control.phase == CTRL_IN_DATA || control.phase == CTRL_OUT_STATUS))
++        control.target->descriptor_ready = true;
++    // A matching completion retires DMA ownership even if a new SETUP cancelled it.
++    control.pending = false;
++    *progress = true;
++    if (next_setup.valid || control.aborted) {
++        control.phase = CTRL_IDLE;
++        control.aborted = false;
++        return 0;
++    }
++    if (R_FAILED(rc)) return rc;
++    if (transferred != control.expected) return io_error();
++    if (!in && transferred) armDCacheFlush(ctrl_out_buffer, transferred);
++    if (control.phase == CTRL_IN_DATA) return queue_control(false, 0, CTRL_OUT_STATUS);
++    if (control.phase == CTRL_OUT_DATA) {
++        if (control.update_leds) control.target->leds = ctrl_out_buffer[0] & 0x1f;
++        else if (control.target == &hid[0] && transferred == 8) {
++            memcpy(control.target->echo_report, ctrl_out_buffer, 8);
++            control.target->echo_pending = true;
++        }
++        return queue_control(true, 0, CTRL_IN_STATUS);
++    }
++    if (control.phase == CTRL_OUT_STATUS && control.descriptor) control.target->descriptor_ready = true;
++    control.phase = CTRL_IDLE;
++    return 0;
++}
++
++static Result service_setup(void) {
++    HidInterface *saved = current;
++    Result rc = 0;
++    for (unsigned step = 0; step < 12; step++) {
++        rc = capture_setup();
++        if (R_FAILED(rc)) break;
++        if (control.pending) {
++            bool progress;
++            rc = poll_control(&progress);
++            if (R_FAILED(rc) || !progress) break;
++        }
++        if (!control.pending && next_setup.valid) {
++            rc = dispatch_setup();
++            if (R_FAILED(rc)) break;
++        } else if (!control.pending) break;
++    }
++    current = saved;
++    return rc;
++}
++
++// Drain both OUT pipes. Keyboard LED reports can arrive on EP3 or EP0.
++// PicoSwitch also echoes gamepad output reports on its gamepad IN pipe.
++static Result poll_output(void) {
++    if (!current->out_endpoint) return 0;
++    const bool keyboard = current == &hid[1];
++    const size_t capacity = keyboard ? 8 : 64;
++    if (current->out_pending) {
++        trace_stage(keyboard ? "OUT ep03 completion event" : "OUT ep02 completion event", capacity);
++        Result rc = eventWait(&current->out_endpoint->CompletionEvent, 0);
++        if (rc == KERNELRESULT(TimedOut)) return 0;
++        if (R_FAILED(rc)) return rc;
++        rc = clear_event(&current->out_endpoint->CompletionEvent);
++        if (R_FAILED(rc)) return rc;
++        UsbDsReportData reports;
++        trace_stage(keyboard ? "OUT ep03 result" : "OUT ep02 result", capacity);
++        rc = usbDsEndpoint_GetReportData(current->out_endpoint, &reports);
++        if (R_FAILED(rc)) return rc;
++        u32 transferred;
++        trace_stage(keyboard ? "OUT ep03 parse" : "OUT ep02 parse", capacity);
++        rc = usbDsParseReportData(&reports, current->out_id, NULL, &transferred);
++        if (rc == MAKERESULT(Module_Libnx, LibnxError_NotFound)) return 0;
++        if (R_FAILED(rc) || transferred > capacity) return R_FAILED(rc) ? rc : io_error();
++        current->out_pending = false;
++        if (transferred) {
++            armDCacheFlush(current->output_buffer, transferred);
++            if (keyboard) current->leds = current->output_buffer[0] & 0x1f;
++            else if (transferred == 8) {
++                memcpy(current->echo_report, current->output_buffer, 8);
++                current->echo_pending = true;
++            }
++        }
++    }
++    Result rc = clear_event(&current->out_endpoint->CompletionEvent);
++    if (R_FAILED(rc)) return rc;
++    trace_stage(keyboard ? "OUT ep03 queue" : "OUT ep02 queue", capacity);
++    rc = usbDsEndpoint_PostBufferAsync(current->out_endpoint, current->output_buffer, capacity, &current->out_id);
++    if (R_SUCCEEDED(rc)) current->out_pending = true;
++    return rc;
++}
++
++static const char *state_name(UsbState state) {
++    switch (state) {
++    case UsbState_Detached: return "Detached";
++    case UsbState_Attached: return "Attached";
++    case UsbState_Powered: return "Powered";
++    case UsbState_Default: return "Default";
++    case UsbState_Address: return "Address";
++    case UsbState_Configured: return "Configured";
++    case UsbState_Suspended: return "Suspended";
++    default: return "Unknown";
++    }
++}
++
++static Result cancel_data_endpoint(UsbDsEndpoint *endpoint, const char *label) {
++    trace_stage(label, 0);
++    Result rc = usbDsEndpoint_Cancel(endpoint);
++    if (R_FAILED(rc)) return rc;
++    // Cancel returns only after the kernel no longer owns this DMA buffer.
++    // Drain completion metadata before the endpoint is armed again.
++    UsbDsReportData reports;
++    rc = usbDsEndpoint_GetReportData(endpoint, &reports);
++    if (R_FAILED(rc)) return rc;
++    return clear_event(&endpoint->CompletionEvent);
++}
++
++static Result reset_bus_transfers(void) {
++    HidInterface *saved = current;
++    next_setup.valid = false;
++    if (control.pending) control.aborted = true; // Retire EP0 ownership through its completion.
++    else control.phase = CTRL_IDLE;
++    Result rc = 0;
++    for (unsigned i = 0; i < 2; i++) {
++        current = &hid[i];
++        if (current->input_pending) {
++            rc = cancel_data_endpoint(current->endpoint, i ? "cancel IN ep83 after bus reset" : "cancel IN ep81 after bus reset");
++            if (R_FAILED(rc)) break;
++            current->input_pending = false;
++        }
++        if (current->out_pending) {
++            rc = cancel_data_endpoint(current->out_endpoint, i ? "cancel OUT ep03 after bus reset" : "cancel OUT ep02 after bus reset");
++            if (R_FAILED(rc)) break;
++            current->out_pending = false;
++        }
++        current->echo_pending = false;
++        current->was_ready = false;
++        current->release_pending = true;
++        // Report bytes did not change. Keep an already acknowledged descriptor
++        // across a host's unconfigure/reconfigure cycle on this same connection.
++        current->leds = current->idle_rate = 0;
++        current->protocol = 1;
++        memcpy(current->last_report, neutral(), 8);
++    }
++    current = saved;
++    return rc;
++}
++
++static Result read_state(UsbState *state) {
++    trace_stage("read USB state", 0);
++    Result rc = usbDsGetState(state);
++    if (R_FAILED(rc)) return rc;
++    if (!bus_known || *state != bus_state) {
++        const bool had_state = bus_known;
++        const UsbState previous = bus_state;
++        bus_known = true;
++        bus_state = *state;
++        const bool reset = had_state && (previous == UsbState_Configured || previous == UsbState_Suspended) &&
++            *state != UsbState_Configured && *state != UsbState_Suspended;
++        if (reset) {
++            bus_restarts++;
++            rc = reset_bus_transfers();
++            if (R_FAILED(rc)) return rc;
++        }
++        snprintf(bus_status, sizeof(bus_status), "%s -> %s; restarts=%u",
++                 had_state ? state_name(previous) : "initial", state_name(*state), bus_restarts);
++        if (*state == UsbState_Detached || *state == UsbState_Attached || *state == UsbState_Powered) {
++            for (unsigned i = 0; i < 2; i++) hid[i].descriptor_ready = false;
++        }
++        if (*state == UsbState_Suspended) {
++            for (unsigned i = 0; i < 2; i++) {
++                memcpy(hid[i].last_report, i ? key_neutral : pad_neutral, 8);
++                hid[i].release_pending = true;
++            }
++        }
++        if (*state == UsbState_Configured) {
++            for (unsigned i = 0; i < 2; i++) hid[i].was_ready = true;
++        }
++    }
++    return 0;
++}
++
++static Result start_input(const u8 report[8], bool release) {
++    // No writes to this DMA buffer until its matching completion has been consumed.
++    if (current->input_pending) return io_error();
++    Result rc = clear_event(&current->endpoint->CompletionEvent);
++    if (R_FAILED(rc)) return rc;
++    memcpy(current->input_buffer, report, 8);
++    trace_stage(current == &hid[0] ? "IN ep81 queue" : "IN ep83 queue", 8);
++    rc = usbDsEndpoint_PostBufferAsync(current->endpoint, current->input_buffer, 8, &current->input_id);
++    if (R_FAILED(rc)) return rc;
++    current->input_pending = true;
++    current->input_is_release = release;
++    return 0;
++}
++
++static Result poll_input(u64 timeout) {
++    if (!current->input_pending) return 0;
++    trace_stage(current == &hid[0] ? "IN ep81 completion event" : "IN ep83 completion event", 8);
++    Result rc = eventWait(&current->endpoint->CompletionEvent, timeout);
++    if (rc == KERNELRESULT(TimedOut)) return 0;
++    if (R_FAILED(rc)) return rc;
++    rc = clear_event(&current->endpoint->CompletionEvent);
++    if (R_FAILED(rc)) return rc;
++    UsbDsReportData reports;
++    trace_stage(current == &hid[0] ? "IN ep81 completion result" : "IN ep83 completion result", 8);
++    rc = usbDsEndpoint_GetReportData(current->endpoint, &reports);
++    if (R_FAILED(rc)) return rc;
++    u32 transferred;
++    trace_stage(current == &hid[0] ? "IN ep81 parse" : "IN ep83 parse", 8);
++    rc = usbDsParseReportData(&reports, current->input_id, NULL, &transferred);
++    if (rc == MAKERESULT(Module_Libnx, LibnxError_NotFound)) return 0;
++    if (R_FAILED(rc)) return rc;
++    if (transferred != 8) return io_error();
++    current->input_pending = false;
++    if (current->input_is_release) current->release_pending = false;
++    current->last_sent = milliseconds();
++    return 0;
++}
++
++static Result wait_input(void) {
++    u64 deadline = milliseconds() + REPORT_TIMEOUT_MS;
++    while (current->input_pending) {
++        UsbState state;
++        Result rc = read_state(&state);
++        if (R_FAILED(rc)) return rc;
++        if (state != UsbState_Configured) return KERNELRESULT(InvalidState);
++        rc = poll_input(EVENT_POLL_NS);
++        if (R_FAILED(rc)) {
++            char failed_stage[sizeof(trace_context)];
++            snprintf(failed_stage, sizeof(failed_stage), "%s", trace_context);
++            Result state_rc = read_state(&state);
++            if (R_SUCCEEDED(state_rc) && state != UsbState_Configured) return KERNELRESULT(InvalidState);
++            snprintf(trace_context, sizeof(trace_context), "%s", failed_stage);
++            return rc;
++        }
++        if (!current->input_pending) return 0;
++        if (milliseconds() >= deadline) return KERNELRESULT(TimedOut);
++        rc = service_setup();
++        if (R_FAILED(rc)) return rc;
++    }
++    return 0;
++}
++
++static Result write_report(const uint8_t report[8]) {
++    UsbState state;
++    Result rc = read_state(&state);
++    if (R_FAILED(rc)) return rc;
++    bool release = !memcmp(report, neutral(), 8);
++    // A neutral report is deferred across suspend/re-enumeration. A real key
++    // cannot be acknowledged as delivered until the bus is configured again.
++    if (state != UsbState_Configured) return release ? 0 : KERNELRESULT(InvalidState);
++    rc = wait_input();
++    if (R_FAILED(rc)) return rc;
++    if (current->release_pending && !release) {
++        rc = start_input(neutral(), true);
++        if (R_FAILED(rc)) return rc;
++        rc = wait_input();
++        if (R_FAILED(rc)) return rc;
++    }
++    rc = start_input(report, release);
++    if (R_FAILED(rc)) return rc;
++    rc = wait_input();
++    if (R_FAILED(rc)) return rc;
++    memmove(current->last_report, report, 8);
++    return 0;
++}
++
++Result usb_gamepad_write(const uint8_t report[8]) {
++    current = &hid[0];
++    if (!initialized) return MAKERESULT(Module_Libnx, LibnxError_NotInitialized);
++    if (R_FAILED(fault)) return fault;
++    Result rc = write_report(report);
++    if (rc == KERNELRESULT(InvalidState) && bus_known && bus_state != UsbState_Configured) return rc;
++    return remember_error(rc);
++}
++
++Result usb_keyboard_write(const uint8_t report[8]) {
++    current = &hid[1];
++    if (!initialized) return MAKERESULT(Module_Libnx, LibnxError_NotInitialized);
++    if (R_FAILED(fault)) return fault;
++    Result rc = write_report(report);
++    if (rc == KERNELRESULT(InvalidState) && bus_known && bus_state != UsbState_Configured) return rc;
++    return remember_error(rc);
++}
++
++static Result tick(void) {
++    UsbState state;
++    Result rc = read_state(&state);
++    if (R_FAILED(rc) || state == UsbState_Suspended) return rc;
++    rc = service_setup();
++    if (R_FAILED(rc)) return rc;
++    rc = read_state(&state);
++    if (R_FAILED(rc) || state != UsbState_Configured) return rc;
++    rc = poll_output();
++    if (R_FAILED(rc)) return rc;
++    rc = poll_input(0);
++    if (R_FAILED(rc) || current->input_pending) return rc;
++    if (current->release_pending) return start_input(neutral(), true);
++    if (current->echo_pending) {
++        rc = start_input(current->echo_report, false);
++        if (R_SUCCEEDED(rc)) current->echo_pending = false;
++        return rc;
++    }
++    // A configured host may stop polling while loading its HID driver or idling.
++    // Keep one transfer pending without blocking control requests or resetting USB.
++    if ((current == &hid[0] || current->idle_rate) && milliseconds() - current->last_sent >= (current == &hid[0] ? 10 : (u64)current->idle_rate * 4))
++        return start_input(current->last_report, false);
++    return 0;
++}
++
++Result usb_keyboard_tick(void) {
++    if (!initialized) return MAKERESULT(Module_Libnx, LibnxError_NotInitialized);
++    if (R_FAILED(fault)) return fault;
++    for (unsigned i = 0; i < 2; i++) {
++        current = &hid[i];
++        Result rc = tick();
++        if (R_FAILED(rc)) {
++            // A host reset can race an interrupt completion. Treat cancelled
++            // data I/O as loss of readiness when the bus confirms that reset.
++            const bool cancelled = rc == 0x828c || rc == 0x748c || rc == io_error() || rc == KERNELRESULT(InvalidState);
++            if (cancelled) {
++                char failed_stage[sizeof(trace_context)];
++                snprintf(failed_stage, sizeof(failed_stage), "%s", trace_context);
++                UsbState state;
++                Result state_rc = read_state(&state);
++                if (R_SUCCEEDED(state_rc) && state != UsbState_Configured) return 0;
++                snprintf(trace_context, sizeof(trace_context), "%s", failed_stage);
++            }
++            return remember_error(rc);
++        }
++    }
++    return 0;
++}
++
++
++#endif
+diff --git a/source/usb_keyboard.c b/source/usb_keyboard.c
+index 42ae55c..f32e85b 100644
+--- a/source/usb_keyboard.c
++++ b/source/usb_keyboard.c
+@@ -1,3 +1,4 @@
++#ifndef NXHID_GAMEPAD
+ #include "usb_keyboard.h"
+ #include <string.h>
+ 
+@@ -144,6 +145,10 @@ bool usb_keyboard_ready(void) {
+ }
+ 
+ uint8_t usb_keyboard_leds(void) { return leds; }
++const char *usb_keyboard_wait_reason(void) { return usb_keyboard_ready() ? "Keyboard ready" : "Waiting for USB host"; }
++const char *usb_keyboard_readiness_detail(void) { return "keyboard-only backend"; }
++const char *usb_keyboard_bus_status(void) { return "keyboard-only backend"; }
++const char *usb_keyboard_error_stage(void) { return "keyboard-only USB transfer"; }
+ 
+ // Each control stage is bounded; the public entry points latch failures until exit.
+ static Result control_stage(bool in, size_t size) {
+@@ -349,3 +354,5 @@ Result usb_keyboard_tick(void) {
+     return remember_error(tick());
+ }
+ 
++
++#endif
+diff --git a/tests/app_harness.c b/tests/app_harness.c
+index 37c4410..3c6413b 100644
+--- a/tests/app_harness.c
++++ b/tests/app_harness.c
+@@ -8,17 +8,20 @@
+ #include <stdio.h>
+ #include <string.h>
+ 
+-int nxhid_main(void);
++int nxhid_main(int argc, char **argv);
+ static const char *scenario;
+ static unsigned step, usb_starts, frames, sleeps;
+ static u64 now_ns;
+ static bool usb_active, sockets_active, network_active;
+ 
++static bool local(void) { return !strncmp(scenario, "local-", 6); }
++
+ static bool is(const char *name) { return !strcmp(scenario, name); }
+ 
+ int appletGetFocusState(void) {
+     bool background = (is("background-input") && step == 2) ||
+-        (is("background-error") && (step < 3 || step == 4));
++        (is("background-error") && (step < 3 || step == 4)) ||
++        (is("local-background") && step == 1146);
+     return background ? AppletFocusState_Background : AppletFocusState_InFocus;
+ }
+ int appletGetAppletType(void) {
+@@ -31,8 +34,8 @@ Result appletSetFocusHandlingMode(int mode) {
+ Result appletSetAutoSleepDisabled(bool disabled) { (void)disabled; return 0; }
+ bool appletMainLoop(void) {
+     step++;
+-    now_ns += 250000000;
+-    return step < 6;
++    now_ns += local() ? 10000000 : 250000000;
++    return step < (local() ? 2000u : 6u);
+ }
+ void padConfigureInput(unsigned players, unsigned styles) {
+     assert(players == 1 && styles == HidNpadStyleSet_NpadStandard);
+@@ -41,6 +44,8 @@ void padInitializeDefault(PadState *pad) { (void)pad; }
+ void padUpdate(PadState *pad) { (void)pad; }
+ u64 padGetButtonsDown(const PadState *pad) {
+     (void)pad;
++    if (local() && step == 2) return HidNpadButton_Minus;
++    if (is("local-cancel") && step == 1146) return HidNpadButton_B;
+     if (is("disconnect") && step == 2) return HidNpadButton_B;
+     if (is("background-input") && step == 2) return HidNpadButton_Plus;
+     return 0;
+@@ -81,7 +86,7 @@ Result nifmInitialize(int type) {
+ }
+ void nifmExit(void) { assert(network_active); network_active = false; }
+ Result nifmGetCurrentIpAddress(u32 *address) {
+-    if (is("waiting-wifi")) { *address = 0; return 0; }
++    if (is("waiting-wifi") || local()) { *address = 0; return 0; }
+     assert(inet_pton(AF_INET, "192.0.2.10", address) == 1);
+     return 0;
+ }
+@@ -97,12 +102,25 @@ Result usb_keyboard_init(void) {
+ void usb_keyboard_exit(void) { assert(usb_active); usb_active = false; }
+ Result usb_keyboard_tick(void) {
+     assert(usb_active);
++    if(is("local-reset-loop") || (is("local-reset") && step==2)) return 0x25c8c;
+     return (is("reset") || is("restart-error")) && step == 2 ? 0x5678 : 0;
+ }
+-bool usb_keyboard_ready(void) { return usb_active && !is("waiting-usb"); }
++bool usb_keyboard_ready(void) { return usb_active && !is("waiting-usb") && !is("local-pad-wait"); }
++const char *usb_keyboard_wait_reason(void) {
++    return is("local-pad-wait") ? "Waiting for controller input polling" : "Waiting for USB host";
++}
++const char *usb_keyboard_readiness_detail(void) {
++    return is("local-pad-wait") ? "desc=yes key=ok pad=wait ctrl=idle" : "desc=yes key=ok pad=ok ctrl=idle";
++}
++const char *usb_keyboard_bus_status(void) { return "Address -> Configured; restarts=0"; }
++const char *usb_keyboard_error_stage(void) { return "if0 OUT ep02 queue n=64 req=81/06 v=2200 len=255"; }
+ uint8_t usb_keyboard_leds(void) { return usb_active ? 2 : 0; }
+ Result usb_keyboard_write(const uint8_t report[8]) { (void)report; assert(usb_active); return 0; }
+ 
++#ifdef NXHID_GAMEPAD
++Result usb_gamepad_write(const uint8_t report[8]) { (void)report; assert(usb_active); return 0; }
++#endif
++
+ bool server_init(Server *s, uint16_t port, ReportWriter writer, LedReader reader) {
+     assert(port == NXHID_PORT);
+     *s = (Server){.client = -1, .listener = -1, .write_report = writer, .read_leds = reader};
+@@ -120,6 +138,7 @@ void server_close(Server *s) { server_drop(s); s->listener = -1; }
+ void server_tick(Server *s, uint64_t now, bool enabled) {
+     (void)now;
+     if (!enabled) { server_drop(s); return; }
++    if (local()) return;
+     if ((is("disconnect") && step == 2) || is("ready") || is("waiting-wifi")) return;
+     s->client = 11;
+     strcpy(s->peer, "192.0.2.20");
+@@ -127,11 +146,13 @@ void server_tick(Server *s, uint64_t now, bool enabled) {
+ }
+ 
+ int main(int argc, char **argv) {
+-    assert(argc == 2);
++    assert(argc == 2 || argc == 3);
+     scenario = argv[1];
+-    int rc = nxhid_main();
++    char *app_argv[] = {argc > 2 ? argv[2] : "/switch/nxhid/nxhid.nro", NULL};
++    int rc = nxhid_main(1, app_argv);
+     assert(!sockets_active && !network_active && !usb_active);
+     assert(frames > 0);
++    if(is("local-reset-loop")) assert(usb_starts>1 && usb_starts<=41);
+     if (is("background-input")) assert(step == 6);
+     if (is("background-error")) assert(frames == 2 && sleeps > 0);
+     return rc;
+diff --git a/tests/composite_harness.c b/tests/composite_harness.c
+new file mode 100644
+index 0000000..c95c45a
+--- /dev/null
++++ b/tests/composite_harness.c
+@@ -0,0 +1,320 @@
++#include "usb_keyboard.h"
++#include <assert.h>
++#include <stdio.h>
++#include <string.h>
++
++static UsbDsInterface interfaces[2];
++static UsbDsEndpoint endpoints[4];
++static UsbState state;
++static u64 now;
++static bool active, owned[4], timeout_pad;
++static u8 *dma[4], snapshot[4][64];
++static size_t sizes[4];
++static u32 ids[4], next_id;
++static UsbDsReportData control_in_reports[2], control_out_reports[2];
++static struct usb_control_setup setups[2];
++static u8 configs[2][5][128], control_data[2][256], output[64];
++static size_t config_sizes[2][5], control_sizes[2], output_size;
++static struct usb_device_descriptor device[5];
++static unsigned stalls, exits;
++static Result fail_out_queue, fail_control_in;
++static bool only_primary_control, suppress_control_in, suppress_control_out_status;
++static unsigned control_in_posts, control_out_posts, cancels;
++static bool receive_keyboard_led, receive_pad_echo;
++
++static unsigned ii(UsbDsInterface *i) { assert(i >= interfaces && i < interfaces+2); return (unsigned)(i-interfaces); }
++static unsigned ei(UsbDsEndpoint *e) { assert(e >= endpoints && e < endpoints+4); return (unsigned)(e-endpoints); }
++bool hosversionBefore(int a,int b,int c) { (void)a;(void)b;(void)c;return false; }
++u64 armGetSystemTick(void) { return now; }
++u64 armTicksToNs(u64 ticks) { return ticks; }
++void armDCacheFlush(void *p,size_t n) { assert((uintptr_t)p%4096==0 && n<=64); }
++Result eventClear(Event *e) { bool set=e->signaled;e->signaled=false;return set?0:KERNELRESULT(InvalidState); }
++Result eventWait(Event *e,u64 ns) {
++    for(unsigned i=0;i<4;i++) if(owned[i]) assert(!memcmp(dma[i],snapshot[i],sizes[i]));
++    if(e->error) return e->error;
++    if(e->signaled) return 0;
++    now+=ns;
++    return KERNELRESULT(TimedOut);
++}
++Result usbDsInitialize(void) { assert(!active);active=true;return 0; }
++void usbDsExit(void) { assert(active);active=false;memset(owned,0,sizeof(owned));exits++; }
++Result usbDsClearDeviceData(void) { memset(config_sizes,0,sizeof(config_sizes));return 0; }
++Result usbDsAddUsbLanguageStringDescriptor(u8 *i,const u16 *v,u16 n) { assert(n==1&&v[0]==0x409);*i=0;return 0; }
++Result usbDsAddUsbStringDescriptor(u8 *i,const char *s) { assert(*s);*i=1;return 0; }
++Result usbDsSetUsbDeviceDescriptor(UsbDeviceSpeed s,struct usb_device_descriptor *d) { device[s]=*d;return 0; }
++Result usbDsSetBinaryObjectStore(const void *p,size_t n) { (void)p;assert(n==22);return 0; }
++Result usbDsRegisterInterfaceEx(UsbDsInterface **p,u8 i) { assert(i<2);memset(&interfaces[i],0,sizeof(interfaces[i]));interfaces[i].interface_index=i;*p=&interfaces[i];return 0; }
++Result usbDsInterface_AppendConfigurationData(UsbDsInterface *p,UsbDeviceSpeed s,const void *d,size_t n) {
++    unsigned i=ii(p);assert(config_sizes[i][s]+n<=128);memcpy(configs[i][s]+config_sizes[i][s],d,n);config_sizes[i][s]+=n;return 0;
++}
++Result usbDsInterface_RegisterEndpoint(UsbDsInterface *p,UsbDsEndpoint **e,u8 address) {
++    unsigned i=ii(p),x=99;
++    if(i==0&&address==0x81)x=0;
++    if(i==0&&address==0x02)x=1;
++    if(i==1&&address==0x83)x=2;
++    if(i==1&&address==0x03)x=3;
++    assert(x<4);memset(&endpoints[x],0,sizeof(endpoints[x]));*e=&endpoints[x];return 0;
++}
++Result usbDsInterface_EnableInterface(UsbDsInterface *p) { ii(p);return 0; }
++Result usbDsEnable(void) { assert(active);return 0; }
++Result usbDsGetState(UsbState *p) { *p=state;return 0; }
++static void control_post(Event *e,size_t n,u32 *id,UsbDsReportData *r) {
++    *id=++next_id;*r=(UsbDsReportData){.report_count=1,.report={{*id,n,n,3}}};e->signaled=true;
++}
++Result usbDsInterface_CtrlInPostBufferAsync(UsbDsInterface *p,void *d,size_t n,u32 *id) {
++    if(fail_control_in) return fail_control_in;
++    unsigned i=ii(p);
++    if(only_primary_control && i!=0) return 0x25c8c;
++    control_in_posts++;
++    assert(n<=256&&(uintptr_t)d%4096==0);
++    if(n){memcpy(control_data[i],d,n);control_sizes[i]=n;}
++    control_post(&p->CtrlInCompletionEvent,n,id,&control_in_reports[i]);
++    if(suppress_control_in)p->CtrlInCompletionEvent.signaled=false;
++    return 0;
++}
++Result usbDsInterface_CtrlOutPostBufferAsync(UsbDsInterface *p,void *d,size_t n,u32 *id) {
++    control_out_posts++;
++    unsigned i=ii(p);assert(n<=64&&(uintptr_t)d%4096==0);if(n){assert(n==output_size);memcpy(d,output,n);}
++    control_post(&p->CtrlOutCompletionEvent,n,id,&control_out_reports[i]);
++    if(!n && suppress_control_out_status)p->CtrlOutCompletionEvent.signaled=false;
++    return 0;
++}
++Result usbDsInterface_GetCtrlInReportData(UsbDsInterface *p,UsbDsReportData *r) { *r=control_in_reports[ii(p)];return 0; }
++Result usbDsInterface_GetCtrlOutReportData(UsbDsInterface *p,UsbDsReportData *r) { *r=control_out_reports[ii(p)];return 0; }
++Result usbDsParseReportData(UsbDsReportData *r,u32 id,u32 *requested,u32 *transferred) {
++    for(u32 i=0;i<r->report_count;i++)if(r->report[i].id==id){if(requested)*requested=r->report[i].requestedSize;if(transferred)*transferred=r->report[i].transferredSize;return 0;}
++    return MAKERESULT(Module_Libnx,LibnxError_NotFound);
++}
++Result usbDsInterface_StallCtrl(UsbDsInterface *p) { ii(p);stalls++;return 0; }
++Result usbDsInterface_GetSetupPacket(UsbDsInterface *p,void *d,size_t n) { assert(n==sizeof(setups[0]));memcpy(d,&setups[ii(p)],n);return 0; }
++Result usbDsEndpoint_PostBufferAsync(UsbDsEndpoint *e,void *d,size_t n,u32 *id) {
++    unsigned x=ei(e);
++    if(x==1 && fail_out_queue) return fail_out_queue;
++    assert(!owned[x]&&(uintptr_t)d%4096==0);assert(n==(x==1?64:8));
++    for(unsigned i=0;i<4;i++)if(owned[i])assert(dma[i]!=d);
++    dma[x]=d;memcpy(snapshot[x],d,n);sizes[x]=n;owned[x]=true;ids[x]=*id=++next_id;
++    e->CompletionEvent.signaled=x!=1&&x!=3&&!(x==0&&timeout_pad);return 0;
++}
++Result usbDsEndpoint_Cancel(UsbDsEndpoint *ep) {
++    unsigned x=ei(ep);
++    cancels++;
++    if(owned[x])assert(!memcmp(dma[x],snapshot[x],sizes[x]));
++    owned[x]=false;
++    ep->CompletionEvent.signaled=false;
++    return 0;
++}
++Result usbDsEndpoint_GetReportData(UsbDsEndpoint *e,UsbDsReportData *r) {
++    unsigned x=ei(e);
++    if(!owned[x]){*r=(UsbDsReportData){0};return 0;}
++    assert(!memcmp(dma[x],snapshot[x],sizes[x]));
++    size_t transferred=sizes[x];
++    if(x==3 && receive_keyboard_led){dma[x][0]=7;transferred=1;receive_keyboard_led=false;}
++    if(x==1 && receive_pad_echo){memcpy(dma[x],(u8[8]){1,2,3,4,5,6,7,8},8);transferred=8;receive_pad_echo=false;}
++    *r=(UsbDsReportData){.report_count=1,.report={{ids[x],sizes[x],transferred,3}}};owned[x]=false;return 0;
++}
++static void request(unsigned i,u8 type,u8 code,u16 value,u16 length) {
++    setups[i]=(struct usb_control_setup){type,code,value,i,length};interfaces[i].SetupEvent.signaled=true;
++    assert(usb_keyboard_tick()==0);
++}
++static void connect_host(void) {
++    state=UsbState_Configured;
++    assert(usb_keyboard_tick()==0&&!usb_keyboard_ready());
++    assert(usb_keyboard_tick()==0&&usb_keyboard_ready());
++}
++static void descriptors(void) {
++    for(unsigned speed=2;speed<=4;speed++) {
++        assert(device[speed].idVendor==0x0f0d&&device[speed].idProduct==0x0092);
++        for(unsigned i=0;i<2;i++) {
++            unsigned ep_count=0;
++            for(size_t at=0;at<config_sizes[i][speed];) {
++                const u8 *d=&configs[i][speed][at];assert(d[0]>=2&&at+d[0]<=config_sizes[i][speed]);
++                if(d[1]==USB_DT_INTERFACE)assert(d[2]==i&&d[4]==2);
++                if(d[1]==USB_DT_ENDPOINT){ep_count++;assert(i==0?(d[2]==(ep_count==1?2:0x81)):d[2]==(ep_count==1?0x83:3));}
++                at+=d[0];
++            }
++            assert(ep_count==2);
++        }
++    }
++    request(0,0x81,6,USB_DT_REPORT<<8,255);
++    assert(control_sizes[0]==86&&control_data[0][3]==5);
++    request(1,0x81,6,USB_DT_REPORT<<8,255);
++    assert(control_sizes[1]>8&&control_data[1][3]==6);
++}
++static void transfers(void) {
++    const u8 neutral[8]={0,0,8,128,128,128,128,0},a[8]={4,0,8,128,128,128,128,0};
++    assert(!memcmp(snapshot[0],neutral,8)&&!memcmp(snapshot[2],(u8[8]){0},8));
++    assert(usb_gamepad_write(a)==0&&!memcmp(snapshot[0],a,8));
++    assert(usb_keyboard_write((u8[8]){2,0,4})==0&&snapshot[2][2]==4);
++    assert(usb_gamepad_write(neutral)==0&&!memcmp(snapshot[0],neutral,8));
++    request(0,0xa1,1,0x0100,8);assert(!memcmp(control_data[0],neutral,8));
++    request(1,0xa1,1,0x0100,8);assert(control_data[1][0]==2&&control_data[1][2]==4);
++    output[0]=2;output_size=1;
++    request(1,0x21,9,0x0200,1);assert(usb_keyboard_leds()==2);
++    memset(output,0x55,8);output_size=8;request(0,0x21,9,0x0200,8);assert(usb_keyboard_leds()==2);
++    assert(owned[1]);endpoints[1].CompletionEvent.signaled=true;
++    assert(usb_keyboard_tick()==0&&owned[1]); // OUT pipe rearmed after draining.
++    now+=20000000;assert(usb_keyboard_tick()==0);assert(usb_keyboard_tick()==0);
++    assert(!memcmp(snapshot[0],neutral,8)); // Continuous gamepad polling retains neutral state.
++    unsigned before=exits;
++    state=UsbState_Suspended;assert(usb_keyboard_tick()==0&&!usb_keyboard_ready());
++    assert(usb_gamepad_write(neutral)==0&&usb_keyboard_write((u8[8]){0})==0);
++    state=UsbState_Configured;assert(usb_keyboard_tick()==0);assert(usb_keyboard_tick()==0&&usb_keyboard_ready());
++    assert(exits==before&&usb_keyboard_leds()==2);
++    assert(!memcmp(snapshot[0],neutral,8)&&!memcmp(snapshot[2],(u8[8]){0},8));
++    // A gamepad timeout services pending requests on the keyboard interface,
++    // then latches the fault across both interfaces without reusing DMA memory.
++    output[0]=0;output_size=1;
++    setups[1]=(struct usb_control_setup){0x21,9,0x0200,1,1};interfaces[1].SetupEvent.signaled=true;
++    timeout_pad=true;
++    assert(usb_gamepad_write(a)==KERNELRESULT(TimedOut));
++    assert(usb_keyboard_leds()==0);
++    assert(usb_keyboard_write((u8[8]){0})==KERNELRESULT(TimedOut));
++    assert(usb_keyboard_tick()==KERNELRESULT(TimedOut));
++}
++int main(int argc, char **argv) {
++    assert(usb_keyboard_init()==0&&!usb_keyboard_ready());
++    if(argc>1 && !strcmp(argv[1], "readiness-reason")) {
++        state=UsbState_Configured;timeout_pad=true;
++        request(1,0x81,6,USB_DT_REPORT<<8,63);
++        assert(usb_keyboard_tick()==0 && !usb_keyboard_ready());
++        assert(!strcmp(usb_keyboard_wait_reason(),"Waiting for controller input polling"));
++        assert(strstr(usb_keyboard_readiness_detail(),"desc=yes key=ok pad=wait"));
++        timeout_pad=false;endpoints[0].CompletionEvent.signaled=true;
++        assert(usb_keyboard_tick()==0 && usb_keyboard_ready());
++        usb_keyboard_exit();puts("readiness distinguishes keyboard and controller polling: PASS");return 0;
++    }
++    if(argc>1 && (!strcmp(argv[1], "descriptor-led-race") || !strcmp(argv[1], "descriptor-data-led-race"))) {
++        const bool data_race=!strcmp(argv[1], "descriptor-data-led-race");
++        state=UsbState_Configured;
++        suppress_control_in=data_race;suppress_control_out_status=!data_race;
++        setups[1]=(struct usb_control_setup){0x81,6,USB_DT_REPORT<<8,1,63};
++        interfaces[1].SetupEvent.signaled=true;
++        assert(usb_keyboard_tick()==0);
++        // Host has received the descriptor and starts its LED request before
++        // the application processes the preceding transfer's completion.
++        output[0]=1;output_size=1;
++        suppress_control_in=suppress_control_out_status=false;
++        setups[1]=(struct usb_control_setup){0x21,9,0x0200,1,1};
++        interfaces[1].SetupEvent.signaled=true;
++        if(data_race)interfaces[1].CtrlInCompletionEvent.signaled=true;
++        else interfaces[1].CtrlOutCompletionEvent.signaled=true;
++        assert(usb_keyboard_tick()==0 && usb_keyboard_leds()==1);
++        const bool ready=usb_keyboard_ready();
++        printf("configured=%d num=%u ready=%d\n",state==UsbState_Configured,usb_keyboard_leds()&1,ready);
++        usb_keyboard_exit();return ready?0:13;
++    }
++    if(argc>1 && !strcmp(argv[1], "bus-reconfigure")) {
++        descriptors();connect_host();
++        const unsigned original_exits=exits;
++        now+=20000000;timeout_pad=true;
++        assert(usb_keyboard_tick()==0 && owned[0]);
++        state=UsbState_Default;
++        assert(usb_keyboard_tick()==0 && !usb_keyboard_ready() && exits==original_exits && cancels>=3);
++        assert(!owned[0]&&!owned[1]&&!owned[2]&&!owned[3]);
++        assert(strstr(usb_keyboard_bus_status(),"Configured -> Default"));
++        assert(usb_gamepad_write((u8[8]){4,0,8,128,128,128,128,0})==KERNELRESULT(InvalidState));
++        assert(usb_keyboard_write((u8[8]){0})==0 && usb_keyboard_tick()==0);
++        state=UsbState_Address;assert(usb_keyboard_tick()==0 && exits==original_exits);
++        state=UsbState_Configured;timeout_pad=false;
++        assert(usb_keyboard_tick()==0 && !usb_keyboard_ready());
++        assert(usb_keyboard_tick()==0 && usb_keyboard_ready() && exits==original_exits);
++        assert(!memcmp(snapshot[0],(u8[8]){0,0,8,128,128,128,128,0},8));
++        assert(!memcmp(snapshot[2],(u8[8]){0},8));
++        usb_keyboard_exit();puts("host reconfiguration without software USB teardown: PASS");return 0;
++    }
++    if(argc>1 && !strcmp(argv[1], "reset-during-control")) {
++        descriptors();connect_host();
++        const unsigned before_out=control_out_posts;
++        setups[1]=(struct usb_control_setup){0x81,6,USB_DT_REPORT<<8,1,63};
++        interfaces[1].SetupEvent.signaled=true;suppress_control_in=true;
++        assert(usb_keyboard_tick()==0);
++        state=UsbState_Default;
++        interfaces[1].CtrlInCompletionEvent.signaled=true;suppress_control_in=false;
++        assert(usb_keyboard_tick()==0 && control_out_posts==before_out && !usb_keyboard_ready());
++        state=UsbState_Configured;
++        assert(usb_keyboard_tick()==0 && usb_keyboard_tick()==0 && usb_keyboard_ready());
++        usb_keyboard_exit();puts("host reset retires interrupted EP0 transfer: PASS");return 0;
++    }
++    if(argc>1 && !strcmp(argv[1], "keyboard-out-and-echo")) {
++        descriptors();connect_host();
++        receive_keyboard_led=true;endpoints[3].CompletionEvent.signaled=true;
++        assert(usb_keyboard_tick()==0 && usb_keyboard_leds()==7 && owned[3]);
++        receive_pad_echo=true;endpoints[1].CompletionEvent.signaled=true;
++        assert(usb_keyboard_tick()==0 && !memcmp(snapshot[0],(u8[8]){1,2,3,4,5,6,7,8},8));
++        assert(usb_keyboard_tick()==0);
++        memset(output,0x44,8);output_size=8;
++        request(0,0x21,9,0x0200,8);
++        assert(!memcmp(snapshot[0],output,8));
++        assert(usb_keyboard_tick()==0);
++        usb_keyboard_exit();puts("keyboard interrupt LEDs and gamepad output echo: PASS");return 0;
++    }
++    if(argc>1 && (!strcmp(argv[1], "shared-setup") || !strcmp(argv[1], "primary-control"))) {
++        setups[0]=setups[1]=(struct usb_control_setup){0x81,6,USB_DT_REPORT<<8,1,63};
++        interfaces[1].SetupEvent.signaled=true;
++        if(!strcmp(argv[1], "shared-setup"))interfaces[0].SetupEvent.signaled=true;
++        else only_primary_control=true;
++        assert(usb_keyboard_tick()==0);
++        assert(stalls==0 && control_in_posts==1 && control_out_posts==1);
++        assert(control_sizes[0]==63 && control_data[0][3]==6); // keyboard, sent via shared EP0 owner 0.
++        connect_host();
++        usb_keyboard_exit();puts("shared EP0 keyboard descriptor routing: PASS");return 0;
++    }
++    if(argc>1 && !strcmp(argv[1], "delayed-shared-setup")) {
++        setups[0]=setups[1]=(struct usb_control_setup){0x81,6,USB_DT_REPORT<<8,1,63};
++        interfaces[0].SetupEvent.signaled=true;suppress_control_in=true;
++        assert(usb_keyboard_tick()==0 && control_in_posts==1);
++        interfaces[1].SetupEvent.signaled=true;
++        assert(usb_keyboard_tick()==0 && control_in_posts==1 && control_out_posts==0);
++        interfaces[0].CtrlInCompletionEvent.signaled=true;suppress_control_in=false;
++        assert(usb_keyboard_tick()==0 && control_in_posts==1 && control_out_posts==1);
++        connect_host();
++        // An actual later request with identical contents still gets its own reply.
++        request(1,0x81,6,USB_DT_REPORT<<8,63);
++        assert(control_in_posts==2 && control_out_posts==2);
++        usb_keyboard_exit();puts("delayed shared notification and genuine repeated SETUP: PASS");return 0;
++    }
++    if(argc>1 && !strcmp(argv[1], "readiness-waits")) {
++        state=UsbState_Configured;
++        assert(usb_keyboard_tick()==0 && usb_keyboard_tick()==0 && !usb_keyboard_ready());
++        setups[1]=(struct usb_control_setup){0x81,6,USB_DT_REPORT<<8,1,63};
++        interfaces[1].SetupEvent.signaled=true;suppress_control_in=true;
++        assert(usb_keyboard_tick()==0 && !usb_keyboard_ready());
++        interfaces[1].CtrlInCompletionEvent.signaled=true;suppress_control_in=false;
++        assert(usb_keyboard_tick()==0 && usb_keyboard_ready());
++        usb_keyboard_exit();puts("readiness waits for descriptor acknowledgement: PASS");return 0;
++    }
++    if(argc>1 && !strcmp(argv[1], "superseded-setup")) {
++        setups[1]=(struct usb_control_setup){0x81,6,USB_DT_REPORT<<8,1,63};
++        interfaces[1].SetupEvent.signaled=true;suppress_control_in=true;
++        assert(usb_keyboard_tick()==0 && now==0 && control_out_posts==0);
++        // A new SETUP aborts the old descriptor read. Retire the IN completion,
++        // then answer GET_IDLE without queueing the old OUT status stage.
++        setups[1]=(struct usb_control_setup){0xa1,2,0,1,1};
++        interfaces[1].SetupEvent.signaled=true;
++        interfaces[1].CtrlInCompletionEvent.signaled=true;suppress_control_in=false;
++        assert(usb_keyboard_tick()==0);
++        assert(control_in_posts==2 && control_out_posts==1);
++        assert(control_sizes[1]==1 && control_data[1][0]==0);
++        usb_keyboard_exit();puts("nonblocking superseded SETUP handling: PASS");return 0;
++    }
++    if(argc>1) {
++        state=UsbState_Configured;
++        if(!strcmp(argv[1], "out-error")) fail_out_queue=0x25c8c;
++        else {
++            fail_control_in=0x25c8c;
++            setups[1]=(struct usb_control_setup){0x81,6,USB_DT_REPORT<<8,1,255};
++            interfaces[1].SetupEvent.signaled=true;
++        }
++        assert(usb_keyboard_tick()==0x25c8c);
++        const char *stage=usb_keyboard_error_stage();
++        assert(strstr(stage,fail_out_queue?"if0 OUT ep02 queue":"if0 control IN primary queue"));
++        if(fail_control_in) assert(strstr(stage,"req=81/06") && strstr(stage,"v=2200"));
++        char captured[128];snprintf(captured,sizeof(captured),"%s",stage);
++        usb_keyboard_exit();assert(!strcmp(captured,usb_keyboard_error_stage()));
++        puts(captured);return 0;
++    }
++    descriptors();connect_host();transfers();
++    usb_keyboard_exit();assert(!active&&!usb_keyboard_ready());
++    puts("composite USB descriptors, controls, transfers, suspend, timeout: PASS");
++    return 0;
++}
+diff --git a/tests/fakes/switch.h b/tests/fakes/switch.h
+index 5c3b601..cf064f6 100644
+--- a/tests/fakes/switch.h
++++ b/tests/fakes/switch.h
+@@ -82,6 +82,7 @@ Result usbDsParseReportData(UsbDsReportData *reports, u32 id, u32 *requested, u3
+ Result usbDsInterface_StallCtrl(UsbDsInterface *intf);
+ Result usbDsInterface_GetSetupPacket(UsbDsInterface *intf, void *data, size_t size);
+ Result usbDsEndpoint_PostBufferAsync(UsbDsEndpoint *ep, void *data, size_t size, u32 *id);
++Result usbDsEndpoint_Cancel(UsbDsEndpoint *ep);
+ Result usbDsEndpoint_GetReportData(UsbDsEndpoint *ep, UsbDsReportData *reports);
+ 
+ typedef struct PrintConsole PrintConsole;
+@@ -89,7 +90,7 @@ typedef struct { unsigned unused; } PadState;
+ enum { AppletType_Application = 0, AppletType_LibraryApplet = 2 };
+ enum { AppletFocusState_InFocus = 1, AppletFocusState_Background = 3 };
+ enum { AppletFocusHandlingMode_NoSuspend = 1, NifmServiceType_User = 0 };
+-enum { HidNpadStyleSet_NpadStandard = 1, HidNpadButton_B = 2, HidNpadButton_Plus = 1024 };
++enum { HidNpadStyleSet_NpadStandard = 1, HidNpadButton_B = 2, HidNpadButton_Plus = 1024, HidNpadButton_Minus = 2048 };
+ PrintConsole *consoleInit(PrintConsole *console);
+ void consoleUpdate(PrintConsole *console);
+ void consoleExit(PrintConsole *console);
+diff --git a/tests/playback_harness.c b/tests/playback_harness.c
+new file mode 100644
+index 0000000..8bf407d
+--- /dev/null
++++ b/tests/playback_harness.c
+@@ -0,0 +1,56 @@
++#include "playback.h"
++#include <assert.h>
++#include <stdio.h>
++#include <stdlib.h>
++#include <string.h>
++static uint64_t now;
++static unsigned events, failure_at;
++static uint8_t caps;
++static uint64_t clock_ms(void) { return now; }
++static uint8_t leds(void) { return caps; }
++static bool emit(char type,const uint8_t report[8]) {
++    printf("%c %llu ",type,(unsigned long long)now);
++    for(unsigned i=0;i<8;i++)printf("%02x",report[i]);
++    putchar('\n');
++    now+=5; // USB delivery takes time; the hold must start after it.
++    return ++events!=failure_at;
++}
++static bool keyboard(const uint8_t r[8]) { return emit('K',r); }
++static bool gamepad(const uint8_t r[8]) { return emit('P',r); }
++int main(int argc,char **argv) {
++    assert(argc>=2);
++    if(!strcmp(argv[1],"ascii")) {
++        for(unsigned lock=0;lock<=2;lock+=2)for(unsigned c=32;c<=126;c++) {
++            uint8_t report[8];assert(playback_ascii((uint8_t)c,(uint8_t)lock,report));
++            printf("%u %u %u %u\n",lock,c,report[0],report[2]);
++        }
++        uint8_t report[8];assert(!playback_ascii(0,0,report));assert(!playback_ascii(127,0,report));
++        return 0;
++    }
++    if(!strcmp(argv[1],"path")) {
++        char path[1024];assert(playback_payload_path(path,sizeof(path),argc>2?argv[2]:NULL));puts(path);
++        char small[3];assert(!playback_payload_path(small,sizeof(small),NULL));return 0;
++    }
++    assert(argc>=3);
++    Playback p={0};
++    if(!playback_load(&p,argv[2])) { puts(p.message);return 2; }
++    if(!strcmp(argv[1],"validate")) { printf("%zu\n",p.count);playback_free(&p);return 0; }
++    const bool cancel=!strcmp(argv[1],"cancel"), unavailable=!strcmp(argv[1],"unavailable");
++    if(!strcmp(argv[1],"caps"))caps=2;
++    if(!strcmp(argv[1],"failure"))failure_at=20;
++    assert(playback_start(&p,keyboard,gamepad,leds,clock_ms,now));
++    unsigned ticks=0;
++    while(p.state==PLAYBACK_RUNNING) {
++        assert(++ticks<1000000);
++        if(now<p.deadline)now=p.deadline;
++        playback_tick(&p,now,!(unavailable&&events>=20));
++        if(cancel&&events>=20)playback_stop(&p);
++    }
++    if(cancel)assert(p.state==PLAYBACK_STOPPED);
++    else if(unavailable||failure_at)assert(p.state==PLAYBACK_ERROR);
++    else assert(p.state==PLAYBACK_DONE&&p.line+1==p.count);
++    assert(!playback_holding(&p));
++    printf("END %u %zu %zu\n",p.state,p.line,p.count);
++    playback_free(&p);assert(!p.data&&!p.lines&&!p.count);
++    return 0;
++}
+diff --git a/tests/server_harness.c b/tests/server_harness.c
+index c3930a3..e667962 100644
+--- a/tests/server_harness.c
++++ b/tests/server_harness.c
+@@ -6,7 +6,12 @@
+ #include <sys/socket.h>
+ #include <time.h>
+ 
+-static FILE *log_file;
++static FILE *log_file, *timing_file;
++static uint64_t clock_ms(void) {
++    struct timespec ts;
++    clock_gettime(CLOCK_MONOTONIC, &ts);
++    return (uint64_t)ts.tv_sec * 1000 + ts.tv_nsec / 1000000;
++}
+ static volatile sig_atomic_t running = 1;
+ static bool fail_nonzero;
+ static const char *leds_path;
+@@ -22,6 +27,12 @@ static uint8_t read_leds(void) {
+     return (uint8_t)value;
+ }
+ static bool write_report(const uint8_t report[8]) {
++    if (timing_file) {
++        fprintf(timing_file, "%llu ", (unsigned long long)clock_ms());
++        for (int i = 0; i < 8; i++) fprintf(timing_file, "%02x", report[i]);
++        fputc('\n', timing_file);
++        fflush(timing_file);
++    }
+     unsigned nonzero = 0;
+     for (int i = 0; i < 8; i++) {
+         fprintf(log_file, "%02x", report[i]);
+@@ -43,6 +54,14 @@ static bool write_report(const uint8_t report[8]) {
+     return true;
+ }
+ 
++static bool write_pad(const uint8_t report[8]) {
++    fputc('P', log_file);
++    for (int i = 0; i < 8; i++) fprintf(log_file, "%02x", report[i]);
++    fputc('\n', log_file);
++    fflush(log_file);
++    return true;
++}
++
+ int main(int argc, char **argv) {
+     if (argc < 4) return 2;
+     log_file = fopen(argv[1], "w");
+@@ -53,6 +72,9 @@ int main(int argc, char **argv) {
+     signal(SIGINT, stop);
+     Server s;
+     if (!server_init(&s, 0, write_report, read_leds)) { perror("server_init"); return 4; }
++    s.clock_ms = clock_ms;
++    if (argc > 4) s.write_pad = write_pad;
++    if (argc > 5) { timing_file = fopen(argv[5], "w"); if (!timing_file) return 6; }
+     struct sockaddr_in address;
+     socklen_t size = sizeof(address);
+     if (getsockname(s.listener, (struct sockaddr *)&address, &size)) return 5;
+@@ -67,6 +89,7 @@ int main(int argc, char **argv) {
+     }
+     server_close(&s);
+     fclose(log_file);
++    if (timing_file) fclose(timing_file);
+     return 0;
+ }
+ 
+diff --git a/tests/test_app.py b/tests/test_app.py
+index 91d4ab1..c311ec9 100644
+--- a/tests/test_app.py
++++ b/tests/test_app.py
+@@ -45,10 +45,10 @@ class AppScreenTests(unittest.TestCase):
+ 
+     def test_reset_notice_clears_after_recovery(self):
+         frames = self.frames("reset")
+-        self.assertIn("USB reset (00005678)", frames[1])
++        self.assertIn("USB error 00005678", frames[1])
+         self.assertNotIn("Keyboard ready", frames[1])
+         self.assertIn("Keyboard ready", frames[-1])
+-        self.assertNotIn("USB reset", frames[-1])
++        self.assertNotIn("USB error", frames[-1])
+ 
+     def test_instructions_follow_current_connection_state(self):
+         self.assertIn("Connect the Switch USB-C port", self.frames("waiting-usb")[-1])
+@@ -84,3 +84,73 @@ class AppScreenTests(unittest.TestCase):
+     def test_background_buttons_do_not_close_the_app(self):
+         self.assertIn("Forwarding keyboard input", self.frames("background-input")[-1])
+ 
++
++
++class LocalPlaybackAppTests(unittest.TestCase):
++    @classmethod
++    def setUpClass(cls):
++        cls.build = tempfile.TemporaryDirectory(prefix="nxhid-local-app-")
++        cls.addClassCleanup(cls.build.cleanup)
++        directory = Path(cls.build.name)
++        cls.executable = directory / "app"
++        flags = ["cc", "-std=c11", "-Wall", "-Wextra", "-Werror", "-DNXHID_GAMEPAD",
++                 "-I" + str(ROOT / "tests/fakes"), "-I" + str(ROOT / "include")]
++        subprocess.run(flags + ["-Dmain=nxhid_main", "-Dprintf=ui_test_printf", "-c",
++                               str(ROOT / "source/main.c"), "-o", str(directory / "main.o")], check=True)
++        subprocess.run(flags + [str(directory / "main.o"), str(ROOT / "tests/app_harness.c"),
++                                str(ROOT / "source/playback.c"), "-o", str(cls.executable)], check=True)
++
++    def run_scenario(self, scenario, payload=True):
++        with tempfile.TemporaryDirectory() as td:
++            directory = Path(td)
++            if payload:
++                (directory / "payload.txt").write_text('1/2"abc\n2/2"def\n')
++            result = subprocess.run([str(self.executable), scenario, str(directory / "nxhid.nro")],
++                                    capture_output=True, text=True, timeout=5)
++            log = directory / "usb.log"
++            self.last_usb_log = log.read_text() if log.exists() else ""
++        self.assertEqual(result.returncode, 0, result.stderr)
++        return re.sub(r"\x1b\[[0-9;]*[A-Za-z]", "", result.stdout)
++
++    def test_minus_runs_payload_beside_nro_without_wifi(self):
++        frames = self.run_scenario("local-run")
++        self.assertIn("Wi-Fi not connected", frames)
++        self.assertIn("Starting in 5 seconds", frames)
++        self.assertIn("All 2 lines sent", frames)
++
++    def test_missing_payload_has_a_clear_error(self):
++        self.assertIn("Cannot open payload.txt", self.run_scenario("local-missing", payload=False))
++
++    def test_b_cancels_local_playback(self):
++        frames = self.run_scenario("local-cancel")
++        self.assertIn("Stopped at line", frames)
++        self.assertNotIn("All 2 lines sent", frames)
++
++    def test_leaving_foreground_cancels_playback(self):
++        frames = self.run_scenario("local-background")
++        self.assertIn("NXHID not in foreground", frames)
++        self.assertNotIn("All 2 lines sent", frames)
++
++
++    def test_error_stage_is_visible_and_saved_then_clears_without_remote_client(self):
++        frames = self.run_scenario("local-reset")
++        self.assertIn("USB error:  00025c8c", frames)
++        self.assertIn("Stage:      if0 OUT ep02 queue", frames)
++        self.assertIn("module=140 description=302", self.last_usb_log)
++        self.assertIn("stage=if0 OUT ep02 queue", self.last_usb_log)
++        final = frames.split("\x1e")[-2]
++        self.assertIn("Keyboard ready", final)
++        self.assertNotIn("USB error", final)
++
++    def test_repeated_errors_back_off_instead_of_resetting_every_frame(self):
++        frames = self.run_scenario("local-reset-loop")
++        self.assertIn("Waiting for USB host", frames)
++        self.assertNotIn("USB:        Keyboard ready", frames)
++        self.assertLessEqual(self.last_usb_log.count("error=00025c8c"), 41)
++
++
++    def test_waiting_status_names_the_blocked_interface(self):
++        frames = self.run_scenario("local-pad-wait")
++        self.assertIn("USB:        Waiting for controller input polling", frames)
++        self.assertIn("Readiness:  desc=yes key=ok pad=wait", frames)
++        self.assertNotIn("All 2 lines sent", frames)
+diff --git a/tests/test_civswitch.py b/tests/test_civswitch.py
+new file mode 100644
+index 0000000..8599baf
+--- /dev/null
++++ b/tests/test_civswitch.py
+@@ -0,0 +1,181 @@
++"""Composite USB boundary and automatic macro integration tests."""
++import contextlib
++import io
++from pathlib import Path
++import socket
++import subprocess
++import tempfile
++import time
++import unittest
++from unittest import mock
++import test_nxhid as base
++
++nx = base.nxhid
++ROOT = base.ROOT
++
++
++class CompositeUsbTests(unittest.TestCase):
++    def test_real_backend_with_two_interfaces(self):
++        with tempfile.TemporaryDirectory() as td:
++            exe = str(Path(td) / "composite")
++            subprocess.run(["cc", "-std=c11", "-Wall", "-Wextra", "-Werror", "-DNXHID_GAMEPAD",
++                            "-I" + str(ROOT / "tests/fakes"), "-I" + str(ROOT / "include"),
++                            str(ROOT / "source/usb_composite.c"), str(ROOT / "tests/composite_harness.c"),
++                            "-o", exe], check=True)
++            subprocess.run([exe], check=True, timeout=5)
++            subprocess.run([exe,"out-error"], check=True, timeout=5)
++            subprocess.run([exe,"control-in-error"], check=True, timeout=5)
++            for scenario in ("shared-setup", "primary-control", "delayed-shared-setup", "superseded-setup", "readiness-waits", "bus-reconfigure", "reset-during-control", "keyboard-out-and-echo", "descriptor-led-race", "descriptor-data-led-race", "readiness-reason"):
++                subprocess.run([exe,scenario], check=True, timeout=5)
++
++
++class AutomaticMacroTests(unittest.TestCase):
++    def test_all_87_lines_have_controller_navigation_and_two_enters(self):
++        lines = ['%d/87"><div class="aA!`' % i for i in range(1, 88)]
++        client = mock.Mock()
++        client.leds.return_value = 0
++        with mock.patch.object(nx, "wait_with_heartbeat"), contextlib.redirect_stdout(io.StringIO()):
++            nx.send_civ(client, lines)
++        client.require_gamepad.assert_called_once()
++        a = nx.pad_report("a")
++        taps = client.tap.call_args_list
++        pad = [call.args[0] for call in taps if call.kwargs.get("pad")]
++        self.assertEqual(pad, [a] * (5+87+86))
++        reports = [call.args[0] for call in taps if not call.kwargs.get("pad")]
++        client.report.assert_not_called()
++        client.pad_report.assert_not_called()
++        client.require_taps.assert_called_once()
++        self.assertEqual(reports.count(nx.chord_report("ESC")), 87)
++        self.assertEqual(reports.count(nx.chord_report("ENTER")), 174)
++        client.leds.return_value = 0
++
++    def test_old_keyboard_build_stops_before_any_input(self):
++        client = mock.Mock()
++        client.require_gamepad.side_effect = RuntimeError("matching composite NXHID")
++        with self.assertRaises(RuntimeError):
++            nx.send_civ(client, ['1/1"x'])
++        client.report.assert_not_called()
++        client.pad_report.assert_not_called()
++        client.request.assert_not_called()
++
++    def test_caps_response_is_checked_and_button_mapping_matches_pico(self):
++        client = nx.Client("unused")
++        client.exchange = mock.Mock(return_value=b"CAPS KEYBOARD\n")
++        with self.assertRaises(RuntimeError):
++            client.require_gamepad()
++        client.exchange.return_value = b"CAPS KEYBOARD GAMEPAD\n"
++        client.require_gamepad()
++        self.assertEqual(nx.pad_report("A"), bytes([4,0,8,128,128,128,128,0]))
++        self.assertEqual(nx.pad_report("NONE"), nx.PAD_NEUTRAL)
++
++    def test_bad_payload_fails_before_network_connection(self):
++        with tempfile.TemporaryDirectory() as td:
++            path = Path(td) / "payload.txt"
++            for content in ['core.js', '1/2"x\n', '1/1"'+'x'*250, '1/1"\tx']:
++                path.write_text(content, encoding="ascii")
++                with mock.patch.object(nx.socket, "create_connection") as connect, contextlib.redirect_stderr(io.StringIO()):
++                    self.assertEqual(nx.main(["unused", "civ", str(path)]), 1)
++                connect.assert_not_called()
++
++
++class GamepadServerTests(unittest.TestCase):
++    setUpClass = classmethod(base.ServerIntegrationTests.setUpClass.__func__)
++    setUp = base.ServerIntegrationTests.setUp
++    tearDown = base.ServerIntegrationTests.tearDown
++    stop = base.ServerIntegrationTests.stop
++    connect = base.ServerIntegrationTests.connect
++    line = base.ServerIntegrationTests.line
++    reports = base.ServerIntegrationTests.reports
++
++    def start(self, fail=False):
++        self.process = subprocess.Popen([str(self.executable), str(self.log), "ok", str(self.leds_file), "pad", str(Path(self.temp.name) / "timings.txt")],
++                                        stdout=subprocess.PIPE, text=True)
++        self.port = int(self.process.stdout.readline())
++
++    def test_pad_tap_and_release_both_interfaces(self):
++        with nx.Client("127.0.0.1", self.port) as client:
++            client.require_gamepad()
++            client.pad_report(nx.pad_report("A"))
++            client.request("RELEASE")
++        records = self.reports(5)
++        self.assertEqual(records[:3], ["P"+nx.pad_report("A").hex(), nx.RELEASE.hex(), "P"+nx.PAD_NEUTRAL.hex()])
++        self.assertIn("P"+nx.PAD_NEUTRAL.hex(), records[3:])
++
++    def test_malformed_pad_drops_session_and_releases_both(self):
++        sock = self.connect()
++        sock.sendall(b"PAD 0400088080808000\n")
++        self.assertEqual(self.line(sock), b"OK\n")
++        sock.sendall(b"PAD 04c0098080808001\n")
++        self.assertEqual(self.line(sock), b"")
++        self.assertEqual(self.reports(3)[-2:], [nx.RELEASE.hex(), "P"+nx.PAD_NEUTRAL.hex()])
++
++    def test_watchdog_releases_controller(self):
++        sock = self.connect()
++        sock.sendall(b"PAD 0400088080808000\n")
++        self.assertEqual(self.line(sock), b"OK\n")
++        sock.settimeout(5)
++        self.assertEqual(self.line(sock), b"")
++        self.assertEqual(self.reports(3)[-2:], [nx.RELEASE.hex(), "P"+nx.PAD_NEUTRAL.hex()])
++
++    def test_real_tcp_macro_and_resume_preserve_message_order(self):
++        lines = ['1/2"aA!', '2/2"bb`']
++        self.leds_file.write_text("2")
++        with nx.Client("127.0.0.1", self.port) as client, \
++                mock.patch.object(nx, "wait_with_heartbeat"), contextlib.redirect_stdout(io.StringIO()):
++            nx.send_civ(client, lines, start=2, preamble=False, countdown=0)
++        records = self.reports(2+4+2*len(lines[1])+4+2)
++        presses = [bytes.fromhex(x) for x in records if not x.startswith("P") and x != nx.RELEASE.hex()]
++        expected = [nx.chord_report("ESC")]
++        for char in lines[1]:
++            mod, key = nx.character_key(char)
++            if 4 <= key <= 29: mod ^= 2
++            expected.append(nx.make_report(mod,[key]))
++        expected += [nx.chord_report("ENTER")]*2
++        self.assertEqual(presses, expected)
++        self.assertEqual(records.count("P"+nx.pad_report("a").hex()), 1)
++
++
++    def test_one_atomic_tap_releases_without_any_followup_packet(self):
++        sock = self.connect()
++        sock.sendall(b"TAP 40 40 0000250000000000\n")  # key 8
++        # Simulate a client/Wi-Fi pause far beyond normal keyboard repeat delay.
++        # No key-up command or further packet is sent during this pause.
++        time.sleep(0.65)
++        self.assertEqual(self.line(sock), b"OK\n")
++        self.assertEqual(self.reports(2), ["0000250000000000", nx.RELEASE.hex()])
++        events = [line.split() for line in (Path(self.temp.name) / "timings.txt").read_text().splitlines()]
++        duration = int(events[1][0]) - int(events[0][0])
++        self.assertGreaterEqual(duration, 40)
++        self.assertLess(duration, 200)  # Release is local, well before the 650 ms pause ends.
++
++    def test_packet_delay_between_identical_eights_keeps_separate_short_taps(self):
++        sock = self.connect()
++        for _ in range(2):
++            sock.sendall(b"TAP 40 40 0000250000000000\n")
++            self.assertEqual(self.line(sock), b"OK\n")
++            time.sleep(0.35)
++        self.assertEqual(self.reports(4), ["0000250000000000", nx.RELEASE.hex()] * 2)
++        events = [line.split() for line in (Path(self.temp.name) / "timings.txt").read_text().splitlines()]
++        self.assertLess(int(events[1][0]) - int(events[0][0]), 200)
++        self.assertLess(int(events[3][0]) - int(events[2][0]), 200)
++
++    def test_overlong_tap_is_rejected_before_pressing_a_key(self):
++        sock = self.connect()
++        sock.sendall(b"TAP 500 40 0000250000000000\n")
++        self.assertEqual(self.line(sock), b"")
++        self.assertEqual(self.reports(2), [nx.RELEASE.hex(), "P"+nx.PAD_NEUTRAL.hex()])
++
++    def test_gamepad_tap_releases_without_a_second_packet(self):
++        sock = self.connect()
++        sock.sendall(b"PTAP 50 0 0400088080808000\n")
++        self.assertEqual(self.line(sock), b"OK\n")
++        self.assertEqual(self.reports(2), ["P"+nx.pad_report("A").hex(), "P"+nx.PAD_NEUTRAL.hex()])
++
++    def test_atomic_text_prefix_and_repeated_characters_round_trip(self):
++        with nx.Client("127.0.0.1", self.port) as client:
++            nx.send_atomic_text(client, "9/87 8888", gap=0.04)
++        expected = []
++        for char in "9/87 8888":
++            mod, key = nx.character_key(char)
++            expected.extend([nx.make_report(mod,[key]).hex(), nx.RELEASE.hex()])
++        self.assertEqual(self.reports(len(expected))[:len(expected)], expected)
+diff --git a/tests/test_playback.py b/tests/test_playback.py
+new file mode 100644
+index 0000000..03f8138
+--- /dev/null
++++ b/tests/test_playback.py
+@@ -0,0 +1,93 @@
++"""Offline SD playback: complete report sequence, timing, file validation and stop."""
++from pathlib import Path
++import subprocess
++import tempfile
++import unittest
++import test_nxhid as base
++
++nx = base.nxhid
++ROOT = base.ROOT
++
++class PlaybackTests(unittest.TestCase):
++    @classmethod
++    def setUpClass(cls):
++        cls.temp = tempfile.TemporaryDirectory()
++        cls.addClassCleanup(cls.temp.cleanup)
++        cls.exe = Path(cls.temp.name)/"playback"
++        subprocess.run(["cc","-std=c11","-Wall","-Wextra","-Werror","-I"+str(ROOT/"include"),
++                        str(ROOT/"source/playback.c"),str(ROOT/"tests/playback_harness.c"),"-o",str(cls.exe)],check=True)
++
++    def run_harness(self, mode, text=None, path=None):
++        with tempfile.TemporaryDirectory() as td:
++            if text is not None:
++                path = Path(td)/"payload.txt"
++                path.write_bytes(text if isinstance(text, bytes) else text.encode("ascii"))
++            result = subprocess.run([str(self.exe),mode]+([str(path)] if path is not None else []),
++                                    capture_output=True,text=True,timeout=5)
++        return result
++
++    def test_ascii_and_caps_lock_match_the_existing_client(self):
++        result=self.run_harness("ascii")
++        self.assertEqual(result.returncode,0,result.stderr)
++        for row in result.stdout.splitlines():
++            lock,c,mod,key=map(int,row.split())
++            expected_mod,expected_key=nx.character_key(chr(c))
++            if 4<=expected_key<=29 and lock:expected_mod^=2
++            self.assertEqual((mod,key),(expected_mod,expected_key))
++
++    def test_payload_path_follows_the_actual_nro_directory(self):
++        for nro,expected in [("sdmc:/switch/nxhid/nxhid.nro","sdmc:/switch/nxhid/payload.txt"),
++                             ("/switch/custom/mytool.nro","/switch/custom/payload.txt"),
++                             ("nxhid.nro","sdmc:/switch/nxhid/payload.txt")]:
++            result=self.run_harness("path",path=nro)
++            self.assertEqual(result.returncode,0,result.stderr)
++            self.assertEqual(result.stdout.strip(),expected)
++
++    def test_full_87_line_macro_has_exact_order_and_short_local_holds(self):
++        lines=['%d/87\"><div class=\"9/87 8888 aA!`' % i for i in range(1,88)]
++        result=self.run_harness("run",'\n'.join(lines)+'\n')
++        self.assertEqual(result.returncode,0,result.stderr)
++        events=[(row.split()[0],int(row.split()[1]),bytes.fromhex(row.split()[2]))
++                for row in result.stdout.splitlines() if not row.startswith("END")]
++        expected=[('K',nx.RELEASE),('P',nx.PAD_NEUTRAL)]
++        for _ in range(5):expected.extend([('P',nx.pad_report('A')),('P',nx.PAD_NEUTRAL)])
++        for i,line in enumerate(lines):
++            expected.extend([('K',nx.chord_report('ESC')),('K',nx.RELEASE),
++                             ('P',nx.pad_report('A')),('P',nx.PAD_NEUTRAL)])
++            for char in line:
++                mod,key=nx.character_key(char)
++                expected.extend([('K',nx.make_report(mod,[key])),('K',nx.RELEASE)])
++            for _ in range(2):expected.extend([('K',nx.chord_report('ENTER')),('K',nx.RELEASE)])
++            if i+1<len(lines):expected.extend([('P',nx.pad_report('A')),('P',nx.PAD_NEUTRAL)])
++        self.assertEqual([(kind,report) for kind,_,report in events],expected)
++        for i,(kind,timestamp,report) in enumerate(events):
++            if kind=='K' and report!=nx.RELEASE:
++                self.assertEqual(events[i+1][2],nx.RELEASE)
++                self.assertEqual(events[i+1][1]-timestamp,45) # 5 ms USB delivery + 40 ms hold.
++        self.assertTrue(result.stdout.rstrip().endswith('END 2 86 87'))
++
++    def test_caps_are_compensated_during_offline_playback(self):
++        result=self.run_harness("caps",'1/1\"aAzZ\n')
++        self.assertEqual(result.returncode,0,result.stderr)
++        pressed=[bytes.fromhex(row.split()[2]) for row in result.stdout.splitlines()
++                 if row.startswith('K ') and bytes.fromhex(row.split()[2])!=nx.RELEASE]
++        self.assertIn(nx.make_report(2,[4]),pressed)
++        self.assertIn(nx.make_report(0,[4]),pressed)
++
++    def test_cancel_usb_failure_and_focus_loss_release_all_input(self):
++        for mode in ('cancel','failure','unavailable'):
++            result=self.run_harness(mode,'1/1\"8888\n')
++            self.assertEqual(result.returncode,0,result.stderr)
++            rows=[row for row in result.stdout.splitlines() if not row.startswith('END')]
++            self.assertEqual(rows[-2].split()[2],nx.RELEASE.hex())
++            self.assertEqual(rows[-1].split()[2],nx.PAD_NEUTRAL.hex())
++
++    def test_payload_validation_rejects_corruption_and_accepts_crlf(self):
++        good='1/2\"abc\r\n2/2\"def\r\n'
++        result=self.run_harness('validate',good)
++        self.assertEqual(result.returncode,0,result.stderr)
++        self.assertEqual(result.stdout.strip(),'2')
++        for bad in [b'',b'1/1\"abc\n\n',b'9/887\"x\n',b'1/1\"'+b'x'*250,
++                    b'1/1\"\x00hidden\n',b'1/1\"\t\n',b'1/1\"\xff\n',b'x'*(1024*1024+1)]:
++            result=self.run_harness('validate',bad)
++            self.assertEqual(result.returncode,2,result.stderr)
