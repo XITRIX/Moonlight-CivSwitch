@@ -1,6 +1,6 @@
 #include "rs.h"
 #include "oblas_lite.h"
-#include "../../app/native/runtime.h"
+#include "runtime.h"
 #include <stdlib.h>
 #include <string.h>
 extern void __real_oblas_get_impl(struct oblas_impl*);

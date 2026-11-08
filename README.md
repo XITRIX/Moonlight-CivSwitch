@@ -19,8 +19,20 @@ app/
     streaming/         Launch negotiation, core lifecycle, native media adapters
     clear-switch-data.js
   vendor/              Bundled Forge library, license, and modification notes
-tools/                 Payload sender
-tests/                 Protocol, storage, and browser UI tests
+tools/
+  wasm2js/             Bootstrap, CMake build, guarded compiler transforms
+  send_ui.py           App payload sender
+  civswitch_sender.py  Shared loader transport
+third_party/
+  sources.lock.json    Pinned upstream sources and SDK revisions
+  moonlight-common-c/  Downloaded dependency, ignored
+  mbedtls/             Downloaded dependency, ignored
+toolchains/emsdk/      Local pinned SDK, ignored
+build/wasm2js/         Generated objects and compiler cache, ignored
+dist/runtime/         Generated JS, manifest, and licenses, ignored
+tests/
+  runtime/             Generated-runtime tests and native C fixtures
+                       Other tests cover protocol, storage, and browser UI
 docs/                  Implementation notes
 investigation/
   probes/              Standalone console investigation payloads
@@ -29,10 +41,10 @@ investigation/
 ```
 
 App source lives under `app/`; `--streaming` also preloads the generated core
-from `investigation/wasm2js/dist/`. The reference projects
-are preserved separately; the upstream checkout stays local, with its original
-Git metadata. Its source and revision are recorded in the
-[reference notes](investigation/references/README.md).
+from `dist/runtime/`. The [runtime build](tools/wasm2js/README.md) uses pinned
+dependencies documented in [third_party/](third_party/README.md).
+Research checkouts remain separate in
+[investigation/references/](investigation/references/README.md).
 
 ## Run
 
@@ -74,8 +86,8 @@ separately from network loss indicators.
 To enable streaming, build the pinned core once and preload it:
 
 ```sh
-python3 -B investigation/wasm2js/bootstrap.py
-python3 -B investigation/wasm2js/build.py
+npm run bootstrap
+npm run build
 python3 -B tools/send_ui.py 192.168.1.182 --streaming
 ```
 
@@ -109,9 +121,14 @@ is needed; the runtime crypto library is bundled.
 ```sh
 npm test
 npm run test:ui
+npm run test:runtime
 ```
 
 UI tests need Chrome. Set `CHROME_BIN` if it is not at the default macOS path.
+Runtime tests require the pinned dependencies and a completed `npm run build`;
+they check the generated JavaScript and compiler transforms locally. See
+[runtime checks](tests/runtime/README.md). The default `npm test` remains independent
+of the downloaded SDK and generated runtime.
 
 ## Switch data
 

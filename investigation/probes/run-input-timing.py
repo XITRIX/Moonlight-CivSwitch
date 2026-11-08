@@ -19,7 +19,7 @@ parser.add_argument('--bitrate', type=int, choices=[3000,5000,10000,15000,20000,
 parser.add_argument('--output', required=True, type=Path)
 parser.add_argument('--skip-upload', action='store_true', help='Reuse the already loaded core')
 parser.add_argument('--continuous', action='store_true', help='Stress input sending on every animation callback')
-parser.add_argument('--runtime', type=Path, default=root / 'investigation/wasm2js/dist/moonlight-stream.js')
+parser.add_argument('--runtime', type=Path, default=root / 'dist/runtime/moonlight-stream.js')
 args = parser.parse_args()
 args.output.parent.mkdir(parents=True, exist_ok=True)
 if not args.skip_upload:
@@ -39,5 +39,5 @@ with tempfile.TemporaryDirectory(prefix='input-probe-', dir=args.output.parent) 
     selector.write_text(f'window.__moonlightInputProbeFps={args.fps};\nwindow.__moonlightInputProbeContinuous={str(args.continuous).lower()};\nwindow.__moonlightInputProbeMode={{width:{1920 if args.resolution=="1080" else 1280},height:{args.resolution},bitrate:{args.bitrate}}};\n')
     subprocess.run([sys.executable, '-B', str(here / 'send-probe.py'), args.console_ip,
                     *map(str, scripts), str(here / 'stream-input-observer.js'), str(selector),
-                    str(root / 'investigation/wasm2js/probe-input-latency.js'),
+                    str(root / 'investigation/probes/probe-input-latency.js'),
                     '--output', str(args.output), '--timeout', '85'], check=True)

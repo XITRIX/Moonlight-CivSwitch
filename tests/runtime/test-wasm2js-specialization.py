@@ -2,7 +2,7 @@
 from pathlib import Path
 import sys
 import unittest
-sys.path.insert(0,str(Path(__file__).resolve().parents[1]/'investigation/wasm2js'))
+sys.path.insert(0,str(Path(__file__).resolve().parents[2]/'tools/wasm2js'))
 from video_receive import specialize as receive_specialize, SOURCE_SHA256 as RECEIVE_SHA256
 from rtp_timestamp import specialize
 from unaligned_loads import specialize as load_specialize
@@ -61,7 +61,7 @@ class LoadSpecializationTests(unittest.TestCase):
 
 class ReceiveSpecializationTests(unittest.TestCase):
     def test_pinned_receive_and_cleanup_only(self):
-        source=(Path(__file__).resolve().parents[1]/'investigation/references/moonlight-common-c/src/VideoStream.c').read_text()
+        source=(Path(__file__).resolve().parents[2]/'third_party/moonlight-common-c/src/VideoStream.c').read_text()
         patched=receive_specialize(source)
         self.assertIn('if (!encrypted && ml_video_batch_enabled())',patched)
         self.assertEqual(patched.count('ml_video_batch_reset();'),1)

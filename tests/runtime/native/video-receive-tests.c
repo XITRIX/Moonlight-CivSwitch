@@ -1,5 +1,5 @@
 #include "Limelight-internal.h"
-#include "../../app/native/runtime.h"
+#include "runtime.h"
 extern int ml_video_batch_configure(int);
 extern int ml_video_batch_receive(int,char**,int,int,bool);
 extern void ml_video_batch_reset(void);

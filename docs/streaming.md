@@ -3,7 +3,7 @@
 The app uses the actual moonlight-common-c RTSP, ENet, RTP, FEC, crypto and input
 implementations compiled to ordinary JavaScript with Emscripten/wasm2js. It does
 not require WebAssembly or native ARM64 payloads. The upstream checkout remains
-unmodified and pinned in `investigation/wasm2js/sources.lock.json`.
+unmodified and pinned in `third_party/sources.lock.json`.
 
 Video uses H.264. The installed movie API exposes H.264, VP8, and VP9 video
 decoder types and rejects HEVC MIME types; there is no working HEVC option to
@@ -15,8 +15,8 @@ for the runtime checks and the limits of this finding.
 Build with the local pinned toolchain, then leave CivSwitch waiting on port 9026:
 
 ```sh
-python3 -B investigation/wasm2js/bootstrap.py
-python3 -B investigation/wasm2js/build.py
+python3 -B tools/wasm2js/bootstrap.py
+python3 -B tools/wasm2js/build.py
 python3 -B tools/send_ui.py 192.168.1.182 --streaming
 ```
 
@@ -263,8 +263,7 @@ packet cannot satisfy a measured sample. Sparse samples are used for the final
 ```sh
 npm test
 npm run test:ui
-node investigation/wasm2js/test-core.cjs
-node investigation/wasm2js/test-runtime.cjs
+npm run test:runtime
 ```
 
 The browser suite covers card launch, key forwarding, Escape/−+ stop and
@@ -275,8 +274,8 @@ exercise upstream algorithms, cooperative scheduling and PNG pixels/CRCs/bounds.
 For a bounded live Desktop test (starts a real session for 20 seconds):
 
 ```sh
-python3 -B investigation/wasm2js/send-runtime-test.py 192.168.1.182 \
-  --probe investigation/wasm2js/probe-live-gpu-texture.js \
+python3 -B investigation/probes/send-runtime-test.py 192.168.1.182 \
+  --probe investigation/probes/probe-live-gpu-texture.js \
   --extra app/src/protocol/sunshine-pairing.js \
   --extra app/src/protocol/sunshine-apps.js \
   --extra app/src/streaming/sunshine-session.js \

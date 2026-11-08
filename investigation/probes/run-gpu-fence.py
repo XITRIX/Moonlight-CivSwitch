@@ -31,6 +31,6 @@ with tempfile.TemporaryDirectory(prefix='gpu-fence-',dir=a.output.parent) as d:
   'gpuProbe:{queuedMs:gpuProbeQueueMs,waitMs:gpuProbeWaitMs,frames:gpuTransfers,fallbacks:gpuProbeFallbacks,codes:gpuProbeCodes},gpuTransfers:gpuTransfers,gpuTransferMs:gpuTransferMs,')
  media=d/'native-media.js';media.write_text(s);paths[8]=media
  config=d/'config.js';config.write_text('window.__moonlightPacingProbe={phase:"gpu-fence-wait",fps:60};\n')
- probe=d/'probe.js';s=(root/'investigation/wasm2js/probe-frame-pacing.js').read_text();s=s.replace("phase:config.phase||'baseline',","gpuProbe:s&&s.gpuProbe,phase:config.phase||'baseline',")
+ probe=d/'probe.js';s=(root/'investigation/probes/probe-frame-pacing.js').read_text();s=s.replace("phase:config.phase||'baseline',","gpuProbe:s&&s.gpuProbe,phase:config.phase||'baseline',")
  probe.write_text(s)
  subprocess.run([sys.executable,'-B',str(here/'send-probe.py'),a.console_ip,*map(str,[here/'native-probe-helpers.js',here/'native-movie-probe-helpers.js',here/'inspect-gpu-sync.js']+paths),str(config),str(probe),'--output',str(a.output),'--timeout','85'],check=True)

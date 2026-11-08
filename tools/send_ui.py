@@ -59,7 +59,7 @@ def main():
 
     try:
         if args.streaming and not args.clear_switch_data:
-            artifact = APP_DIR.parent / "investigation/wasm2js/dist/moonlight-stream.js"
+            artifact = APP_DIR.parent / "dist/runtime/moonlight-stream.js"
             upload_module(args.console_ip, artifact.read_text(), sys.stdout.buffer)
         payload = prepare_payload(args.console_ip, payload, sys.stdout.buffer, port=args.port)
         with socket.create_connection((args.console_ip, args.port), timeout=10) as connection:

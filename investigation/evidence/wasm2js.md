@@ -14,8 +14,8 @@ The generated **740,701-byte** JS library exports all **54 public Li APIs**, plu
 memory/FFI helpers and diagnostics. Tested artifact SHA-256:
 `ff54c9387058805351cb2e50f4dcc71ce74863d901a2c2b2d2e3043cb96123e0`.
 
-Sources: [pinned revisions](../wasm2js/sources.lock.json),
-[build instructions](../wasm2js/README.md), [build log](wasm2js-build.txt).
+Sources: [pinned revisions](../../third_party/sources.lock.json),
+[build instructions](../../tools/wasm2js/README.md), [build log](wasm2js-build.txt).
 
 ## Execution evidence
 

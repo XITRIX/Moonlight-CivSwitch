@@ -1,6 +1,6 @@
 /* Exercise compiled C ownership and fiber suspension with deterministic batches. */
 const assert=require('node:assert/strict');
-const make=require('./dist/moonlight-stream.js');
+const make=require('../../dist/runtime/moonlight-stream.js');
 (async()=>{
  for(const scenario of ['packets','error','unsupported','bad-count']){
   let core,calls=0,sequence=0;

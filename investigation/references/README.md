@@ -24,10 +24,11 @@ The supplied reference bundle is preserved in `nxhid-civswitch-auto/`. Its build
 information, test results, patch, source, licenses, and Switch binaries remain
 together. See its `BUILD-INFO.txt` and `CIVSWITCH-AUTO.md` for provenance and usage.
 
-## moonlight-common-c and Mbed TLS
+## Runtime build dependencies
 
-`moonlight-common-c/` is an unmodified clone with its ENet and nanors submodules.
-`mbedtls/` supplies real crypto for the wasm2js experiment. These local checkouts
-are ignored by the parent repository. Exact revisions are recorded in
-[sources.lock.json](../wasm2js/sources.lock.json); recreate them using
-`python3 -B investigation/wasm2js/bootstrap.py` from the repository root.
+Moonlight, its ENet/nanors submodules, and Mbed TLS are application build
+dependencies maintained under [third_party/](../../third_party/README.md).
+Their pinned revisions are in
+[sources.lock.json](../../third_party/sources.lock.json); bootstrap them with
+`npm run bootstrap` from the repository root. The local SDK lives under
+`toolchains/emsdk/`.

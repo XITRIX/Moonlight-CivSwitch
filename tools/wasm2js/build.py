@@ -13,19 +13,19 @@ from video_receive import specialize as specialize_video_receive, SOURCE_SHA256 
 from video_queue import specialize as specialize_video_queue, fixture as video_queue_fixture, SOURCE_SHA256 as VIDEO_QUEUE_SHA256
 
 here = Path(__file__).resolve().parent
-investigation = here.parent
-sdk = investigation / 'toolchains/emsdk'
-core = investigation / 'references/moonlight-common-c'
-lock = json.loads((here / 'sources.lock.json').read_text())
-build = here / 'build'
-dist = here / 'dist'
-build.mkdir(exist_ok=True)
-dist.mkdir(exist_ok=True)
+root = here.parents[1]
+sdk = root / 'toolchains/emsdk'
+core = root / 'third_party/moonlight-common-c'
+lock = json.loads((root / 'third_party/sources.lock.json').read_text())
+build = root / 'build/wasm2js'
+dist = root / 'dist/runtime'
+build.mkdir(parents=True, exist_ok=True)
+dist.mkdir(parents=True, exist_ok=True)
 if not (sdk / '.emscripten').exists():
     raise SystemExit('Activate the local Emscripten 3.1.74 SDK first; see README.md')
-for name, path in [('moonlight-common-c', core), ('mbedtls', investigation / 'references/mbedtls'), ('emsdk', sdk),
+for name, path in [('moonlight-common-c', core), ('mbedtls', root / 'third_party/mbedtls'), ('emsdk', sdk),
                    ('enet', core / 'enet'), ('nanors', core / 'nanors'),
-                   ('mbedtls-framework', investigation / 'references/mbedtls/framework')]:
+                   ('mbedtls-framework', root / 'third_party/mbedtls/framework')]:
     actual = subprocess.check_output(['git', '-C', str(path), 'rev-parse', 'HEAD'], text=True).strip()
     expected = lock[name]['commit'] if isinstance(lock[name], dict) else lock[name]
     if actual != expected:
@@ -69,7 +69,7 @@ stream_source,load_sites=specialize_loads(stream_source,(build/'moonlight-stream
 licenses = dist / 'licenses'
 licenses.mkdir(exist_ok=True)
 for name, source in [('moonlight-common-c', core / 'LICENSE.txt'), ('enet', core / 'enet/LICENSE'),
-                     ('nanors', core / 'nanors/LICENSE'), ('mbedtls', investigation / 'references/mbedtls/LICENSE'),
+                     ('nanors', core / 'nanors/LICENSE'), ('mbedtls', root / 'third_party/mbedtls/LICENSE'),
                      ('emscripten', sdk / 'upstream/emscripten/LICENSE')]:
     shutil.copy2(source, licenses / (name + '.txt'))
 manifest = {'format': 'wasm2js', 'emscripten': '3.1.74', 'exports': exports,
@@ -77,6 +77,6 @@ manifest = {'format': 'wasm2js', 'emscripten': '3.1.74', 'exports': exports,
             'sha256': hashlib.sha256(artifact.read_bytes()).hexdigest(), 'bytes': artifact.stat().st_size,
             'sources': {name: subprocess.check_output(['git', '-C', str(path), 'rev-parse', 'HEAD'], text=True).strip()
                         for name, path in [('moonlight-common-c', core), ('enet', core / 'enet'),
-                                           ('nanors', core / 'nanors'), ('mbedtls', investigation / 'references/mbedtls')]}}
+                                           ('nanors', core / 'nanors'), ('mbedtls', root / 'third_party/mbedtls')]}}
 (dist / 'manifest.json').write_text(json.dumps(manifest, indent=2) + '\n')
 print(f'Built {dist / artifact.name} ({artifact.stat().st_size:,} bytes), {len(public)} upstream API exports')

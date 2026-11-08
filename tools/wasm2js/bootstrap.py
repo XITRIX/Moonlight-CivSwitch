@@ -6,15 +6,15 @@ import subprocess
 import sys
 
 here = Path(__file__).resolve().parent
-investigation = here.parent
-lock = json.loads((here / 'sources.lock.json').read_text())
+root = here.parents[1]
+lock = json.loads((root / 'third_party/sources.lock.json').read_text())
 
 def run(*args):
     subprocess.run([str(arg) for arg in args], check=True)
 
 for name in ('moonlight-common-c', 'mbedtls', 'emsdk'):
     item = lock[name]
-    destination = investigation / ('toolchains' if name == 'emsdk' else 'references') / name
+    destination = root / ('toolchains' if name == 'emsdk' else 'third_party') / name
     if not destination.exists():
         destination.parent.mkdir(parents=True, exist_ok=True)
         run('git', 'clone', '--no-checkout', item['url'], destination)
@@ -25,6 +25,6 @@ for name in ('moonlight-common-c', 'mbedtls', 'emsdk'):
     if name != 'emsdk':
         run('git', '-C', destination, 'submodule', 'update', '--init', '--recursive')
 
-sdk = investigation / 'toolchains/emsdk/emsdk.py'
+sdk = root / 'toolchains/emsdk/emsdk.py'
 run(sys.executable, sdk, 'install', lock['emsdk']['version'])
 run(sys.executable, sdk, 'activate', lock['emsdk']['version'])

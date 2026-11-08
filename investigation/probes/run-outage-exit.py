@@ -28,7 +28,7 @@ if not 0<=args.measure_ms<=60000:parser.error('--measure-ms must be between 0 an
 args.output.parent.mkdir(parents=True,exist_ok=True)
 if not args.skip_upload:
     with args.output.with_suffix('.upload.txt').open('wb') as trace:
-        upload_module(args.console_ip,(root/'investigation/wasm2js/dist/moonlight-stream.js').read_text(),trace)
+        upload_module(args.console_ip,(root/'dist/runtime/moonlight-stream.js').read_text(),trace)
 parts=[(APP_DIR/p).read_text() for p in APP_SCRIPTS[:-1]]
 if args.completion_pump_ms:
     index=APP_SCRIPTS.index('src/streaming/stream-client.js')

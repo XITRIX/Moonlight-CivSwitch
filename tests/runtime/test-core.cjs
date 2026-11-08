@@ -6,9 +6,11 @@ const vm = require('node:vm');
 const { randomFillSync } = require('node:crypto');
 const { performance } = require('node:perf_hooks');
 
+const dist = path.resolve(__dirname, '../../dist/runtime');
+
 async function main() {
-  const source = fs.readFileSync(path.join(__dirname, 'dist/moonlight-core.js'), 'utf8');
-  const manifest = JSON.parse(fs.readFileSync(path.join(__dirname, 'dist/manifest.json'), 'utf8'));
+  const source = fs.readFileSync(path.join(dist, 'moonlight-core.js'), 'utf8');
+  const manifest = JSON.parse(fs.readFileSync(path.join(dist, 'manifest.json'), 'utf8'));
   const sandbox = {
     console, setTimeout, clearTimeout, setInterval, clearInterval, performance,
     WebAssembly: undefined, Worker: undefined, SharedWorker: undefined,
@@ -43,7 +45,7 @@ async function main() {
   results.missingEntropyFailsClosed = true;
   results.upstreamExports = manifest.exports.filter(name => name.startsWith('_Li')).length;
   results.webAssemblyAvailable = false;
-  const commonJSFactory = require('./dist/moonlight-core.js');
+  const commonJSFactory = require(path.join(dist, 'moonlight-core.js'));
   const commonJSCore = await commonJSFactory({ moonlightPlatform: { randomFill: randomFillSync } });
   assert.equal(commonJSCore._ml_test_rtsp(), 0);
   results.commonJSFactory = true;

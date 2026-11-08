@@ -44,7 +44,7 @@ for label, basename, budget in profiles:
         'sampleMaxAudioFecFailures': max(s['audioFecFailed'] for s in samples),
     }
 for label, name in [('baselineCoreSha256', 'moonlight-stream-input-baseline.js'), ('finalCoreSha256', 'moonlight-stream.js')]:
-    artifact = root / 'investigation/wasm2js/dist' / name
+    artifact = root / 'dist/runtime' / name
     if artifact.exists():
         summary[label] = hashlib.sha256(artifact.read_bytes()).hexdigest()
 output = evidence / 'input-latency-summary.json'

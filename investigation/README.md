@@ -1,7 +1,8 @@
 # Investigation
 
-This directory contains research and supporting material. The app sender does
-not read or bundle anything here.
+This directory contains research and supporting material. Application source,
+build tooling, dependencies, and generated runtime artifacts live outside it;
+the app sender does not read or bundle files here.
 
 - `probes/`: standalone inspection and bounded runtime experiments for keyboard,
   networking, SDK exports, Wasm, native audio and video. Some create temporary
@@ -14,6 +15,7 @@ not read or bundle anything here.
   Git metadata, license, installer tools, and documentation preserved.
 - `references/nxhid-civswitch-auto/`: the supplied nxhid reference bundle,
   including source, build notes, patches, and Switch binaries.
+- `artifacts/`: generated experimental outputs, ignored by Git.
 
 Run the app with `python3 tools/send_ui.py <SWITCH_IP>` from the repository root.
 Implementation details belong in [docs/implementation.md](../docs/implementation.md).
@@ -21,6 +23,10 @@ Implementation details belong in [docs/implementation.md](../docs/implementation
 Streaming results and remaining gaps are recorded in
 [the feasibility ledger](evidence/streaming-feasibility.md).
 
-[wasm2js/](wasm2js/README.md) builds the cloned Moonlight C core into ordinary
-JavaScript, with successful local and on-console algorithm execution recorded
-in [the wasm2js evidence](evidence/wasm2js.md).
+The [runtime build](../tools/wasm2js/README.md) compiles the pinned Moonlight C
+core into ordinary JavaScript. Its hardware probes live in `probes/`, and
+successful local and on-console algorithm execution is recorded in
+[the wasm2js evidence](evidence/wasm2js.md).
+
+Historical evidence retains the commands and paths used when it was captured.
+Use the current build documentation and probe scripts for reruns.

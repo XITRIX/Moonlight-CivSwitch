@@ -1,14 +1,15 @@
 const assert=require('node:assert/strict');
 const {inflateSync}=require('node:zlib');
 const {randomFillSync}=require('node:crypto');
-const vm=require('node:vm'),fs=require('node:fs');
-const preview={Uint8Array,Uint32Array,Int32Array,Number,DataView,btoa:s=>Buffer.from(s,'binary').toString('base64')};preview.window=preview;vm.createContext(preview);vm.runInContext(fs.readFileSync('app/src/streaming/png-preview.js','utf8'),preview);
-const make=require('./dist/moonlight-stream.js');
+const vm=require('node:vm'),fs=require('node:fs'),path=require('node:path');
+const root=path.resolve(__dirname,'../..');
+const preview={Uint8Array,Uint32Array,Int32Array,Number,DataView,btoa:s=>Buffer.from(s,'binary').toString('base64')};preview.window=preview;vm.createContext(preview);vm.runInContext(fs.readFileSync(path.join(root,'app/src/streaming/png-preview.js'),'utf8'),preview);
+const make=require(path.join(root,'dist/runtime/moonlight-stream.js'));
 (async()=>{
  const core=await make({moonlightPlatform:{randomFill:randomFillSync}});
- const generated=fs.readFileSync('investigation/wasm2js/dist/moonlight-stream.js','utf8');
+ const generated=fs.readFileSync(path.join(root,'dist/runtime/moonlight-stream.js'),'utf8');
  const loadBody=generated.match(/function moonlight_load_i32\(p\)\{[^}]+\}/)[0];
- const heapName=fs.readFileSync('investigation/wasm2js/build/moonlight-stream.js.symbols','utf8').split('\n').find(l=>l.endsWith(':HEAPU8')).split(':')[0];
+ const heapName=fs.readFileSync(path.join(root,'build/wasm2js/moonlight-stream.js.symbols'),'utf8').split('\n').find(l=>l.endsWith(':HEAPU8')).split(':')[0];
  const loadHeap=Uint8Array.from({length:512},(_,i)=>(i*61+i/16)&255);
  const loadFn=new Function(heapName,'moonlight_load_view',loadBody+';return moonlight_load_i32;')(loadHeap,new DataView(loadHeap.buffer));
  for(const p of [...Array.from({length:520},(_,i)=>i-4),-2147483648,2147483647]){

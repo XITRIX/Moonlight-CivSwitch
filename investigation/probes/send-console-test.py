@@ -9,11 +9,12 @@ import sys
 import time
 
 here = Path(__file__).resolve().parent
+root = here.parents[1]
 parser = argparse.ArgumentParser(description=__doc__)
 parser.add_argument('console_ip')
 parser.add_argument('--output', type=Path, default=here.parent / 'evidence/wasm2js-console-tests.txt')
 args = parser.parse_args()
-source = (here / 'dist/moonlight-core.js').read_text()
+source = (root / 'dist/runtime/moonlight-core.js').read_text()
 digest = hashlib.sha256(source.encode()).hexdigest()
 chunks = [source[i:i + 150000] for i in range(0, len(source), 150000)]
 
@@ -56,6 +57,6 @@ with args.output.open('wb') as output:
         payload += 'window.__moonlightWasm2jsUpload.parts.push(' + json.dumps(chunk) + ');\n'
         payload += 'log("MOONLIGHT_WASM2JS_UPLOAD: ' + str(index + 1) + '/' + str(len(chunks)) + '");'
         send(payload, output)
-    helpers = (here.parent / 'probes/native-probe-helpers.js').read_text()
+    helpers = (here / 'native-probe-helpers.js').read_text()
     probe = (here / 'probe-console.js').read_text()
     send(helpers + ';\n' + probe, output)

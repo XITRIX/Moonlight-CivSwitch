@@ -20,6 +20,6 @@ scripts = [root / p for p in ['app/vendor/forge-1.4.3.min.js', 'app/src/storage/
            'app/src/platform/native-network.js', 'app/src/streaming/native-io.js', 'app/src/streaming/telemetry.js']]
 args.output.parent.mkdir(parents=True, exist_ok=True)
 with args.output.open('wb') as output:
-    upload_module(args.console_ip, (here / 'dist/moonlight-stream.js').read_text(), output)
+    upload_module(args.console_ip, (root / 'dist/runtime/moonlight-stream.js').read_text(), output)
     payload = b';\n'.join(path.read_bytes() for path in scripts + args.extra + [args.probe])
     send_payload(args.console_ip, payload, output, args.timeout)
