@@ -12,6 +12,28 @@ requires restarting Civ VII before sending more payloads.
 
 ## Reproducing the useful checks
 
+For `Native movie module unavailable`, inspect module discovery without creating
+a decoder or invoking movie exports. This standalone probe includes main/SDK
+modules, scans up to 2,048 mappings, and reports symbol-table bounds and exact
+decoder export matches. The app currently excludes main/SDK, scans 512 mappings,
+and accepts at most 10,000 symbols/1 MiB of strings. Its failure does not establish
+that the decoder is absent. A user reported this failure on Switch OLED with
+Civ VII 1.0.0 at 720p60 while the same app still works on Switch 2. The subsequent
+[OLED captures](../evidence/oled-compatibility.md) confirmed that the loaded movie
+interface used on Switch 2 is absent from that OLED process. An alternative
+OLED backend remains unverified.
+
+```sh
+python3 -B investigation/probes/send-probe.py 192.168.1.148 \
+  investigation/probes/inspect-streaming-movie-discovery.js \
+  --output investigation/evidence/oled-movie-discovery.txt
+```
+
+The probe checks the memory-query wrapper before use, validates mapped read
+ranges, bounds hash-chain traversal and total queries, frees its scratch buffers,
+and reports scan completion. It requires no helper payloads. Its mock checks run
+with `node --test tests/test-movie-discovery.cjs`; they are not hardware evidence.
+
 Basic exposed APIs, including a minimal Wasm arithmetic module when the API exists:
 
 ```sh

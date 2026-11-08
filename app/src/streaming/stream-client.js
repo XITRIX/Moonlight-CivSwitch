@@ -51,7 +51,8 @@
   }
   function status(text){if(options.onStatus)options.onStatus(text);}
   function report(text){if(options.log)options.log(text);}
-  function guarded(name,fallback){return function(){try{return media[name].apply(media,arguments);}catch(error){failure=error;stopRequested=true;return fallback;}};}
+  function guarded(name,fallback){return function(){try{return media[name].apply(media,arguments);}catch(error){failure=failure||error;stopRequested=true;report("Native "+name+" failed: "+error.message);return fallback;}};}
+  function stageName(stage){return ["","Platform initialization","Host resolution","Audio initialization","RTSP handshake","Control initialization","Video initialization","Input initialization","Control startup","Video startup","Audio startup","Input startup"][stage]||"Stream stage "+stage;}
   // A fixed local grace lets healthy peers receive releases/disconnect. It is
   // never extended by repeated stop requests and does not await network recovery.
   function interrupt(){if(io&&io.interrupt)io.interrupt(100);if(core)core._ml_session_stop();}
@@ -62,10 +63,12 @@
     io=global.MoonlightStreamIO.create(transport,{batchReceive:options.batchReceive,directVideoBatch:highPacketRate});
     var platform={io:io.io,receiveVideoBatch:io.receiveVideoBatch,randomFill:io.randomFill,log:report,event:function(event,a,b){
      report("Event "+event+": "+a+", "+b);
-     if(event===1)status("Connecting: stage "+a+"…");
-     if(event===3)failure=Error("Stream stage "+a+" failed: "+b);
+     if(event===1)status("Connecting: "+stageName(a)+"…");
+     // Native callbacks return -1 after recording their actual exception. Keep
+     // that cause instead of replacing it with the C stage's generic result.
+     if(event===3)failure=failure||Error(stageName(a)+" failed: "+b);
      if(event===4){connectedAt=Date.now();status("Streaming "+mode.width+"×"+mode.height+" · press − and + together to exit");}
-     if(event===5&&!stopRequested)failure=Error("Stream terminated: "+a);
+     if(event===5&&!stopRequested)failure=failure||Error("Stream terminated: "+a);
     }};
     core=await make({moonlightPlatform:platform});
     // Reuse packet-sized allocations at high packet rates.

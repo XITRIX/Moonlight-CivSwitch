@@ -1,5 +1,10 @@
 # Hardware findings — 2026-11-07
 
+The later [Switch OLED comparison](oled-compatibility.md) records why the current
+video backend fails there: the loaded movie interface used on Switch 2 was not
+present in the inspected OLED process. These Switch 2 findings do not establish
+OLED streaming support.
+
 Target: user's Switch 2, Civ VII/CivSwitch loader at 192.168.1.182:9026.
 Sunshine: 192.168.1.4:47989, advertised HTTPS port47984.
 

@@ -48,6 +48,9 @@ Research checkouts remain separate in
 
 ## Run
 
+For a modded Switch, [JKSV setup](docs/jksv-setup.md) builds the persistent
+CivSwitch loader save offline to avoid the chat keyboard bootstrap.
+
 From the repository root, with CivSwitch waiting on the Switch:
 
 ```sh

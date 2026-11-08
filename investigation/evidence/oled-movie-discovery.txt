@@ -1,0 +1,10 @@
+Executing payload...
+MOONLIGHT_MOVIE_DISCOVERY_BASES: {"main":"1732005000","sdk":"173ad0c000"}
+MOONLIGHT_MOVIE_DISCOVERY_SCAN: {"regions":149,"rxRegions":5,"stoppedAt":"8000000000","complete":true,"exceededAppRegionLimit":false}
+MOONLIGHT_MOVIE_DISCOVERY_MODULE: {"base":"1732005000","role":"main","symbols":34774,"stringBytes":2785797,"appSearchEligible":false,"exports":{}}
+MOONLIGHT_MOVIE_DISCOVERY_MODULE: {"base":"173ad0c000","role":"sdk","symbols":23046,"stringBytes":1498416,"appSearchEligible":false,"exports":{}}
+MOONLIGHT_MOVIE_DISCOVERY_MODULE: {"base":"1553165000","role":"other","symbols":2044,"stringBytes":121960,"appSearchEligible":true,"exports":{}}
+MOONLIGHT_MOVIE_DISCOVERY_MODULE: {"base":"1731e00000","role":"other","symbols":52,"stringBytes":1089,"appSearchEligible":true,"exports":{}}
+MOONLIGHT_MOVIE_DISCOVERY_MODULE: {"base":"1732000000","role":"other","symbols":3,"stringBytes":85,"appSearchEligible":true,"exports":{}}
+MOONLIGHT_MOVIE_DISCOVERY_END: {"queries":323}
+Executed successfully
