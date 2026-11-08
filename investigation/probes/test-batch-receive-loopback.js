@@ -6,9 +6,11 @@
  function signed(v){return Number(BigInt.asIntN(32,v));}
  var batchName='8RecvMMsgEiPNS0_7MMsgHdrEmNS0_7MsgFlagEPNS_8TimeSpanE';
  try{
-  var count=8,stride=512,lengths=[1,12,15,64,511,512,100,33],address=alloc(16),addressLength=alloc(8),sendData=alloc(640);
+  var count=window.__moonlightBatchProbeSize||8;delete window.__moonlightBatchProbeSize;if([8,16,32].indexOf(count)<0)throw Error('Invalid probe batch size');
+  var stride=512,lengths=Array.from({length:count},function(_,i){return [1,12,15,64,511,512,100,33][i%8];}),address=alloc(16),addressLength=alloc(8),sendData=alloc(640);
   var headersBlock=alloc(56*count+32),vectorsBlock=alloc(16*count+32),dataBlock=alloc(stride*count+32),headers=headersBlock+16n,vectors=vectorsBlock+16n,data=dataBlock+16n;
   for(var block of [[headersBlock,56*count],[vectorsBlock,16*count],[dataBlock,stride*count]]){write64(block[0],0x1122334455667788n);write64(block[0]+8n,0x8877665544332211n);write64(block[0]+BigInt(block[1]+16),0x1122334455667788n);write64(block[0]+BigInt(block[1]+24),0x8877665544332211n);}
+  write_buffer(headers,new Uint8Array(56*count));write_buffer(vectors,new Uint8Array(16*count));
   write_buffer(address,new Uint8Array([16,2,0,0,127,0,0,1,0,0,0,0,0,0,0,0]));
   var receiver=signed(call('6SocketEiii',[2,2,0])),sender=signed(call('6SocketEiii',[2,2,0]));if(receiver<0||sender<0)throw Error('Socket creation failed');fds.push(receiver,sender);
   for(var fd of fds){var flags=signed(call('5FcntlEiiz',[fd,3,0]));if(flags<0||signed(call('5FcntlEiiz',[fd,4,flags|0x800]))<0)throw Error('Nonblocking setup failed');}
@@ -18,7 +20,7 @@
    write_buffer(sendData,new Uint8Array(lengths[i]).fill(i+1));if(signed(call('6SendToEiPKvmiPK8sockaddrj',[sender,sendData,lengths[i],0x80,address,16]))!==lengths[i])throw Error('Loopback send failed');}
   await log('MOONLIGHT_BATCH_LOOPBACK_CALL_BEGIN');
   var begin=Date.now(),received=signed(call(batchName,[receiver,headers,count,0x80,0]));
-  if(received!==count)throw Error('Expected eight queued datagrams, got '+received+' errno '+call('12GetLastErrnoEv',[]));
+  if(received!==count)throw Error('Expected '+count+' queued datagrams, got '+received+' errno '+call('12GetLastErrnoEv',[]));
   for(var i=0;i<count;i++){var p=headers+BigInt(i*56);await log('MOONLIGHT_BATCH_MESSAGE_META: '+JSON.stringify({index:i,length:Number(read32(p+48n)),vectorLength:Number(read64(vectors+BigInt(i*16+8))),flags:Number(read32(p+44n))}));if(Number(read32(p+48n))!==lengths[i])throw Error('Message length mismatch');for(var j=0;j<lengths[i];j++)if(Number(read8(data+BigInt(i*stride+j)))!==i+1)throw Error('Datagram bytes/order mismatch');}
   for(var block of [[headersBlock,56*count],[vectorsBlock,16*count],[dataBlock,stride*count]])if(read64(block[0])!==0x1122334455667788n||read64(block[0]+8n)!==0x8877665544332211n||read64(block[0]+BigInt(block[1]+16))!==0x1122334455667788n||read64(block[0]+BigInt(block[1]+24))!==0x8877665544332211n)throw Error('Batch bounds canary changed');
   var emptyAt=Date.now(),empty=signed(call(batchName,[receiver,headers,count,0x80,0])),error=Number(call('12GetLastErrnoEv',[])),elapsed=Date.now()-emptyAt;

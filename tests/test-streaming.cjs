@@ -20,7 +20,7 @@ async function main(){
  assert.equal(request.pinnedCertificatePem,'PINNED');assert.equal(request.identity,identity);assert.equal(request.signal,signal);
  requests=[];await api.launch('192.168.1.4',123,{width:1280,height:720,fps:30,bitrate:5000},'');
  assert.equal(new URL('https://host'+requests[1].path).searchParams.get('mode'),'1280x720x30');
- requests=[];await api.launch('192.168.1.4',123,{width:1920,height:1080,fps:60,bitrate:20000},'');
+ requests=[];await api.launch('192.168.1.4',123,{width:1920,height:1080,fps:60,bitrate:40000},'');
  assert.equal(new URL('https://host'+requests[1].path).searchParams.get('mode'),'1920x1080x60');
  current=123;state='SUNSHINE_SERVER_BUSY';requests=[];assert.equal((await api.launch('192.168.1.4',123,mode,'&corever=1')).resumed,true);assert(requests[1].path.startsWith('/resume?'));
  await assert.rejects(api.launch('192.168.1.4',124,mode,''),/Another application/);
@@ -33,7 +33,7 @@ async function main(){
  host.uniqueId='other';await assert.rejects(api.launch('192.168.1.4',123,mode,''),/Pair with/);host.uniqueId='test';
  await assert.rejects(api.launch('192.168.1.4',123,{...mode,width:1921},''),/stream mode/);
  await assert.rejects(api.launch('192.168.1.4',123,{...mode,height:1081},''),/stream mode/);
- await assert.rejects(api.launch('192.168.1.4',123,{...mode,bitrate:20001},''),/stream mode/);
+ await assert.rejects(api.launch('192.168.1.4',123,{...mode,bitrate:40001},''),/stream mode/);
  console.log('Streaming negotiation tests passed: launch/resume, pinned TLS, session keys, permissions, host-bound RTSP URLs, cancellation.');
 }
 main().catch(e=>{console.error(e);process.exitCode=1;});

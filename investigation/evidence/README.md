@@ -25,6 +25,10 @@ The [20 Mbps investigation](quality-20mbps.md) records native batched UDP receiv
 near-60 FPS delivery at 1080p60/20 Mbps, and input, healthy/outage exit and 10 Mbps
 regression checks. It also preserves the incomplete repeated-start diagnostic.
 
+The [higher-bitrate investigation](quality-high-bitrate.md) compares 25–40 Mbps,
+retains 25/30 Mbps presets, and records larger receive batches with heap-backed
+message metadata, full-UI measurements, input timing and remaining startup limits.
+
 - `network-capabilities.txt`: actual JavaScript capability inventory; XHR external
   request returned404. WebSocket exists but external connectivity was not tested.
 - `native-network.txt`: direct native TCP GET returnedHTTP200/serverinfo. SDK

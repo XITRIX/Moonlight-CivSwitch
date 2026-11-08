@@ -3,8 +3,9 @@
  "use strict";
  function create(transport,options){
   options=options||{};
-  var allocations=[],descriptors=new Set(),bufferSize=2097152,heapBuffer=null,heapAddress=0n,socketTypes={},interruptAfter=Infinity;
-  var batchCore=null,batchHeap=0,batchFunction=null,batchSlots=[],batchSockets=new Map(),batchSize=8,packetSize=2048;
+  var allocations=[],descriptors=new Set(),bufferSize=2097152,heapBuffer=null,heapView=null,heapAddress=0n,socketTypes={},interruptAfter=Infinity;
+  var batchCore=null,batchHeap=0,batchFunction=null,batchSlots=[],batchSockets=new Map(),batchSize=32,packetSize=2048;
+  var batchSlotBytes=batchSize*(packetSize+56+16);
   function now(){return global.performance&&global.performance.now?global.performance.now():Date.now();}
   function isInterrupted(){return interruptAfter!==Infinity&&now()>=interruptAfter;}
   function alloc(size){var p=malloc(size);if(!p)throw Error("Native streaming allocation failed");allocations.push(p);return p;}
@@ -24,7 +25,7 @@
    var object=addrof_compressed(heap),external=read64_compressed(object+0x28n),compressedBase=read32_compressed(object+0x30n);
    if(compressedBase!==0n||external<0x100000000n||external>=0x8000000000n)throw Error("Core heap is not a validated external buffer");
    var bytes=copy(external,32);for(var i=0;i<32;i++)if(bytes[i]!==heap[i])throw Error("Core heap pointer verification failed");
-   heapBuffer=heap.buffer;heapAddress=external;return external;
+   heapBuffer=heap.buffer;heapView=new DataView(heap.buffer);heapAddress=external;return external;
   }
   function toNative(heap,pointer,length,destination){pointer=bounds(heap,pointer,length);if(length)call_rop(memcpy_addr,destination,base(heap)+BigInt(pointer),BigInt(length));}
   function fromNative(heap,pointer,length,source){pointer=bounds(heap,pointer,length);if(length)call_rop(memcpy_addr,base(heap)+BigInt(pointer),source,BigInt(length));}
@@ -35,31 +36,34 @@
    // SDK 1.0.0 layout: 56-byte MMsgHdr; iovec pointer +16, count +24,
    // received length +48. Guard the observed implementation before using it.
    if(fn!==sdk_base+0x14d880n||read32(sdk_base+0x153720n)!==0xd10203ffn||read32(sdk_base+0x153724n)!==0xa9037bfdn)return false;
-   batchCore=core;batchHeap=core._malloc(2*batchSize*packetSize);if(!batchHeap)throw Error("Receive batch heap allocation failed");
-   bounds(core.HEAPU8,batchHeap,2*batchSize*packetSize);
-   for(var i=0;i<2;i++)batchSlots.push({fd:null,offset:batchHeap+i*batchSize*packetSize,headers:alloc(batchSize*56),vectors:alloc(batchSize*16),base:0n,count:0,next:0,lengths:[]});
+   batchCore=core;batchHeap=core._malloc(2*batchSlotBytes);if(!batchHeap)throw Error("Receive batch heap allocation failed");
+   bounds(core.HEAPU8,batchHeap,2*batchSlotBytes);
+   for(var i=0;i<2;i++){var offset=batchHeap+i*batchSlotBytes;batchSlots.push({fd:null,offset:offset,headerOffset:offset+batchSize*packetSize,vectorOffset:offset+batchSize*(packetSize+56),base:0n,count:0,next:0,lengths:new Uint32Array(batchSize)});}
    batchFunction=fn;stats.batchEnabled=true;return true;
   }
   function receiveBatch(fd,heap,destination,capacity,peek){
    var slot=batchSockets.get(fd);
    if(!slot){slot=batchSlots.find(function(s){return s.fd===null;});if(!slot)return null;slot.fd=fd;batchSockets.set(fd,slot);}
-   bounds(heap,slot.offset,batchSize*packetSize);
+   bounds(heap,slot.offset,batchSlotBytes);
    if(slot.next>=slot.count){
-    var address=base(heap);
+    var address=base(heap),view=heapView;
     if(slot.base!==address){
+     // Keep message metadata in the borrowed heap too. Reading result lengths
+     // through DataView avoids an arbitrary native-memory read per datagram.
+     heap.fill(0,slot.headerOffset,slot.offset+batchSlotBytes);
      for(var i=0;i<batchSize;i++){
-      var header=slot.headers+BigInt(i*56),vector=slot.vectors+BigInt(i*16);
-      write64(header,0n);write32(header+8n,0n);write64(header+16n,vector);write32(header+24n,1n);write64(header+32n,0n);write32(header+40n,0n);write32(header+44n,0n);write32(header+48n,0n);
-      write64(vector,address+BigInt(slot.offset+i*packetSize));write64(vector+8n,BigInt(packetSize));
+      var header=slot.headerOffset+i*56,vector=slot.vectorOffset+i*16;
+      view.setBigUint64(header+16,address+BigInt(vector),true);view.setUint32(header+24,1,true);
+      view.setBigUint64(vector,address+BigInt(slot.offset+i*packetSize),true);view.setBigUint64(vector+8,BigInt(packetSize),true);
      }
      slot.base=address;
     }
     stats.nativeReceiveCalls++;stats.batchReceiveCalls++;
-    var received=signed(call_rop(batchFunction,BigInt(fd),slot.headers,BigInt(batchSize),0x80n,0n));
+    var received=signed(call_rop(batchFunction,BigInt(fd),address+BigInt(slot.headerOffset),BigInt(batchSize),0x80n,0n));
     if(received<0)return -Number(invoke("_ZN2nn6socket12GetLastErrnoEv",[]));
     if(received>batchSize)throw Error("Native receive batch exceeded slot count");
-    slot.count=received;slot.next=0;slot.lengths=[];
-    for(var i=0;i<received;i++){var length=Number(read32(slot.headers+BigInt(i*56+48)));if(length>packetSize)throw Error("Native receive batch exceeded packet capacity");slot.lengths.push(length);}
+    slot.count=received;slot.next=0;
+    for(var i=0;i<received;i++){var length=view.getUint32(slot.headerOffset+i*56+48,true);if(length>packetSize)throw Error("Native receive batch exceeded packet capacity");slot.lengths[i]=length;}
     stats.batchPackets+=received;if(!received)return -11;
    }else stats.batchCacheHits++;
    var length=Math.min(capacity,slot.lengths[slot.next]),source=slot.offset+slot.next*packetSize;
@@ -133,7 +137,7 @@
   return {io:io,stats:stats,invoke:invoke,copy:copy,toNative:toNative,fromNative:fromNative,heapAddress:base,attachCore:attachCore,
    interrupt:function(graceMs){interruptAfter=Math.min(interruptAfter,now()+Math.max(0,Math.min(100,Number(graceMs)||0)));},isInterrupted:isInterrupted,
    randomFill:function(target){var p=alloc(Math.max(1,target.length));try{invoke("_ZN2nn6crypto36GenerateCryptographicallyRandomBytesEPvm",[p,target.length]);target.set(copy(p,target.length));}finally{allocations.pop();free(p);}},
-   close:function(){for(var fd of descriptors)call("5CloseEi",[fd]);descriptors.clear();batchSockets.clear();batchSlots=[];if(batchHeap){batchCore._free(batchHeap);batchHeap=0;}batchCore=null;batchFunction=null;for(var p of allocations.reverse())free(p);allocations=[];heapBuffer=null;}
+   close:function(){for(var fd of descriptors)call("5CloseEi",[fd]);descriptors.clear();batchSockets.clear();batchSlots=[];if(batchHeap){batchCore._free(batchHeap);batchHeap=0;}batchCore=null;batchFunction=null;for(var p of allocations.reverse())free(p);allocations=[];heapBuffer=null;heapView=null;}
   };
  }
  global.MoonlightStreamIO={create:create};

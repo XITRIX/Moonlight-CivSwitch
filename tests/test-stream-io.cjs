@@ -3,7 +3,7 @@ const test=require('node:test'),assert=require('node:assert/strict'),fs=require(
 function environment(batch=false,options={}){
  const views=[],native=Buffer.alloc(65536),owned=new Set(),calls=[],sent=[];let cursor=0x1000,blocked=false,memcopies=0,nextFd=7,freedCore=0,batchReportedCount=null,batchReportedLength=null;
  const sdk=0x10000000n,batchFunction=sdk+0x14d880n,datagrams=new Map();
- const heap=new Uint8Array(batch?131072:1024);views.push(heap);
+ const heap=new Uint8Array(batch?262144:1024);views.push(heap);
  function range(p,n){for(let i=0;i<views.length;i++){const base=0x200000000n+BigInt(i)*0x100000000n;if(p>=base&&p+BigInt(n)<=base+BigInt(views[i].length))return views[i].subarray(Number(p-base),Number(p-base)+n);}assert(p>=0n&&p+BigInt(n)<=BigInt(native.length),'native range');return native.subarray(Number(p),Number(p)+n);}
  function write(p,v,n=8){const b=range(p,n);for(let i=0;i<n;i++)b[i]=Number((v>>BigInt(i*8))&255n);}
  function read(p,n=8){const b=range(p,n);let v=0n;for(let i=n-1;i>=0;i--)v=(v<<8n)|BigInt(b[i]);return v;}
@@ -35,7 +35,7 @@ function environment(batch=false,options={}){
  if(batch)scope.sdk_base=sdk;
  vm.createContext(scope);vm.runInContext(fs.readFileSync('app/src/streaming/native-io.js','utf8'),scope);
  const io=scope.window.MoonlightStreamIO.create({resolveNativeSymbol:n=>batch&&n.includes('8RecvMMsg')?batchFunction:n},options);
- const core={HEAPU8:heap,_malloc:n=>{assert.equal(n,32768);return 4096;},_free:p=>{assert.equal(p,4096);assert.equal(freedCore++,0);}};
+ const core={HEAPU8:heap,_malloc:n=>{assert.equal(n,135680);return 4096;},_free:p=>{assert.equal(p,4096);assert.equal(freedCore++,0);}};
  return {io,core,heap,payload,calls,sent,owned,views,freedCore:()=>freedCore,corruptBatch:o=>{batchReportedCount=o.count??null;batchReportedLength=o.length??null;},enqueue:(fd,packets)=>datagrams.set(fd,packets.slice()),memcopies:()=>memcopies,setBlocked:b=>blocked=b,setTime:time=>{scope.window.performance={now:()=>time};}};
 }
 test('TCP/UDP receive and send borrow core memory without intermediate payload copies',()=>{
@@ -108,8 +108,15 @@ test('batch slots stay separate, rebind on heap growth, and respect cancellation
 test('batching can be disabled without allocating core scratch memory',()=>{const e=environment(true,{batchReceive:false});assert.equal(e.io.attachCore(e.core),false);assert.equal(e.io.stats.batchEnabled,false);e.io.close();assert.equal(e.freedCore(),0);});
 
 test('invalid native batch lengths/counts are rejected before copying and still clean up',()=>{
- for(const corruption of [{count:9},{length:2049}]){
+ for(const corruption of [{count:33},{length:2049}]){
   const e=environment(true);e.io.attachCore(e.core);e.io.io(1,[2,2,0,0,0,0],e.heap);e.enqueue(7,[new Uint8Array(16).fill(7)]);e.corruptBatch(corruption);
   assert.throws(()=>e.io.io(5,[7,128,64,0,0,0],e.heap),/exceeded/);assert.equal(e.heap[128],0);e.io.close();assert.equal(e.freedCore(),1);assert.equal(e.owned.size,0);
  }
+});
+
+test('large receive batches preserve all 32 slots and fetch the next batch only after consumption',()=>{
+ const e=environment(true);e.io.attachCore(e.core);e.io.io(1,[2,2,0,0,0,0],e.heap);
+ e.enqueue(7,Array.from({length:33},(_,i)=>new Uint8Array(1400).fill(i)));
+ for(let i=0;i<33;i++){assert.equal(e.io.io(5,[7,128,1400,0,0,0],e.heap),1400);assert.equal(e.heap[128],i);assert.equal(e.heap[1527],i);}
+ assert.equal(e.io.stats.batchPackets,33);assert.equal(e.io.stats.nativeReceiveCalls,2);assert.equal(e.io.stats.batchCacheHits,31);e.io.close();assert.equal(e.freedCore(),1);assert.equal(e.owned.size,0);
 });

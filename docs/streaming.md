@@ -35,7 +35,7 @@ to the cached Games screen; it does not send Sunshine `/cancel` to terminate the
 host application. B from Games returns to Host; B again closes the UI.
 
 Open Settings from Host or the Games footer to choose 360p/540p/720p/1080p,
-15/30/60 FPS, and 1–20 Mbps presets (including 15 and 20 Mbps). D-pad up/down chooses a setting; left/right
+15/30/60 FPS, and 1–30 Mbps presets (including 15, 20, 25 and 30 Mbps). D-pad up/down chooses a setting; left/right
 adjusts its value. Back/B saves to `save:/moonlight-experiment/settings.json`.
 Preferences survive reloading the UI and apply to the next launch or resume,
 including the core bitrate request. Defaults are 720p, 30 FPS, 5 Mbps; a selected
@@ -114,8 +114,10 @@ the upstream renderer queues, so those queue APIs are not used here.
 
 Send, single receive and zero-timeout poll borrow validated ranges of the core's
 native backing memory synchronously. The tested SDK also exposes native
-`RecvMMsg`: connected video/audio UDP sockets can fetch up to eight available
-datagrams per call into a private 32 KiB region of the core heap. It never waits
+`RecvMMsg`: connected video/audio UDP sockets can fetch up to 32 available
+datagrams per call into a private 132.5 KiB region of the core heap (packet slots
+plus message headers and iovecs). Result lengths are read through DataView in
+that same heap, avoiding arbitrary native-memory reads per packet. It never waits
 to fill a batch. Each C receive copies one complete datagram within that heap
 using `copyWithin`; there is no per-byte JS loop or per-packet ROP memcpy.
 Two independent slots preserve packet boundaries, order, peek and truncation.
@@ -127,7 +129,7 @@ Cancellation takes precedence over cached packets, and scratch memory is freed
 only during normal I/O cleanup after C tasks finish. Packet-type diagnostic
 strings are formatted at sampling time. Telemetry records native receive calls,
 batch packets/cache hits and copied bytes. See the
-[20 Mbps measurements](../investigation/evidence/quality-20mbps.md).
+[higher-bitrate measurements](../investigation/evidence/quality-high-bitrate.md).
 The separate compressed-video copy into the movie decoder remains.
 
 The core exposes a versioned read-only metrics snapshot while connected, queried
@@ -209,8 +211,10 @@ packet cannot satisfy a measured sample. Sparse samples are used for the final
   Gameface displays a private `live:/moonlight-experiment/<id>` image, reusing its
   handle through dynamic-image invalidation. There is no PNG encoding, Base64,
   JavaScript color conversion, or per-frame texture recreation on this path.
-  The default request is 1280×720, 30 fps, 5000 kbit/s. GPU decoder and texture
-  bounds allow up to 1920×1080, 60 fps, 20000 kbit/s. Above 720p, the compressed
+  The default request is 1280×720, 30 fps, 5000 kbit/s. Native stream settings
+  allow up to 1920×1080, 60 fps, 30000 kbit/s. The session adapter permits
+  up to 40000 kbit/s for diagnostic probes; 40 Mbps is not a retained Settings
+  preset because it showed frame gaps under load. Above 720p, the compressed
   native input buffer requests 1 MiB instead of 256 KiB to accommodate larger
   keyframes; every submitted frame is still checked against actual capacity.
   See the [1080p measurements](../investigation/evidence/quality-1080p.md) for

@@ -9,7 +9,7 @@
  if(typeof config.showStats==='boolean')window.MoonlightSettings.validate=function(mode){return originalValidate(Object.assign({},mode,{showStats:config.showStats}));};
  var makeIO=window.MoonlightStreamIO.create,makeClient=window.MoonlightStreamClient.create,makePad=window.MoonlightControllerInput.createNative;
  var originalRAF=window.requestAnimationFrame,originalLog=window.log,now=window.MoonlightTelemetry.now;
- var blackhole=false,forceExit=false,connected=false,launched=false,armed=false,chordAt=0,stopAt=0,doneStats=null,error=null,tcpLogs=0,ticks=0,started=now(),finished=false;
+ var blackhole=false,forceExit=false,measuring=true,connected=false,launched=false,armed=false,chordAt=0,stopAt=0,doneStats=null,error=null,tcpLogs=0,ticks=0,started=now(),finished=false;
  window.log=function(message){if(blackhole&&String(message).indexOf('MOONLIGHT_STREAM')===0){tcpLogs++;throw Error('Live stream tried loader TCP logging');}return originalLog(message);};
  window.MoonlightStreamIO.create=function(transport){var io=makeIO(transport),invoke=io.io;io.io=function(op,args,heap){
   if(blackhole&&!io.isInterrupted()){if(op===4||op===5)return -11;if(op===11)return 0;}
@@ -25,9 +25,11 @@
   if(config.resolution)options.mode=Object.assign({},options.mode,{width:config.resolution==='1080'?1920:1280,height:Number(config.resolution)});
   if(config.bitrate)options.mode=Object.assign({},options.mode,{bitrate:config.bitrate});
   if(typeof config.showStats==='boolean')options.mode=Object.assign({},options.mode,{showStats:config.showStats});
-  options.onStats=function(stats){if(onStats)onStats(stats);if(stats.state===2){var overlay=document.getElementById('moonlight-performance-overlay');if(overlay&&overlay.style.display!=='none')overlayWasVisible=true;}if(stats.state===2&&!blackhole&&!forceExit)samples.push(stats.telemetry);if(stats.state===2&&stats.presented>10&&!armed){armed=true;
+  options.onStats=function(stats){if(onStats)onStats(stats);if(stats.state===2){var overlay=document.getElementById('moonlight-performance-overlay');if(overlay&&overlay.style.display!=='none')overlayWasVisible=true;}if(stats.state===2&&!blackhole&&!forceExit&&measuring)samples.push(stats.telemetry);if(stats.state===2&&stats.presented>10&&!armed){armed=true;
    var delay=config.measureMs||0;
-   setTimeout(function(){blackhole=!healthy;},delay+500);
+   // Keep the performance window separate from deliberately suppressed RAF
+   // and network-fault recovery, including on the healthy exit path.
+   setTimeout(function(){measuring=false;blackhole=!healthy;},delay+500);
    setTimeout(function(){window.requestAnimationFrame=function(){return -1;};},delay+1500);
    setTimeout(function(){chordAt=now();forceExit=true;},delay+2000);
   }};

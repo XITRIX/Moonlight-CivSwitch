@@ -12,7 +12,7 @@
    }return result;
   };return media;
  };
- function poll(){var t=now();if(activeAt){if(lastPoll)pollIntervals.push(t-lastPoll);lastPoll=t;if(pad)pad.poll();if(config.continuous&&pulses<1200&&client.gamepad(0,0,0,0,0,0,0)===0)pulses++;}raf=requestAnimationFrame(poll);}
+ function poll(){var t=now();if(activeAt){if(lastPoll)pollIntervals.push(t-lastPoll);lastPoll=t;if(pad)pad.poll();if(config.continuous&&pulses<Math.ceil((config.durationMs||24000)*(config.fps||60)/1000)&&client.gamepad(0,0,0,0,0,0,0)===0)pulses++;}raf=requestAnimationFrame(poll);}
  function range(values){var v=values.filter(Number.isFinite).slice().sort(function(a,b){return a-b;});return {count:v.length,min:v[0],median:v[Math.floor(v.length/2)],p95:v[Math.floor((v.length-1)*.95)],max:v[v.length-1]};}
  function rounded(k,v){return typeof v==='number'?Math.round(v*1000)/1000:v;}
  async function out(k,v){await log('MOONLIGHT_PACING_'+k+': '+JSON.stringify(v,rounded));}
@@ -20,7 +20,7 @@
   await log('MOONLIGHT_PACING_STAGE: preparing');
   pad=window.MoonlightControllerInput.createNative();raf=requestAnimationFrame(poll);
   await log('MOONLIGHT_PACING_STAGE: controller ready');
-  client=window.MoonlightStreamClient.create({host:'192.168.1.4:47989',app:{id:881448767,title:'Desktop'},durationMs:24000,mode:{width:config.width||1280,height:config.height||720,fps:config.fps||60,bitrate:config.bitrate||3000,videoPacing:config.smoothVideo===false?"latency":"smooth"},
+  client=window.MoonlightStreamClient.create({host:'192.168.1.4:47989',app:{id:881448767,title:'Desktop'},durationMs:config.durationMs||24000,mode:{width:config.width||1280,height:config.height||720,fps:config.fps||60,bitrate:config.bitrate||3000,videoPacing:config.smoothVideo===false?"latency":"smooth"},
    onImage:function(url){var t=now();if(activeAt&&lastPresent)presentIntervals.push(t-lastPresent);lastPresent=t;panel.style.backgroundImage='url("'+url+'")';},canPresent:function(){return true;},
    onStatus:function(text){if(!activeAt)log('MOONLIGHT_PACING_STAGE: '+String(text).slice(0,128));},
    log:function(text){messages.push(String(text).slice(0,512));if(messages.length>64)messages.shift();},
