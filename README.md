@@ -12,7 +12,7 @@ app/
   index.html           Browser preview entry
   native/              C cooperative runtime, sockets, callbacks, PNG preview
   src/
-    ui/                Host and Games screens, keyboard/controller input
+    ui/                Hosts, Pair and Games screens, keyboard/controller input
     protocol/          Sunshine pairing and application-list client
     platform/          CivSwitch native sockets, TLS, and file access
     storage/           Persistent pairing store
@@ -42,14 +42,16 @@ From the repository root, with CivSwitch waiting on the Switch:
 python3 tools/send_ui.py 192.168.1.182
 ```
 
-Keep the sender open. Connect checks Sunshine, uses the saved pairing, and opens
-Games. Covers load from Sunshine for the visible page and are cached in memory
+Keep the sender open. Hosts lists saved paired PCs; selecting a host opens its
+Games. Choose **Pair new host** at the end of the list to open Pair, enter the
+host address, and select **Pair**. Successful pairing returns to Hosts with that
+host selected. Covers load from Sunshine for the visible page and are cached in memory
 and under `save:/moonlight-experiment/artwork/` for reuse after closing the UI.
 The D-pad navigates the card grid in four directions; left/right switches
-between Refresh, Settings and Back. A selects; B returns to Host. B on Host closes
+between Refresh, Settings and Back. A selects; B from Games or Pair returns to Hosts. B on Hosts closes
 the UI and releases the loader for another payload.
 
-Settings is available on Host and in the Games footer. Up/down selects a row;
+Settings is available on Hosts and in the Games footer. Up/down selects a row;
 left/right changes resolution (360p, 540p, 720p, 1080p), frame rate (15, 30, 60 FPS), or
 bitrate (1, 2, 3, 5, 8, 10, 15, 20, 25, 30, 40, 50, 60, 80 Mbps). A cycles a value or activates Back. Back/B saves
 to `save:/moonlight-experiment/settings.json` and returns to the previous screen.

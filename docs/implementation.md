@@ -1,10 +1,10 @@
 # Implementation notes
 
-A Moonlight UI experiment for CivSwitch's Remote JS Loader. Connect checks
-Sunshine, reuses or establishes pairing, then opens a dedicated Games screen
-with the host's application list. Password is intentionally absent: GameStream pairing
+A Moonlight UI experiment for CivSwitch's Remote JS Loader. Hosts lists saved
+paired PCs and opens their Games screen. Pair new host opens the Pair screen;
+successful pairing returns to Hosts. Password is intentionally absent: GameStream pairing
 uses a PIN and a client certificate, not the Sunshine web-interface password.
-Streaming, app launching, video, and audio are not implemented.
+See [streaming](streaming.md) for app launching, video, and audio.
 
 ## Run on Switch
 
@@ -17,23 +17,29 @@ python3 tools/send_ui.py 192.168.1.182
 
 The default loader port is 9026 (`--port` overrides it). The sender bundles the
 crypto library, dedicated storage, native transport, pairing protocol, app-list
-client, and UI into one payload under
-the loader's 500 KiB limit. The Mac only sends JavaScript and prints diagnostics;
+client, and UI into one source bundle. Bundles above the loader's 500 KiB limit
+are staged in RAM over several bounded uploads, then evaluated in the loader's
+native execution context. The Mac only sends JavaScript and prints diagnostics;
 all Sunshine requests, cryptography, and credential storage run on the Switch.
 Keep the sender open. The payload remains pending so the loader does not block
 in its next native `accept()`. Close with B before sending another payload.
 
-Default Host is `192.168.1.4:47989`. This prototype supports IPv4 addresses with
+Hosts reads existing pairings from the same store used before this screen was
+added; no re-pairing or data migration is required. The list displays each PC's
+name and address, with Pair new host at the end. Selecting a saved host fetches
+its games through authenticated HTTPS without starting another pairing flow.
+
+The Pair screen's default Host is `192.168.1.4:47989`. This prototype supports IPv4 addresses with
 an optional HTTP port; DNS and IPv6 are not implemented. HTTPS uses the port
 advertised by Sunshine's `/serverinfo` response.
 
-Press Connect. The UI checks Sunshine, creates a client identity if necessary,
+Press Pair. The UI checks Sunshine, creates a client identity if necessary,
 and displays a four-digit PIN. Enter it in Sunshine's web interface on the host
 (the PIN page, normally `https://localhost:47990`). Pairing waits up to three
-minutes for this action. Select Cancel to stop, or B outside editing to close.
-A saved pairing is checked through authenticated HTTPS on subsequent connects.
-The UI then fetches `/applist` using the same client identity and pinned host
-certificate, and switches to Games automatically.
+minutes for this action. Select Cancel to stop, or Back/B outside editing to
+cancel and return to Hosts. Pairing errors remain on Pair. On success, Hosts
+reopens with the paired host selected; games are fetched only when you select
+that host. Pairing an already saved address updates its entry without duplicating it.
 
 ## Games screen
 
@@ -64,11 +70,11 @@ Sunshine's app list, not an automatic scan of the PC's installed games.
   indexes reset only the disposable artwork directory. No migration is performed.
 - A selects an entry or activates Refresh/Back. With the streaming core loaded,
   selecting an entry launches or resumes it; see [streaming](streaming.md).
-- B returns to the Host screen. B there closes the UI and releases the loader.
+- B returns to Hosts. B there closes the UI and releases the loader.
 - Refresh requests a fresh list over pinned native HTTPS.
 
 Loading, an empty list, and request errors are displayed on this screen. Returning
-to Host cancels pending work; a late response cannot reopen Games. Closing still
+to Hosts cancels pending work; a late response cannot reopen Games. Closing still
 waits for native sockets to be released. The application list remains in memory;
 cached covers and existing credentials stay in the dedicated experiment directory.
 
@@ -107,7 +113,7 @@ commit the save mount and read back the result. The previous committed slot is
 retained if a newer write fails. These credentials are not encrypted by this
 prototype. The directory belongs to Civ VII's current save mount/user.
 
-The separate Settings screen is available from Host and Games. It selects
+The separate Settings screen is available from Hosts and Games. It selects
 640×360, 960×540, or 1280×720; 15/30/60 FPS; and 1/2/3/5/8/10 Mbps. D-pad
 up/down selects a row, left/right adjusts it, and A cycles the value. Back/B
 commits the preferences and returns to the previous screen. A failed save keeps
@@ -140,10 +146,12 @@ step.
 
 ## Controls and keyboard
 
-- D-pad up/down: move between Host and Connect, wrapping at the ends.
-- A: edit Host or activate Connect/Cancel.
-- B: dismiss editing; outside editing, close the UI and cancel pending networking.
-- Touch/mouse: select Host or activate the button.
+- D-pad up/down: move through saved hosts, Pair new host, and Settings. On Pair,
+  move between Host, Pair/Cancel, and Back, wrapping at the ends.
+- A: select a saved host, open Pair, edit Host, or activate the selected button.
+- B: dismiss editing; from Pair or Games, return to Hosts and cancel pending
+  networking; from Hosts, close the UI.
+- Touch/mouse: select a saved host, edit Host, or activate a button.
 - USB keyboard: type while editing; Enter finishes; Tab/Shift+Tab move focus.
 
 The UI loads Civ VII's own `fxs-textbox` component and calls `onActivate()`.

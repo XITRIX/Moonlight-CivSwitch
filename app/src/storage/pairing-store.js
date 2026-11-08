@@ -46,6 +46,16 @@
             loadIdentity: function () { return load().identity; },
             saveIdentity: function (identity) { var old=load();cached=write({generation:old.generation,identity:identity,hosts:old.hosts}); },
             loadHost: function (host) { return load().hosts[host] || null; },
+            listHosts: function () {
+                var value = load();
+                return Object.keys(value.hosts).filter(function (address) {
+                    var host = value.hosts[address];
+                    return host && host.certificatePem && value.identity && host.uniqueId === value.identity.uniqueId;
+                }).map(function (address) {
+                    var host = value.hosts[address];
+                    return {address:address,hostname:host.hostname || address,httpsPort:host.httpsPort};
+                });
+            },
             saveHost: function (host, value) {
                 var old=load(), hosts=Object.assign({},old.hosts);hosts[host]=value;
                 cached=write({generation:old.generation,identity:old.identity,hosts:hosts});

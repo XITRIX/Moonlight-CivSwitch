@@ -98,7 +98,7 @@
             var address = global.MoonlightPairing.parseHost(input);
             var identity = await options.loadIdentity(), host = await options.loadHost(address.key);
             if (!identity || !host || !host.certificatePem || host.uniqueId !== identity.uniqueId)
-                throw new Error("Connect and pair with this host before loading its games.");
+                throw new Error("Pair with this host before loading its games.");
             var port = httpsPort === undefined ? host.httpsPort : httpsPort;
             if (!Number.isInteger(port) || port < 1 || port > 65535) throw new Error("Invalid Sunshine HTTPS port.");
             checkCanceled();return {address:address,identity:identity,host:host,port:port};

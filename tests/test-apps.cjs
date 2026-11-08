@@ -56,7 +56,7 @@ assert.throws(()=>Apps.parseList('<root status_code="401"/>'),/401/);
  const pixels=Buffer.from(png);pixels.writeUInt32BE(4096,16);pixels.writeUInt32BE(4096,20);
  for(const data of ['<root status_code="401"/>',png.subarray(0,32).toString('binary'),huge.toString('binary'),pixels.toString('binary'),'x'.repeat(2097153)])
   await assert.rejects(Apps.create({...artworkOptions,requestHttps:async()=>data}).loadArtwork('192.168.1.4',1),/PNG|dimensions/);
- await assert.rejects(Apps.create({...artworkOptions,loadIdentity:()=>null}).loadArtwork('192.168.1.4',1),/pair/);
+ await assert.rejects(Apps.create({...artworkOptions,loadIdentity:()=>null}).loadArtwork('192.168.1.4',1),/pair/i);
  const artSignal={aborted:false};await assert.rejects(Apps.create({...artworkOptions,signal:artSignal,requestHttps:async()=>{artSignal.aborted=true;return png.toString('binary');}}).loadArtwork('192.168.1.4',1),/canceled/);
  const files=new Map();let downloads=0;
  const disk={get:key=>files.has(key)?files.get(key):null,put:(key,value)=>files.set(key,value),remove:key=>files.delete(key)};
@@ -65,7 +65,7 @@ assert.throws(()=>Apps.parseList('<root status_code="401"/>'),/401/);
  const cached=await Apps.create({...saved}).loadArtwork('192.168.1.4',1);assert.equal(cached.cacheHit,true);assert.equal(downloads,1);
  await Apps.create({...saved,loadHost:()=>({...host,certificatePem:'different-cert'})}).loadArtwork('192.168.1.4',1);assert.equal(downloads,2);
  await Apps.create(saved).loadArtwork('192.168.1.4',1,48000);assert.equal(downloads,3);
- await assert.rejects(Apps.create({...saved,loadIdentity:()=>null}).loadArtwork('192.168.1.4',1),/pair/);assert.equal(downloads,3);
+ await assert.rejects(Apps.create({...saved,loadIdentity:()=>null}).loadArtwork('192.168.1.4',1),/pair/i);assert.equal(downloads,3);
  cached.invalidateCache();await Apps.create(saved).loadArtwork('192.168.1.4',1);assert.equal(downloads,4);
  files.forEach((_,key)=>files.set(key,'broken'));await Apps.create(saved).loadArtwork('192.168.1.4',1);assert.equal(downloads,5);
  const errors=[];const fallback=await Apps.create({...saved,artworkCache:{get:()=>{throw Error('read failed');},remove:()=>{},put:()=>{throw Error('disk full');}},onArtworkCacheError:e=>errors.push(e.message)}).loadArtwork('192.168.1.4',1);

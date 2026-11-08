@@ -23,7 +23,7 @@
     var ignoreInputUntil = 0;
     var connectionTask = null;
     var connectionSignal = null;
-    var screen = "connect";
+    var screen = "hosts";
     var gameHost = null;
 
     function report(message) {
@@ -63,14 +63,16 @@
     root.style.outline = "none";
 
     var panel = element("div", root, {
-        display: "flex", flexDirection: "column", width: "600px", maxWidth: "88vw",
-        padding: "36px", border: "1px solid #29354b", borderRadius: "18px",
+        display: "none", flexDirection: "column", width: "600px", maxWidth: "88vw",
+        padding: "32px", border: "1px solid #29354b", borderRadius: "18px",
         backgroundColor: "#131d2e", boxSizing: "border-box"
     });
-    element("h1", panel, {
-        display: "flex", margin: "0 0 30px 0", fontSize: "46px", fontWeight: "700",
+    panel.id = "moonlight-pair-screen";
+    element("div", panel, {fontSize:"17px",color:"#94b6e2",marginBottom:"6px"}, "Moonlight");
+    element("h2", panel, {
+        display: "flex", margin: "0 0 20px 0", fontSize: "36px", fontWeight: "700",
         lineHeight: "1.2", color: "#f4f7ff"
-    }, "Moonlight");
+    }, "Pair");
 
     function field(id, labelText, type, placeholder) {
         var label = element("label", panel, {
@@ -101,26 +103,26 @@
 
     var host = field("moonlight-host", "Host:", "text", "192.168.1.4:47989");
     host.value = "192.168.1.4:47989";
-    var connect = element("button", panel, {
+    var pair = element("button", panel, {
         display: "flex", alignItems: "center", justifyContent: "center", width: "100%",
         height: "58px", marginTop: "4px", padding: "0 16px", border: "2px solid #5275b4",
         borderRadius: "9px", backgroundColor: "#284c83", color: "#ffffff",
         fontFamily: "Arial, sans-serif", fontSize: "22px", fontWeight: "700", outline: "none"
-    }, "Connect");
-    connect.id = "moonlight-connect";
-    connect.type = "button";
-    connect.tabIndex = -1;
-    var settingsButton = element("button", panel, {
+    }, "Pair");
+    pair.id = "moonlight-pair";
+    pair.type = "button";
+    pair.tabIndex = -1;
+    var pairBack = element("button", panel, {
         display:"flex",alignItems:"center",justifyContent:"center",width:"100%",height:"48px",marginTop:"12px",
         border:"2px solid #35435b",borderRadius:"9px",backgroundColor:"#0c1423",color:"#f4f7ff",
         fontFamily:"Arial, sans-serif",fontSize:"20px",outline:"none"
-    },"Settings");
-    settingsButton.id="moonlight-open-settings";settingsButton.type="button";settingsButton.tabIndex=-1;
+    },"Back");
+    pairBack.id="moonlight-pair-back";pairBack.type="button";pairBack.tabIndex=-1;
 
     var status = element("div", panel, {
         display: "flex", minHeight: "24px", marginTop: "20px", fontSize: "16px",
         lineHeight: "1.5", color: "#b7c6dd"
-    }, "Press Connect to check Sunshine and pair.");
+    }, "Press Pair to check Sunshine and pair.");
     status.id = "moonlight-status";
     status.setAttribute("role", "status");
     var pinDisplay = element("div", panel, {
@@ -132,8 +134,9 @@
         display: "flex", marginTop: "24px", fontSize: "17px", color: "#a7b6cf",
         textAlign: "center", maxWidth: "94vw"
     }, "D-pad up/down: Move    A: Edit / Select    B: Back");
-    var controls = [host, connect, settingsButton];
-    var streamMode=window.MoonlightSettings.defaults(),settingsLoaded=false,settingsReturn="connect",settingsTransport=null;
+    var controls = [host, pair, pairBack];
+    var hosts = window.MoonlightHosts.create({parent:root,onHost:openHost,onPair:openPair,onSettings:openSettings});
+    var streamMode=window.MoonlightSettings.defaults(),settingsLoaded=false,settingsReturn="hosts",settingsTransport=null;
     function loadSettings(){
         if(settingsLoaded)return;settingsLoaded=true;
         try{
@@ -143,14 +146,14 @@
     var settings=window.MoonlightSettingsScreen.create({parent:root,onBack:function(mode){
         if(settingsTransport&&settingsTransport.saveStreamSettings)settingsTransport.saveStreamSettings(mode);
         streamMode=mode;settings.hide();screen=settingsReturn;
-        if(screen==="games")games.resume();else panel.style.display="flex";
+        if(screen==="games")games.resume();else if(screen==="hosts")hosts.resume();else panel.style.display="flex";
         heldDirection="";ignoreInputUntil=Date.now()+200;root.focus();paintFocus();
         report("MOONLIGHT_SETTINGS_SAVED: "+JSON.stringify(mode));
     }});
     function openSettings(){
         if(connectionTask||streamTask||editing||closed)return;
         loadSettings();settingsReturn=screen;
-        if(screen==="games")games.hide();else panel.style.display="none";
+        if(screen==="games")games.hide();else if(screen==="hosts")hosts.hide();else panel.style.display="none";
         screen="settings";heldDirection="";settings.show(streamMode);paintFocus();root.focus();
     }
     var streamTask = null;
@@ -164,7 +167,7 @@
         onStats:function(stats){streamDiagnostics.stats=stats;streamHistory.record(stats);},
         onBack:function(){if(!closed){screen="games";games.resume("Stream stopped. Choose an application to reconnect.");hints.style.display="flex";ignoreInputUntil=Date.now()+250;paintFocus();}}
     }) : null;
-    var games = window.MoonlightGames.create({parent:root,onBack:returnToHost,onRefresh:refreshGames,onLaunch:launchGame,onSettings:openSettings,
+    var games = window.MoonlightGames.create({parent:root,onBack:returnToHosts,onRefresh:refreshGames,onLaunch:launchGame,onSettings:openSettings,
         onArtworkLoaded:function(id,bytes,cached){report((cached?"MOONLIGHT_ARTWORK_CACHED: ":"MOONLIGHT_ARTWORK_LOADED: ")+id+" ("+bytes+" bytes)");},
         onArtworkDisplayed:function(id){report("MOONLIGHT_ARTWORK_DISPLAYED: "+id);},
         onArtworkError:function(id,error){report("MOONLIGHT_ARTWORK_ERROR: "+id+" "+error.message);}
@@ -182,7 +185,7 @@
         });
         hints.textContent = screen === "settings"
             ? "D-pad up/down: Move    Left/right: Change    A: Select    B: Back"
-            : screen === "games"
+            : screen === "games" || screen === "hosts"
             ? "D-pad: Move    A: Select    B: Back"
             : editing
             ? "Type to edit    Enter / B: Done    D-pad up/down: Move"
@@ -303,12 +306,12 @@
     function select(index) {
         endEdit();
         selected = (index + controls.length) % controls.length;
-        if (!connectionTask) status.textContent = selected === 1 ? "Press A to connect and load games." : selected===2?"Press A to change stream settings.":"Press A to edit.";
+        if (!connectionTask) status.textContent = selected === 1 ? "Press A to pair with this host." : selected===2?"Press A to return to Hosts.":"Press A to edit.";
         paintFocus();
     }
 
     async function beginEdit(index, requestKeyboard) {
-        if (nativeEditor || connectionTask || screen !== "connect") return;
+        if (nativeEditor || connectionTask || screen !== "pair") return;
         select(index);
         editing = true;
         controls[index].readOnly = false;
@@ -400,10 +403,12 @@
         if (screen === "stream") return;
         if (screen === "settings") { settings.activate(); return; }
         if (screen === "games") { games.activate(); return; }
+        if (screen === "hosts") { hosts.activate(); return; }
+        if (selected === 2) { returnToHosts(); return; }
         if (connectionTask) {
             if (selected === 1) {
                 connectionSignal.aborted = true;
-                status.textContent = "Canceling connection…";
+                status.textContent = "Canceling pairing…";
             }
             return;
         }
@@ -412,10 +417,8 @@
                 endEdit();
                 status.textContent = "Press A to edit.";
             } else beginEdit(selected, true);
-        } else if(selected===2){
-            openSettings();
         } else {
-            connectToSunshine();
+            pairWithSunshine();
         }
     }
 
@@ -435,21 +438,21 @@
         } catch(error) {screen="games";games.resume(error.message);hints.style.display="flex";}
     }
 
-    function connectToSunshine() {
+    function pairWithSunshine() {
         if (connectionTask || closed) return;
         if (!window.MoonlightNative || !window.MoonlightNative.available || !window.MoonlightPairing || !window.MoonlightApps) {
             status.textContent = "Pairing requires the Switch loader. Browser preview supports UI only.";
             return;
         }
         connectionSignal = { aborted: false };
-        connect.textContent = "Cancel";
+        pair.textContent = "Cancel";
         pinDisplay.style.display = "none";
         var options;
         try {
             options = window.MoonlightNative.create();
             options.signal = connectionSignal;
             options.onProgress = function (event) {
-                if (closed) return;
+                if (closed || screen !== "pair" || options.signal.aborted) return;
                 status.textContent = event.message;
                 pinDisplay.textContent = event.pin || "";
                 pinDisplay.style.display = event.pin ? "flex" : "none";
@@ -465,30 +468,22 @@
             };
             var pairing = window.MoonlightPairing.create(options);
             var address = host.value, signal = connectionSignal;
-            connectionTask = pairing.checkAndPair(address).then(async function (result) {
+            connectionTask = pairing.checkAndPair(address).then(function (result) {
                 if (closed || signal.aborted) return;
                 report("MOONLIGHT_PAIRING_SAVED: " + (result.reused ? "reused" : "new"));
-                gameHost = {address:address,hostname:result.hostname,httpsPort:result.httpsPort};
-                screen = "games";
-                panel.style.display = "none";
-                games.show(result.hostname);
-                paintFocus();
-                await fetchGames(options, signal);
+                showHosts(result.host || window.MoonlightPairing.parseHost(address).key, "Paired with " + result.hostname + ". Choose the host to open its games.");
             }).catch(function (error) {
-                if (!closed) {
-                    if (screen === "games") games.fail(error.message);
-                    else status.textContent = error.message;
-                }
+                if (!closed && screen === "pair") status.textContent = error.message;
                 report("MOONLIGHT_CONNECTION_ERROR: " + error.message);
             }).finally(function () {
                 connectionTask = null;
                 connectionSignal = null;
-                connect.textContent = "Connect";
+                pair.textContent = "Pair";
                 pinDisplay.style.display = "none";
             });
         } catch (error) {
             connectionSignal = null;
-            connect.textContent = "Connect";
+            pair.textContent = "Pair";
             status.textContent = error.message;
             report("MOONLIGHT_CONNECTION_ERROR: " + error.message);
         }
@@ -525,18 +520,55 @@
         }
     }
 
-    function returnToHost() {
-        if (connectionSignal) connectionSignal.aborted = true;
-        games.hide();
-        screen="connect";
+    function openPair() {
+        if (connectionTask || closed) return;
+        hosts.hide();
+        screen="pair";
         panel.style.display="flex";
-        selected=1;
+        selected=0;
+        pinDisplay.style.display="none";
+        status.textContent="Press Pair to check Sunshine and pair.";
         heldDirection="";
-        ignoreInputUntil=Date.now()+200;
-        status.textContent="Press Connect to load games.";
         root.focus();
         paintFocus();
-        report("MOONLIGHT_HOST_SCREEN");
+        report("MOONLIGHT_PAIR_SCREEN");
+    }
+
+    function showHosts(address, message) {
+        var saved = [];
+        try {
+            if (window.MoonlightNative && window.MoonlightNative.available) saved = window.MoonlightNative.create().listHosts();
+        } catch (error) {
+            message = "Could not load paired hosts: " + error.message;
+            report("MOONLIGHT_HOSTS_LOAD_ERROR: " + error.message);
+        }
+        screen="hosts";
+        panel.style.display="none";
+        pinDisplay.style.display="none";
+        hosts.show(saved, address, message);
+        heldDirection="";
+        root.focus();
+        paintFocus();
+        report("MOONLIGHT_HOSTS_SCREEN");
+    }
+
+    function returnToHosts() {
+        if (connectionSignal) connectionSignal.aborted = true;
+        endEdit();
+        games.hide();
+        showHosts(gameHost && gameHost.address);
+        ignoreInputUntil=Date.now()+200;
+    }
+
+    function openHost(value) {
+        if (connectionTask || closed) return;
+        gameHost = {address:value.address,hostname:value.hostname,httpsPort:value.httpsPort};
+        hosts.hide();
+        screen="games";
+        games.show(value.hostname);
+        heldDirection="";
+        paintFocus();
+        refreshGames();
     }
 
     function action(name, inputStatus, source, x, y) {
@@ -575,17 +607,19 @@
             heldDirection = name;
             nextRepeat = now + (phase === 0 ? 350 : 150);
             if (screen === "games") games.move(name.slice(4));
+            else if (screen === "hosts") hosts.move(name.slice(4));
             else if (screen === "settings") settings.move(name.slice(4));
             else if (name === "nav-up" || name === "nav-down") select(selected + (name === "nav-up" ? -1 : 1));
         } else {
             if (phase !== 0) return;
             if (name === "accept") activate();
             else if (screen === "settings") settings.back();
-            else if (screen === "games") returnToHost();
+            else if (screen === "games") returnToHosts();
             else if (editing) {
                 endEdit();
                 status.textContent = "Choose a field to edit.";
-            } else close();
+            } else if (screen === "pair") returnToHosts();
+            else close();
         }
         lastAction = { name: name, source: source, time: now };
     }
@@ -627,6 +661,7 @@
         if ((screen === "games"||screen==="settings") && (event.key === "ArrowLeft" || event.key === "ArrowRight")) name=event.key==="ArrowLeft"?"nav-left":"nav-right";
         if (event.key === "Tab") {
             if (screen === "games") games.step(event.shiftKey ? -1 : 1);
+            else if(screen==="hosts")hosts.step(event.shiftKey?-1:1);
             else if(screen==="settings")settings.step(event.shiftKey?-1:1);
             else select(selected + (event.shiftKey ? -1 : 1));
             consume(event);
@@ -673,6 +708,7 @@
         endEdit();
         if (frame !== null) cancelAnimationFrame(frame);
         var artworkDone=games.destroy();
+        hosts.destroy();
         settings.destroy();
         var streamDone=stream?stream.destroy():null;
         removers.forEach(function (remove) { remove(); });
@@ -690,7 +726,7 @@
 
     controls.forEach(function (control, index) {
         listen(control, "click", function () {
-            if (screen !== "connect") return;
+            if (screen !== "pair") return;
             if (index === 0 && !connectionTask) beginEdit(index, true);
             else if (index > 0) { select(index); activate(); }
         });
@@ -713,7 +749,7 @@
         } catch (_) {}
     }
     window.__moonlightSimpleUI = { close: close };
-    paintFocus();
+    showHosts();
     frame = requestAnimationFrame(pollGamepads);
     if (typeof log === "function") await log("MOONLIGHT_UI_READY");
     // Keep eval pending: otherwise CivSwitch immediately blocks in accept().

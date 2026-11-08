@@ -32,9 +32,9 @@ Press − and + together, or press Escape on a keyboard, to disconnect. B is sen
 to the remote game. Video fills the viewport and preserves its aspect ratio;
 status is visible during startup/stopping and hidden during playback. The app returns
 to the cached Games screen; it does not send Sunshine `/cancel` to terminate the
-host application. B from Games returns to Host; B again closes the UI.
+host application. B from Games returns to Hosts; B again closes the UI.
 
-Open Settings from Host or the Games footer to choose 360p/540p/720p/1080p,
+Open Settings from Hosts or the Games footer to choose 360p/540p/720p/1080p,
 15/30/60 FPS, and 1–80 Mbps presets (including 40, 50, 60, 70 and the experimental 80 Mbps). D-pad up/down chooses a setting; left/right
 adjusts its value. A on Bitrate opens all choices; D-pad chooses, A applies and
 B cancels the dropdown. Back/B from Settings saves to `save:/moonlight-experiment/settings.json`.

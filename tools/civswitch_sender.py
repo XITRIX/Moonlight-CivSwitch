@@ -5,10 +5,10 @@ import socket
 import sys
 import time
 
-def send_payload(host, payload, output, timeout=60):
+def send_payload(host, payload, output, timeout=60, port=9026):
     if len(payload) >= 500 * 1024:
         raise ValueError('Payload exceeds the CivSwitch 500 KiB limit')
-    with socket.create_connection((host, 9026), timeout=10) as connection:
+    with socket.create_connection((host, port), timeout=10) as connection:
         connection.settimeout(1)
         connection.sendall(payload)
         connection.shutdown(socket.SHUT_WR)
@@ -47,10 +47,10 @@ def upload_module(host, source, output):
         send_payload(host, script.encode(), output)
     return digest
 
-def send_staged_payload(host, payload, output, timeout=60):
-    """Keep large diagnostics in RAM while respecting the loader's upload limit."""
+def prepare_payload(host, payload, output, port=9026):
+    """Stage large sources in RAM and return a payload to evaluate in loader scope."""
     if len(payload) < 500 * 1024:
-        return send_payload(host, payload, output, timeout)
+        return payload
     source = payload.decode('utf-8')
     digest = hashlib.sha256(payload).hexdigest()
     chunks = []
@@ -69,8 +69,13 @@ def send_staged_payload(host, payload, output, timeout=60):
                       '||window.__moonlightStagedProbe.parts.length!==' + str(index) + ')throw Error("Probe staging mismatch");\n')
         script += 'window.__moonlightStagedProbe.parts.push(' + json.dumps(chunk) + ');\n'
         script += 'log("MOONLIGHT_PROBE_STAGED: ' + str(index+1) + '/' + str(len(chunks)) + '");'
-        send_payload(host, script.encode(), output)
+        send_payload(host, script.encode(), output, port=port)
     execute = ('(async function(){var staged=window.__moonlightStagedProbe;delete window.__moonlightStagedProbe;'
                'if(!staged||staged.digest!==' + json.dumps(digest) + '||staged.parts.length!==staged.count)throw Error("Incomplete staged probe");'
                'return await eval(staged.parts.join(""));})();')
-    return send_payload(host, execute.encode(), output, timeout)
+    return execute.encode()
+
+
+def send_staged_payload(host, payload, output, timeout=60):
+    """Keep large diagnostics in RAM while respecting the loader's upload limit."""
+    return send_payload(host, prepare_payload(host, payload, output), output, timeout)

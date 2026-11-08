@@ -325,6 +325,7 @@
             loadIdentity: store.loadIdentity,
             saveIdentity: store.saveIdentity,
             loadHost: store.loadHost,
+            listHosts: store.listHosts,
             saveHost: store.saveHost,
             clearExperimentData: store.clear,
             storageRoot: store.root

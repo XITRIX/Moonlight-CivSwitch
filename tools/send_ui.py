@@ -5,7 +5,7 @@ import argparse
 from pathlib import Path
 import socket
 import sys
-from civswitch_sender import upload_module
+from civswitch_sender import prepare_payload, upload_module
 
 APP_DIR = Path(__file__).resolve().parents[1] / "app"
 APP_SCRIPTS = (
@@ -17,6 +17,7 @@ APP_SCRIPTS = (
     "src/protocol/sunshine-pairing.js",
     "src/protocol/sunshine-apps.js",
     "src/ui/game-artwork.js",
+    "src/ui/hosts-screen.js",
     "src/ui/games-screen.js",
     "src/ui/settings-screen.js",
     "src/streaming/native-io.js",
@@ -41,8 +42,6 @@ def build_payload(clear_switch_data=False):
     scripts = CLEANUP_SCRIPTS if clear_switch_data else APP_SCRIPTS
     # Return the UI's lifetime promise from eval, keeping the loader alive.
     payload = b";\n".join((APP_DIR / name).read_bytes() for name in scripts)
-    if len(payload) >= 500 * 1024:
-        raise ValueError("Payload exceeds CivSwitch's 500 KiB limit.")
     return payload
 
 
@@ -62,6 +61,7 @@ def main():
         if args.streaming and not args.clear_switch_data:
             artifact = APP_DIR.parent / "investigation/wasm2js/dist/moonlight-stream.js"
             upload_module(args.console_ip, artifact.read_text(), sys.stdout.buffer)
+        payload = prepare_payload(args.console_ip, payload, sys.stdout.buffer, port=args.port)
         with socket.create_connection((args.console_ip, args.port), timeout=10) as connection:
             connection.settimeout(None)
             connection.sendall(payload)
@@ -76,7 +76,7 @@ def main():
                 sys.stdout.buffer.flush()
     except KeyboardInterrupt:
         print("\nSender stopped. Close the UI with B outside editing before sending again.")
-    except OSError as error:
+    except (OSError, RuntimeError, ValueError) as error:
         parser.exit(1, f"Connection failed: {error}\n")
 
 

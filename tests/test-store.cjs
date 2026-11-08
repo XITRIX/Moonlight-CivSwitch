@@ -25,8 +25,23 @@ let m=memory();assert.equal(m.store.loadIdentity(),null);assert.equal(m.events.f
 m.store.saveIdentity({marker:'new'});m.store.saveHost('host:47989',{certificatePem:'pin'});
 assert.equal(Store.create(m.adapter).loadIdentity().marker,'new');
 assert.equal(Store.create(m.adapter).loadHost('host:47989').certificatePem,'pin');
+// Existing paired hosts are listed after a cold reload, without exposing credentials.
+m=memory();assert.equal(m.store.listHosts().length,0);
+m.store.saveIdentity({uniqueId:'saved-client',privateKeyPem:'private'});
+m.store.saveHost('192.168.1.4:47989',{hostname:'Gaming PC',httpsPort:47984,uniqueId:'saved-client',certificatePem:'pin-one'});
+m.store.saveHost('192.168.1.5:48000',{hostname:'Second PC',httpsPort:47995,uniqueId:'saved-client',certificatePem:'pin-two'});
+m.store.saveHost('unpaired:47989',{hostname:'Incomplete'});
+m.store.saveHost('old:47989',{hostname:'Old identity',uniqueId:'other-client',certificatePem:'old-pin'});
+let listed=Store.create(m.adapter).listHosts();
+assert.deepEqual(JSON.parse(JSON.stringify(listed)),[
+ {address:'192.168.1.4:47989',hostname:'Gaming PC',httpsPort:47984},
+ {address:'192.168.1.5:48000',hostname:'Second PC',httpsPort:47995}
+]);
+listed[0].hostname='Changed';assert.equal(m.store.loadHost('192.168.1.4:47989').hostname,'Gaming PC');
+m.store.saveHost('192.168.1.4:47989',{hostname:'Renamed PC',httpsPort:47984,uniqueId:'saved-client',certificatePem:'new-pin'});
+assert.equal(m.store.listHosts().length,2);assert.equal(m.store.listHosts()[0].hostname,'Renamed PC');
 // Unreadable data must not silently replace the existing identity.
-m=memory({[slots[0]]:'null'});assert.throws(()=>m.store.loadIdentity(),/unreadable/);assert.equal(m.files.get(slots[0]),'null');assert(!m.events.some(e=>e[0]==='write'));
+m=memory({[slots[0]]:'null'});assert.throws(()=>m.store.loadIdentity(),/unreadable/);assert.throws(()=>m.store.listHosts(),/unreadable/);assert.equal(m.files.get(slots[0]),'null');assert(!m.events.some(e=>e[0]==='write'));
 // Failed writes/readback/commit retain the earlier slot and in-memory identity.
 for(const failure of ['write','corrupt','commit']) {
  const previous=state(4);m=memory({[slots[0]]:previous});assert.equal(m.store.loadIdentity().marker,'same-client');
