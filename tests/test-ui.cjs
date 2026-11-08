@@ -60,10 +60,31 @@ const sleep=ms=>new Promise(r=>setTimeout(r,ms));
   assert.equal(await evaluate('document.getElementById("moonlight-settings-bitrate").getAttribute("data-value")'),'30000');
   await key('ArrowRight');
   assert.equal(await evaluate('document.getElementById("moonlight-settings-bitrate").getAttribute("data-value")'),'40000');
-  for(const value of [50000,60000,80000]){await key('ArrowRight');assert.equal(await evaluate('document.getElementById("moonlight-settings-bitrate").getAttribute("data-value")'),String(value));}
+  for(const value of [50000,60000,70000,80000]){await key('ArrowRight');assert.equal(await evaluate('document.getElementById("moonlight-settings-bitrate").getAttribute("data-value")'),String(value));}
   await key('ArrowRight');assert.equal(await evaluate('document.getElementById("moonlight-settings-bitrate").getAttribute("data-value")'),'80000');
-  await key('ArrowLeft');await key('ArrowLeft');await key('ArrowLeft');
-  await key('ArrowLeft');await key('ArrowLeft');await key('ArrowLeft');await key('ArrowLeft');await key('ArrowLeft');await key('ArrowLeft');
+  // A opens all bitrate choices; navigation previews, A applies, B cancels.
+  await gameAction('accept');
+  assert.equal(await evaluate('document.getElementById("moonlight-settings-bitrate").getAttribute("aria-expanded")'),'true');
+  assert.equal(await evaluate('document.querySelectorAll("#moonlight-bitrate-options [role=option]").length'),15);
+  const bitrateBounds=await evaluate('(()=>{const r=document.getElementById("moonlight-bitrate-options").getBoundingClientRect();return {top:r.top,bottom:r.bottom,left:r.left,right:r.right};})()');
+  assert(bitrateBounds.top>=0&&bitrateBounds.bottom<=720&&bitrateBounds.left>=0&&bitrateBounds.right<=1280,JSON.stringify(bitrateBounds));
+  await gameAction('nav-right');
+  assert.equal(await evaluate('document.querySelector("#moonlight-bitrate-options [data-selected=true]").getAttribute("data-value")'),'80000');
+  await gameAction('nav-left');
+  assert.equal(await evaluate('document.querySelector("#moonlight-bitrate-options [data-selected=true]").getAttribute("data-value")'),'70000');
+  assert.equal(await evaluate('document.getElementById("moonlight-settings-bitrate").getAttribute("data-value")'),'80000');
+  await gameAction('accept');
+  assert.equal(await evaluate('document.getElementById("moonlight-settings-bitrate").getAttribute("data-value")'),'70000');
+  assert.equal(await evaluate('document.getElementById("moonlight-bitrate-options").style.display'),'none');
+  await key('Enter');await key('ArrowUp');
+  assert.equal(await evaluate('document.querySelector("#moonlight-bitrate-options [data-selected=true]").getAttribute("data-value")'),'40000');
+  await gameAction('cancel');
+  assert.equal(await evaluate('document.getElementById("moonlight-settings-screen").style.display'),'flex');
+  assert.equal(await evaluate('document.getElementById("moonlight-settings-bitrate").getAttribute("data-value")'),'70000');
+  await key('Enter');await key('ArrowDown');await key('ArrowRight');
+  assert.equal(await evaluate('document.querySelector("#moonlight-bitrate-options [data-selected=true]").getAttribute("data-value")'),'80000');
+  await evaluate('document.getElementById("moonlight-bitrate-option-8000").click()');
+  assert.equal(await evaluate('document.getElementById("moonlight-settings-bitrate").getAttribute("data-value")'),'8000');
   await key('ArrowDown');await key('ArrowRight');
   assert.equal(await evaluate('document.getElementById("moonlight-settings-showStats").getAttribute("data-value")'),'true');
   await key('ArrowDown');await key('ArrowRight');
