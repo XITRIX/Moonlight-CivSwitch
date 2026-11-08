@@ -50,7 +50,7 @@
   async function run(){
    try{
     status("Preparing streaming runtime…");var make=factory(),transport=global.MoonlightNative.create();transport.signal=signal;
-    io=global.MoonlightStreamIO.create(transport);
+    io=global.MoonlightStreamIO.create(transport,{batchReceive:options.batchReceive});
     var platform={io:io.io,randomFill:io.randomFill,log:report,event:function(event,a,b){
      report("Event "+event+": "+a+", "+b);
      if(event===1)status("Connecting: stage "+a+"…");
@@ -59,6 +59,7 @@
      if(event===5&&!stopRequested)failure=Error("Stream terminated: "+a);
     }};
     core=await make({moonlightPlatform:platform});
+    if(io.attachCore)io.attachCore(core);
     if(global.MoonlightNativeTexture&&options.renderer==="native-texture"){status("Preparing native video colors…");await global.MoonlightNativeTexture.prepare();if(stopRequested)return;}
     media=global.MoonlightStreamMedia.create(io,core,{onStatus:status,onImage:options.onImage,canPresent:options.canPresent,renderer:options.renderer,synchronousGpu:options.synchronousGpu,smoothVideo:mode.videoPacing!=="latency"});
     platform.videoSetup=guarded("videoSetup",-1);platform.videoFrame=guarded("videoFrame",-1);

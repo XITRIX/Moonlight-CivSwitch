@@ -1,0 +1,833 @@
+{
+  "scope": "Sequential live sessions, changing host scenes and LAN; omit first two telemetry samples. Texture FPS is publication, not scanout.",
+  "runs": {
+    "quality20-10mbps-baseline-switch.txt": {
+      "sampleCount": 23,
+      "steadySamples": 21,
+      "means": {
+        "decodedFps": 60.063,
+        "textureFps": 58.458,
+        "receivedMbps": 8.547,
+        "rttMs": 5.619,
+        "frameReceiveMs": 3.593,
+        "decodeReadyMs": 11.559,
+        "presentAgeMs": 30.143,
+        "loopHz": 60.017,
+        "pumpAvgMs": 11.904
+      },
+      "maximumCounters": {
+        "audioDiscardedMs": 20,
+        "videoFrameGaps": 0,
+        "decoderRejected": 0,
+        "audioFecFailed": 0
+      },
+      "result": {
+        "mode": {
+          "width": 1920,
+          "height": 1080,
+          "fps": 60,
+          "bitrate": 10000,
+          "videoPacing": "smooth"
+        },
+        "network": {
+          "calls": 37454,
+          "sentBytes": 120042,
+          "receivedBytes": 24325969,
+          "directReceivedBytes": 24325969,
+          "directSentBytes": 120042,
+          "receiveCalls": 31843,
+          "receiveWouldBlock": 6523,
+          "lastError": 11,
+          "rtpTypes": {
+            "80:0": 3,
+            "0:0": 169,
+            "90:0": 16895,
+            "80:61": 4557,
+            "80:7f": 2278
+          }
+        },
+        "budgetYields": 1800,
+        "maxPumpMs": 338.185,
+        "maxDrainMs": 12.023,
+        "pumpBudgetMs": 12,
+        "phase": "current",
+        "prePumpMs": 0,
+        "completionPumpMs": 6,
+        "synchronousGpu": false,
+        "smoothVideo": true,
+        "gpuTransferMs": 368.514,
+        "gpuPollMs": 129.675,
+        "gpuPendingPolls": 13,
+        "continuous": true,
+        "error": null,
+        "state": 0,
+        "tasks": 0,
+        "submitted": 1368,
+        "decoded": 1367,
+        "presented": 1327,
+        "superseded": 39,
+        "audioDecoded": 4457,
+        "audioDiscardedMs": 20,
+        "pulses": 1200,
+        "clock": {
+          "frameWakes": 1402,
+          "timerWakes": 0,
+          "forcedWakes": 0,
+          "waitMs": 5734.187,
+          "maxWaitMs": 28.11
+        },
+        "iterations": 1402,
+        "pumpMs": 16822.405,
+        "drainMs": 1357.788,
+        "submitCostMs": {
+          "count": 1368,
+          "min": 0.474,
+          "median": 0.572,
+          "p95": 0.893,
+          "max": 9
+        },
+        "drainCostMs": {
+          "count": 1371,
+          "min": 0.002,
+          "median": 0.561,
+          "p95": 0.86,
+          "max": 10.29
+        },
+        "pollIntervalMs": {
+          "count": 1373,
+          "min": 12.409,
+          "median": 16.665,
+          "p95": 16.747,
+          "max": 30.362
+        },
+        "presentIntervalMs": {
+          "count": 1326,
+          "min": 12.943,
+          "median": 16.68,
+          "p95": 17.939,
+          "max": 87.222
+        }
+      }
+    },
+    "quality20-20mbps-baseline-switch.txt": {
+      "sampleCount": 23,
+      "steadySamples": 21,
+      "means": {
+        "decodedFps": 3.189,
+        "textureFps": 3.189,
+        "receivedMbps": 13.679,
+        "rttMs": 6.429,
+        "frameReceiveMs": 24.642,
+        "decodeReadyMs": 12.685,
+        "presentAgeMs": 21.277,
+        "loopHz": 59.856,
+        "pumpAvgMs": 12.793
+      },
+      "maximumCounters": {
+        "audioDiscardedMs": 20,
+        "videoFrameGaps": 1086,
+        "decoderRejected": 0,
+        "audioFecFailed": 0
+      },
+      "result": {
+        "mode": {
+          "width": 1920,
+          "height": 1080,
+          "fps": 60,
+          "bitrate": 20000,
+          "videoPacing": "smooth"
+        },
+        "network": {
+          "calls": 43296,
+          "sentBytes": 159910,
+          "receivedBytes": 39540121,
+          "directReceivedBytes": 39540121,
+          "directSentBytes": 159910,
+          "receiveCalls": 39004,
+          "receiveWouldBlock": 4082,
+          "lastError": 11,
+          "rtpTypes": {
+            "80:0": 3,
+            "0:0": 282,
+            "90:0": 26430,
+            "80:61": 4577,
+            "80:7f": 2288
+          }
+        },
+        "budgetYields": 2515,
+        "maxPumpMs": 339.684,
+        "maxDrainMs": 10.886,
+        "pumpBudgetMs": 12,
+        "phase": "current",
+        "prePumpMs": 0,
+        "completionPumpMs": 6,
+        "synchronousGpu": false,
+        "smoothVideo": true,
+        "gpuTransferMs": 46.647,
+        "gpuPollMs": 10.519,
+        "gpuPendingPolls": 0,
+        "continuous": true,
+        "error": null,
+        "state": 0,
+        "tasks": 0,
+        "submitted": 111,
+        "decoded": 111,
+        "presented": 110,
+        "superseded": 1,
+        "audioDecoded": 4477,
+        "audioDiscardedMs": 20,
+        "pulses": 1200,
+        "clock": {
+          "frameWakes": 1401,
+          "timerWakes": 0,
+          "forcedWakes": 0,
+          "waitMs": 5375.394,
+          "maxWaitMs": 30.594
+        },
+        "iterations": 1401,
+        "pumpMs": 18034.045,
+        "drainMs": 513.671,
+        "submitCostMs": {
+          "count": 111,
+          "min": 0.488,
+          "median": 0.549,
+          "p95": 0.913,
+          "max": 8.754
+        },
+        "drainCostMs": {
+          "count": 1370,
+          "min": 0.003,
+          "median": 0.123,
+          "p95": 0.581,
+          "max": 9.3
+        },
+        "pollIntervalMs": {
+          "count": 1372,
+          "min": 8.475,
+          "median": 16.666,
+          "p95": 17.213,
+          "max": 34.265
+        },
+        "presentIntervalMs": {
+          "count": 109,
+          "min": 14.634,
+          "median": 17.048,
+          "p95": 33.881,
+          "max": 14805.95
+        }
+      }
+    },
+    "quality20-20mbps-direct-poll-switch.txt": {
+      "sampleCount": 23,
+      "steadySamples": 21,
+      "means": {
+        "decodedFps": 5.684,
+        "textureFps": 5.684,
+        "receivedMbps": 14.258,
+        "rttMs": 5.381,
+        "frameReceiveMs": 23.628,
+        "decodeReadyMs": 14.794,
+        "presentAgeMs": 23.06,
+        "loopHz": 59.606,
+        "pumpAvgMs": 12.899
+      },
+      "maximumCounters": {
+        "audioDiscardedMs": 0,
+        "videoFrameGaps": 1384,
+        "decoderRejected": 0,
+        "audioFecFailed": 0
+      },
+      "result": {
+        "mode": {
+          "width": 1920,
+          "height": 1080,
+          "fps": 60,
+          "bitrate": 20000,
+          "videoPacing": "smooth"
+        },
+        "network": {
+          "calls": 44342,
+          "sentBytes": 158370,
+          "receivedBytes": 40981402,
+          "directReceivedBytes": 40981402,
+          "directSentBytes": 158370,
+          "receiveCalls": 40030,
+          "receiveWouldBlock": 4079,
+          "lastError": 11,
+          "rtpTypes": {
+            "80:0": 3,
+            "0:0": 305,
+            "80:61": 4571,
+            "80:7f": 2284,
+            "90:0": 27456
+          }
+        },
+        "budgetYields": 2507,
+        "maxPumpMs": 341.956,
+        "maxDrainMs": 9.781,
+        "pumpBudgetMs": 12,
+        "phase": "current",
+        "prePumpMs": 0,
+        "completionPumpMs": 6,
+        "synchronousGpu": false,
+        "smoothVideo": true,
+        "gpuTransferMs": 60.048,
+        "gpuPollMs": 17.014,
+        "gpuPendingPolls": 0,
+        "continuous": true,
+        "error": null,
+        "state": 0,
+        "tasks": 0,
+        "submitted": 165,
+        "decoded": 165,
+        "presented": 163,
+        "superseded": 2,
+        "audioDecoded": 4471,
+        "audioDiscardedMs": 0,
+        "pulses": 1200,
+        "clock": {
+          "frameWakes": 1388,
+          "timerWakes": 0,
+          "forcedWakes": 0,
+          "waitMs": 5303.075,
+          "maxWaitMs": 30.614
+        },
+        "iterations": 1388,
+        "pumpMs": 18145.226,
+        "drainMs": 472.406,
+        "submitCostMs": {
+          "count": 165,
+          "min": 0.486,
+          "median": 0.567,
+          "p95": 0.863,
+          "max": 8.442
+        },
+        "drainCostMs": {
+          "count": 1358,
+          "min": 0.002,
+          "median": 0.122,
+          "p95": 0.628,
+          "max": 8.004
+        },
+        "pollIntervalMs": {
+          "count": 1361,
+          "min": 8.984,
+          "median": 16.666,
+          "p95": 17.3,
+          "max": 66.355
+        },
+        "presentIntervalMs": {
+          "count": 162,
+          "min": 14.936,
+          "median": 16.838,
+          "p95": 33.909,
+          "max": 15900.56
+        }
+      }
+    },
+    "quality20-20mbps-pump14-switch.txt": {
+      "sampleCount": 23,
+      "steadySamples": 21,
+      "means": {
+        "decodedFps": 59.91,
+        "textureFps": 54.913,
+        "receivedMbps": 17.403,
+        "rttMs": 5.429,
+        "frameReceiveMs": 10.046,
+        "decodeReadyMs": 14.421,
+        "presentAgeMs": 29.071,
+        "loopHz": 56.565,
+        "pumpAvgMs": 14.207
+      },
+      "maximumCounters": {
+        "audioDiscardedMs": 0,
+        "videoFrameGaps": 0,
+        "decoderRejected": 0,
+        "audioFecFailed": 0
+      },
+      "result": {
+        "mode": {
+          "width": 1920,
+          "height": 1080,
+          "fps": 60,
+          "bitrate": 20000,
+          "videoPacing": "smooth"
+        },
+        "network": {
+          "calls": 51760,
+          "sentBytes": 122350,
+          "receivedBytes": 49807483,
+          "directReceivedBytes": 49807483,
+          "directSentBytes": 122350,
+          "receiveCalls": 46892,
+          "receiveWouldBlock": 4805,
+          "lastError": 11,
+          "rtpTypes": {
+            "80:0": 3,
+            "0:0": 270,
+            "90:0": 33727,
+            "80:61": 4567,
+            "80:7f": 2282
+          }
+        },
+        "budgetYields": 2192,
+        "maxPumpMs": 341.15,
+        "maxDrainMs": 11.832,
+        "pumpBudgetMs": 14,
+        "phase": "current",
+        "prePumpMs": 0,
+        "completionPumpMs": 6,
+        "synchronousGpu": false,
+        "smoothVideo": true,
+        "gpuTransferMs": 335.243,
+        "gpuPollMs": 125.139,
+        "gpuPendingPolls": 10,
+        "continuous": true,
+        "error": null,
+        "state": 0,
+        "tasks": 0,
+        "submitted": 1375,
+        "decoded": 1374,
+        "presented": 1256,
+        "superseded": 117,
+        "audioDecoded": 4467,
+        "audioDiscardedMs": 0,
+        "pulses": 1200,
+        "clock": {
+          "frameWakes": 1327,
+          "timerWakes": 0,
+          "forcedWakes": 0,
+          "waitMs": 3508.485,
+          "maxWaitMs": 30.551
+        },
+        "iterations": 1327,
+        "pumpMs": 18847.25,
+        "drainMs": 1564.262,
+        "submitCostMs": {
+          "count": 1375,
+          "min": 0.475,
+          "median": 0.554,
+          "p95": 0.858,
+          "max": 11.626
+        },
+        "drainCostMs": {
+          "count": 1297,
+          "min": 0.003,
+          "median": 0.564,
+          "p95": 0.872,
+          "max": 10.234
+        },
+        "pollIntervalMs": {
+          "count": 1298,
+          "min": 8.445,
+          "median": 17.572,
+          "p95": 20.91,
+          "max": 48.956
+        },
+        "presentIntervalMs": {
+          "count": 1255,
+          "min": 7.405,
+          "median": 17.612,
+          "p95": 21.532,
+          "max": 84.778
+        }
+      }
+    },
+    "quality20-20mbps-batched12-switch.txt": {
+      "sampleCount": 23,
+      "steadySamples": 21,
+      "means": {
+        "decodedFps": 59.966,
+        "textureFps": 58.974,
+        "receivedMbps": 18.157,
+        "rttMs": 5.19,
+        "frameReceiveMs": 2.642,
+        "decodeReadyMs": 12.511,
+        "presentAgeMs": 31.519,
+        "loopHz": 60.014,
+        "pumpAvgMs": 11.435
+      },
+      "maximumCounters": {
+        "audioDiscardedMs": 0,
+        "videoFrameGaps": 0,
+        "decoderRejected": 0,
+        "audioFecFailed": 0
+      },
+      "result": {
+        "mode": {
+          "width": 1920,
+          "height": 1080,
+          "fps": 60,
+          "bitrate": 20000,
+          "videoPacing": "smooth"
+        },
+        "network": {
+          "calls": 57202,
+          "sentBytes": 118948,
+          "receivedBytes": 51678575,
+          "directReceivedBytes": 51678575,
+          "directSentBytes": 118948,
+          "receiveCalls": 51098,
+          "receiveWouldBlock": 7578,
+          "nativeReceiveCalls": 16256,
+          "batchEnabled": true,
+          "batchReceiveCalls": 11423,
+          "batchPackets": 41902,
+          "batchCacheHits": 34842,
+          "batchCopiedBytes": 51660292,
+          "lastError": 11,
+          "rtpTypes": {
+            "80:0": 3,
+            "0:0": 134,
+            "90:0": 35059,
+            "80:61": 4559,
+            "80:7f": 2278
+          }
+        },
+        "budgetYields": 1445,
+        "maxPumpMs": 339.496,
+        "maxDrainMs": 11.718,
+        "pumpBudgetMs": 12,
+        "phase": "current",
+        "prePumpMs": 0,
+        "completionPumpMs": 6,
+        "synchronousGpu": false,
+        "smoothVideo": true,
+        "gpuTransferMs": 458.105,
+        "gpuPollMs": 134.277,
+        "gpuPendingPolls": 5,
+        "continuous": true,
+        "error": null,
+        "state": 0,
+        "tasks": 0,
+        "submitted": 1369,
+        "decoded": 1367,
+        "presented": 1341,
+        "superseded": 25,
+        "audioDecoded": 4459,
+        "audioDiscardedMs": 0,
+        "pulses": 1200,
+        "clock": {
+          "frameWakes": 1406,
+          "timerWakes": 0,
+          "forcedWakes": 0,
+          "waitMs": 6286.699,
+          "maxWaitMs": 23.299
+        },
+        "iterations": 1406,
+        "pumpMs": 16185.714,
+        "drainMs": 1450.292,
+        "submitCostMs": {
+          "count": 1369,
+          "min": 0.476,
+          "median": 0.539,
+          "p95": 0.863,
+          "max": 8.898
+        },
+        "drainCostMs": {
+          "count": 1373,
+          "min": 0.002,
+          "median": 0.583,
+          "p95": 1.115,
+          "max": 10.167
+        },
+        "pollIntervalMs": {
+          "count": 1376,
+          "min": 7.683,
+          "median": 16.667,
+          "p95": 17.123,
+          "max": 26.349
+        },
+        "presentIntervalMs": {
+          "count": 1340,
+          "min": 10.338,
+          "median": 16.658,
+          "p95": 17.8,
+          "max": 54.109
+        }
+      }
+    },
+    "quality20-full-ui-switch.txt": {
+      "sampleCount": 23,
+      "steadySamples": 21,
+      "means": {
+        "decodedFps": 59.949,
+        "textureFps": 58.722,
+        "receivedMbps": 16.633,
+        "rttMs": 6.238,
+        "frameReceiveMs": 1.873,
+        "decodeReadyMs": 12.295,
+        "presentAgeMs": 34.516,
+        "loopHz": 59.996,
+        "pumpAvgMs": 9.1
+      },
+      "maximumCounters": {
+        "audioDiscardedMs": 20,
+        "videoFrameGaps": 0,
+        "decoderRejected": 0,
+        "audioFecFailed": 0
+      },
+      "result": {
+        "failed": false,
+        "overlayVisible": false,
+        "healthy": true,
+        "error": null,
+        "blackhole": false,
+        "rafSuppressed": true,
+        "chordDetectedMs": 66.761,
+        "returnedToGamesMs": 185.051,
+        "state": 0,
+        "tasks": 0,
+        "tcpStreamLogs": 0,
+        "diagnosticMessages": 64,
+        "gracefulDisconnect": true,
+        "mode": {
+          "width": 1920,
+          "height": 1080,
+          "fps": 60,
+          "bitrate": 20000,
+          "showStats": false,
+          "videoPacing": "smooth"
+        }
+      }
+    },
+    "quality20-10mbps-regression-switch.txt": {
+      "sampleCount": 23,
+      "steadySamples": 21,
+      "means": {
+        "decodedFps": 59.688,
+        "textureFps": 59.404,
+        "receivedMbps": 8.657,
+        "rttMs": 4.476,
+        "frameReceiveMs": 1.51,
+        "decodeReadyMs": 9.985,
+        "presentAgeMs": 29.552,
+        "loopHz": 60.015,
+        "pumpAvgMs": 10.356
+      },
+      "maximumCounters": {
+        "audioDiscardedMs": 0,
+        "videoFrameGaps": 0,
+        "decoderRejected": 0,
+        "audioFecFailed": 0
+      },
+      "result": {
+        "mode": {
+          "width": 1920,
+          "height": 1080,
+          "fps": 60,
+          "bitrate": 10000,
+          "videoPacing": "smooth"
+        },
+        "network": {
+          "calls": 40130,
+          "sentBytes": 119589,
+          "receivedBytes": 24715999,
+          "directReceivedBytes": 24715999,
+          "directSentBytes": 119589,
+          "receiveCalls": 33869,
+          "receiveWouldBlock": 8260,
+          "nativeReceiveCalls": 14654,
+          "batchEnabled": true,
+          "batchReceiveCalls": 9792,
+          "batchPackets": 24019,
+          "batchCacheHits": 19215,
+          "batchCopiedBytes": 24697632,
+          "lastError": 11,
+          "rtpTypes": {
+            "80:0": 3,
+            "0:0": 160,
+            "90:0": 17172,
+            "80:61": 4557,
+            "80:7f": 2278
+          }
+        },
+        "budgetYields": 1179,
+        "maxPumpMs": 347.974,
+        "maxDrainMs": 12.615,
+        "pumpBudgetMs": 12,
+        "phase": "current",
+        "prePumpMs": 0,
+        "completionPumpMs": 6,
+        "synchronousGpu": false,
+        "smoothVideo": true,
+        "gpuTransferMs": 343.697,
+        "gpuPollMs": 131.092,
+        "gpuPendingPolls": 3,
+        "continuous": true,
+        "error": null,
+        "state": 0,
+        "tasks": 0,
+        "submitted": 1366,
+        "decoded": 1364,
+        "presented": 1355,
+        "superseded": 8,
+        "audioDecoded": 4457,
+        "audioDiscardedMs": 0,
+        "pulses": 1200,
+        "clock": {
+          "frameWakes": 1400,
+          "timerWakes": 0,
+          "forcedWakes": 0,
+          "waitMs": 7933.563,
+          "maxWaitMs": 30.99
+        },
+        "iterations": 1400,
+        "pumpMs": 14640.501,
+        "drainMs": 1345.03,
+        "submitCostMs": {
+          "count": 1366,
+          "min": 0.472,
+          "median": 0.538,
+          "p95": 0.839,
+          "max": 9.218
+        },
+        "drainCostMs": {
+          "count": 1371,
+          "min": 0.002,
+          "median": 0.562,
+          "p95": 0.804,
+          "max": 10.434
+        },
+        "pollIntervalMs": {
+          "count": 1374,
+          "min": 10.53,
+          "median": 16.666,
+          "p95": 16.71,
+          "max": 47.305
+        },
+        "presentIntervalMs": {
+          "count": 1354,
+          "min": 8.403,
+          "median": 16.669,
+          "p95": 17.734,
+          "max": 35.663
+        }
+      }
+    },
+    "quality20-outage-retry-switch.txt": {
+      "sampleCount": 7,
+      "steadySamples": 5,
+      "means": {
+        "decodedFps": 59.961,
+        "textureFps": 57.982,
+        "receivedMbps": 18.166,
+        "rttMs": 5.6,
+        "frameReceiveMs": 2.25,
+        "decodeReadyMs": 11.87,
+        "presentAgeMs": 33.404,
+        "loopHz": 59.961,
+        "pumpAvgMs": 9.275
+      },
+      "maximumCounters": {
+        "audioDiscardedMs": 0,
+        "videoFrameGaps": 0,
+        "decoderRejected": 0,
+        "audioFecFailed": 0
+      },
+      "result": {
+        "failed": false,
+        "overlayVisible": false,
+        "healthy": false,
+        "error": null,
+        "blackhole": true,
+        "rafSuppressed": true,
+        "chordDetectedMs": 17.229,
+        "returnedToGamesMs": 199.586,
+        "state": 0,
+        "tasks": 0,
+        "tcpStreamLogs": 0,
+        "diagnosticMessages": 64,
+        "gracefulDisconnect": false,
+        "mode": {
+          "width": 1920,
+          "height": 1080,
+          "fps": 60,
+          "bitrate": 20000,
+          "showStats": false,
+          "videoPacing": "smooth"
+        }
+      }
+    },
+    "quality20-input-switch.txt": {
+      "sampleCount": 23,
+      "steadySamples": 21,
+      "means": {
+        "decodedFps": 59.999,
+        "textureFps": 58.863,
+        "receivedMbps": 17.353,
+        "rttMs": 6.143,
+        "frameReceiveMs": 1.914,
+        "decodeReadyMs": 12.278,
+        "presentAgeMs": 34.274,
+        "loopHz": 59.999,
+        "pumpAvgMs": 9.243
+      },
+      "maximumCounters": {
+        "audioDiscardedMs": 40,
+        "videoFrameGaps": 0,
+        "decoderRejected": 0,
+        "audioFecFailed": 0
+      },
+      "result": {
+        "mode": {
+          "width": 1920,
+          "height": 1080,
+          "bitrate": 20000,
+          "fps": 60
+        },
+        "pumpBudgetMs": 12,
+        "fps": 60,
+        "continuousInput": false,
+        "timingValid": true,
+        "error": null,
+        "state": 0,
+        "tasks": 0,
+        "pulses": 80,
+        "sent": 80,
+        "acked": 80,
+        "retries": 11,
+        "pending": 0,
+        "queueToSocketMs": {
+          "count": 80,
+          "min": 1.919,
+          "median": 2.378,
+          "p95": 2.795,
+          "max": 9.801
+        },
+        "socketToAckMs": {
+          "count": 80,
+          "min": 1.439,
+          "median": 5.241,
+          "p95": 11.595,
+          "max": 23.943
+        },
+        "sampleToAckMs": {
+          "count": 80,
+          "min": 3.739,
+          "median": 7.486,
+          "p95": 17.971,
+          "max": 25.862
+        },
+        "pollIntervalMs": {
+          "count": 1380,
+          "min": 8.379,
+          "median": 16.666,
+          "p95": 17.003,
+          "max": 21.788
+        },
+        "pollCostMs": {
+          "count": 1381,
+          "min": 0.182,
+          "median": 0.282,
+          "p95": 0.339,
+          "max": 1.318
+        },
+        "decoded": 1380,
+        "presented": 1353,
+        "audioDecoded": 4493,
+        "audioDiscardedMs": 40
+      }
+    }
+  }
+}

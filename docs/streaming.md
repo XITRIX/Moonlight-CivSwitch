@@ -35,7 +35,7 @@ to the cached Games screen; it does not send Sunshine `/cancel` to terminate the
 host application. B from Games returns to Host; B again closes the UI.
 
 Open Settings from Host or the Games footer to choose 360p/540p/720p/1080p,
-15/30/60 FPS, and 1–10 Mbps presets. D-pad up/down chooses a setting; left/right
+15/30/60 FPS, and 1–20 Mbps presets (including 15 and 20 Mbps). D-pad up/down chooses a setting; left/right
 adjusts its value. Back/B saves to `save:/moonlight-experiment/settings.json`.
 Preferences survive reloading the UI and apply to the next launch or resume,
 including the core bitrate request. Defaults are 720p, 30 FPS, 5 Mbps; a selected
@@ -112,13 +112,23 @@ recovery/failure counters are declared but never populated, so the overlay does
 not present their zero values as measurements. Direct-submit mode also bypasses
 the upstream renderer queues, so those queue APIs are not used here.
 
-Both send and receive calls now borrow validated ranges of the generated core's
-native backing memory synchronously. Payloads no longer pass through the 2 MiB
-scratch allocation or a per-packet native memcpy. Sockaddr, poll and option ABI
-translations retain their small native buffers. Full-heap views, ranges and backing
-pointers are validated; replacement heaps trigger pointer validation again.
-Telemetry records direct byte totals to verify this path during hardware runs.
-This does not remove the separate compressed-video copy into the movie decoder.
+Send, single receive and zero-timeout poll borrow validated ranges of the core's
+native backing memory synchronously. The tested SDK also exposes native
+`RecvMMsg`: connected video/audio UDP sockets can fetch up to eight available
+datagrams per call into a private 32 KiB region of the core heap. It never waits
+to fill a batch. Each C receive copies one complete datagram within that heap
+using `copyWithin`; there is no per-byte JS loop or per-packet ROP memcpy.
+Two independent slots preserve packet boundaries, order, peek and truncation.
+Poll merges readiness from cached datagrams. TCP, source-address receives and
+extra UDP sockets keep single-receive handling. Unknown SDK signatures disable
+batching. Sockaddr and option translation retain their small native buffers.
+Replacement heaps revalidate pointers and rebuild native iovecs before reuse.
+Cancellation takes precedence over cached packets, and scratch memory is freed
+only during normal I/O cleanup after C tasks finish. Packet-type diagnostic
+strings are formatted at sampling time. Telemetry records native receive calls,
+batch packets/cache hits and copied bytes. See the
+[20 Mbps measurements](../investigation/evidence/quality-20mbps.md).
+The separate compressed-video copy into the movie decoder remains.
 
 The core exposes a versioned read-only metrics snapshot while connected, queried
 between cooperative pumps. The upstream checkout remains unmodified. Newly
@@ -200,7 +210,7 @@ packet cannot satisfy a measured sample. Sparse samples are used for the final
   handle through dynamic-image invalidation. There is no PNG encoding, Base64,
   JavaScript color conversion, or per-frame texture recreation on this path.
   The default request is 1280×720, 30 fps, 5000 kbit/s. GPU decoder and texture
-  bounds allow up to 1920×1080, 60 fps, 10000 kbit/s. Above 720p, the compressed
+  bounds allow up to 1920×1080, 60 fps, 20000 kbit/s. Above 720p, the compressed
   native input buffer requests 1 MiB instead of 256 KiB to accommodate larger
   keyframes; every submitted frame is still checked against actual capacity.
   See the [1080p measurements](../investigation/evidence/quality-1080p.md) for

@@ -1,0 +1,12 @@
+Executing payload...
+MOONLIGHT_BATCH_LOOPBACK_CALL_BEGIN
+MOONLIGHT_BATCH_MESSAGE_META: {"index":0,"length":1,"vectorLength":512,"flags":128}
+MOONLIGHT_BATCH_MESSAGE_META: {"index":1,"length":12,"vectorLength":512,"flags":128}
+MOONLIGHT_BATCH_MESSAGE_META: {"index":2,"length":15,"vectorLength":512,"flags":128}
+MOONLIGHT_BATCH_MESSAGE_META: {"index":3,"length":64,"vectorLength":512,"flags":128}
+MOONLIGHT_BATCH_MESSAGE_META: {"index":4,"length":511,"vectorLength":512,"flags":128}
+MOONLIGHT_BATCH_MESSAGE_META: {"index":5,"length":512,"vectorLength":512,"flags":128}
+MOONLIGHT_BATCH_MESSAGE_META: {"index":6,"length":100,"vectorLength":512,"flags":128}
+MOONLIGHT_BATCH_MESSAGE_META: {"index":7,"length":33,"vectorLength":512,"flags":128}
+MOONLIGHT_BATCH_LOOPBACK_RESULT: {"messages":8,"lengths":[1,12,15,64,511,512,100,33],"orderedBytes":true,"canaries":true,"milliseconds":205,"emptyResult":-1,"emptyErrno":11,"emptyMilliseconds":1,"partialMessages":1,"partialLength":512,"partialFlags":144,"partialMilliseconds":0}
+Executed successfully

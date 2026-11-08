@@ -1,0 +1,13 @@
+✔ TCP/UDP receive and send borrow core memory without intermediate payload copies (3.48275ms)
+✔ heap replacement revalidates the pointer, and invalid ranges are rejected before receiving (0.902791ms)
+✔ poll borrows validated pollfd memory and preserves snapshot packet counters (0.7925ms)
+✔ local cancellation rejects network work immediately but leaves ownership intact until close (0.753541ms)
+✔ shutdown grace is bounded and repeated cancellation cannot extend it (0.726625ms)
+ℹ tests 5
+ℹ suites 0
+ℹ pass 5
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 116.008417

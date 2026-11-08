@@ -1,8 +1,10 @@
 /* Translate the generated core's wasm32 socket ABI into CivSwitch SDK calls. */
 (function(global){
  "use strict";
- function create(transport){
+ function create(transport,options){
+  options=options||{};
   var allocations=[],descriptors=new Set(),bufferSize=2097152,heapBuffer=null,heapAddress=0n,socketTypes={},interruptAfter=Infinity;
+  var batchCore=null,batchHeap=0,batchFunction=null,batchSlots=[],batchSockets=new Map(),batchSize=8,packetSize=2048;
   function now(){return global.performance&&global.performance.now?global.performance.now():Date.now();}
   function isInterrupted(){return interruptAfter!==Infinity&&now()>=interruptAfter;}
   function alloc(size){var p=malloc(size);if(!p)throw Error("Native streaming allocation failed");allocations.push(p);return p;}
@@ -10,8 +12,11 @@
   function signed(value){return Number(BigInt.asIntN(32,value));}
   function call(name,args){var result=signed(invoke("_ZN2nn6socket"+name,args));return result<0?-Number(invoke("_ZN2nn6socket12GetLastErrnoEv",[])):result;}
   function copy(pointer,length){var bytes=new Uint8Array(length),view=new DataView(bytes.buffer),i=0;for(;i+8<=length;i+=8)view.setBigUint64(i,read64(pointer+BigInt(i)),true);for(;i<length;i++)bytes[i]=Number(read8(pointer+BigInt(i)));return bytes;}
-  var address=alloc(128),addressLength=alloc(8),optionBuffer=alloc(128),optionLength=alloc(8),pollBuffer=alloc(64*8);
-  var stats={calls:0,sentBytes:0,receivedBytes:0,directReceivedBytes:0,directSentBytes:0,receiveCalls:0,receiveWouldBlock:0,lastError:0,rtpTypes:{}};
+  var address=alloc(128),addressLength=alloc(8),optionBuffer=alloc(128),optionLength=alloc(8);
+  var packetCounts=new Uint32Array(65536),packetTypes=[];
+  var stats={calls:0,sentBytes:0,receivedBytes:0,directReceivedBytes:0,directSentBytes:0,receiveCalls:0,receiveWouldBlock:0,nativeReceiveCalls:0,batchEnabled:false,batchReceiveCalls:0,batchPackets:0,batchCacheHits:0,batchCopiedBytes:0,lastError:0};
+  // Format diagnostic keys only when sampled, not for every received packet.
+  Object.defineProperty(stats,"rtpTypes",{enumerable:true,get:function(){var result={};for(var type of packetTypes)result[(type>>>8).toString(16)+":"+(type&255).toString(16)]=packetCounts[type];return result;}});
   function bounds(heap,pointer,length){pointer=pointer>>>0;if(!Number.isInteger(length)||length<0||pointer+length>heap.length)throw Error("Streaming heap range rejected");return pointer;}
   function base(heap){
    if(heap.byteOffset!==0||heap.byteLength!==heap.buffer.byteLength)throw Error("Expected complete core heap view");
@@ -23,6 +28,43 @@
   }
   function toNative(heap,pointer,length,destination){pointer=bounds(heap,pointer,length);if(length)call_rop(memcpy_addr,destination,base(heap)+BigInt(pointer),BigInt(length));}
   function fromNative(heap,pointer,length,source){pointer=bounds(heap,pointer,length);if(length)call_rop(memcpy_addr,base(heap)+BigInt(pointer),source,BigInt(length));}
+  function attachCore(core){
+   if(batchCore)throw Error("Receive batching already attached");
+   if(options.batchReceive===false||typeof sdk_base!=="bigint")return false;
+   var fn;try{fn=transport.resolveNativeSymbol("_ZN2nn6socket8RecvMMsgEiPNS0_7MMsgHdrEmNS0_7MsgFlagEPNS_8TimeSpanE");}catch(_){return false;}
+   // SDK 1.0.0 layout: 56-byte MMsgHdr; iovec pointer +16, count +24,
+   // received length +48. Guard the observed implementation before using it.
+   if(fn!==sdk_base+0x14d880n||read32(sdk_base+0x153720n)!==0xd10203ffn||read32(sdk_base+0x153724n)!==0xa9037bfdn)return false;
+   batchCore=core;batchHeap=core._malloc(2*batchSize*packetSize);if(!batchHeap)throw Error("Receive batch heap allocation failed");
+   bounds(core.HEAPU8,batchHeap,2*batchSize*packetSize);
+   for(var i=0;i<2;i++)batchSlots.push({fd:null,offset:batchHeap+i*batchSize*packetSize,headers:alloc(batchSize*56),vectors:alloc(batchSize*16),base:0n,count:0,next:0,lengths:[]});
+   batchFunction=fn;stats.batchEnabled=true;return true;
+  }
+  function receiveBatch(fd,heap,destination,capacity,peek){
+   var slot=batchSockets.get(fd);
+   if(!slot){slot=batchSlots.find(function(s){return s.fd===null;});if(!slot)return null;slot.fd=fd;batchSockets.set(fd,slot);}
+   bounds(heap,slot.offset,batchSize*packetSize);
+   if(slot.next>=slot.count){
+    var address=base(heap);
+    if(slot.base!==address){
+     for(var i=0;i<batchSize;i++){
+      var header=slot.headers+BigInt(i*56),vector=slot.vectors+BigInt(i*16);
+      write64(header,0n);write32(header+8n,0n);write64(header+16n,vector);write32(header+24n,1n);write64(header+32n,0n);write32(header+40n,0n);write32(header+44n,0n);write32(header+48n,0n);
+      write64(vector,address+BigInt(slot.offset+i*packetSize));write64(vector+8n,BigInt(packetSize));
+     }
+     slot.base=address;
+    }
+    stats.nativeReceiveCalls++;stats.batchReceiveCalls++;
+    var received=signed(call_rop(batchFunction,BigInt(fd),slot.headers,BigInt(batchSize),0x80n,0n));
+    if(received<0)return -Number(invoke("_ZN2nn6socket12GetLastErrnoEv",[]));
+    if(received>batchSize)throw Error("Native receive batch exceeded slot count");
+    slot.count=received;slot.next=0;slot.lengths=[];
+    for(var i=0;i<received;i++){var length=Number(read32(slot.headers+BigInt(i*56+48)));if(length>packetSize)throw Error("Native receive batch exceeded packet capacity");slot.lengths.push(length);}
+    stats.batchPackets+=received;if(!received)return -11;
+   }else stats.batchCacheHits++;
+   var length=Math.min(capacity,slot.lengths[slot.next]),source=slot.offset+slot.next*packetSize;
+   heap.copyWithin(destination,source,source+length);stats.batchCopiedBytes+=length;if(!peek)slot.next++;return length;
+  }
   function inputAddress(heap,pointer,length){
    bounds(heap,pointer,length);if(length<16||heap[pointer]!==2||heap[pointer+1]!==0)return false;
    var bytes=new Uint8Array(16);bytes.set(heap.subarray(pointer,pointer+16));bytes[0]=16;bytes[1]=2;write_buffer(address,bytes);return true;
@@ -62,9 +104,10 @@
      }else{
       // Reject address ranges before a receive consumes a datagram.
       if(e&&f){bounds(heap,f,4);bounds(heap,e,Math.min(new DataView(heap.buffer).getUint32(f,true),16));}
-      write32(addressLength,16n);stats.receiveCalls++;
-      result=e?call("8RecvFromEiPvmiP8sockaddrPj",[a,data,c,flags,address,addressLength]):call("4RecvEiPvmi",[a,data,c,flags]);
-      if(result>=0){if(result>c)throw Error("Native receive exceeded borrowed range");outputAddress(heap,e,f);stats.receivedBytes+=result;stats.directReceivedBytes+=result;if(socketTypes[a]===2&&result>=12){var packetType=heap[b].toString(16)+":"+heap[b+1].toString(16);stats.rtpTypes[packetType]=(stats.rtpTypes[packetType]||0)+1;}}
+      if(e)write32(addressLength,16n);stats.receiveCalls++;
+      result=batchFunction&&socketTypes[a]===2&&!e&&c<=packetSize?receiveBatch(a,heap,b,c,!!(d&2)):null;
+      if(result===null){stats.nativeReceiveCalls++;result=e?call("8RecvFromEiPvmiP8sockaddrPj",[a,data,c,flags,address,addressLength]):call("4RecvEiPvmi",[a,data,c,flags]);}
+      if(result>=0){if(result>c)throw Error("Native receive exceeded borrowed range");outputAddress(heap,e,f);stats.receivedBytes+=result;stats.directReceivedBytes+=result;if(socketTypes[a]===2&&result>=12){var packetType=(heap[b]<<8)|heap[b+1];if(!packetCounts[packetType])packetTypes.push(packetType);packetCounts[packetType]++;}}
       else if(result===-11)stats.receiveWouldBlock++;
      }
     }else if(op===6){
@@ -76,18 +119,21 @@
      if(op===7){toNative(heap,d>>>0,length,optionBuffer);result=call("10SetSockOptEiiiPKvj",[a,mapped[0],mapped[1],optionBuffer,length]);}
      else{write32(optionLength,BigInt(length));result=call("10GetSockOptEiiiPvPj",[a,mapped[0],mapped[1],optionBuffer,optionLength]);if(result>=0){var actual=Number(read32(optionLength));if(actual>length)throw Error("Native socket option overflow");fromNative(heap,d>>>0,actual,optionBuffer);new DataView(heap.buffer).setUint32(e,actual,true);}}
     }else if(op===9)result=call("8ShutdownEii",[a,b]);
-    else if(op===10){if(!descriptors.has(a))return -9;descriptors.delete(a);delete socketTypes[a];result=call("5CloseEi",[a]);}
+    else if(op===10){if(!descriptors.has(a))return -9;descriptors.delete(a);delete socketTypes[a];var slot=batchSockets.get(a);if(slot){slot.fd=null;slot.count=slot.next=0;batchSockets.delete(a);}result=call("5CloseEi",[a]);}
     else if(op===11){
-     if(b>64)return -22;bounds(heap,a>>>0,b*8);toNative(heap,a>>>0,b*8,pollBuffer);
-     result=call("4PollEP6pollfdmi",[pollBuffer,b,0]);if(result>=0)fromNative(heap,a>>>0,b*8,pollBuffer);
+     if(b>64)return -22;bounds(heap,a>>>0,b*8);
+     // Both ABIs use an 8-byte {int fd, short events, short revents}. Like
+     // recv(), zero-timeout poll borrows the validated heap synchronously.
+     result=call("4PollEP6pollfdmi",[base(heap)+BigInt(a>>>0),b,0]);
+     if(result>=0&&batchSockets.size){var view=new DataView(heap.buffer);for(var i=0;i<b;i++){var offset=(a>>>0)+i*8,slot=batchSockets.get(view.getInt32(offset,true));if(slot&&slot.next<slot.count&&(view.getInt16(offset+4,true)&1)){var events=view.getInt16(offset+6,true);if(!events)result++;view.setInt16(offset+6,events|1,true);}}}
     }else result=-38;
     if(result<0)stats.lastError=-result;return result;
    }catch(error){stats.lastError=5;throw error;}
   }
-  return {io:io,stats:stats,invoke:invoke,copy:copy,toNative:toNative,fromNative:fromNative,heapAddress:base,
+  return {io:io,stats:stats,invoke:invoke,copy:copy,toNative:toNative,fromNative:fromNative,heapAddress:base,attachCore:attachCore,
    interrupt:function(graceMs){interruptAfter=Math.min(interruptAfter,now()+Math.max(0,Math.min(100,Number(graceMs)||0)));},isInterrupted:isInterrupted,
    randomFill:function(target){var p=alloc(Math.max(1,target.length));try{invoke("_ZN2nn6crypto36GenerateCryptographicallyRandomBytesEPvm",[p,target.length]);target.set(copy(p,target.length));}finally{allocations.pop();free(p);}},
-   close:function(){for(var fd of descriptors)call("5CloseEi",[fd]);descriptors.clear();for(var p of allocations.reverse())free(p);allocations=[];heapBuffer=null;}
+   close:function(){for(var fd of descriptors)call("5CloseEi",[fd]);descriptors.clear();batchSockets.clear();batchSlots=[];if(batchHeap){batchCore._free(batchHeap);batchHeap=0;}batchCore=null;batchFunction=null;for(var p of allocations.reverse())free(p);allocations=[];heapBuffer=null;}
   };
  }
  global.MoonlightStreamIO={create:create};

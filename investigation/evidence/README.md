@@ -21,6 +21,10 @@ The [1080p quality investigation](quality-1080p.md) records 1080p60/10 Mbps
 decoder/texture validation, larger LAN packets, render/pump experiments, and
 full-UI, audio, input and local exit measurements.
 
+The [20 Mbps investigation](quality-20mbps.md) records native batched UDP receive,
+near-60 FPS delivery at 1080p60/20 Mbps, and input, healthy/outage exit and 10 Mbps
+regression checks. It also preserves the incomplete repeated-start diagnostic.
+
 - `network-capabilities.txt`: actual JavaScript capability inventory; XHR external
   request returned404. WebSocket exists but external connectivity was not tested.
 - `native-network.txt`: direct native TCP GET returnedHTTP200/serverinfo. SDK

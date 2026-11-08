@@ -1,0 +1,70 @@
+
+> test
+> node --test tests/test-apps.cjs tests/test-artwork.cjs tests/test-artwork-store.cjs tests/test-settings.cjs tests/test-stream-io.cjs tests/test-stream-runtime-cache.cjs tests/test-stream-clock.cjs tests/test-stream-stop.cjs tests/test-stream-pacing.cjs tests/test-telemetry.cjs tests/test-media-queues.cjs tests/test-network.cjs tests/test-pairing.cjs tests/test-store.cjs tests/test-streaming.cjs tests/test-native-texture.cjs tests/test-controller-input.cjs
+
+Application tests passed: XML parsing, pinned HTTPS and saved identity, PNG artwork bytes/dimensions/limits, cancellation, TLS failure.
+✔ tests/test-apps.cjs (165.944708ms)
+✔ PNG bytes survive a cold cache instance without touching unrelated files (1.775334ms)
+✔ checksum failures and missing PNGs become cache misses and remove stale entries (0.267542ms)
+✔ quota evicts least recently used files across reloads (0.204083ms)
+✔ bad or oversized indexes reset only disposable cover data (0.157292ms)
+✔ failed and short writes never produce a usable cached PNG (0.139917ms)
+Artwork queue tests passed: serial visible-page downloads, off-page queue replacement, bounded LRU, download/decode failure, cancellation and draining.
+✔ tests/test-artwork.cjs (167.159875ms)
+✔ native buttons follow standard positions and keep B available during play (1.024209ms)
+✔ both native sticks preserve orientation, dead zone and bounds (0.855917ms)
+✔ browser and native physical layouts agree, including triggers and exit chord (0.196375ms)
+✔ native adapter polls connected styles, handles disconnects, and frees only its buffers (0.873459ms)
+✔ one spare video frame bridges empty/burst ticks without publishing twice (2.079ms)
+✔ video pacing bounds backlog/age and releases all retained output on errors and stop (0.378333ms)
+✔ GPU transfers retain their decoder slot until completion and publish only once (0.296125ms)
+✔ GPU stop does not publish or release an unfinished copy (0.107292ms)
+✔ GPU failures retain uncertain native work; presentation errors release completed work (0.212625ms)
+✔ video presents the newest timestamp once, releases every output, and keeps nondisplay frames out of the texture (0.119208ms)
+✔ video releases held outputs on acquisition, metadata and presentation errors and bounds catch-up work (0.719916ms)
+✔ audio batches for frame-paced service and keeps only the newest waiting chunk at the limit (2.863375ms)
+✔ large packets and sustained backpressure stay bounded and never overwrite active native PCM (1.864ms)
+✔ reclaimed capacity preserves pending audio before admitting a newer chunk (1.408334ms)
+✔ NV12 respects row strides, plane offsets, alpha and limited-range luma (1.6215ms)
+✔ NV12 chroma conversion produces saturated red (0.140375ms)
+✔ NV12 rejects truncated planes and invalid coordinates before presenting (0.360708ms)
+✔ fast conversion preserves luma and bounds chroma approximation error (246.304041ms)
+✔ GPU presenter reuses its owned 1080p texture without JS pixel buffers or CPU uploads (1.578959ms)
+✔ GPU presenter rejects a mismatched native getter and cleans its allocations (0.9375ms)
+Native transport tests passed: UTF-8/XML, binary bytes above 128 KiB, bounded headers/body, incomplete/chunked/duplicate lengths, cancellation, socket/allocation cleanup.
+✔ tests/test-network.cjs (348.659625ms)
+Pairing protocol tests passed: BigInt modular arithmetic vs OpenSSL at 1024/2048 bits, frozen Date and bounded RSA/witness loops, legacy URL, full handshake, saved identity/PKCS#12, reuse, wrong PIN, tampered hash/signature, malformed responses, HTTP rejection, TLS failure, HTTPS verification, cancellation, host validation, no Math.random.
+✔ tests/test-pairing.cjs (2665.227791ms)
+✔ stream settings survive a new store and reject unsupported stream modes (2.00025ms)
+✔ save failures are reported so the settings screen can remain open (0.220875ms)
+Storage tests passed: directory boundary, readback/commit failures, recovery, preserved identity, scoped cleanup.
+✔ tests/test-store.cjs (145.90425ms)
+✔ stream clock uses frame callbacks, cancels the watchdog and can wake immediately for stop (2.055083ms)
+✔ TCP/UDP receive and send borrow core memory without intermediate payload copies (4.885708ms)
+✔ heap replacement revalidates the pointer, and invalid ranges are rejected before receiving (1.834ms)
+✔ poll borrows validated pollfd memory and preserves snapshot packet counters (2.513167ms)
+✔ local cancellation rejects network work immediately but leaves ownership intact until close (1.614334ms)
+✔ shutdown grace is bounded and repeated cancellation cannot extend it (1.7395ms)
+✔ batched UDP preserves packet order, peek, truncation, empty receive and cached poll readiness (2.73475ms)
+✔ batch slots stay separate, rebind on heap growth, and respect cancellation and fd reuse (2.045541ms)
+✔ batching can be disabled without allocating core scratch memory (1.221458ms)
+✔ invalid native batch lengths/counts are rejected before copying and still clean up (2.560541ms)
+✔ presentation runs once per tick and GPU wait stays outside the core budget measurements (9.261542ms)
+✔ an early presentation failure still interrupts the core before freeing native media (5.511416ms)
+✔ an unfinished GPU transfer quarantines native resources after C tasks stop (4.422167ms)
+✔ Low latency preference disables the spare-frame buffer (5.078625ms)
+✔ demanding 60 FPS modes get 12 ms while lighter modes retain 10 ms (15.770041ms)
+✔ a newly uploaded core replaces the cached factory and incomplete uploads cannot reuse a stale core (2.397042ms)
+✔ stop cancels core I/O immediately, wakes the loop, and frees media only after C tasks finish (7.956583ms)
+Streaming negotiation tests passed: launch/resume, pinned TLS, session keys, permissions, host-bound RTSP URLs, cancellation.
+✔ tests/test-streaming.cjs (120.047042ms)
+✔ interval FPS, throughput, decoder time, jitter and protocol metrics use actual elapsed time (1.086958ms)
+✔ core snapshots are bounded/versioned and overlay distinguishes unavailable metrics and texture timing (0.497459ms)
+ℹ tests 52
+ℹ suites 0
+ℹ pass 52
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 2680.588209
