@@ -40,8 +40,9 @@ investigation/
   references/          CivSwitch checkout and nxhid reference bundle
 ```
 
-App source lives under `app/`; `--streaming` also preloads the generated core
-from `dist/runtime/`. The [runtime build](tools/wasm2js/README.md) uses pinned
+App source lives under `app/`; the sender preloads the streaming core from
+`dist/runtime/` by default. Use `--no-streaming` for UI-only debugging.
+The [runtime build](tools/wasm2js/README.md) uses pinned
 dependencies documented in [third_party/](third_party/README.md).
 Research checkouts remain separate in
 [investigation/references/](investigation/references/README.md).
@@ -54,8 +55,12 @@ CivSwitch loader save offline to avoid the chat keyboard bootstrap.
 From the repository root, with CivSwitch waiting on the Switch:
 
 ```sh
+npm run bootstrap
+npm run build
 python3 tools/send_ui.py 192.168.1.182
 ```
+
+Bootstrap and build are needed once, then again when the native runtime changes.
 
 Keep the sender open. Hosts lists saved paired PCs; selecting a host opens its
 Games. Choose **Pair new host** at the end of the list to open Pair, enter the
@@ -86,12 +91,10 @@ Low latency presents the newest ready decoded frame per drain. Audio keeps at mo
 samples if the queue fills. The overlay shows intentional video/audio skips
 separately from network loss indicators.
 
-To enable streaming, build the pinned core once and preload it:
+For UI-only debugging, skip the streaming runtime upload:
 
 ```sh
-npm run bootstrap
-npm run build
-python3 -B tools/send_ui.py 192.168.1.182 --streaming
+python3 -B tools/send_ui.py 192.168.1.182 --no-streaming
 ```
 
 Select a card to launch or resume that app. Video fills the screen while preserving

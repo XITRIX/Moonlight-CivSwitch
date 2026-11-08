@@ -6,14 +6,66 @@ import sys
 import unittest
 from unittest.mock import patch
 import io
+import tempfile
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1] / 'investigation/probes'))
 from probe_transport import LogDecoder, wrap_payload
 sys.path.insert(0, str(Path(__file__).resolve().parents[1] / 'tools'))
-from civswitch_sender import prepare_payload, send_staged_payload
+from civswitch_sender import prepare_payload, send_staged_payload, upload_module
+import send_ui
 
 
 class ProbeTransportTests(unittest.TestCase):
+    def test_ui_streaming_default_debug_opt_out_and_cleanup(self):
+        with tempfile.TemporaryDirectory() as folder:
+            root = Path(folder)
+            artifact = root / 'dist/runtime/moonlight-stream.js'
+            artifact.parent.mkdir(parents=True)
+            artifact.write_text('streaming core')
+            for flags, streaming in [([], True), (['--no-streaming'], False), (['--clear-switch-data'], False)]:
+                # UI debugging and cleanup must work without a built core.
+                if not streaming:
+                    artifact.unlink(missing_ok=True)
+                with self.subTest(flags=flags), \
+                     patch.object(sys, 'argv', ['send_ui.py', 'test', '--port', '9123', *flags]), \
+                     patch.object(sys, 'stdout', io.TextIOWrapper(io.BytesIO())), \
+                     patch.object(send_ui, 'APP_DIR', root / 'app'), \
+                     patch.object(send_ui, 'build_payload', return_value=b'app') as build, \
+                     patch.object(send_ui, 'upload_module') as upload, \
+                     patch.object(send_ui, 'prepare_payload', return_value=b'app'), \
+                     patch.object(send_ui.socket, 'create_connection') as connect:
+                    connect.return_value.__enter__.return_value.recv.return_value = b''
+                    send_ui.main()
+                    build.assert_called_once_with('--clear-switch-data' in flags)
+                    self.assertEqual(upload.call_count, int(streaming))
+                    if streaming:
+                        self.assertEqual(upload.call_args.args[:2], ('test', 'streaming core'))
+                        self.assertEqual(upload.call_args.kwargs, {'port': 9123})
+                    connect.assert_called_once_with(('test', 9123), timeout=10)
+
+    def test_missing_default_runtime_fails_before_upload_or_connection(self):
+        with tempfile.TemporaryDirectory() as folder, \
+             patch.object(sys, 'argv', ['send_ui.py', 'test']), \
+             patch.object(sys, 'stderr', io.StringIO()) as errors, \
+             patch.object(send_ui, 'APP_DIR', Path(folder) / 'app'), \
+             patch.object(send_ui, 'build_payload', return_value=b'app'), \
+             patch.object(send_ui, 'upload_module') as upload, \
+             patch.object(send_ui.socket, 'create_connection') as connect:
+            with self.assertRaises(SystemExit) as stopped:
+                send_ui.main()
+            self.assertEqual(stopped.exception.code, 1)
+            self.assertIn('npm run build', errors.getvalue())
+            self.assertIn('--no-streaming', errors.getvalue())
+            upload.assert_not_called()
+            connect.assert_not_called()
+
+    def test_runtime_chunks_follow_the_custom_loader_port(self):
+        with patch('civswitch_sender.send_payload') as send:
+            upload_module('test', 'x' * 160000, io.BytesIO(), port=9123)
+        self.assertEqual(send.call_count, 2)
+        for call in send.call_args_list:
+            self.assertEqual(call.kwargs, {'port': 9123})
+
     def test_staged_payloads_stay_bounded_preserve_scope_and_clear_ram_state(self):
         for filler in ['x' * 600000, '😀' * 150000]:
             calls = []

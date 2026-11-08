@@ -31,7 +31,7 @@ def send_payload(host, payload, output, timeout=60, port=9026):
         if not completed or failed:
             raise RuntimeError('Payload did not complete successfully; inspect logs before sending another payload')
 
-def upload_module(host, source, output):
+def upload_module(host, source, output, port=9026):
     digest = hashlib.sha256(source.encode()).hexdigest()
     chunks = [source[i:i+150000] for i in range(0, len(source), 150000)]
     for index, chunk in enumerate(chunks):
@@ -44,7 +44,7 @@ def upload_module(host, source, output):
                       ')throw Error("Streaming module upload mismatch");\n')
         script += 'window.__moonlightStreamModuleUpload.parts.push(' + json.dumps(chunk) + ');\n'
         script += 'log("MOONLIGHT_STREAM_UPLOAD: ' + str(index+1) + '/' + str(len(chunks)) + '");'
-        send_payload(host, script.encode(), output)
+        send_payload(host, script.encode(), output, port=port)
     return digest
 
 def prepare_payload(host, payload, output, port=9026):

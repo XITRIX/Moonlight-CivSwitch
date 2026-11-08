@@ -23,7 +23,7 @@
  function factory(){
   var upload=global.__moonlightStreamModuleUpload;
   if(global.__moonlightStreamFactory&&(!upload||upload.sha256===global.__moonlightStreamFactoryDigest)){if(upload)delete global.__moonlightStreamModuleUpload;return global.__moonlightStreamFactory;}
-  if(!upload||upload.parts.length!==upload.count)throw Error("Streaming runtime is not loaded. Send the UI with --streaming.");
+  if(!upload||upload.parts.length!==upload.count)throw Error("Streaming runtime is not loaded. Resend the app without --no-streaming.");
   var source=upload.parts.join("");if(source.length!==upload.length)throw Error("Incomplete streaming runtime");
   global.__moonlightStreamFactory=new Function(source+"\nreturn MoonlightStreamCore;")();global.__moonlightStreamFactoryDigest=upload.sha256;delete global.__moonlightStreamModuleUpload;return global.__moonlightStreamFactory;
  }

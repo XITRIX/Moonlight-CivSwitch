@@ -50,17 +50,22 @@ def main():
     parser.add_argument("console_ip", help="Switch's local IP address")
     parser.add_argument("--port", type=int, default=9026)
     parser.add_argument("--clear-switch-data", action="store_true", help="Delete only this experiment's Switch directory (Sunshine client entry remains)")
-    parser.add_argument("--streaming", action="store_true", help="Preload the generated wasm2js core in memory to enable application streaming")
+    parser.add_argument("--no-streaming", action="store_true", help="Skip the streaming runtime upload for UI-only debugging (streaming is enabled by default)")
     args = parser.parse_args()
     try:
         payload = build_payload(args.clear_switch_data)
+        streaming_source = None
+        if not args.no_streaming and not args.clear_switch_data:
+            artifact = APP_DIR.parent / "dist/runtime/moonlight-stream.js"
+            if not artifact.is_file():
+                parser.exit(1, "Streaming runtime is missing. Run npm run bootstrap and npm run build first, or use --no-streaming for UI-only debugging.\n")
+            streaming_source = artifact.read_text()
     except (OSError, ValueError) as error:
         parser.exit(1, f"Cannot build payload: {error}\n")
 
     try:
-        if args.streaming and not args.clear_switch_data:
-            artifact = APP_DIR.parent / "dist/runtime/moonlight-stream.js"
-            upload_module(args.console_ip, artifact.read_text(), sys.stdout.buffer)
+        if streaming_source is not None:
+            upload_module(args.console_ip, streaming_source, sys.stdout.buffer, port=args.port)
         payload = prepare_payload(args.console_ip, payload, sys.stdout.buffer, port=args.port)
         with socket.create_connection((args.console_ip, args.port), timeout=10) as connection:
             connection.settimeout(None)

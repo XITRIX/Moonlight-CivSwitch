@@ -15,6 +15,10 @@ CivSwitch loader, then run:
 python3 tools/send_ui.py 192.168.1.182
 ```
 
+Streaming is enabled by default and requires `dist/runtime/moonlight-stream.js`
+from `npm run bootstrap` and `npm run build`. Use `--no-streaming` for UI-only
+debugging without uploading the core. Cleanup skips the core automatically.
+
 The default loader port is 9026 (`--port` overrides it). The sender bundles the
 crypto library, dedicated storage, native transport, pairing protocol, app-list
 client, and UI into one source bundle. Bundles above the loader's 500 KiB limit

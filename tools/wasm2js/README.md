@@ -115,7 +115,7 @@ Remote input is queued on the JS side and dispatched from a cooperative C task.
 node tests/runtime/test-runtime.cjs
 node tests/runtime/test-direct-receive.cjs
 python3 -B tests/runtime/test-wasm2js-specialization.py
-python3 -B tools/send_ui.py 192.168.1.182 --streaming
+python3 -B tools/send_ui.py 192.168.1.182
 ```
 
 The runtime test checks scheduling and NV12→PNG pixel values, CRCs and bounds.

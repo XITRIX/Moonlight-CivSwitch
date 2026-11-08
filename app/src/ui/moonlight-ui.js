@@ -424,7 +424,7 @@
 
     function launchGame(app) {
         if (connectionTask || streamTask || closed) return;
-        if (!stream || !window.MoonlightStreamClient) { games.fail("Streaming runtime unavailable. Send the UI with --streaming."); return; }
+        if (!stream || !window.MoonlightStreamClient) { games.fail("Streaming runtime unavailable. Resend the app without --no-streaming."); return; }
         loadSettings();
         streamHistory.reset();streamDiagnostics.messages.length=0;streamDiagnostics.stats=null;
         streamDiagnostics.localOnly=true;

@@ -17,10 +17,11 @@ Build with the local pinned toolchain, then leave CivSwitch waiting on port 9026
 ```sh
 python3 -B tools/wasm2js/bootstrap.py
 python3 -B tools/wasm2js/build.py
-python3 -B tools/send_ui.py 192.168.1.182 --streaming
+python3 -B tools/send_ui.py 192.168.1.182
 ```
 
-The generated core exceeds the loader's 500 KiB limit. The sender uploads it in
+Streaming is enabled by default; `--no-streaming` skips the core upload for
+UI-only debugging. The generated core exceeds the loader's 500 KiB limit. The sender uploads it in
 bounded chunks into RAM, then sends the app. No runtime or stream files are
 written on the Switch. Existing pairing files remain exclusively inside
 `save:/moonlight-experiment/`.

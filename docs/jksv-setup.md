@@ -32,16 +32,18 @@ trigger, fully close the game and restore `Before-CivSwitch`.
 ## Send this project's Moonlight UI
 
 Connect the PC and OLED to the same local network. Replace `OLED_IP` with the
-OLED's own address, not the address previously used for the Switch 2:
+OLED's own address, not the address previously used for the Switch 2.
+Streaming is enabled by default and requires `dist/runtime/moonlight-stream.js`
+from `npm run bootstrap` and `npm run build`:
 
 ```sh
 python3 tools/send_ui.py OLED_IP
 ```
 
-For streaming, with `dist/runtime/moonlight-stream.js` already built:
+For UI-only debugging without uploading the streaming runtime:
 
 ```sh
-python3 tools/send_ui.py OLED_IP --streaming
+python3 tools/send_ui.py OLED_IP --no-streaming
 ```
 
 Keep the sender running. The Moonlight port's existing hardware results are for
