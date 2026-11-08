@@ -1,0 +1,10 @@
+Traceback (most recent call last):
+  File "/Users/daniilvinogradov/Documents/Dev/NS2-experiments/investigation/probes/send-probe.py", line 21, in <module>
+    with socket.create_connection((args.console_ip,9026),timeout=10) as connection:
+         ~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/homebrew/Cellar/python@3.13/3.13.2/Frameworks/Python.framework/Versions/3.13/lib/python3.13/socket.py", line 864, in create_connection
+    raise exceptions[0]
+  File "/opt/homebrew/Cellar/python@3.13/3.13.2/Frameworks/Python.framework/Versions/3.13/lib/python3.13/socket.py", line 849, in create_connection
+    sock.connect(sa)
+    ~~~~~~~~~~~~^^^^
+ConnectionRefusedError: [Errno 61] Connection refused

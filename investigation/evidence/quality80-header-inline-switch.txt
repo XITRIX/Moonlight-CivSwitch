@@ -1,0 +1,3 @@
+Executing payload...
+MOONLIGHT_HEADER_INLINE_RESULT: {"checks":16,"runs":[{"mode":"byte-inline","loads":120000,"ms":58.12252799997805},{"mode":"word-helper","loads":120000,"ms":58.22416000004159},{"mode":"view-helper","loads":120000,"ms":51.459039999987},{"mode":"byte-inline","loads":120000,"ms":58.33510399993975},{"mode":"word-helper","loads":120000,"ms":57.86940800002776},{"mode":"view-helper","loads":120000,"ms":51.36607999994885},{"mode":"byte-inline","loads":120000,"ms":58.36508799996227},{"mode":"word-helper","loads":120000,"ms":57.88572800002294},{"mode":"view-helper","loads":120000,"ms":51.39654400001746}]}
+Executed successfully

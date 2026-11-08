@@ -1,0 +1,4 @@
+Executing payload...
+MOONLIGHT_TARGET_MODE: {"width":1920,"height":1080,"fps":60,"bitrate":60000,"showStats":false,"videoPacing":"smooth"}
+MOONLIGHT_UI_READY
+Executed successfully

@@ -1,0 +1,9 @@
+Executing payload...
+MOONLIGHT_PACING_STAGE: preparing
+MOONLIGHT_PACING_STAGE: controller ready
+Error in payload: Restart Civ VII to clear the previous stream
+Error: Restart Civ VII to clear the previous stream
+    at Object.start (eval at <anonymous> (eval at remote_js_loader (eval at <anonymous> (eval at onerror (unknown source)))), <anonymous>:1705:74)
+    at eval (eval at <anonymous> (eval at remote_js_loader (eval at <anonymous> (eval at onerror (unknown source)))), <anonymous>:1797:27)
+    at async eval (eval at remote_js_loader (eval at <anonymous> (eval at onerror (unknown source))), <anonymous>:11:15)
+    at async remote_js_loader (eval at <anonymous> (eval at onerror (unknown source)), <anonymous>:1:25385)

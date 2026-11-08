@@ -1,0 +1,3 @@
+Executing payload...
+MOONLIGHT_RETAINED_CORE: {"state":0,"tasks":1,"heapWitness":true,"expected":"6d6c383074657374","actual":"6d6c383074657374","stats":{"calls":229,"sentBytes":3279,"receivedBytes":1204,"directReceivedBytes":1204,"directSentBytes":3279,"receiveCalls":33,"receiveWouldBlock":9,"nativeReceiveCalls":33,"batchEnabled":true,"batchReceiveCalls":2,"batchPackets":0,"batchCacheHits":0,"batchCopiedBytes":0,"lastError":11,"rtpTypes":{"80:0":1,"0:0":2}}}
+Executed successfully

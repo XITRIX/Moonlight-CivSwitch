@@ -1,0 +1,3 @@
+Executing payload...
+MOONLIGHT_FEC_WORD_RESULT: {"checks":480,"runs":[{"word":false,"ms":232.09939200000372},{"word":true,"ms":206.94876800000202},{"word":false,"ms":231.66956800001208},{"word":true,"ms":206.66531199996825},{"word":false,"ms":231.74230400007218},{"word":true,"ms":206.8774080000585}]}
+Executed successfully

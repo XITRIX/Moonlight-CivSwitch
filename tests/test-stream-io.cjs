@@ -2,22 +2,23 @@
 const test=require('node:test'),assert=require('node:assert/strict'),fs=require('node:fs'),vm=require('node:vm');
 function environment(batch=false,options={}){
  const views=[],native=Buffer.alloc(65536),owned=new Set(),calls=[],sent=[];let cursor=0x1000,blocked=false,memcopies=0,nextFd=7,freedCore=0,batchReportedCount=null,batchReportedLength=null;
+ const heapBase=options.testHeapBase||0x200000000n;
  const sdk=0x10000000n,batchFunction=sdk+0x14d880n,datagrams=new Map();
  const heap=new Uint8Array(batch?262144:1024);views.push(heap);
- function range(p,n){for(let i=0;i<views.length;i++){const base=0x200000000n+BigInt(i)*0x100000000n;if(p>=base&&p+BigInt(n)<=base+BigInt(views[i].length))return views[i].subarray(Number(p-base),Number(p-base)+n);}assert(p>=0n&&p+BigInt(n)<=BigInt(native.length),'native range');return native.subarray(Number(p),Number(p)+n);}
+ function range(p,n){for(let i=0;i<views.length;i++){const base=heapBase+BigInt(i)*0x100000000n;if(p>=base&&p+BigInt(n)<=base+BigInt(views[i].length))return views[i].subarray(Number(p-base),Number(p-base)+n);}assert(p>=0n&&p+BigInt(n)<=BigInt(native.length),'native range');return native.subarray(Number(p),Number(p)+n);}
  function write(p,v,n=8){const b=range(p,n);for(let i=0;i<n;i++)b[i]=Number((v>>BigInt(i*8))&255n);}
  function read(p,n=8){const b=range(p,n);let v=0n;for(let i=n-1;i>=0;i--)v=(v<<8n)|BigInt(b[i]);return v;}
  const payload=Uint8Array.from({length:30},(_,i)=>(i*27)&255);
  const scope={window:{},malloc:n=>{assert(n<2097152,'no packet scratch allocation');const p=BigInt(cursor);cursor+=n+8;owned.add(p);return p;},free:p=>assert(owned.delete(p)),memcpy_addr:'memcpy',
   read64:p=>read(p),read32:p=>p===sdk+0x153720n?0xd10203ffn:p===sdk+0x153724n?0xa9037bfdn:read(p,4),read8:p=>read(p,1),write64:(p,v)=>write(p,v),write32:(p,v)=>write(p,v,4),write_buffer:(p,b)=>range(p,b.length).set(b),
   addrof_compressed:view=>{let i=views.findIndex(v=>v.buffer===view.buffer);assert(i>=0);return BigInt(0x100+i*0x100);},
-  read64_compressed:p=>0x200000000n+((p-0x128n)/0x100n)*0x100000000n,read32_compressed:()=>0n,
+  read64_compressed:p=>heapBase+((p-0x128n)/0x100n)*0x100000000n,read32_compressed:()=>0n,
   call_rop:(name,...args)=>{
    calls.push([name,...args]);
    if(name==='memcpy'){memcopies++;range(args[0],Number(args[2])).set(range(args[1],Number(args[2])));return args[0];}
    if(name===batchFunction){
     assert.equal(args[3],0x80n);assert.equal(args[4],0n);if(batchReportedCount!==null)return BigInt(batchReportedCount);const queue=datagrams.get(Number(args[0]))||[],count=Math.min(queue.length,Number(args[2]));if(!count)return -1n;
-    for(let i=0;i<count;i++){const h=args[1]+BigInt(i*56),v=read(h+16n);assert.equal(read(h+24n,4),1n);assert.equal(read(v+8n),2048n);const bytes=queue.shift();assert(bytes.length<=2048);range(read(v),bytes.length).set(bytes);write(h+48n,BigInt(batchReportedLength===null?bytes.length:batchReportedLength),4);}return BigInt(count);
+    for(let i=0;i<count;i++){const h=args[1]+BigInt(i*56),v=read(h+16n);assert.equal(read(h+24n,4),1n);const capacity=Number(read(v+8n));assert(capacity>0&&capacity<=2048);const bytes=queue.shift();assert(bytes.length<=capacity);range(read(v),bytes.length).set(bytes);write(h+48n,BigInt(batchReportedLength===null?bytes.length:batchReportedLength),4);}return BigInt(count);
    }
    if(name.includes('socket6Socket'))return BigInt(batch?nextFd++:7);
    if(name.includes('Fcntl')||name.includes('Close'))return 0n;
@@ -38,6 +39,28 @@ function environment(batch=false,options={}){
  const core={HEAPU8:heap,_malloc:n=>{assert.equal(n,135680);return 4096;},_free:p=>{assert.equal(p,4096);assert.equal(freedCore++,0);}};
  return {io,core,heap,payload,calls,sent,owned,views,freedCore:()=>freedCore,corruptBatch:o=>{batchReportedCount=o.count??null;batchReportedLength=o.length??null;},enqueue:(fd,packets)=>datagrams.set(fd,packets.slice()),memcopies:()=>memcopies,setBlocked:b=>blocked=b,setTime:time=>{scope.window.performance={now:()=>time};}};
 }
+test('direct video batches fill owned buffers without copies, rebind after growth and reject unsafe calls',()=>{
+ const e=environment(true,{directVideoBatch:true,testHeapBase:0x2ffffff00n});e.io.attachCore(e.core);e.io.io(1,[2,2,0,0,0,0],e.heap);
+ const pointers=128,lengths=256,metadata=512,start=145000,view=new DataView(e.heap.buffer);
+ for(let i=0;i<32;i++)view.setUint32(pointers+i*4,start+i*1456,true);
+ const packets=Array.from({length:33},(_,i)=>new Uint8Array(1408).fill(i));e.enqueue(7,packets);
+ const receive=heap=>e.io.receiveVideoBatch(7,pointers,lengths,metadata,32,1408,heap);
+ assert.equal(receive(e.heap),32);assert.equal(e.io.stats.batchCopiedBytes,0);assert.equal(e.memcopies(),0);
+ for(let i=0;i<32;i++){assert.equal(view.getUint32(lengths+i*4,true),1408);assert.equal(e.heap[start+i*1456],i);}
+ const held=e.heap.slice(start,start+1456*32);
+ // Give the next batch separate buffers so previously queued packets stay intact.
+ for(let i=0;i<32;i++)view.setUint32(pointers+i*4,200000+i*1456,true);
+ const grown=new Uint8Array(524288);grown.set(e.heap);e.views.push(grown);e.core.HEAPU8=grown;
+ assert.equal(receive(grown),1);assert.equal(grown[200000],32);assert.deepEqual(grown.slice(start,start+held.length),held);
+ assert.equal(receive(grown),-11);
+ const before=e.calls.length;
+ new DataView(grown.buffer).setUint32(pointers+31*4,grown.length-10,true);
+ assert.throws(()=>receive(grown),/range/);assert.equal(e.calls.length,before);
+ e.io.interrupt();assert.equal(receive(grown),-104);assert.equal(e.calls.length,before);
+ e.io.close();assert.equal(e.owned.size,0);
+ const fallback=environment(true);fallback.io.attachCore(fallback.core);
+ assert.equal(fallback.io.receiveVideoBatch(7,0,0,0,32,1408,fallback.heap),-38);fallback.io.close();
+});
 test('TCP/UDP receive and send borrow core memory without intermediate payload copies',()=>{
  const e=environment();e.io.io(1,[2,2,0,0,0,0],e.heap);
  assert.equal(e.io.io(5,[7,128,50,0,0,0],e.heap),30);assert.deepEqual(e.heap.slice(128,158),e.payload);

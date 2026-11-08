@@ -1,0 +1,7 @@
+Executing payload...
+MOONLIGHT_FEC_KERNEL_RESULT: {"checks":{"vectors":0,"recovery":0},"runs":[{"fast":false,"ms":480.1835840002168,"value":0},{"fast":true,"ms":235.07782400026917,"value":0},{"fast":false,"ms":480.98182399990037,"value":0},{"fast":true,"ms":234.15308799990453,"value":0},{"fast":false,"ms":482.3216319999192,"value":0},{"fast":true,"ms":234.12284799991176,"value":0}],"budget":{"firstMs":3.502335999859497,"maxMs":8.707104000030085,"yielded":false,"yields":508,"result":1,"tasks":0}}
+Error in payload: FEC validation failed
+Error: FEC validation failed
+    at eval (eval at <anonymous> (eval at remote_js_loader (eval at <anonymous> (eval at onerror (unknown source)))), <anonymous>:12:118)
+    at async eval (eval at remote_js_loader (eval at <anonymous> (eval at onerror (unknown source))), <anonymous>:11:15)
+    at async remote_js_loader (eval at <anonymous> (eval at onerror (unknown source)), <anonymous>:1:25385)

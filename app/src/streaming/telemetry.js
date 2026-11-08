@@ -8,6 +8,18 @@
   if(p%8||p<0||p+176>core.HEAPU8.length)throw Error("Invalid core metrics range");
   var v=Array.from(new Float64Array(core.HEAPU8.buffer,p,22));if(v[0]!==1||!v.every(Number.isFinite))throw Error("Invalid core metrics schema");return v;
  }
+ function readFec(core){
+  if(!core._ml_fec_metrics)return null;
+  var p=core._ml_fec_metrics();if(p%8||p<=0||p+56>core.HEAPU8.length)throw Error("Invalid FEC metrics range");
+  var v=Array.from(new Float64Array(core.HEAPU8.buffer,p,7));if(v[0]!==2||!v.every(Number.isFinite))throw Error("Invalid FEC metrics schema");
+  return {calls:v[1],totalWallMs:v[2],maxWallMs:v[3],failed:v[4],shardBytes:v[5],budgetYields:v[6]};
+ }
+ function readPacketPool(core){
+  if(!core._ml_packet_pool_metrics)return null;
+  var p=core._ml_packet_pool_metrics();if(p%8||p<=0||p+64>core.HEAPU8.length)throw Error("Invalid packet pool metrics range");
+  var v=Array.from(new Float64Array(core.HEAPU8.buffer,p,8));if(v[0]!==1||!v.every(Number.isFinite))throw Error("Invalid packet pool metrics schema");
+  return {packetBytes:v[1],capacity:v[2],inUse:v[3],peak:v[4],hits:v[5],misses:v[6],reallocMoves:v[7]};
+ }
  function create(clock){
   clock=clock||now;var previous=null;
   function sample(s,protocol){
@@ -49,5 +61,5 @@
    "Audio FEC "+f(t.audioRecovered,0)+" recovered / "+f(t.audioFecFailed,0)+" blocks failed · Skipped "+f(t.audioDiscardedMs,0)+" ms",
    "Texture timing excludes display scanout. − +: Exit"].join("\n");
  }
- global.MoonlightTelemetry={now:now,readCore:readCore,create:create,format:format};
+ global.MoonlightTelemetry={now:now,readCore:readCore,readFec:readFec,readPacketPool:readPacketPool,create:create,format:format};
 })(typeof window!=="undefined"?window:globalThis);

@@ -1,0 +1,3 @@
+Executing payload...
+MOONLIGHT_PACKET_ALLOCATOR_RESULT: {"digest":"7a0c75d3fcca461adb53df7162be3e215c0fe3e1d00f2ea5fe02afd1db9c5239","runs":[{"allocations":4096,"outstanding":128,"bytes":1456,"ms":51.289056000183336},{"allocations":4096,"outstanding":128,"bytes":1456,"ms":39.87891200010199},{"allocations":4096,"outstanding":128,"bytes":1456,"ms":39.45225600001868}]}
+Executed successfully

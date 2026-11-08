@@ -11,7 +11,8 @@
  var originalRAF=window.requestAnimationFrame,originalLog=window.log,now=window.MoonlightTelemetry.now;
  var blackhole=false,forceExit=false,measuring=true,connected=false,launched=false,armed=false,chordAt=0,stopAt=0,doneStats=null,error=null,tcpLogs=0,ticks=0,started=now(),finished=false;
  window.log=function(message){if(blackhole&&String(message).indexOf('MOONLIGHT_STREAM')===0){tcpLogs++;throw Error('Live stream tried loader TCP logging');}return originalLog(message);};
- window.MoonlightStreamIO.create=function(transport){var io=makeIO(transport),invoke=io.io;io.io=function(op,args,heap){
+ window.MoonlightStreamIO.create=function(transport,options){var io=makeIO(transport,options),invoke=io.io,direct=io.receiveVideoBatch;
+ if(direct)io.receiveVideoBatch=function(){if(blackhole&&!io.isInterrupted())return -11;return direct.apply(io,arguments);};io.io=function(op,args,heap){
   if(blackhole&&!io.isInterrupted()){if(op===4||op===5)return -11;if(op===11)return 0;}
   return invoke(op,args,heap);
  };return io;};
@@ -39,7 +40,7 @@
  function restore(){window.MoonlightSettings.validate=originalValidate;window.log=originalLog;window.requestAnimationFrame=originalRAF;window.MoonlightStreamIO.create=makeIO;window.MoonlightStreamClient.create=makeClient;window.MoonlightControllerInput.createNative=makePad;}
  async function finish(failed){if(finished)return;finished=true;var backAt=now();restore();
   var graceful=window.__moonlightStreamDiagnostics.messages.some(function(value){return value.text.indexOf('acknowledged disconnection')>=0;});
-  var result={failed:!!failed||(healthy&&!graceful)||(config.showStats===false&&overlayWasVisible),overlayVisible:overlayWasVisible,healthy:healthy,error:error,blackhole:blackhole,rafSuppressed:true,chordDetectedMs:stopAt&&chordAt?stopAt-chordAt:null,returnedToGamesMs:chordAt?backAt-chordAt:null,state:doneStats&&doneStats.state,tasks:doneStats&&doneStats.tasks,tcpStreamLogs:tcpLogs,diagnosticMessages:window.__moonlightStreamDiagnostics.messages.length,gracefulDisconnect:graceful,mode:doneStats&&doneStats.mode,videoTiming:doneStats?{decoded:doneStats.decoded,presented:doneStats.presented,expired:doneStats.videoExpired,backlog:doneStats.videoBacklogDrops,deferred:doneStats.videoDeferredTicks,tailChecks:doneStats.gpuTailChecks,tailCompleted:doneStats.gpuTailCompleted,tailMs:doneStats.gpuTailMs}:null,samples:samples};
+  var result={failed:!!failed||(healthy&&!graceful)||(config.showStats===false&&overlayWasVisible),overlayVisible:overlayWasVisible,healthy:healthy,error:error,blackhole:blackhole,rafSuppressed:true,chordDetectedMs:stopAt&&chordAt?stopAt-chordAt:null,returnedToGamesMs:chordAt?backAt-chordAt:null,state:doneStats&&doneStats.state,tasks:doneStats&&doneStats.tasks,tcpStreamLogs:tcpLogs,diagnosticMessages:window.__moonlightStreamDiagnostics.messages.length,gracefulDisconnect:graceful,mode:doneStats&&doneStats.mode,fec:doneStats&&doneStats.fec,referenceRecovery:doneStats&&doneStats.referenceRecovery,network:doneStats&&doneStats.network,packetPool:doneStats&&doneStats.packetPool,videoTiming:doneStats?{decoded:doneStats.decoded,presented:doneStats.presented,expired:doneStats.videoExpired,backlog:doneStats.videoBacklogDrops,deferred:doneStats.videoDeferredTicks,tailChecks:doneStats.gpuTailChecks,tailCompleted:doneStats.gpuTailCompleted,tailMs:doneStats.gpuTailMs}:null,samples:samples};
   window.__moonlightOutageExitResult=result;
   await originalLog('MOONLIGHT_OUTAGE_EXIT_RESULT: '+JSON.stringify(result,function(k,v){return typeof v==='number'?Math.round(v*1000)/1000:v;}));
   if(window.__moonlightSimpleUI)window.__moonlightSimpleUI.close();

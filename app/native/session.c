@@ -19,6 +19,12 @@ static double frame_samples,receive_ms,receive_max_ms,queue_ms,queue_max_ms,host
 static double frame_gaps,decoder_rejected;
 static uint32_t last_frame;
 static bool have_last_frame;
+static int reference_recovery;
+int ml_session_reference_recovery(void) {return isReferenceFrameInvalidationEnabled();}
+int ml_session_set_reference_recovery(int enabled) {
+    if(ml_runtime_tasks()||(enabled!=0&&enabled!=1))return -1;
+    reference_recovery=enabled;return 0;
+}
 static void input_task(void* ignored);
 static int input_pending,input_buttons,input_lt,input_rt,input_lx,input_ly,input_rx,input_ry;
 static struct { short code;char action,modifiers; } keys[64];
@@ -28,7 +34,7 @@ static void logger(const char* format,...) { char text[1024];va_list args;va_sta
 static void stage_start(int stage) { ml_event(1,stage,0); }
 static void stage_complete(int stage) { ml_event(2,stage,0); }
 static void stage_failed(int stage,int code) { error_code=code;ml_event(3,stage,code); }
-static void connected(void) { state=2;ml_spawn_input_task(input_task,NULL);ml_event(4,0,0); }
+static void connected(void) { state=2;logger("Reference recovery negotiated: %d\n",isReferenceFrameInvalidationEnabled());ml_spawn_input_task(input_task,NULL);ml_event(4,0,0); }
 static void terminated(int code) { if(state==4)return;error_code=code;state=3;ml_event(5,code,0); }
 static int video_setup(int format,int width,int height,int fps,void* context,int flags) { (void)context;(void)flags;return ml_video_setup(format,width,height,fps); }
 static int video_submit(PDECODE_UNIT unit) {
@@ -69,6 +75,7 @@ static void start_task(void* ignored) {
     listener.stageStarting=stage_start;listener.stageComplete=stage_complete;listener.stageFailed=stage_failed;
     listener.connectionStarted=connected;listener.connectionTerminated=terminated;listener.logMessage=logger;
     video.setup=video_setup;video.submitDecodeUnit=video_submit;video.capabilities=CAPABILITY_DIRECT_SUBMIT;
+    if(reference_recovery)video.capabilities|=CAPABILITY_REFERENCE_FRAME_INVALIDATION_AVC;
     audio.init=audio_setup;audio.decodeAndPlaySample=audio_submit;audio.capabilities=CAPABILITY_DIRECT_SUBMIT;
     int result=LiStartConnection(&server,&config,&listener,&video,&audio,NULL,0,NULL,0);
     if(result){error_code=result;state=3;ml_event(6,result,0);}
@@ -172,18 +179,21 @@ int ml_budget_test_result(void) { return budget_test_result; }
 static int input_priority_result;
 static PLT_EVENT input_priority_event;
 static PLT_THREAD input_priority_sender;
+static PLT_THREAD input_priority_audio;
 static void test_priority_dispatch(void* ignored) { input_priority_result=1;PltSetEvent(&input_priority_event); }
 static void test_priority_send(void* ignored) { PltWaitForEvent(&input_priority_event);input_priority_result=input_priority_result*10+2; }
+static void test_priority_audio(void* ignored) { input_priority_result=input_priority_result*10+3; }
 static void test_priority_busy(void* ignored) {
     double until=LiGetMillis()+12;
     while(LiGetMillis()<until)ml_runtime_checkpoint();
     PltJoinThread(&input_priority_sender);PltCloseEvent(&input_priority_event);
-    input_priority_result=input_priority_result*10+3;
+    PltJoinThread(&input_priority_audio);
+    input_priority_result=input_priority_result*10+4;
 }
 int ml_input_priority_test_start(void) {
     if(ml_runtime_tasks())return -1;input_priority_result=0;
     if(PltCreateEvent(&input_priority_event))return -2;
-    if(ml_spawn_task(test_priority_busy,NULL)||PltCreateThread("InputSend",test_priority_send,NULL,&input_priority_sender)||ml_spawn_input_task(test_priority_dispatch,NULL))return -3;
+    if(ml_spawn_task(test_priority_busy,NULL)||PltCreateThread("InputSend",test_priority_send,NULL,&input_priority_sender)||PltCreateThread("AudioRecv",test_priority_audio,NULL,&input_priority_audio)||ml_spawn_input_task(test_priority_dispatch,NULL))return -3;
     return 0;
 }
 int ml_input_priority_test_result(void) { return input_priority_result; }

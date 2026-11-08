@@ -1,0 +1,3 @@
+Executing payload...
+MOONLIGHT_FEC_PAIR_UNROLLED_RESULT: {"checks":512,"prepMs":2756.381824000011,"bytes":33554432,"runs":[{"unrolled":false,"ms":143.309728000022},{"unrolled":true,"ms":134.99241599996458},{"unrolled":false,"ms":139.73785599999246},{"unrolled":true,"ms":134.63360000000102},{"unrolled":false,"ms":139.4723520000116},{"unrolled":true,"ms":134.21737599998596}]}
+Executed successfully

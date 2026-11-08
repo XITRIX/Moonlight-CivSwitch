@@ -35,7 +35,7 @@ to the cached Games screen; it does not send Sunshine `/cancel` to terminate the
 host application. B from Games returns to Host; B again closes the UI.
 
 Open Settings from Host or the Games footer to choose 360p/540p/720p/1080p,
-15/30/60 FPS, and 1–40 Mbps presets (including 15, 20, 25, 30 and 40 Mbps). D-pad up/down chooses a setting; left/right
+15/30/60 FPS, and 1–80 Mbps presets (including 40, 50, 60 and the experimental 80 Mbps). D-pad up/down chooses a setting; left/right
 adjusts its value. Back/B saves to `save:/moonlight-experiment/settings.json`.
 Preferences survive reloading the UI and apply to the next launch or resume,
 including the core bitrate request. Defaults are 720p, 30 FPS, 5 Mbps; a selected
@@ -145,7 +145,7 @@ second. Diagnostics are not automatically flushed to the network on exit.
 The stream loop runs on animation callbacks, with a 50 ms watchdog when rendering
 callbacks stop. Each iteration first tries video, then runs two cooperative C
 pumps (budgets detailed below). A fence check between them releases completed
-video promptly. At 40 Mbps, if the early drain did not submit or publish video, one mid-frame
+video promptly. At 40 Mbps or higher, if the early drain did not submit or publish video, one mid-frame
 decoder check can use output that became ready during the first pump. A retained
 transfer occupies the tick even if its fence completes, preventing duplicate
 submissions. The second fence check covers later completions without expanding
@@ -179,7 +179,7 @@ Each pump first gives the controller-dispatch task one turn, followed by upstrea
 `InputSend` task, before the regular round-robin pass. All tasks in a pump share its
 deadline; the two per-frame pump budgets total 10 ms (4+6). Demanding 60 FPS
 modes—above 720p or at least 8 Mbps—use 12 ms, allowing more receive/audio
-work. Below 40 Mbps this is split 6+6 ms; at 40 Mbps it is split 4+8 ms so a
+work. Below 40 Mbps this is split 6+6 ms; at 40 Mbps or higher it is split 4+8 ms so a
 mid-frame submission has longer to complete on the GPU. This keeps incoming video/audio packet work from consuming the
 budget before newly sampled controller state can reach the socket. The pinned
 upstream thread name selects the input sender; upstream protocol, encryption,
@@ -222,7 +222,7 @@ packet cannot satisfy a measured sample. Sparse samples are used for the final
   handle through dynamic-image invalidation. There is no PNG encoding, Base64,
   JavaScript color conversion, or per-frame texture recreation on this path.
   The default request is 1280×720, 30 fps, 5000 kbit/s. Native stream settings
-  allow up to 1920×1080, 60 fps, 40000 kbit/s. Above 720p, the compressed
+  allow up to 1920×1080, 60 fps, 80000 kbit/s. Above 720p, the compressed
   native input buffer requests 1 MiB instead of 256 KiB to accommodate larger
   keyframes; every submitted frame is still checked against actual capacity.
   See the [1080p measurements](../investigation/evidence/quality-1080p.md) for
@@ -293,3 +293,28 @@ the first integrated run. The native Gameface texture bridge now displays genera
 
 Launch negotiation reference:
 [Moonlight Embedded gs_start_app](https://github.com/moonlight-stream/moonlight-embedded/blob/master/libgamestream/client.c).
+
+### High-bitrate recovery work
+
+The streaming target wraps nanors' implementation selection and recovery entry
+point without editing its pinned sources. Its three GF byte-vector operations
+use synchronous JavaScript typed-array kernels, with the multiplication table
+derived from upstream's own reference implementation. C checks its cooperative
+deadline every four vector operations. The Reed–Solomon algorithm, packet
+assembly and recovery decisions remain upstream.
+
+Read-only FEC statistics report recovery calls, failures, shard bytes, wall time
+and the number of runtime budget yields observed during recovery. Wall times
+include suspension and may overlap other tasks; they are not exclusive CPU time
+or uninterrupted stall durations. Metrics are versioned and range-checked.
+
+Tests compare all 256 coefficients, unaligned pointers, short tails and in-place
+scaling against upstream; a 64-data/16-parity fixture verifies parity and recovers
+16 erased shards. Another test suspends recovery repeatedly and verifies the
+resumed bytes and task cleanup. Diagnostics remain under `investigation/`.
+
+80 Mbps is an experimental stress setting. See the
+[80 Mbps investigation](../investigation/evidence/quality-80mbps.md) for measured
+limits and the 50/60 Mbps comparisons. The application retains nonblocking
+32-packet native receives and the existing 12 ms budget for demanding 60 FPS
+streams.

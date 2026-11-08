@@ -1,0 +1,38 @@
+Executing payload...
+MOONLIGHT_STREAM_UPLOAD: 1/8
+Executed successfully
+Executing payload...
+MOONLIGHT_STREAM_UPLOAD: 2/8
+Executed successfully
+Executing payload...
+MOONLIGHT_STREAM_UPLOAD: 3/8
+Executed successfully
+Executing payload...
+MOONLIGHT_STREAM_UPLOAD: 4/8
+Executed successfully
+Executing payload...
+MOONLIGHT_STREAM_UPLOAD: 5/8
+Executed successfully
+Executing payload...
+MOONLIGHT_STREAM_UPLOAD: 6/8
+Executed successfully
+Executing payload...
+MOONLIGHT_STREAM_UPLOAD: 7/8
+Executed successfully
+Executing payload...
+MOONLIGHT_STREAM_UPLOAD: 8/8
+Executed successfully
+Executing payload...
+MOONLIGHT_FEC_KERNEL_RESULT: {"checks":{"vectors":0,"recovery":0},"runs":[{"fast":false,"ms":480.6575040000025,"value":0},{"fast":true,"ms":234.97999999998137,"value":0},{"fast":false,"ms":479.84691199986264,"value":0},{"fast":true,"ms":234.995775999967,"value":0},{"fast":false,"ms":480.6909759999253,"value":0},{"fast":true,"ms":234.84447999997064,"value":0}],"budget":{"firstMs":511.58351999986917,"maxMs":519.7791039999574,"yielded":true,"yields":511,"result":0,"tasks":1}}
+Error in payload: FEC validation failed
+Error: FEC validation failed
+    at eval (eval at <anonymous> (eval at remote_js_loader (eval at <anonymous> (eval at onerror (unknown source)))), <anonymous>:12:118)
+    at async eval (eval at remote_js_loader (eval at <anonymous> (eval at onerror (unknown source))), <anonymous>:11:15)
+    at async remote_js_loader (eval at <anonymous> (eval at onerror (unknown source)), <anonymous>:1:25385)
+The loader reported a payload error; inspect the saved evidence.
+Traceback (most recent call last):
+  File "<stdin>", line 7, in <module>
+  File "/opt/homebrew/Cellar/python@3.13/3.13.2/Frameworks/Python.framework/Versions/3.13/lib/python3.13/subprocess.py", line 579, in run
+    raise CalledProcessError(retcode, process.args,
+                             output=stdout, stderr=stderr)
+subprocess.CalledProcessError: Command '['/opt/homebrew/opt/python@3.13/bin/python3.13', '-B', 'investigation/probes/send-probe.py', '192.168.1.182', 'investigation/probes/test-fec-kernels.js', '--output', 'investigation/evidence/quality80-fec-kernels-switch.txt', '--timeout', '60']' returned non-zero exit status 1.

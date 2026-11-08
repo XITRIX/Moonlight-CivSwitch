@@ -60,6 +60,9 @@ const sleep=ms=>new Promise(r=>setTimeout(r,ms));
   assert.equal(await evaluate('document.getElementById("moonlight-settings-bitrate").getAttribute("data-value")'),'30000');
   await key('ArrowRight');
   assert.equal(await evaluate('document.getElementById("moonlight-settings-bitrate").getAttribute("data-value")'),'40000');
+  for(const value of [50000,60000,80000]){await key('ArrowRight');assert.equal(await evaluate('document.getElementById("moonlight-settings-bitrate").getAttribute("data-value")'),String(value));}
+  await key('ArrowRight');assert.equal(await evaluate('document.getElementById("moonlight-settings-bitrate").getAttribute("data-value")'),'80000');
+  await key('ArrowLeft');await key('ArrowLeft');await key('ArrowLeft');
   await key('ArrowLeft');await key('ArrowLeft');await key('ArrowLeft');await key('ArrowLeft');await key('ArrowLeft');await key('ArrowLeft');
   await key('ArrowDown');await key('ArrowRight');
   assert.equal(await evaluate('document.getElementById("moonlight-settings-showStats").getAttribute("data-value")'),'true');

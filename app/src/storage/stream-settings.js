@@ -2,7 +2,7 @@
 (function(global){
  "use strict";
  var resolutions=[{width:640,height:360},{width:960,height:540},{width:1280,height:720},{width:1920,height:1080}];
- var frameRates=[15,30,60],bitrates=[1000,2000,3000,5000,8000,10000,15000,20000,25000,30000,40000];
+ var frameRates=[15,30,60],bitrates=[1000,2000,3000,5000,8000,10000,15000,20000,25000,30000,40000,50000,60000,80000];
  function defaults(){return {width:1280,height:720,fps:30,bitrate:5000,showStats:false,videoPacing:"smooth"};}
  function validate(mode){
   if(!mode||!resolutions.some(function(r){return r.width===mode.width&&r.height===mode.height;})||frameRates.indexOf(mode.fps)<0||bitrates.indexOf(mode.bitrate)<0)throw Error("Invalid stream settings");

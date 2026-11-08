@@ -6,6 +6,7 @@
   var allocations=[],descriptors=new Set(),bufferSize=2097152,heapBuffer=null,heapView=null,heapAddress=0n,socketTypes={},interruptAfter=Infinity;
   var batchCore=null,batchHeap=0,batchFunction=null,batchSlots=[],batchSockets=new Map(),batchSize=32,packetSize=2048;
   var batchSlotBytes=batchSize*(packetSize+56+16);
+  var directMetadata=0,directBase=0n,directCapacity=0;
   function now(){return global.performance&&global.performance.now?global.performance.now():Date.now();}
   function isInterrupted(){return interruptAfter!==Infinity&&now()>=interruptAfter;}
   function alloc(size){var p=malloc(size);if(!p)throw Error("Native streaming allocation failed");allocations.push(p);return p;}
@@ -71,6 +72,41 @@
    }else stats.batchCacheHits++;
    var length=Math.min(capacity,slot.lengths[slot.next]),source=slot.offset+slot.next*packetSize;
    heap.copyWithin(destination,source,source+length);stats.batchCopiedBytes+=length;if(!peek)slot.next++;return length;
+  }
+  function receiveVideoBatch(fd,pointers,lengths,metadata,count,capacity,heap){
+   if(isInterrupted())return -104;
+   if(!batchFunction||options.directVideoBatch!==true)return -38;
+   if(!descriptors.has(fd)||socketTypes[fd]!==2)return -9;
+   if(count!==32||capacity<12||capacity>2048)return -22;
+   completeHeap(heap);bounds(heap,pointers,count*4);bounds(heap,lengths,count*4);bounds(heap,metadata,count*72);
+   var address=base(heap),view=heapView,vectors=metadata+count*56;
+   // Validate all destinations before a native call can consume any datagrams.
+   for(var i=0;i<count;i++)bounds(heap,view.getUint32(pointers+i*4,true),capacity);
+   if(directMetadata!==metadata||directBase!==address||directCapacity!==capacity){
+    heap.fill(0,metadata,metadata+count*72);
+    for(var i=0;i<count;i++){
+     view.setBigUint64(metadata+i*56+16,address+BigInt(vectors+i*16),true);view.setUint32(metadata+i*56+24,1,true);
+     view.setUint32(vectors+i*16+8,capacity,true);
+    }
+    directMetadata=metadata;directBase=address;directCapacity=capacity;
+   }
+   // The validated Switch heap address is below 2**39, so adding a wasm32
+   // offset is exact in Number. Avoid allocating BigInts for every packet.
+   var numericBase=Number(address);
+   for(var i=0;i<count;i++){
+    var destination=numericBase+view.getUint32(pointers+i*4,true);
+    view.setUint32(vectors+i*16,destination,true);view.setUint32(vectors+i*16+4,Math.floor(destination/4294967296),true);
+   }
+   stats.nativeReceiveCalls++;stats.directVideoBatchCalls=(stats.directVideoBatchCalls||0)+1;
+   var received=signed(call_rop(batchFunction,BigInt(fd),address+BigInt(metadata),BigInt(count),0x80n,0n));
+   if(received<0){var error=Number(invoke("_ZN2nn6socket12GetLastErrnoEv",[]));stats.lastError=error;if(error===11)stats.receiveWouldBlock++;return -error;}
+   if(received>count)throw Error("Direct receive exceeded slot count");
+   for(var i=0;i<received;i++){
+    var length=view.getUint32(metadata+i*56+48,true);if(length>capacity)throw Error("Direct receive exceeded packet capacity");
+    view.setUint32(lengths+i*4,length,true);stats.receivedBytes+=length;stats.directReceivedBytes+=length;
+    if(length>=12){var p=view.getUint32(pointers+i*4,true),type=(heap[p]<<8)|heap[p+1];if(!packetCounts[type])packetTypes.push(type);packetCounts[type]++;}
+   }
+   stats.receiveCalls+=received;stats.directVideoPackets=(stats.directVideoPackets||0)+received;return received||-11;
   }
   function inputAddress(heap,pointer,length){
    bounds(heap,pointer,length);if(length<16||heap[pointer]!==2||heap[pointer+1]!==0)return false;
@@ -138,7 +174,7 @@
     if(result<0)stats.lastError=-result;return result;
    }catch(error){stats.lastError=5;throw error;}
   }
-  return {io:io,stats:stats,invoke:invoke,copy:copy,toNative:toNative,fromNative:fromNative,heapAddress:base,attachCore:attachCore,
+  return {io:io,receiveVideoBatch:receiveVideoBatch,stats:stats,invoke:invoke,copy:copy,toNative:toNative,fromNative:fromNative,heapAddress:base,attachCore:attachCore,
    interrupt:function(graceMs){interruptAfter=Math.min(interruptAfter,now()+Math.max(0,Math.min(100,Number(graceMs)||0)));},isInterrupted:isInterrupted,
    randomFill:function(target){var p=alloc(Math.max(1,target.length));try{invoke("_ZN2nn6crypto36GenerateCryptographicallyRandomBytesEPvm",[p,target.length]);target.set(copy(p,target.length));}finally{allocations.pop();free(p);}},
    close:function(){for(var fd of descriptors)call("5CloseEi",[fd]);descriptors.clear();batchSockets.clear();batchSlots=[];if(batchHeap){batchCore._free(batchHeap);batchHeap=0;}batchCore=null;batchFunction=null;for(var p of allocations.reverse())free(p);allocations=[];heapBuffer=null;heapView=null;}

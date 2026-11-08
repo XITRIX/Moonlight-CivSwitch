@@ -46,23 +46,31 @@ target_link_options(moonlight-core PRIVATE
 
 set(STREAM_SOURCES ${CORE_SOURCES})
 list(FILTER STREAM_SOURCES EXCLUDE REGEX "/Platform\\.c$")
+list(FILTER STREAM_SOURCES EXCLUDE REGEX "/RtpVideoQueue\\.c$")
+list(APPEND STREAM_SOURCES "${CMAKE_CURRENT_BINARY_DIR}/RtpVideoQueue.c")
+list(FILTER STREAM_SOURCES EXCLUDE REGEX "/VideoStream\\.c$")
+list(APPEND STREAM_SOURCES "${CMAKE_CURRENT_BINARY_DIR}/VideoStream.c")
 set(NATIVE "${INVESTIGATION}/../app/native")
 add_executable(moonlight-stream ${STREAM_SOURCES} ${ENET_SOURCES}
   "${CORE}/nanors/rs.c" "${CORE}/nanors/deps/obl/oblas_common.c"
   "${CORE}/nanors/deps/obl/oblas_lite.c" bridge.c
-  "${NATIVE}/platform-cooperative.c" "${NATIVE}/io-cooperative.c" "${NATIVE}/session.c" "${NATIVE}/png-preview.c")
+  "${NATIVE}/platform-cooperative.c" "${NATIVE}/io-cooperative.c" "${NATIVE}/session.c" "${NATIVE}/png-preview.c" "${NATIVE}/fec-cooperative.c" "${NATIVE}/packet-pool.c" fec-tests.c rtp-tests.c packet-tests.c queue-tests.c)
 foreach(property INCLUDE_DIRECTORIES COMPILE_DEFINITIONS COMPILE_OPTIONS)
   get_target_property(value moonlight-core ${property})
   set_target_properties(moonlight-stream PROPERTIES ${property} "${value}")
 endforeach()
+target_include_directories(moonlight-stream PRIVATE "${CMAKE_CURRENT_BINARY_DIR}")
+target_sources(moonlight-stream PRIVATE "${NATIVE}/video-receive.c" video-receive-tests.c)
 target_link_libraries(moonlight-stream PRIVATE mbedcrypto)
-target_compile_options(moonlight-stream PRIVATE -O3 -flto)
+target_compile_options(moonlight-stream PRIVATE -O3 -flto
+  -fno-builtin-malloc -fno-builtin-free -fno-builtin-realloc)
 set_target_properties(moonlight-stream PROPERTIES SUFFIX ".js")
 get_target_property(STREAM_LINK_FLAGS moonlight-core LINK_OPTIONS)
 list(FILTER STREAM_LINK_FLAGS EXCLUDE REGEX "EXPORTED_FUNCTIONS=")
 list(FILTER STREAM_LINK_FLAGS EXCLUDE REGEX "EXPORT_NAME=")
 target_link_options(moonlight-stream PRIVATE ${STREAM_LINK_FLAGS}
-  -O3 -flto
+  -O3 -flto --emit-symbol-map "-Wl,--wrap=reed_solomon_decode" "-Wl,--wrap=oblas_get_impl"
+  "-Wl,--wrap=malloc" "-Wl,--wrap=free" "-Wl,--wrap=realloc"
   -sASYNCIFY=1 -sEXPORT_NAME=MoonlightStreamCore
   "-sEXPORTED_FUNCTIONS=@${CMAKE_CURRENT_BINARY_DIR}/stream-exports.json")
 foreach(name socket bind connect getsockname getpeername setsockopt getsockopt shutdown close fcntl poll sendto recvfrom send recv sendmsg recvmsg getaddrinfo freeaddrinfo)

@@ -1,0 +1,3 @@
+Executing payload...
+MOONLIGHT_RTP_MATH_RESULT: {"checks":10,"runs":[{"fast":false,"conversions":10000,"ms":206.53856000001542,"checksum":1004452109},{"fast":true,"conversions":10000,"ms":18.022751999786124,"checksum":1004452109},{"fast":false,"conversions":10000,"ms":206.05459200008772,"checksum":1004452109},{"fast":true,"conversions":10000,"ms":17.910048000048846,"checksum":1004452109},{"fast":false,"conversions":10000,"ms":206.00169599987566,"checksum":1004452109},{"fast":true,"conversions":10000,"ms":17.843552000122145,"checksum":1004452109}]}
+Executed successfully

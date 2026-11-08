@@ -1,0 +1,1 @@
+(async function(){await log('MOONLIGHT_RUNTIME_PRESENCE: '+JSON.stringify({factory:typeof window.__moonlightStreamFactory,digest:window.__moonlightStreamFactoryDigest||null,unfinished:!!window.__moonlightStreamUnfinished,textureOwner:!!window.__moonlightNativeTextureOwner}));})();

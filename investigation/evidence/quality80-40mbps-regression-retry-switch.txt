@@ -1,0 +1,13 @@
+Executing payload...
+MOONLIGHT_PACING_STAGE: preparing
+MOONLIGHT_PACING_STAGE: controller ready
+MOONLIGHT_PACING_STAGE: Preparing streaming runtime…
+MOONLIGHT_PACING_RESULT: {"mode":null,"fec":null,"network":null,"budgetYields":null,"maxPumpMs":null,"maxDrainMs":null,"pumpBudgetMs":12,"phase":"current","prePumpMs":0,"completionPumpMs":4,"synchronousGpu":false,"smoothVideo":true,"gpuTransferMs":null,"gpuPollMs":null,"gpuPendingPolls":null,"gpuTailChecks":null,"gpuTailCompleted":null,"gpuTailMs":null,"continuous":true,"error":"Streaming runtime is not loaded. Send the UI with --streaming.","state":null,"tasks":null,"submitted":null,"decoded":null,"presented":null,"superseded":null,"videoDeferredTicks":null,"videoExpired":null,"videoBacklogDrops":null,"audioDecoded":null,"audioDiscardedMs":null,"pulses":0,"clock":null,"iterations":null,"pumpMs":null,"drainMs":null,"histogram":{},"submitCostMs":{"count":0},"drainCostMs":{"count":0},"pollIntervalMs":{"count":0},"presentIntervalMs":{"count":0}}
+Error in payload: Streaming runtime is not loaded. Send the UI with --streaming.
+Error: Streaming runtime is not loaded. Send the UI with --streaming.
+    at factory (eval at <anonymous> (eval at remote_js_loader (eval at <anonymous> (eval at onerror (unknown source)))), <anonymous>:1623:56)
+    at run (eval at <anonymous> (eval at remote_js_loader (eval at <anonymous> (eval at onerror (unknown source)))), <anonymous>:1651:53)
+    at Object.start (eval at <anonymous> (eval at remote_js_loader (eval at <anonymous> (eval at onerror (unknown source)))), <anonymous>:1713:133)
+    at eval (eval at <anonymous> (eval at remote_js_loader (eval at <anonymous> (eval at onerror (unknown source)))), <anonymous>:1805:27)
+    at async eval (eval at remote_js_loader (eval at <anonymous> (eval at onerror (unknown source))), <anonymous>:11:15)
+    at async remote_js_loader (eval at <anonymous> (eval at onerror (unknown source)), <anonymous>:1:25385)

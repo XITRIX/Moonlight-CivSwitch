@@ -8,7 +8,7 @@
  var now=window.MoonlightTelemetry.now,observer=window.MoonlightInputObserver.create(),makeIO=window.MoonlightStreamIO.create;
  var client,frame=null,activeAt=0,nextInput=0,pulses=0,pollCosts=[],pollIntervals=[],lastPoll=0,pad=null,samples=[],messages=[];
  var panel=document.createElement('div');panel.style.cssText='position:fixed;inset:0;background:#000;background-size:contain;background-position:center;background-repeat:no-repeat;z-index:3;';document.body.appendChild(panel);
- window.MoonlightStreamIO.create=function(transport){var io=makeIO(transport),invoke=io.io,interrupt=io.interrupt;io.interrupt=function(){observer.finish();return interrupt.apply(io,arguments);};io.io=function(op,args,heap){var begin=now(),value=invoke(op,args,heap),end=now();if(op===4||op===5)observer.observe(op,args,heap,value,begin,end);return value;};return io;};
+ window.MoonlightStreamIO.create=function(transport,options){var io=makeIO(transport,options),invoke=io.io,interrupt=io.interrupt;io.interrupt=function(){observer.finish();return interrupt.apply(io,arguments);};io.io=function(op,args,heap){var begin=now(),value=invoke(op,args,heap),end=now();if(op===4||op===5)observer.observe(op,args,heap,value,begin,end);return value;};return io;};
  function poll(){
   var time=now();if(activeAt){
    if(lastPoll)pollIntervals.push(time-lastPoll);lastPoll=time;
@@ -33,7 +33,7 @@
   if(!result.stats)throw result.error||Error('Stream did not initialize');
   var s=result.stats,observed=observer.summary(),sent=observed.samples.filter(function(v){return v.sent!==null;}),acked=sent.filter(function(v){return v.ack!==null;});
   var timingValid=sent.length===pulses&&observed.pending===0;
-  await out('RESULT',{mode:s.mode,pumpBudgetMs:s.pumpBudgetMs,fps:fps,continuousInput:continuous,timingValid:timingValid,error:result.error?String(result.error.message):null,state:s.state,tasks:s.tasks,pulses:pulses,sent:sent.length,acked:acked.length,retries:observed.retries,pending:observed.pending,
+  await out('RESULT',{mode:s.mode,pumpBudgetMs:s.pumpBudgetMs,network:s.network,referenceRecovery:s.referenceRecovery,fps:fps,continuousInput:continuous,timingValid:timingValid,error:result.error?String(result.error.message):null,state:s.state,tasks:s.tasks,pulses:pulses,sent:sent.length,acked:acked.length,retries:observed.retries,pending:observed.pending,
    queueToSocketMs:timingValid?range(sent.map(function(v){return v.sent-v.queued;})):null,socketToAckMs:range(acked.map(function(v){return v.ack-v.sent;})),sampleToAckMs:timingValid?range(acked.map(function(v){return v.ack-v.queued;})):null,pollIntervalMs:range(pollIntervals),pollCostMs:range(pollCosts),decoded:s.decoded,presented:s.presented,audioDecoded:s.audioDecoded,audioDiscardedMs:s.audioDiscardedMs});
   var events=continuous?observed.samples.slice(0,10).concat(observed.samples.slice(-10)):observed.samples;
   if(continuous)await out('EVENT_SELECTION',{total:observed.samples.length,logged:events.length,selection:'first and last ten; aggregates use all events'});

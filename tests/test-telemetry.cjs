@@ -1,6 +1,21 @@
 const test=require('node:test'),assert=require('node:assert/strict'),fs=require('node:fs'),vm=require('node:vm');
 const scope={};scope.window=scope;vm.createContext(scope);vm.runInContext(fs.readFileSync('app/src/streaming/telemetry.js','utf8'),scope);
 const telemetry=scope.MoonlightTelemetry;
+test('packet pool counters are optional, bounded and versioned',()=>{
+ const core={HEAPU8:new Uint8Array(256)};assert.equal(telemetry.readPacketPool(core),null);
+ core._ml_packet_pool_metrics=()=>64;const v=new Float64Array(core.HEAPU8.buffer,64,8);v.set([1,1456,1024,4,80,2000,1,2]);
+ const stats=telemetry.readPacketPool(core);assert.equal(stats.inUse,4);assert.equal(stats.hits,2000);assert.equal(stats.reallocMoves,2);
+ v[0]=2;assert.throws(()=>telemetry.readPacketPool(core),/schema/);v[0]=1;v[1]=Infinity;assert.throws(()=>telemetry.readPacketPool(core),/schema/);
+ core._ml_packet_pool_metrics=()=>240;assert.throws(()=>telemetry.readPacketPool(core),/range/);
+});
+test('optional recovery counters reject invalid pointers and schemas',()=>{
+ const core={HEAPU8:new Uint8Array(128)};assert.equal(telemetry.readFec(core),null);
+ core._ml_fec_metrics=()=>64;const v=new Float64Array(core.HEAPU8.buffer,64,7);v.set([2,4,8,3,0,1024,1]);
+ assert.equal(telemetry.readFec(core).calls,4);assert.equal(telemetry.readFec(core).maxWallMs,3);assert.equal(telemetry.readFec(core).budgetYields,1);
+ v[0]=1;assert.throws(()=>telemetry.readFec(core),/schema/);v[0]=2;v[1]=NaN;assert.throws(()=>telemetry.readFec(core),/schema/);
+ core._ml_fec_metrics=()=>88;assert.throws(()=>telemetry.readFec(core),/range/);
+ core._ml_fec_metrics=()=>65;assert.throws(()=>telemetry.readFec(core),/range/);
+});
 test('interval FPS, throughput, decoder time, jitter and protocol metrics use actual elapsed time',()=>{
  let time=0;const meter=telemetry.create(()=>time),s={decoded:0,presented:0,decodeSamples:0,decodeMs:0,conversionMs:0,intervalCount:0,intervalMs:0,intervalSquaredMs:0,network:{receivedBytes:0,directReceivedBytes:0}},p=Array(22).fill(0);p[0]=1;
  assert.equal(meter.sample(s,p).textureFps,null);time=2000;

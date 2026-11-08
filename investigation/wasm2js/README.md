@@ -83,13 +83,21 @@ The hardware probe does not start or launch a Sunshine session.
 
 ## Streaming target
 
-`dist/moonlight-stream.js` compiles the same unmodified upstream protocol,
+`dist/moonlight-stream.js` compiles the pinned upstream protocol,
 ENet, FEC and crypto sources, replacing `Platform.c` with the cooperative
 platform implementation under `app/native/`. Linker wrappers replace POSIX
 sockets with native Switch TCP/UDP and nonblocking readiness polling.
 Emscripten Asyncify fibers preserve C stacks without Wasm, Workers, pthreads,
 or injected ARM64 code. C stacks must be 16-byte aligned; 8-byte alignment
 caused incorrect optimized stack accesses and is covered by hardware evidence.
+
+The checkout stays unchanged. Hash-checked build copies adapt `RtpVideoQueue.c`
+to avoid redundant duplicate scans after a sequence gap and `VideoStream.c`
+to receive unencrypted video directly into 32 C-owned packet buffers. The latter
+checks buffer alignment before telling the compiler that headers are aligned.
+Encrypted/unsupported paths preserve the original socket receive. Two guarded
+wasm2js postpasses specialize exact RTP timestamp arithmetic and the remaining
+378 unaligned i32 load sites; changed compiler shapes fail the build.
 
 The streaming target uses `-O3 -flto` at compile and link time. The diagnostic
 core target retains its baseline options. `test-runtime.cjs` exercises RTSP,
@@ -104,6 +112,8 @@ Remote input is queued on the JS side and dispatched from a cooperative C task.
 
 ```sh
 node investigation/wasm2js/test-runtime.cjs
+node investigation/wasm2js/test-direct-receive.cjs
+python3 -B tests/test-wasm2js-specialization.py
 python3 -B tools/send_ui.py 192.168.1.182 --streaming
 ```
 
@@ -120,3 +130,17 @@ this does not establish acceptable game-streaming latency or smoothness.
 
 Hardware and local results: [baseline wasm2js evidence](../evidence/wasm2js.md)
 and [live streaming evidence](../evidence/streaming-live.md).
+
+The streaming target additionally wraps nanors implementation selection with
+`app/native/fec-cooperative.c` and synchronous GF byte kernels in
+`platform-library.js`. It retains upstream's field, algorithm and ABI. Recovery
+checks the scheduler deadline between small groups of vector operations.
+`fec-tests.c` holds diagnostic exports for parity equivalence, large erasure
+recovery, suspension and kernel timing. See the
+[80 Mbps investigation](../evidence/quality-80mbps.md).
+
+The [follow-up](../evidence/quality-80mbps-followup.md) adds word/paired GF lookup
+kernels, packet-buffer reuse, and direct owned receive. These larger allocations
+and the H.264 reference-recovery capability are enabled at 80 Mbps only. Tables
+are prepared before launch with cancellation points. Full upstream recovery
+remains enabled; experimental FEC cutoffs are archived outside the app.

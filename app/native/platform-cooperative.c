@@ -4,6 +4,7 @@
 #include <emscripten/fiber.h>
 #include <emscripten/emscripten.h>
 #include <errno.h>
+#include <math.h>
 
 enum { READY, SLEEPING, WAIT_COND, WAIT_MUTEX, WAIT_JOIN, FINISHED };
 enum { TASK_LIMIT = 32, STACK_BYTES = 131072 };
@@ -86,16 +87,19 @@ static int runnable(Task* task) {
 static void run_task(Task* task) {
     current=task;task->state=READY;emscripten_fiber_swap(&root,&task->fiber);current=NULL;
 }
-int ml_runtime_pump(int budget_ms) {
+int ml_runtime_pump(double budget_ms) {
     if (pumping) return -1;
+    if(!isfinite(budget_ms)||budget_ms<=0||budget_ms>50)return -2;
     pumping = 1;
     emscripten_fiber_init_from_current_context(&root, root_async_stack, sizeof(root_async_stack));
-    pump_deadline = emscripten_get_now() + (budget_ms > 0 ? budget_ms : 1);
+    pump_deadline = emscripten_get_now() + budget_ms;
     int steps = 0;
     // Dispatch the latest controller state, then upstream's InputSend task,
     // before packet draining can consume this frame's budget. Each gets one
-    // turn; the normal round-robin pass still services every other task.
-    for(int priority=2;priority>0;priority--) {
+    // turn, then audio gets a turn before video; round-robin still services all tasks.
+    const int priorities[]={2,1,3};
+    for(unsigned turn=0;turn<sizeof(priorities)/sizeof(priorities[0]);turn++) {
+        int priority=priorities[turn];
         for(int i=0;i<TASK_LIMIT;i++) {
             Task* task=tasks[i];if(!task||task->priority!=priority||!runnable(task))continue;
             run_task(task);steps++;
@@ -119,7 +123,7 @@ void PltSleepMs(int ms) { ml_yield_ms(ms); }
 void PltSleepMsInterruptible(PLT_THREAD* thread, int ms) { while(ms>0&&!thread->cancelled){int step=ms<50?ms:50;PltSleepMs(step);ms-=step;} }
 int PltCreateThread(const char* name, ThreadEntry entry, void* context, PLT_THREAD* thread) {
     Task* task; int result=create_task(entry,context,0,&task);
-    if(!result){task->priority=name&&!strcmp(name,"InputSend")?1:0;thread->thread=(pthread_t)task;thread->cancelled=false;}return result;
+    if(!result){task->priority=name&&!strcmp(name,"InputSend")?1:name&&(!strcmp(name,"AudioRecv")||!strcmp(name,"AudioDec"))?3:0;thread->thread=(pthread_t)task;thread->cancelled=false;}return result;
 }
 void PltInterruptThread(PLT_THREAD* thread) {
     thread->cancelled=true;Task* task=(Task*)thread->thread;
