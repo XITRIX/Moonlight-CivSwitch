@@ -19,8 +19,11 @@
   // Format diagnostic keys only when sampled, not for every received packet.
   Object.defineProperty(stats,"rtpTypes",{enumerable:true,get:function(){var result={};for(var type of packetTypes)result[(type>>>8).toString(16)+":"+(type&255).toString(16)]=packetCounts[type];return result;}});
   function bounds(heap,pointer,length){pointer=pointer>>>0;if(!Number.isInteger(length)||length<0||pointer+length>heap.length)throw Error("Streaming heap range rejected");return pointer;}
-  function base(heap){
+  function completeHeap(heap){
    if(heap.byteOffset!==0||heap.byteLength!==heap.buffer.byteLength)throw Error("Expected complete core heap view");
+  }
+  function base(heap){
+   completeHeap(heap);
    if(heap.buffer===heapBuffer)return heapAddress;
    var object=addrof_compressed(heap),external=read64_compressed(object+0x28n),compressedBase=read32_compressed(object+0x30n);
    if(compressedBase!==0n||external<0x100000000n||external>=0x8000000000n)throw Error("Core heap is not a validated external buffer");
@@ -100,8 +103,9 @@
      if(c>bufferSize)return -90;bounds(heap,b,c);
      // The socket call is synchronous, so this validated backing store stays
      // alive and cannot grow while native code reads/writes its borrowed range.
-     var data=base(heap)+BigInt(b),flags=0x80|(d&2);
+     completeHeap(heap);var flags=0x80|(d&2);
      if(op===4){
+      var data=base(heap)+BigInt(b);
       if(e){if(!inputAddress(heap,e,f))return -97;result=call("6SendToEiPKvmiPK8sockaddrj",[a,data,c,flags,address,16]);}
       else result=call("4SendEiPKvmi",[a,data,c,flags]);
       if(result>0){if(result>c)throw Error("Native send exceeded borrowed range");stats.sentBytes+=result;stats.directSentBytes+=result;}
@@ -110,7 +114,7 @@
       if(e&&f){bounds(heap,f,4);bounds(heap,e,Math.min(new DataView(heap.buffer).getUint32(f,true),16));}
       if(e)write32(addressLength,16n);stats.receiveCalls++;
       result=batchFunction&&socketTypes[a]===2&&!e&&c<=packetSize?receiveBatch(a,heap,b,c,!!(d&2)):null;
-      if(result===null){stats.nativeReceiveCalls++;result=e?call("8RecvFromEiPvmiP8sockaddrPj",[a,data,c,flags,address,addressLength]):call("4RecvEiPvmi",[a,data,c,flags]);}
+      if(result===null){var data=base(heap)+BigInt(b);stats.nativeReceiveCalls++;result=e?call("8RecvFromEiPvmiP8sockaddrPj",[a,data,c,flags,address,addressLength]):call("4RecvEiPvmi",[a,data,c,flags]);}
       if(result>=0){if(result>c)throw Error("Native receive exceeded borrowed range");outputAddress(heap,e,f);stats.receivedBytes+=result;stats.directReceivedBytes+=result;if(socketTypes[a]===2&&result>=12){var packetType=(heap[b]<<8)|heap[b+1];if(!packetCounts[packetType])packetTypes.push(packetType);packetCounts[packetType]++;}}
       else if(result===-11)stats.receiveWouldBlock++;
      }

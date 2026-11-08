@@ -91,6 +91,12 @@ Emscripten Asyncify fibers preserve C stacks without Wasm, Workers, pthreads,
 or injected ARM64 code. C stacks must be 16-byte aligned; 8-byte alignment
 caused incorrect optimized stack accesses and is covered by hardware evidence.
 
+The streaming target uses `-O3 -flto` at compile and link time. The diagnostic
+core target retains its baseline options. `test-runtime.cjs` exercises RTSP,
+FEC, cryptography and unaligned accesses on the actual streaming artifact as
+well as scheduler, input wake, cancellation and PNG bounds checks. See the
+[40 Mbps investigation](../evidence/quality-40mbps.md) for measured live results.
+
 `app/src/streaming/` supplies native socket/memory, movie H.264 decoder,
 Opus/AudioOut, Sunshine launch negotiation and lifecycle adapters. The core
 keeps the upstream RTSP, ENet, FEC, decryption and packet assembly logic.

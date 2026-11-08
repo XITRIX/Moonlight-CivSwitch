@@ -34,7 +34,8 @@
   // Higher-rate streams need another receive/Opus turn before the next frame.
   // Keep room for rendering and input; lighter modes retain their 10 ms budget.
   var pumpBudgetMs=mode.fps===60&&(mode.width>1280||mode.height>720||mode.bitrate>=8000)?12:10;
-  var completionBudgetMs=pumpBudgetMs===12?6:4;
+  // At 40 Mbps, an earlier output check leaves more GPU overlap time.
+  var completionBudgetMs=pumpBudgetMs===12&&mode.bitrate<40000?6:4;
   var telemetry=global.MoonlightTelemetry.create(),clock=createClock(),pumpMs=0,drainMs=0,iterations=0,maxPumpMs=0,maxDrainMs=0;
   function collect(active){
    var snapshot=Object.assign({state:core._ml_session_state(),tasks:core._ml_runtime_tasks(),mode:Object.assign({},mode),pumpBudgetMs:pumpBudgetMs,network:Object.assign({},io.stats),clock:Object.assign({},clock.stats),budgetYields:core._ml_runtime_budget_yields?core._ml_runtime_budget_yields():null,pumpMs:pumpMs,drainMs:drainMs,iterations:iterations,maxPumpMs:maxPumpMs,maxDrainMs:maxDrainMs},media.stats());
@@ -78,9 +79,11 @@
      await clock.wait();if(stopRequested)break;
      // Queue video early and service the core while its GPU copy completes.
      // A nonblocking fence check publishes once; pending work keeps its slot.
-     var begin=global.MoonlightTelemetry.now();media.drainVideo();var early=global.MoonlightTelemetry.now();
-     core._ml_runtime_pump(completionBudgetMs);var pumpedEarly=global.MoonlightTelemetry.now();media.finishVideo();var finishedEarly=global.MoonlightTelemetry.now();
-     core._ml_runtime_pump(pumpBudgetMs-completionBudgetMs);var pumped=global.MoonlightTelemetry.now();media.finishVideo();media.drainAudio();var drained=global.MoonlightTelemetry.now();
+     // At 40 Mbps, an empty early drain gets one retry after the first pump. Final fence
+     // queries may use up to 3 ms of remaining frame headroom.
+     var begin=global.MoonlightTelemetry.now(),videoOccupied=media.drainVideo();var early=global.MoonlightTelemetry.now();
+     core._ml_runtime_pump(completionBudgetMs);var pumpedEarly=global.MoonlightTelemetry.now();media.finishVideo();if(!videoOccupied&&mode.bitrate>=40000)media.drainVideo();var finishedEarly=global.MoonlightTelemetry.now();
+     core._ml_runtime_pump(pumpBudgetMs-completionBudgetMs);var pumped=global.MoonlightTelemetry.now();media.finishVideo(Math.min(begin+pumpBudgetMs+2,global.MoonlightTelemetry.now()+3));media.drainAudio();var drained=global.MoonlightTelemetry.now();
      var pumpElapsed=pumpedEarly-early+pumped-finishedEarly,drainElapsed=early-begin+finishedEarly-pumpedEarly+drained-pumped;
      pumpMs+=pumpElapsed;drainMs+=drainElapsed;maxPumpMs=Math.max(maxPumpMs,pumpElapsed);maxDrainMs=Math.max(maxDrainMs,drainElapsed);iterations++;
      if(failure)throw failure;

@@ -1,0 +1,34 @@
+Executing payload...
+MOONLIGHT_PROBE_STAGED: 1/6
+Executed successfully
+Executing payload...
+MOONLIGHT_PROBE_STAGED: 2/6
+Executed successfully
+Executing payload...
+MOONLIGHT_PROBE_STAGED: 3/6
+Executed successfully
+Executing payload...
+MOONLIGHT_PROBE_STAGED: 4/6
+Executed successfully
+Executing payload...
+MOONLIGHT_PROBE_STAGED: 5/6
+Executed successfully
+Executing payload...
+MOONLIGHT_PROBE_STAGED: 6/6
+Executed successfully
+Executing payload...
+MOONLIGHT_UI_READY
+MOONLIGHT_SUNSHINE_CHECKING
+MOONLIGHT_SUNSHINE_ONLINE
+MOONLIGHT_SUNSHINE_CHECKING_PAIR
+MOONLIGHT_SUNSHINE_PAIRED
+MOONLIGHT_PAIRING_SAVED: reused
+MOONLIGHT_APPLIST_LOADING
+MOONLIGHT_APPLIST_LOADED: 3
+MOONLIGHT_ARTWORK_CACHED: 881448767 (8231 bytes)
+MOONLIGHT_ARTWORK_CACHED: 1093255277 (24833 bytes)
+MOONLIGHT_ARTWORK_CACHED: 382300562 (98678 bytes)
+MOONLIGHT_PROBE_LOG_PART: {"text":"MOONLIGHT_OUTAGE_EXIT_RESULT: {\"failed\":true,\"overlayVisible\":false,\"healthy\":true,\"error\":\"Streaming runtime is not loaded. Send the UI with --streaming.\",\"blackhole\":false,\"rafSuppressed\":true,\"chordDetectedMs\":null,\"returnedToGamesMs\":null,\"state\":null,","last":false}
+MOONLIGHT_PROBE_LOG_PART: {"text":"\"tasks\":null,\"tcpStreamLogs\":0,\"diagnosticMessages\":4,\"gracefulDisconnect\":false,\"mode\":null,\"samples\":[]}","last":true}
+Executed successfully
+Local exit failed; inspect investigation/evidence/quality40-ui-tail-staged-switch.txt

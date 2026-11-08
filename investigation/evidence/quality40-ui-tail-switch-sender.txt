@@ -1,0 +1,7 @@
+Traceback (most recent call last):
+  File "/Users/daniilvinogradov/Documents/Dev/NS2-experiments/investigation/probes/run-outage-exit.py", line 43, in <module>
+    send_payload(args.console_ip,wrap_payload(source),trace,max(65,45+args.measure_ms//1000))
+    ~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/daniilvinogradov/Documents/Dev/NS2-experiments/tools/civswitch_sender.py", line 10, in send_payload
+    raise ValueError('Payload exceeds the CivSwitch 500 KiB limit')
+ValueError: Payload exceeds the CivSwitch 500 KiB limit

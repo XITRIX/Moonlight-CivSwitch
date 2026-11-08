@@ -46,3 +46,31 @@ def upload_module(host, source, output):
         script += 'log("MOONLIGHT_STREAM_UPLOAD: ' + str(index+1) + '/' + str(len(chunks)) + '");'
         send_payload(host, script.encode(), output)
     return digest
+
+def send_staged_payload(host, payload, output, timeout=60):
+    """Keep large diagnostics in RAM while respecting the loader's upload limit."""
+    if len(payload) < 500 * 1024:
+        return send_payload(host, payload, output, timeout)
+    source = payload.decode('utf-8')
+    digest = hashlib.sha256(payload).hexdigest()
+    chunks = []
+    for offset in range(0, len(source), 100000):
+        part = source[offset:offset+100000]
+        # JSON may expand a non-BMP character to twelve ASCII bytes.
+        if len(json.dumps(part).encode()) > 450000:
+            chunks.extend(part[i:i+30000] for i in range(0, len(part), 30000))
+        else:
+            chunks.append(part)
+    for index, chunk in enumerate(chunks):
+        if index == 0:
+            script = 'window.__moonlightStagedProbe=' + json.dumps({'digest':digest,'count':len(chunks),'parts':[]}) + ';\n'
+        else:
+            script = ('if(!window.__moonlightStagedProbe||window.__moonlightStagedProbe.digest!==' + json.dumps(digest) +
+                      '||window.__moonlightStagedProbe.parts.length!==' + str(index) + ')throw Error("Probe staging mismatch");\n')
+        script += 'window.__moonlightStagedProbe.parts.push(' + json.dumps(chunk) + ');\n'
+        script += 'log("MOONLIGHT_PROBE_STAGED: ' + str(index+1) + '/' + str(len(chunks)) + '");'
+        send_payload(host, script.encode(), output)
+    execute = ('(async function(){var staged=window.__moonlightStagedProbe;delete window.__moonlightStagedProbe;'
+               'if(!staged||staged.digest!==' + json.dumps(digest) + '||staged.parts.length!==staged.count)throw Error("Incomplete staged probe");'
+               'return await eval(staged.parts.join(""));})();')
+    return send_payload(host, execute.encode(), output, timeout)

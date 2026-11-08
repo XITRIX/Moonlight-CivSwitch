@@ -1,0 +1,26 @@
+{
+  "rtsp": {
+    "passed": true,
+    "elapsedMs": 2.21
+  },
+  "fec": {
+    "passed": true,
+    "elapsedMs": 2.07
+  },
+  "crypto": {
+    "passed": true,
+    "elapsedMs": 6.73
+  },
+  "unaligned": {
+    "passed": true,
+    "elapsedMs": 0.01
+  },
+  "threadBackend": {
+    "available": false,
+    "error": 6
+  },
+  "missingEntropyFailsClosed": true,
+  "upstreamExports": 54,
+  "webAssemblyAvailable": false,
+  "commonJSFactory": true
+}

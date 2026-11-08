@@ -10,6 +10,20 @@ test('one spare video frame bridges empty/burst ticks without publishing twice',
  tick(0,[1]);assert.deepEqual(shown,[]);tick(17,[2]);tick(34,[]);tick(51,[3,4]);tick(68,[5]);tick(85,[]);
  assert.deepEqual(shown,[1,2,3,4,5]);assert.deepEqual(released,[1,2,3,4,5]);pacer.close();
 });
+test('bounded GPU finishing publishes/releases once when readiness arrives inside the deadline',()=>{
+ let polls=0,time=0,shown=0,released=0;
+ const gpu=scope.MoonlightStreamMedia.createGpuPipeline({submit(){},ready:()=>++polls===3,present:()=>shown++,release:()=>released++});gpu.submit({index:1});
+ assert.equal(scope.MoonlightStreamMedia.finishGpu(gpu,()=>time+=.1,1.5),true);
+ assert.equal(polls,3);assert.equal(shown,1);assert.equal(released,1);assert.equal(gpu.pending(),false);gpu.close();assert.equal(released,1);
+});
+test('GPU deadline and query cap retain ownership even when the clock or GPU stalls',()=>{
+ for(const stalledClock of [false,true]){
+  let polls=0,released=0,ready=false;
+  const gpu=scope.MoonlightStreamMedia.createGpuPipeline({submit(){},ready:()=>{polls++;return ready;},present(){throw Error('not ready');},release:()=>released++});gpu.submit({index:1});
+  assert.equal(scope.MoonlightStreamMedia.finishGpu(gpu,()=>stalledClock?0:2,1.5),false);
+  assert.equal(polls,stalledClock?33:1);assert.equal(released,0);assert.equal(gpu.pending(),true);ready=true;gpu.close();assert.equal(released,1);
+ }
+});
 test('video pacing bounds backlog/age and releases all retained output on errors and stop',()=>{
  let time=0,frames=[],released=[],skipped=0;const pacer=scope.MoonlightStreamMedia.createVideoPacer(()=>time,17);
  const options={acquire:()=>frames.shift(),decoded(){},release:f=>released.push(f.index),superseded:()=>skipped++,present(){}};

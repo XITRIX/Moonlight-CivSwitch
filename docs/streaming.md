@@ -35,7 +35,7 @@ to the cached Games screen; it does not send Sunshine `/cancel` to terminate the
 host application. B from Games returns to Host; B again closes the UI.
 
 Open Settings from Host or the Games footer to choose 360p/540p/720p/1080p,
-15/30/60 FPS, and 1–30 Mbps presets (including 15, 20, 25 and 30 Mbps). D-pad up/down chooses a setting; left/right
+15/30/60 FPS, and 1–40 Mbps presets (including 15, 20, 25, 30 and 40 Mbps). D-pad up/down chooses a setting; left/right
 adjusts its value. Back/B saves to `save:/moonlight-experiment/settings.json`.
 Preferences survive reloading the UI and apply to the next launch or resume,
 including the core bitrate request. Defaults are 720p, 30 FPS, 5 Mbps; a selected
@@ -129,7 +129,7 @@ Cancellation takes precedence over cached packets, and scratch memory is freed
 only during normal I/O cleanup after C tasks finish. Packet-type diagnostic
 strings are formatted at sampling time. Telemetry records native receive calls,
 batch packets/cache hits and copied bytes. See the
-[higher-bitrate measurements](../investigation/evidence/quality-high-bitrate.md).
+[40 Mbps measurements](../investigation/evidence/quality-40mbps.md).
 The separate compressed-video copy into the movie decoder remains.
 
 The core exposes a versioned read-only metrics snapshot while connected, queried
@@ -143,9 +143,18 @@ the loader's TCP logger during Wi-Fi trouble. The overlay still updates once a
 second. Diagnostics are not automatically flushed to the network on exit.
 
 The stream loop runs on animation callbacks, with a 50 ms watchdog when rendering
-callbacks stop. Each iteration first checks completed video, gives cooperative C
-tasks budgets of 4 ms and 6 ms. A fence check between the pumps releases completed
-video promptly; a second check after the remaining work covers later completions.
+callbacks stop. Each iteration first tries video, then runs two cooperative C
+pumps (budgets detailed below). A fence check between them releases completed
+video promptly. At 40 Mbps, if the early drain did not submit or publish video, one mid-frame
+decoder check can use output that became ready during the first pump. A retained
+transfer occupies the tick even if its fence completes, preventing duplicate
+submissions. The second fence check covers later completions without expanding
+the one-spare-frame buffer or its two-period age limit.
+The final check may repeat nonblocking fence queries for at most
+3 ms and 32 retries, capped by remaining frame headroom (the C budget plus
+2 ms: 12 or 14 ms since work began). If C consumed that headroom, no retry wait is added. This avoids deferring
+a nearly completed copy by an entire render tick when the second C pump ends
+early. Each individual native query can still overrun; it cannot be preempted.
 Pending audio drains afterwards. Each pump prioritizes input. GPU submission,
 publication and fence-poll CPU costs remain outside the measured core budgets.
 Socket loops and media callbacks check their current pump's deadline and
@@ -169,8 +178,9 @@ exit path; it cannot preempt an individual blocking native driver call.
 Each pump first gives the controller-dispatch task one turn, followed by upstream's
 `InputSend` task, before the regular round-robin pass. All tasks in a pump share its
 deadline; the two per-frame pump budgets total 10 ms (4+6). Demanding 60 FPS
-modes—above 720p or at least 8 Mbps—use 12 ms (6+6), allowing more receive/audio
-work and checking GPU completion after 6 ms. This keeps incoming video/audio packet work from consuming the
+modes—above 720p or at least 8 Mbps—use 12 ms, allowing more receive/audio
+work. Below 40 Mbps this is split 6+6 ms; at 40 Mbps it is split 4+8 ms so a
+mid-frame submission has longer to complete on the GPU. This keeps incoming video/audio packet work from consuming the
 budget before newly sampled controller state can reach the socket. The pinned
 upstream thread name selects the input sender; upstream protocol, encryption,
 reliability and controller packet formats are unchanged.
@@ -212,9 +222,7 @@ packet cannot satisfy a measured sample. Sparse samples are used for the final
   handle through dynamic-image invalidation. There is no PNG encoding, Base64,
   JavaScript color conversion, or per-frame texture recreation on this path.
   The default request is 1280×720, 30 fps, 5000 kbit/s. Native stream settings
-  allow up to 1920×1080, 60 fps, 30000 kbit/s. The session adapter permits
-  up to 40000 kbit/s for diagnostic probes; 40 Mbps is not a retained Settings
-  preset because it showed frame gaps under load. Above 720p, the compressed
+  allow up to 1920×1080, 60 fps, 40000 kbit/s. Above 720p, the compressed
   native input buffer requests 1 MiB instead of 256 KiB to accommodate larger
   keyframes; every submitted frame is still checked against actual capacity.
   See the [1080p measurements](../investigation/evidence/quality-1080p.md) for

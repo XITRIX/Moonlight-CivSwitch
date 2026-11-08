@@ -6,6 +6,7 @@ const preview={Uint8Array,Uint32Array,Int32Array,Number,DataView,btoa:s=>Buffer.
 const make=require('./dist/moonlight-stream.js');
 (async()=>{
  const core=await make({moonlightPlatform:{randomFill:randomFillSync}});
+ for(const algorithm of ['rtsp','fec','crypto','unaligned'])assert.equal(core['_ml_test_'+algorithm](),0,'optimized stream core: '+algorithm);
  assert.equal(core._ml_session_metrics(),0,'metrics are unavailable outside an active connection');
  const yieldsBefore=core._ml_runtime_budget_yields();
  assert.equal(core._ml_budget_test_start(),0);core._ml_runtime_pump(1);

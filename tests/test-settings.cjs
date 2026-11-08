@@ -12,8 +12,8 @@ test('stream settings survive a new store and reject unsupported stream modes',(
  assert.deepEqual(plain(store.load()),{width:1280,height:720,fps:30,bitrate:5000,showStats:false,videoPacing:"smooth"});
  store.save(mode);assert.equal(commits,1);assert.deepEqual(plain(settings.create(adapter).load()),mode);
  store.save({...mode,videoPacing:'latency'});assert.equal(settings.create(adapter).load().videoPacing,'latency');store.save(mode);
- for(const bitrate of [10000,15000,20000,25000,30000]){store.save({...mode,width:1920,height:1080,bitrate});assert.equal(settings.create(adapter).load().bitrate,bitrate);}store.save(mode);
- for(const invalid of [{...mode,width:2560,height:1440},{...mode,fps:120},{...mode,bitrate:40000},{...mode,bitrate:'8000'},{...mode,showStats:'yes'},{...mode,videoPacing:'unbounded'}])assert.throws(()=>store.save(invalid),/Invalid/);
+ for(const bitrate of [10000,15000,20000,25000,30000,40000]){store.save({...mode,width:1920,height:1080,bitrate});assert.equal(settings.create(adapter).load().bitrate,bitrate);}store.save(mode);
+ for(const invalid of [{...mode,width:2560,height:1440},{...mode,fps:120},{...mode,bitrate:50000},{...mode,bitrate:'8000'},{...mode,showStats:'yes'},{...mode,videoPacing:'unbounded'}])assert.throws(()=>store.save(invalid),/Invalid/);
  assert.deepEqual(plain(store.load()),mode);
  for(const text of ['{',JSON.stringify({version:2,mode}),JSON.stringify({version:1,mode:{...mode,fps:0}})]){file=text;assert.throws(()=>store.load());assert.equal(file,text);}
 });

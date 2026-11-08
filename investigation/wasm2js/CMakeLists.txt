@@ -56,11 +56,13 @@ foreach(property INCLUDE_DIRECTORIES COMPILE_DEFINITIONS COMPILE_OPTIONS)
   set_target_properties(moonlight-stream PROPERTIES ${property} "${value}")
 endforeach()
 target_link_libraries(moonlight-stream PRIVATE mbedcrypto)
+target_compile_options(moonlight-stream PRIVATE -O3 -flto)
 set_target_properties(moonlight-stream PROPERTIES SUFFIX ".js")
 get_target_property(STREAM_LINK_FLAGS moonlight-core LINK_OPTIONS)
 list(FILTER STREAM_LINK_FLAGS EXCLUDE REGEX "EXPORTED_FUNCTIONS=")
 list(FILTER STREAM_LINK_FLAGS EXCLUDE REGEX "EXPORT_NAME=")
 target_link_options(moonlight-stream PRIVATE ${STREAM_LINK_FLAGS}
+  -O3 -flto
   -sASYNCIFY=1 -sEXPORT_NAME=MoonlightStreamCore
   "-sEXPORTED_FUNCTIONS=@${CMAKE_CURRENT_BINARY_DIR}/stream-exports.json")
 foreach(name socket bind connect getsockname getpeername setsockopt getsockopt shutdown close fcntl poll sendto recvfrom send recv sendmsg recvmsg getaddrinfo freeaddrinfo)

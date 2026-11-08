@@ -29,6 +29,10 @@ The [higher-bitrate investigation](quality-high-bitrate.md) compares 25–40 Mbp
 retains 25/30 Mbps presets, and records larger receive batches with heap-backed
 message metadata, full-UI measurements, input timing and remaining startup limits.
 
+The [40 Mbps optimization](quality-40mbps.md) records the O3/LTO stream build,
+conditional mid-frame decoder checks, 4+8 scheduling and bounded GPU completion
+queries, with real UI, input, audio and outage-exit results.
+
 - `network-capabilities.txt`: actual JavaScript capability inventory; XHR external
   request returned404. WebSocket exists but external connectivity was not tested.
 - `native-network.txt`: direct native TCP GET returnedHTTP200/serverinfo. SDK

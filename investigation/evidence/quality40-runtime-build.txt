@@ -1,0 +1,92 @@
+configure: cmake -S /Users/daniilvinogradov/Documents/Dev/NS2-experiments/investigation/wasm2js -B /Users/daniilvinogradov/Documents/Dev/NS2-experiments/investigation/wasm2js/build -DCMAKE_BUILD_TYPE=Release -DCMAKE_POLICY_VERSION_MINIMUM=3.5 -DCMAKE_TOOLCHAIN_FILE=/Users/daniilvinogradov/Documents/Dev/NS2-experiments/investigation/toolchains/emsdk/upstream/emscripten/cmake/Modules/Platform/Emscripten.cmake -DCMAKE_CROSSCOMPILING_EMULATOR=/Users/daniilvinogradov/Documents/Dev/NS2-experiments/investigation/toolchains/emsdk/node/24.19.0_64bit/bin/node
+CMake Deprecation Warning at /Users/daniilvinogradov/Documents/Dev/NS2-experiments/investigation/references/mbedtls/CMakeLists.txt:21 (cmake_minimum_required):
+  Compatibility with CMake < 3.10 will be removed from a future version of
+  CMake.
+
+  Update the VERSION argument <min> value.  Or, use the <min>...<max> syntax
+  to tell CMake that the project requires at least <min> but has been updated
+  to work with policies introduced by <max> or earlier.
+
+
+-- Configuring done (1.9s)
+-- Generating done (1.8s)
+-- Build files have been written to: /Users/daniilvinogradov/Documents/Dev/NS2-experiments/investigation/wasm2js/build
+[  1%] Built target fiber-proof
+[  4%] Built target everest
+[  5%] Built target p256m
+[ 56%] Built target mbedcrypto
+[ 56%] Building C object CMakeFiles/moonlight-stream.dir/Users/daniilvinogradov/Documents/Dev/NS2-experiments/investigation/references/moonlight-common-c/src/InputStream.c.o
+[ 56%] Building C object CMakeFiles/moonlight-stream.dir/Users/daniilvinogradov/Documents/Dev/NS2-experiments/investigation/references/moonlight-common-c/src/AudioStream.c.o
+[ 57%] Building C object CMakeFiles/moonlight-stream.dir/Users/daniilvinogradov/Documents/Dev/NS2-experiments/investigation/references/moonlight-common-c/src/ByteBuffer.c.o
+[ 57%] Building C object CMakeFiles/moonlight-stream.dir/Users/daniilvinogradov/Documents/Dev/NS2-experiments/investigation/references/moonlight-common-c/src/ControlStream.c.o
+[ 57%] Building C object CMakeFiles/moonlight-stream.dir/Users/daniilvinogradov/Documents/Dev/NS2-experiments/investigation/references/moonlight-common-c/src/Connection.c.o
+[ 58%] Building C object CMakeFiles/moonlight-stream.dir/Users/daniilvinogradov/Documents/Dev/NS2-experiments/investigation/references/moonlight-common-c/src/FakeCallbacks.c.o
+[ 60%] Building C object CMakeFiles/moonlight-stream.dir/Users/daniilvinogradov/Documents/Dev/NS2-experiments/investigation/references/moonlight-common-c/src/ConnectionTester.c.o
+[ 81%] Built target moonlight-core
+[ 82%] Building C object CMakeFiles/moonlight-stream.dir/Users/daniilvinogradov/Documents/Dev/NS2-experiments/investigation/references/moonlight-common-c/src/LinkedBlockingQueue.c.o
+[ 82%] Building C object CMakeFiles/moonlight-stream.dir/Users/daniilvinogradov/Documents/Dev/NS2-experiments/investigation/references/moonlight-common-c/src/Misc.c.o
+[ 83%] Building C object CMakeFiles/moonlight-stream.dir/Users/daniilvinogradov/Documents/Dev/NS2-experiments/investigation/references/moonlight-common-c/src/PlatformCrypto.c.o
+[ 83%] Building C object CMakeFiles/moonlight-stream.dir/Users/daniilvinogradov/Documents/Dev/NS2-experiments/investigation/references/moonlight-common-c/src/PlatformSockets.c.o
+[ 83%] Building C object CMakeFiles/moonlight-stream.dir/Users/daniilvinogradov/Documents/Dev/NS2-experiments/investigation/references/moonlight-common-c/src/RtpAudioQueue.c.o
+[ 83%] Building C object CMakeFiles/moonlight-stream.dir/Users/daniilvinogradov/Documents/Dev/NS2-experiments/investigation/references/moonlight-common-c/src/RtspConnection.c.o
+[ 84%] Building C object CMakeFiles/moonlight-stream.dir/Users/daniilvinogradov/Documents/Dev/NS2-experiments/investigation/references/moonlight-common-c/src/RecorderCallbacks.c.o
+[ 85%] Building C object CMakeFiles/moonlight-stream.dir/Users/daniilvinogradov/Documents/Dev/NS2-experiments/investigation/references/moonlight-common-c/src/RtspParser.c.o
+[ 87%] Building C object CMakeFiles/moonlight-stream.dir/Users/daniilvinogradov/Documents/Dev/NS2-experiments/investigation/references/moonlight-common-c/src/RtpVideoQueue.c.o
+[ 87%] Building C object CMakeFiles/moonlight-stream.dir/Users/daniilvinogradov/Documents/Dev/NS2-experiments/investigation/references/moonlight-common-c/src/SdpGenerator.c.o
+[ 88%] Building C object CMakeFiles/moonlight-stream.dir/Users/daniilvinogradov/Documents/Dev/NS2-experiments/investigation/references/moonlight-common-c/src/SimpleStun.c.o
+[ 89%] Building C object CMakeFiles/moonlight-stream.dir/Users/daniilvinogradov/Documents/Dev/NS2-experiments/investigation/references/moonlight-common-c/src/VideoDepacketizer.c.o
+[ 89%] Building C object CMakeFiles/moonlight-stream.dir/Users/daniilvinogradov/Documents/Dev/NS2-experiments/investigation/references/moonlight-common-c/src/VideoStream.c.o
+[ 90%] Building C object CMakeFiles/moonlight-stream.dir/Users/daniilvinogradov/Documents/Dev/NS2-experiments/investigation/references/moonlight-common-c/enet/callbacks.c.o
+[ 90%] Building C object CMakeFiles/moonlight-stream.dir/Users/daniilvinogradov/Documents/Dev/NS2-experiments/investigation/references/moonlight-common-c/enet/compress.c.o
+[ 91%] Building C object CMakeFiles/moonlight-stream.dir/Users/daniilvinogradov/Documents/Dev/NS2-experiments/investigation/references/moonlight-common-c/enet/host.c.o
+[ 91%] Building C object CMakeFiles/moonlight-stream.dir/Users/daniilvinogradov/Documents/Dev/NS2-experiments/investigation/references/moonlight-common-c/enet/list.c.o
+[ 92%] Building C object CMakeFiles/moonlight-stream.dir/Users/daniilvinogradov/Documents/Dev/NS2-experiments/investigation/references/moonlight-common-c/enet/packet.c.o
+[ 92%] Building C object CMakeFiles/moonlight-stream.dir/Users/daniilvinogradov/Documents/Dev/NS2-experiments/investigation/references/moonlight-common-c/enet/peer.c.o
+[ 94%] Building C object CMakeFiles/moonlight-stream.dir/Users/daniilvinogradov/Documents/Dev/NS2-experiments/investigation/references/moonlight-common-c/enet/protocol.c.o
+[ 94%] Building C object CMakeFiles/moonlight-stream.dir/Users/daniilvinogradov/Documents/Dev/NS2-experiments/investigation/references/moonlight-common-c/enet/unix.c.o
+[ 95%] Building C object CMakeFiles/moonlight-stream.dir/Users/daniilvinogradov/Documents/Dev/NS2-experiments/investigation/references/moonlight-common-c/nanors/rs.c.o
+[ 95%] Building C object CMakeFiles/moonlight-stream.dir/Users/daniilvinogradov/Documents/Dev/NS2-experiments/investigation/references/moonlight-common-c/nanors/deps/obl/oblas_common.c.o
+[ 96%] Building C object CMakeFiles/moonlight-stream.dir/Users/daniilvinogradov/Documents/Dev/NS2-experiments/investigation/references/moonlight-common-c/nanors/deps/obl/oblas_lite.c.o
+[ 96%] Building C object CMakeFiles/moonlight-stream.dir/bridge.c.o
+[ 97%] Building C object CMakeFiles/moonlight-stream.dir/Users/daniilvinogradov/Documents/Dev/NS2-experiments/app/native/platform-cooperative.c.o
+[ 97%] Building C object CMakeFiles/moonlight-stream.dir/Users/daniilvinogradov/Documents/Dev/NS2-experiments/app/native/io-cooperative.c.o
+[ 98%] Building C object CMakeFiles/moonlight-stream.dir/Users/daniilvinogradov/Documents/Dev/NS2-experiments/app/native/session.c.o
+[ 98%] Building C object CMakeFiles/moonlight-stream.dir/Users/daniilvinogradov/Documents/Dev/NS2-experiments/app/native/png-preview.c.o
+[100%] Linking C executable moonlight-stream.js
+cache:INFO: generating system library: sysroot/lib/wasm32-emscripten/lto/libGL-getprocaddr.a... (this will be cached in "/Users/daniilvinogradov/Documents/Dev/NS2-experiments/investigation/wasm2js/build/emscripten-cache/sysroot/lib/wasm32-emscripten/lto/libGL-getprocaddr.a" for subsequent builds)
+system_libs:INFO: compiled 4 inputs in 0.35s
+cache:INFO:  - ok
+cache:INFO: generating system library: sysroot/lib/wasm32-emscripten/lto/libal.a... (this will be cached in "/Users/daniilvinogradov/Documents/Dev/NS2-experiments/investigation/wasm2js/build/emscripten-cache/sysroot/lib/wasm32-emscripten/lto/libal.a" for subsequent builds)
+system_libs:INFO: compiled 1 inputs in 1.35s
+cache:INFO:  - ok
+cache:INFO: generating system library: sysroot/lib/wasm32-emscripten/lto/libhtml5.a... (this will be cached in "/Users/daniilvinogradov/Documents/Dev/NS2-experiments/investigation/wasm2js/build/emscripten-cache/sysroot/lib/wasm32-emscripten/lto/libhtml5.a" for subsequent builds)
+system_libs:INFO: compiled 5 inputs in 0.35s
+cache:INFO:  - ok
+cache:INFO: generating system library: sysroot/lib/wasm32-emscripten/lto/libstubs-debug.a... (this will be cached in "/Users/daniilvinogradov/Documents/Dev/NS2-experiments/investigation/wasm2js/build/emscripten-cache/sysroot/lib/wasm32-emscripten/lto/libstubs-debug.a" for subsequent builds)
+system_libs:INFO: compiled 2 inputs in 0.34s
+cache:INFO:  - ok
+cache:INFO: generating system library: sysroot/lib/wasm32-emscripten/lto/libnoexit.a... (this will be cached in "/Users/daniilvinogradov/Documents/Dev/NS2-experiments/investigation/wasm2js/build/emscripten-cache/sysroot/lib/wasm32-emscripten/lto/libnoexit.a" for subsequent builds)
+system_libs:INFO: compiled 1 inputs in 0.24s
+cache:INFO:  - ok
+cache:INFO: generating system library: sysroot/lib/wasm32-emscripten/lto/libc-debug.a... (this will be cached in "/Users/daniilvinogradov/Documents/Dev/NS2-experiments/investigation/wasm2js/build/emscripten-cache/sysroot/lib/wasm32-emscripten/lto/libc-debug.a" for subsequent builds)
+system_libs:INFO: compiled 1041 inputs in 9.34s
+cache:INFO:  - ok
+cache:INFO: generating system library: sysroot/lib/wasm32-emscripten/lto/libdlmalloc.a... (this will be cached in "/Users/daniilvinogradov/Documents/Dev/NS2-experiments/investigation/wasm2js/build/emscripten-cache/sysroot/lib/wasm32-emscripten/lto/libdlmalloc.a" for subsequent builds)
+system_libs:INFO: compiled 2 inputs in 0.42s
+cache:INFO:  - ok
+cache:INFO: generating system library: sysroot/lib/wasm32-emscripten/lto/libcompiler_rt.a... (this will be cached in "/Users/daniilvinogradov/Documents/Dev/NS2-experiments/investigation/wasm2js/build/emscripten-cache/sysroot/lib/wasm32-emscripten/lto/libcompiler_rt.a" for subsequent builds)
+system_libs:INFO: compiled 162 inputs in 1.85s
+cache:INFO:  - ok
+cache:INFO: generating system library: sysroot/lib/wasm32-emscripten/lto/libc++-noexcept.a... (this will be cached in "/Users/daniilvinogradov/Documents/Dev/NS2-experiments/investigation/wasm2js/build/emscripten-cache/sysroot/lib/wasm32-emscripten/lto/libc++-noexcept.a" for subsequent builds)
+system_libs:INFO: compiled 55 inputs in 10.83s
+cache:INFO:  - ok
+cache:INFO: generating system library: sysroot/lib/wasm32-emscripten/lto/libc++abi-debug-noexcept.a... (this will be cached in "/Users/daniilvinogradov/Documents/Dev/NS2-experiments/investigation/wasm2js/build/emscripten-cache/sysroot/lib/wasm32-emscripten/lto/libc++abi-debug-noexcept.a" for subsequent builds)
+system_libs:INFO: compiled 16 inputs in 2.73s
+cache:INFO:  - ok
+cache:INFO: generating system library: sysroot/lib/wasm32-emscripten/lto/libsockets.a... (this will be cached in "/Users/daniilvinogradov/Documents/Dev/NS2-experiments/investigation/wasm2js/build/emscripten-cache/sysroot/lib/wasm32-emscripten/lto/libsockets.a" for subsequent builds)
+system_libs:INFO: compiled 27 inputs in 1.89s
+cache:INFO:  - ok
+cache:INFO: generating system asset: symbol_lists/4538726b5d50320cb7ae4c24d1d67e59547bbdfa.json... (this will be cached in "/Users/daniilvinogradov/Documents/Dev/NS2-experiments/investigation/wasm2js/build/emscripten-cache/symbol_lists/4538726b5d50320cb7ae4c24d1d67e59547bbdfa.json" for subsequent builds)
+cache:INFO:  - ok
+[100%] Built target moonlight-stream
+Built /Users/daniilvinogradov/Documents/Dev/NS2-experiments/investigation/wasm2js/dist/moonlight-core.js (741,461 bytes), 54 upstream API exports

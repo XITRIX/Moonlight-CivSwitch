@@ -1,0 +1,18 @@
+✔ TCP/UDP receive and send borrow core memory without intermediate payload copies (3.640167ms)
+✔ heap replacement revalidates the pointer, and invalid ranges are rejected before receiving (1.046708ms)
+✔ poll borrows validated pollfd memory and preserves snapshot packet counters (1.757292ms)
+✔ local cancellation rejects network work immediately but leaves ownership intact until close (0.655542ms)
+✔ shutdown grace is bounded and repeated cancellation cannot extend it (1.105708ms)
+✔ batched UDP preserves packet order, peek, truncation, empty receive and cached poll readiness (1.034791ms)
+✔ batch slots stay separate, rebind on heap growth, and respect cancellation and fd reuse (1.702208ms)
+✔ batching can be disabled without allocating core scratch memory (0.763875ms)
+✔ invalid native batch lengths/counts are rejected before copying and still clean up (1.741958ms)
+✔ large receive batches preserve all 32 slots and fetch the next batch only after consumption (0.908708ms)
+ℹ tests 10
+ℹ suites 0
+ℹ pass 10
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 127.139333

@@ -87,6 +87,7 @@ test('batched UDP preserves packet order, peek, truncation, empty receive and ca
  const packets=[Uint8Array.from({length:16},()=>1),Uint8Array.from({length:24},()=>2),new Uint8Array(0)];e.enqueue(7,packets);
  const recv=(n=64,flags=0)=>e.io.io(5,[7,128,n,flags,0,0],e.heap);
  assert.equal(recv(64,2),16);assert.deepEqual(e.heap.slice(128,144),packets[0]);assert.equal(e.io.stats.batchPackets,3);
+ assert.throws(()=>e.io.io(5,[7,128,64,0,0,0],e.heap.subarray(0,e.heap.length-1)),/complete/,'cached receives reject partial heap views before consuming a datagram');
  const v=new DataView(e.heap.buffer);v.setInt32(256,7,true);v.setInt16(260,1,true);
  assert.equal(e.io.io(11,[256,1,0,0,0,0],e.heap),1);assert.equal(v.getInt16(262,true),1,'cached packets remain readable when native poll is empty');
  assert.equal(recv(),16);assert.equal(recv(12),12);assert.deepEqual(e.heap.slice(128,140),packets[1].slice(0,12));assert.equal(recv(),0);assert.equal(recv(),-11);

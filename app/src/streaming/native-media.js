@@ -39,10 +39,19 @@
   }
   return {submit:submit,finish:finish,pending:function(){return !!pending;},close:function(){if(!finish(false)&&pending)throw Error("GPU transfer is still pending; native media retained");}};
  }
+ function finishGpu(pipeline,clock,deadline){
+  if(!pipeline)return false;
+  if(pipeline.finish())return true;
+  if(!Number.isFinite(deadline))return false;
+  // Only nonblocking fence queries. Bound both elapsed time and query count;
+  // a stalled clock or GPU never turns this into an unbounded render wait.
+  for(var attempt=0;attempt<32&&pipeline.pending()&&clock()<deadline;attempt++)if(pipeline.finish())return true;
+  return false;
+ }
  function createVideoPacer(clock,period){
   var queue=[],primed=false,firstAt=null,last=null,lastTimestamp=-Infinity;
   function releaseAll(){var first=null;while(queue.length){try{last.release(queue.shift());}catch(error){if(!first)first=error;}}if(first)throw first;}
-  function discard(){last.release(queue.shift());last.superseded();}
+  function discard(reason){last.release(queue.shift());last.superseded(reason);}
   return {pending:function(){return queue.length;},close:releaseAll,drain:function(options){
    last=options;
    try{
@@ -53,9 +62,9 @@
      if(!frame.displayable){queue.pop();options.release(frame);continue;}
      if(frame.timestamp<=lastTimestamp){queue.pop();options.release(frame);options.superseded();continue;}
      queue.sort(function(a,b){return a.timestamp-b.timestamp;});
-     while(queue.length>2)discard();
+     while(queue.length>2)discard("backlog");
     }
-    while(queue.length&&clock()-(queue[0].submittedAt===undefined?queue[0].queuedAt:queue[0].submittedAt)>period*2)discard();
+    while(queue.length&&clock()-(queue[0].submittedAt===undefined?queue[0].queuedAt:queue[0].submittedAt)>period*2)discard("age");
     if(!queue.length)return;
     if(firstAt===null)firstAt=clock();
     if(!primed&&queue.length<2&&clock()-firstAt<period)return;
@@ -68,8 +77,8 @@
   options=options||{};var owned=[],objects=[],decoder=0n,started=false,configured=false,outputStorage=0n,outputLength=0,outputHeap=0,width=0,height=0,fields=null;
   var movie=null,audio=null,texture=null,gpu=false,frameInterval=0,lastPreview=0,videoSubmitted=0,videoDecoded=0,presented=0,conversionMs=0,maxConversionMs=0;
   var pendingFrames=new Map(),decodeSamples=0,decodeMs=0,maxDecodeMs=0,lastPresentedAt=null,intervalCount=0,intervalMs=0,intervalSquaredMs=0,maxIntervalMs=0;
-  var videoSuperseded=0,audioBatchSamples=960,audioPoolSize=2;
-  var gpuTransfers=0,gpuTransferMs=0,nativePublishMs=0,gpuPolls=0,gpuPendingPolls=0,gpuPollMs=0;
+  var videoSuperseded=0,videoDeferredTicks=0,videoExpired=0,videoBacklogDrops=0,audioBatchSamples=960,audioPoolSize=2;
+  var gpuTransfers=0,gpuTransferMs=0,nativePublishMs=0,gpuPolls=0,gpuPendingPolls=0,gpuPollMs=0,gpuTailChecks=0,gpuTailCompleted=0,gpuTailMs=0;
   var movieBase=0n,gpuFence=null,gpuPipeline=null,gpuSubmissionAt=0,gpuCompletionSamples=0,gpuCompletionMs=0,gpuSubmitCost=0,videoPacer=null,presentAgeMs=0,presentAgeSamples=0;
   function now(){return global.MoonlightTelemetry?global.MoonlightTelemetry.now():Date.now();}
   function presentedFrame(frame){var time=now();if(frame&&frame.submittedAt!==undefined){presentAgeMs+=time-frame.submittedAt;presentAgeSamples++;}if(lastPresentedAt!==null){var delta=time-lastPresentedAt;intervalCount++;intervalMs+=delta;intervalSquaredMs+=delta*delta;maxIntervalMs=Math.max(maxIntervalMs,delta);}lastPresentedAt=time;presented++;}
@@ -156,8 +165,10 @@
    videoSubmitted++;return 0;
   }
   function drainVideo(){
-   if(!started)return;
-   if(gpuPipeline&&gpuPipeline.pending()){gpuPipeline.finish();return;}
+   if(!started)return false;
+   // A retained transfer owns this tick even if its fence completes here.
+   if(gpuPipeline&&gpuPipeline.pending()){videoDeferredTicks++;gpuPipeline.finish();return true;}
+   var priorTransfers=gpuTransfers,priorPresented=presented;
    var drain=videoPacer?videoPacer.drain:drainLatest;
    drain({
     acquire:function(){
@@ -166,7 +177,7 @@
      return {index:slot,timestamp:Number(BigInt.asIntN(64,read64(pts))),displayable:!(Number(read32(flags))&4)};
     },
     release:function(frame){ok("_ZN5movie7Decoder24ReleaseOutputBufferIndexEi",[decoder,frame.index]);},
-    superseded:function(){videoSuperseded++;},
+    superseded:function(reason){videoSuperseded++;if(reason==="age")videoExpired++;if(reason==="backlog")videoBacklogDrops++;},
     decoded:function(frame){
      var stamp=String(frame.timestamp),submittedAt=pendingFrames.get(stamp);
      if(submittedAt!==undefined){frame.submittedAt=submittedAt;var delay=now()-submittedAt;decodeSamples++;decodeMs+=delay;maxDecodeMs=Math.max(maxDecodeMs,delay);pendingFrames.delete(stamp);}
@@ -204,6 +215,7 @@
       if(options.onImage)options.onImage(url);lastPreview=begin;presentedFrame(frame);
     }
    });
+   return gpuTransfers!==priorTransfers||presented!==priorPresented;
   }
   function audioSetup(rate,channels,streams,coupled,samples){
    if(rate!==48000||channels!==2||streams!==1||coupled!==1)throw Error("First audio adapter supports stereo Opus at 48 kHz");
@@ -268,8 +280,8 @@
    if(outputHeap)core._free(outputHeap);outputHeap=0;core._ml_png_release();
    for(var p of owned.reverse())free(p);owned=[];started=false;configured=false;decoder=0n;audio=null;pendingFrames.clear();
   }
-  return {videoSetup:videoSetup,videoFrame:videoFrame,audioSetup:audioSetup,audioFrame:audioFrame,drainVideo:drainVideo,finishVideo:function(){return gpuPipeline?gpuPipeline.finish():false;},drainAudio:drainAudio,close:close,
-   stats:function(){return Object.assign({renderer:texture?(gpu?"native-gpu-texture":"native-texture"):"png",submitted:videoSubmitted,decoded:videoDecoded,presented:presented,videoSuperseded:videoSuperseded,gpuTransfers:gpuTransfers,gpuTransferMs:gpuTransferMs,nativePublishMs:nativePublishMs,gpuPolls:gpuPolls,gpuPendingPolls:gpuPendingPolls,gpuPollMs:gpuPollMs,gpuCompletionSamples:gpuCompletionSamples,gpuCompletionMs:gpuCompletionMs,videoPacerPending:videoPacer?videoPacer.pending():0,presentAgeMs:presentAgeMs,presentAgeSamples:presentAgeSamples,conversionMs:conversionMs,maxConversionMs:maxConversionMs,decodeSamples:decodeSamples,decodeMs:decodeMs,maxDecodeMs:maxDecodeMs,decoderPending:Math.max(0,videoSubmitted-videoDecoded),intervalCount:intervalCount,intervalMs:intervalMs,intervalSquaredMs:intervalSquaredMs,maxIntervalMs:maxIntervalMs,audioBufferedMsUpperBound:audio?(audio.stagedSamples+audio.pendingSamples+audio.buffers.reduce(function(sum,item){return sum+(item.inUse?item.samples:0);},0))/48:0,audioQueueLimitMs:audioBatchSamples*(audioPoolSize+1)/48,audioCatchups:audio?audio.catchups:0,audioDiscardedMs:audio?audio.discardedSamples/48:0,audioDecoded:audio?audio.decoded:0,audioQueued:audio?audio.queued:0,audioDropped:audio?audio.dropped:0},texture?texture.stats():{});}};
+  return {videoSetup:videoSetup,videoFrame:videoFrame,audioSetup:audioSetup,audioFrame:audioFrame,drainVideo:drainVideo,finishVideo:function(deadline){var tail=Number.isFinite(deadline)&&gpuPipeline&&gpuPipeline.pending(),begin=tail?now():0,result=finishGpu(gpuPipeline,now,deadline);if(tail){gpuTailChecks++;if(result)gpuTailCompleted++;gpuTailMs+=now()-begin;}return result;},drainAudio:drainAudio,close:close,
+   stats:function(){return Object.assign({renderer:texture?(gpu?"native-gpu-texture":"native-texture"):"png",submitted:videoSubmitted,decoded:videoDecoded,presented:presented,videoSuperseded:videoSuperseded,videoDeferredTicks:videoDeferredTicks,videoExpired:videoExpired,videoBacklogDrops:videoBacklogDrops,gpuTransfers:gpuTransfers,gpuTransferMs:gpuTransferMs,nativePublishMs:nativePublishMs,gpuPolls:gpuPolls,gpuPendingPolls:gpuPendingPolls,gpuPollMs:gpuPollMs,gpuTailChecks:gpuTailChecks,gpuTailCompleted:gpuTailCompleted,gpuTailMs:gpuTailMs,gpuCompletionSamples:gpuCompletionSamples,gpuCompletionMs:gpuCompletionMs,videoPacerPending:videoPacer?videoPacer.pending():0,presentAgeMs:presentAgeMs,presentAgeSamples:presentAgeSamples,conversionMs:conversionMs,maxConversionMs:maxConversionMs,decodeSamples:decodeSamples,decodeMs:decodeMs,maxDecodeMs:maxDecodeMs,decoderPending:Math.max(0,videoSubmitted-videoDecoded),intervalCount:intervalCount,intervalMs:intervalMs,intervalSquaredMs:intervalSquaredMs,maxIntervalMs:maxIntervalMs,audioBufferedMsUpperBound:audio?(audio.stagedSamples+audio.pendingSamples+audio.buffers.reduce(function(sum,item){return sum+(item.inUse?item.samples:0);},0))/48:0,audioQueueLimitMs:audioBatchSamples*(audioPoolSize+1)/48,audioCatchups:audio?audio.catchups:0,audioDiscardedMs:audio?audio.discardedSamples/48:0,audioDecoded:audio?audio.decoded:0,audioQueued:audio?audio.queued:0,audioDropped:audio?audio.dropped:0},texture?texture.stats():{});}};
  }
- global.MoonlightStreamMedia={create:create,drainLatest:drainLatest,createGpuPipeline:createGpuPipeline,createVideoPacer:createVideoPacer};
+ global.MoonlightStreamMedia={create:create,drainLatest:drainLatest,createGpuPipeline:createGpuPipeline,finishGpu:finishGpu,createVideoPacer:createVideoPacer};
 })(window);

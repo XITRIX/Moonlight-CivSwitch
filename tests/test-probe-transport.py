@@ -4,12 +4,31 @@ from pathlib import Path
 import subprocess
 import sys
 import unittest
+from unittest.mock import patch
+import io
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1] / 'investigation/probes'))
 from probe_transport import LogDecoder, wrap_payload
+sys.path.insert(0, str(Path(__file__).resolve().parents[1] / 'tools'))
+from civswitch_sender import send_staged_payload
 
 
 class ProbeTransportTests(unittest.TestCase):
+    def test_staged_payloads_stay_bounded_preserve_scope_and_clear_ram_state(self):
+        for filler in ['x' * 600000, '😀' * 150000]:
+            calls = []
+            source = ('/*' + filler + '*/(async function(){await log("ran");window.result=nativeSentinel;})();').encode()
+            def collect(host, payload, output, timeout=60):
+                self.assertLess(len(payload),500*1024)
+                calls.append(payload.decode())
+            with patch('civswitch_sender.send_payload',collect):
+                send_staged_payload('test',source,io.BytesIO())
+            runner = '''const window={},nativeSentinel=42;async function log(){}
+(async()=>{for(const script of SCRIPTS)await eval(script);
+if(window.result!==42||window.__moonlightStagedProbe!==undefined)throw Error('Staged scope or cleanup failed');
+})().catch(e=>{console.error(e);process.exitCode=1;});'''.replace('SCRIPTS',json.dumps(calls))
+            subprocess.run(['node'],input=runner,text=True,check=True,capture_output=True)
+
     def test_large_logs_are_bounded_and_reassembled(self):
         messages = ['short', 'a' * 8192, '\x00' * 4096, 'x' * 255 + '😀' * 700]
         source = '(async function(){for(var m of ' + json.dumps(messages) + ')await log(m);if(nativeSentinel!==42)throw Error("Lost scope");})();'

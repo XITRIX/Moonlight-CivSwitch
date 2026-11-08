@@ -1,0 +1,67 @@
+Executing payload...
+MOONLIGHT_PROBE_STAGED: 1/6
+Executed successfully
+Executing payload...
+MOONLIGHT_PROBE_STAGED: 2/6
+Executed successfully
+Executing payload...
+MOONLIGHT_PROBE_STAGED: 3/6
+Executed successfully
+Executing payload...
+MOONLIGHT_PROBE_STAGED: 4/6
+Executed successfully
+Executing payload...
+MOONLIGHT_PROBE_STAGED: 5/6
+Executed successfully
+Executing payload...
+MOONLIGHT_PROBE_STAGED: 6/6
+Executed successfully
+Executing payload...
+MOONLIGHT_UI_READY
+MOONLIGHT_SUNSHINE_CHECKING
+MOONLIGHT_SUNSHINE_ONLINE
+MOONLIGHT_SUNSHINE_CHECKING_PAIR
+MOONLIGHT_SUNSHINE_PAIRED
+MOONLIGHT_PAIRING_SAVED: reused
+MOONLIGHT_APPLIST_LOADING
+MOONLIGHT_APPLIST_LOADED: 3
+MOONLIGHT_ARTWORK_CACHED: 881448767 (8231 bytes)
+MOONLIGHT_ARTWORK_CACHED: 1093255277 (24833 bytes)
+MOONLIGHT_ARTWORK_CACHED: 382300562 (98678 bytes)
+MOONLIGHT_PROBE_LOG_PART: {"text":"MOONLIGHT_OUTAGE_EXIT_RESULT: {\"failed\":false,\"overlayVisible\":false,\"healthy\":true,\"error\":null,\"blackhole\":false,\"rafSuppressed\":true,\"chordDetectedMs\":66.672,\"returnedToGamesMs\":174.932,\"state\":0,\"tasks\":0,\"tcpStreamLogs\":0,\"diagnosticMessages\":64,\"grac","last":false}
+MOONLIGHT_PROBE_LOG_PART: {"text":"efulDisconnect\":true,\"mode\":{\"width\":1920,\"height\":1080,\"fps\":60,\"bitrate\":20000,\"showStats\":false,\"videoPacing\":\"smooth\"},\"videoTiming\":{\"decoded\":768,\"presented\":706,\"expired\":26,\"backlog\":36,\"deferred\":44,\"tailChecks\":0,\"tailCompleted\":0,\"tailMs\":0},\"sa","last":false}
+MOONLIGHT_PROBE_LOG_PART: {"text":"mples\":[{\"decodedFps\":0,\"textureFps\":0,\"receivedMbps\":0.241,\"rttMs\":144,\"rttVariationMs\":192,\"frameReceiveMs\":null,\"coreQueueMs\":null,\"hostProcessingMs\":null,\"decodeReadyMs\":null,\"copyPresentMs\":null,\"gpuTransferMs\":null,\"nativePublishMs\":null,\"gpuCompleti","last":false}
+MOONLIGHT_PROBE_LOG_PART: {"text":"onMs\":null,\"gpuPollMs\":null,\"gpuPendingPolls\":0,\"presentAgeMs\":null,\"videoPacerPending\":0,\"frameIntervalMs\":null,\"frameJitterMs\":null,\"loopHz\":37.104,\"pumpAvgMs\":15.494,\"drainAvgMs\":0.027,\"decoderPending\":0,\"videoSuperseded\":0,\"audioBufferedMsUpperBound\":0","last":false}
+MOONLIGHT_PROBE_LOG_PART: {"text":",\"audioQueueLimitMs\":60,\"audioCatchups\":0,\"audioDiscardedMs\":0,\"audioDropped\":0,\"videoFrameGaps\":0,\"decoderRejected\":0,\"audioRecovered\":0,\"audioFecFailed\":0,\"directReceivedBytes\":30857},{\"decodedFps\":62.326,\"textureFps\":52.433,\"receivedMbps\":18.133,\"rttMs\"","last":false}
+MOONLIGHT_PROBE_LOG_PART: {"text":":41,\"rttVariationMs\":65,\"frameReceiveMs\":1.89,\"coreQueueMs\":0.183,\"hostProcessingMs\":1.612,\"decodeReadyMs\":12.711,\"copyPresentMs\":0.519,\"gpuTransferMs\":0.414,\"nativePublishMs\":0.105,\"gpuCompletionMs\":6.236,\"gpuPollMs\":0.092,\"gpuPendingPolls\":14,\"presentAge","last":false}
+MOONLIGHT_PROBE_LOG_PART: {"text":"Ms\":24.226,\"videoPacerPending\":0,\"frameIntervalMs\":18.178,\"frameJitterMs\":3.924,\"loopHz\":59.358,\"pumpAvgMs\":7.241,\"drainAvgMs\":1.099,\"decoderPending\":2,\"videoSuperseded\":10,\"audioBufferedMsUpperBound\":20,\"audioQueueLimitMs\":60,\"audioCatchups\":0,\"audioDisca","last":false}
+MOONLIGHT_PROBE_LOG_PART: {"text":"rdedMs\":0,\"audioDropped\":0,\"videoFrameGaps\":0,\"decoderRejected\":0,\"audioRecovered\":0,\"audioFecFailed\":0,\"directReceivedBytes\":2322012},{\"decodedFps\":61.426,\"textureFps\":52.509,\"receivedMbps\":16.914,\"rttMs\":16,\"rttVariationMs\":16,\"frameReceiveMs\":1.87,\"core","last":false}
+MOONLIGHT_PROBE_LOG_PART: {"text":"QueueMs\":0.086,\"hostProcessingMs\":1.46,\"decodeReadyMs\":10.952,\"copyPresentMs\":0.337,\"gpuTransferMs\":0.247,\"nativePublishMs\":0.089,\"gpuCompletionMs\":7.016,\"gpuPollMs\":0.086,\"gpuPendingPolls\":32,\"presentAgeMs\":24.837,\"videoPacerPending\":1,\"frameIntervalMs\":1","last":false}
+MOONLIGHT_PROBE_LOG_PART: {"text":"9.154,\"frameJitterMs\":4.098,\"loopHz\":60.435,\"pumpAvgMs\":8.29,\"drainAvgMs\":0.83,\"decoderPending\":0,\"videoSuperseded\":18,\"audioBufferedMsUpperBound\":30,\"audioQueueLimitMs\":60,\"audioCatchups\":0,\"audioDiscardedMs\":0,\"audioDropped\":0,\"videoFrameGaps\":0,\"decoder","last":false}
+MOONLIGHT_PROBE_LOG_PART: {"text":"Rejected\":0,\"audioRecovered\":0,\"audioFecFailed\":0,\"directReceivedBytes\":4456022},{\"decodedFps\":58.546,\"textureFps\":53.667,\"receivedMbps\":17.191,\"rttMs\":10,\"rttVariationMs\":4,\"frameReceiveMs\":1.973,\"coreQueueMs\":0.037,\"hostProcessingMs\":1.445,\"decodeReadyMs","last":false}
+MOONLIGHT_PROBE_LOG_PART: {"text":"\":10.055,\"copyPresentMs\":0.34,\"gpuTransferMs\":0.248,\"nativePublishMs\":0.092,\"gpuCompletionMs\":6.633,\"gpuPollMs\":0.088,\"gpuPendingPolls\":46,\"presentAgeMs\":25.636,\"videoPacerPending\":0,\"frameIntervalMs\":18.531,\"frameJitterMs\":3.75,\"loopHz\":59.522,\"pumpAvgMs\"","last":false}
+MOONLIGHT_PROBE_LOG_PART: {"text":":8.63,\"drainAvgMs\":0.83,\"decoderPending\":2,\"videoSuperseded\":24,\"audioBufferedMsUpperBound\":30,\"audioQueueLimitMs\":60,\"audioCatchups\":0,\"audioDiscardedMs\":0,\"audioDropped\":0,\"videoFrameGaps\":0,\"decoderRejected\":0,\"audioRecovered\":0,\"audioFecFailed\":0,\"dire","last":false}
+MOONLIGHT_PROBE_LOG_PART: {"text":"ctReceivedBytes\":6658264},{\"decodedFps\":60.041,\"textureFps\":53.151,\"receivedMbps\":17.164,\"rttMs\":9,\"rttVariationMs\":4,\"frameReceiveMs\":1.743,\"coreQueueMs\":0.054,\"hostProcessingMs\":1.487,\"decodeReadyMs\":9.788,\"copyPresentMs\":0.341,\"gpuTransferMs\":0.253,\"nat","last":false}
+MOONLIGHT_PROBE_LOG_PART: {"text":"ivePublishMs\":0.088,\"gpuCompletionMs\":6.884,\"gpuPollMs\":0.089,\"gpuPendingPolls\":64,\"presentAgeMs\":25.49,\"videoPacerPending\":0,\"frameIntervalMs\":18.818,\"frameJitterMs\":4.128,\"loopHz\":60.041,\"pumpAvgMs\":8.624,\"drainAvgMs\":0.836,\"decoderPending\":2,\"videoSuper","last":false}
+MOONLIGHT_PROBE_LOG_PART: {"text":"seded\":31,\"audioBufferedMsUpperBound\":30,\"audioQueueLimitMs\":60,\"audioCatchups\":0,\"audioDiscardedMs\":0,\"audioDropped\":0,\"videoFrameGaps\":0,\"decoderRejected\":0,\"audioRecovered\":0,\"audioFecFailed\":0,\"directReceivedBytes\":8838006},{\"decodedFps\":60.174,\"textur","last":false}
+MOONLIGHT_PROBE_LOG_PART: {"text":"eFps\":53.269,\"receivedMbps\":15.908,\"rttMs\":6,\"rttVariationMs\":4,\"frameReceiveMs\":1.537,\"coreQueueMs\":0.051,\"hostProcessingMs\":1.67,\"decodeReadyMs\":11.02,\"copyPresentMs\":0.394,\"gpuTransferMs\":0.305,\"nativePublishMs\":0.089,\"gpuCompletionMs\":7.081,\"gpuPollMs\"","last":false}
+MOONLIGHT_PROBE_LOG_PART: {"text":":0.092,\"gpuPendingPolls\":82,\"presentAgeMs\":23.804,\"videoPacerPending\":0,\"frameIntervalMs\":18.823,\"frameJitterMs\":4.222,\"loopHz\":60.174,\"pumpAvgMs\":8.41,\"drainAvgMs\":0.885,\"decoderPending\":1,\"videoSuperseded\":38,\"audioBufferedMsUpperBound\":20,\"audioQueueLim","last":false}
+MOONLIGHT_PROBE_LOG_PART: {"text":"itMs\":60,\"audioCatchups\":0,\"audioDiscardedMs\":0,\"audioDropped\":0,\"videoFrameGaps\":0,\"decoderRejected\":0,\"audioRecovered\":0,\"audioFecFailed\":0,\"directReceivedBytes\":10853744},{\"decodedFps\":59.972,\"textureFps\":55.056,\"receivedMbps\":16.18,\"rttMs\":6,\"rttVariat","last":false}
+MOONLIGHT_PROBE_LOG_PART: {"text":"ionMs\":4,\"frameReceiveMs\":2.084,\"coreQueueMs\":0.035,\"hostProcessingMs\":2.384,\"decodeReadyMs\":12.115,\"copyPresentMs\":0.582,\"gpuTransferMs\":0.487,\"nativePublishMs\":0.095,\"gpuCompletionMs\":7.161,\"gpuPollMs\":0.102,\"gpuPendingPolls\":92,\"presentAgeMs\":28.461,\"vi","last":false}
+MOONLIGHT_PROBE_LOG_PART: {"text":"deoPacerPending\":1,\"frameIntervalMs\":18.164,\"frameJitterMs\":3.609,\"loopHz\":59.972,\"pumpAvgMs\":8.567,\"drainAvgMs\":1.077,\"decoderPending\":1,\"videoSuperseded\":42,\"audioBufferedMsUpperBound\":40,\"audioQueueLimitMs\":60,\"audioCatchups\":0,\"audioDiscardedMs\":0,\"aud","last":false}
+MOONLIGHT_PROBE_LOG_PART: {"text":"ioDropped\":0,\"videoFrameGaps\":0,\"decoderRejected\":0,\"audioRecovered\":0,\"audioFecFailed\":0,\"directReceivedBytes\":12910980},{\"decodedFps\":60.18,\"textureFps\":60.18,\"receivedMbps\":16.382,\"rttMs\":5,\"rttVariationMs\":4,\"frameReceiveMs\":1.275,\"coreQueueMs\":0.015,\"","last":false}
+MOONLIGHT_PROBE_LOG_PART: {"text":"hostProcessingMs\":2.508,\"decodeReadyMs\":12.351,\"copyPresentMs\":0.556,\"gpuTransferMs\":0.468,\"nativePublishMs\":0.088,\"gpuCompletionMs\":6.226,\"gpuPollMs\":0.092,\"gpuPendingPolls\":93,\"presentAgeMs\":35.657,\"videoPacerPending\":1,\"frameIntervalMs\":16.656,\"frameJit","last":false}
+MOONLIGHT_PROBE_LOG_PART: {"text":"terMs\":0.99,\"loopHz\":60.18,\"pumpAvgMs\":8.605,\"drainAvgMs\":1.077,\"decoderPending\":1,\"videoSuperseded\":42,\"audioBufferedMsUpperBound\":50,\"audioQueueLimitMs\":60,\"audioCatchups\":0,\"audioDiscardedMs\":0,\"audioDropped\":0,\"videoFrameGaps\":0,\"decoderRejected\":0,\"au","last":false}
+MOONLIGHT_PROBE_LOG_PART: {"text":"dioRecovered\":0,\"audioFecFailed\":0,\"directReceivedBytes\":14986586},{\"decodedFps\":59.686,\"textureFps\":58.692,\"receivedMbps\":16.288,\"rttMs\":3,\"rttVariationMs\":2,\"frameReceiveMs\":1.22,\"coreQueueMs\":0.015,\"hostProcessingMs\":2.59,\"decodeReadyMs\":12.035,\"copyPre","last":false}
+MOONLIGHT_PROBE_LOG_PART: {"text":"sentMs\":0.513,\"gpuTransferMs\":0.424,\"nativePublishMs\":0.089,\"gpuCompletionMs\":6.229,\"gpuPollMs\":0.092,\"gpuPendingPolls\":95,\"presentAgeMs\":34.452,\"videoPacerPending\":1,\"frameIntervalMs\":16.949,\"frameJitterMs\":1.942,\"loopHz\":59.686,\"pumpAvgMs\":8.647,\"drainAv","last":false}
+MOONLIGHT_PROBE_LOG_PART: {"text":"gMs\":1.04,\"decoderPending\":1,\"videoSuperseded\":43,\"audioBufferedMsUpperBound\":40,\"audioQueueLimitMs\":60,\"audioCatchups\":0,\"audioDiscardedMs\":0,\"audioDropped\":0,\"videoFrameGaps\":0,\"decoderRejected\":0,\"audioRecovered\":0,\"audioFecFailed\":0,\"directReceivedByte","last":false}
+MOONLIGHT_PROBE_LOG_PART: {"text":"s\":17033302},{\"decodedFps\":60.238,\"textureFps\":57.275,\"receivedMbps\":16.52,\"rttMs\":5,\"rttVariationMs\":4,\"frameReceiveMs\":1.459,\"coreQueueMs\":0.015,\"hostProcessingMs\":2.593,\"decodeReadyMs\":12.268,\"copyPresentMs\":0.55,\"gpuTransferMs\":0.459,\"nativePublishMs\":","last":false}
+MOONLIGHT_PROBE_LOG_PART: {"text":"0.091,\"gpuCompletionMs\":6.865,\"gpuPollMs\":0.085,\"gpuPendingPolls\":101,\"presentAgeMs\":34.761,\"videoPacerPending\":1,\"frameIntervalMs\":17.535,\"frameJitterMs\":2.776,\"loopHz\":60.238,\"pumpAvgMs\":8.536,\"drainAvgMs\":1.046,\"decoderPending\":1,\"videoSuperseded\":46,\"a","last":false}
+MOONLIGHT_PROBE_LOG_PART: {"text":"udioBufferedMsUpperBound\":30,\"audioQueueLimitMs\":60,\"audioCatchups\":0,\"audioDiscardedMs\":0,\"audioDropped\":0,\"videoFrameGaps\":0,\"decoderRejected\":0,\"audioRecovered\":0,\"audioFecFailed\":0,\"directReceivedBytes\":19124386},{\"decodedFps\":59.966,\"textureFps\":59.96","last":false}
+MOONLIGHT_PROBE_LOG_PART: {"text":"6,\"receivedMbps\":16.32,\"rttMs\":6,\"rttVariationMs\":4,\"frameReceiveMs\":1.483,\"coreQueueMs\":0.109,\"hostProcessingMs\":2.6,\"decodeReadyMs\":12.172,\"copyPresentMs\":0.554,\"gpuTransferMs\":0.468,\"nativePublishMs\":0.086,\"gpuCompletionMs\":6.24,\"gpuPollMs\":0.093,\"gpuPe","last":false}
+MOONLIGHT_PROBE_LOG_PART: {"text":"ndingPolls\":101,\"presentAgeMs\":34.441,\"videoPacerPending\":1,\"frameIntervalMs\":16.666,\"frameJitterMs\":1.162,\"loopHz\":59.966,\"pumpAvgMs\":8.53,\"drainAvgMs\":1.093,\"decoderPending\":1,\"videoSuperseded\":46,\"audioBufferedMsUpperBound\":30,\"audioQueueLimitMs\":60,\"au","last":false}
+MOONLIGHT_PROBE_LOG_PART: {"text":"dioCatchups\":0,\"audioDiscardedMs\":0,\"audioDropped\":0,\"videoFrameGaps\":0,\"decoderRejected\":0,\"audioRecovered\":0,\"audioFecFailed\":0,\"directReceivedBytes\":21165528},{\"decodedFps\":58.888,\"textureFps\":59.886,\"receivedMbps\":15.86,\"rttMs\":3,\"rttVariationMs\":3,\"fr","last":false}
+MOONLIGHT_PROBE_LOG_PART: {"text":"ameReceiveMs\":1.419,\"coreQueueMs\":0.036,\"hostProcessingMs\":2.61,\"decodeReadyMs\":11.964,\"copyPresentMs\":0.53,\"gpuTransferMs\":0.441,\"nativePublishMs\":0.089,\"gpuCompletionMs\":6.167,\"gpuPollMs\":0.087,\"gpuPendingPolls\":101,\"presentAgeMs\":34.6,\"videoPacerPending","last":false}
+MOONLIGHT_PROBE_LOG_PART: {"text":"\":0,\"frameIntervalMs\":16.661,\"frameJitterMs\":1.117,\"loopHz\":59.886,\"pumpAvgMs\":8.505,\"drainAvgMs\":1.035,\"decoderPending\":2,\"videoSuperseded\":46,\"audioBufferedMsUpperBound\":30,\"audioQueueLimitMs\":60,\"audioCatchups\":0,\"audioDiscardedMs\":0,\"audioDropped\":0,\"v","last":false}
+MOONLIGHT_PROBE_LOG_PART: {"text":"ideoFrameGaps\":0,\"decoderRejected\":0,\"audioRecovered\":0,\"audioFecFailed\":0,\"directReceivedBytes\":23151756}]}","last":true}
+Executed successfully

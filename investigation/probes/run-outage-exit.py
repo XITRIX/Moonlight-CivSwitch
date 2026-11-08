@@ -8,7 +8,7 @@ import sys
 here=Path(__file__).resolve().parent
 root=here.parents[1]
 sys.path.insert(0,str(root/'tools'))
-from civswitch_sender import send_payload, upload_module
+from civswitch_sender import send_staged_payload, upload_module
 from send_ui import APP_DIR, APP_SCRIPTS
 from probe_transport import wrap_payload, LogDecoder
 
@@ -33,14 +33,14 @@ parts=[(APP_DIR/p).read_text() for p in APP_SCRIPTS[:-1]]
 if args.completion_pump_ms:
     index=APP_SCRIPTS.index('src/streaming/stream-client.js')
     source=parts[index]
-    assert source.count('var completionBudgetMs=pumpBudgetMs===12?6:4;')==1
-    parts[index]=source.replace('var completionBudgetMs=pumpBudgetMs===12?6:4;',f'var completionBudgetMs={args.completion_pump_ms};')
+    assert source.count('var completionBudgetMs=pumpBudgetMs===12&&mode.bitrate<40000?6:4;')==1
+    parts[index]=source.replace('var completionBudgetMs=pumpBudgetMs===12&&mode.bitrate<40000?6:4;',f'var completionBudgetMs={args.completion_pump_ms};')
 entry=(APP_DIR/APP_SCRIPTS[-1]).read_text().rstrip().removesuffix(';')
 helper=(here/'test-stream-outage-exit.js').read_text()
 source=';\n'.join(parts)+';\n(async function(){window.__moonlightExitTestHealthy='+str(args.healthy).lower()+';window.__moonlightExitTestConfig='+json.dumps({'fps':args.fps,'resolution':args.resolution,'bitrate':args.bitrate,'showStats':False if args.no_overlay else None,'measureMs':args.measure_ms})+';\n'+helper+'\nreturn await '+entry+';})();'
 wire=args.output.with_suffix('.wire.txt')
 with wire.open('wb') as trace:
-    send_payload(args.console_ip,wrap_payload(source),trace,max(65,45+args.measure_ms//1000))
+    send_staged_payload(args.console_ip,wrap_payload(source),trace,max(65,45+args.measure_ms//1000))
 decoder=LogDecoder()
 lines=decoder.feed(wire.read_bytes())
 decoder.finish()

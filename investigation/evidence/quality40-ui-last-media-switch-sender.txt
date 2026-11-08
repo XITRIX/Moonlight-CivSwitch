@@ -1,0 +1,3 @@
+Executing payload...
+MOONLIGHT_LAST_MEDIA: {"decoded":3668,"presented":3417,"expired":201,"backlog":50,"deferred":225}
+Connection ended without the loader completion marker; the payload may have crashed. Do not assume success.
