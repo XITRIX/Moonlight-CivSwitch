@@ -1,6 +1,15 @@
 const test=require('node:test'),assert=require('node:assert/strict'),fs=require('node:fs'),vm=require('node:vm');
 const scope={};scope.window=scope;vm.createContext(scope);vm.runInContext(fs.readFileSync('app/src/streaming/telemetry.js','utf8'),scope);
 const telemetry=scope.MoonlightTelemetry;
+test('rare-stall history is bounded, detached from mutable snapshots and reset between streams',()=>{
+ const history=telemetry.createHistory(),s={mode:{bitrate:50000},telemetry:{textureFps:60},input:{gamepadQueued:1},fec:{calls:0},network:{receivedBytes:123,directVideoPackets:4},referenceRecovery:true};
+ history.record(s);s.telemetry.textureFps=2;s.input.gamepadQueued=10;s.network.receivedBytes=999;
+ assert.equal(history.samples[0].telemetry.textureFps,60);assert.equal(history.samples[0].input.gamepadQueued,1);assert.equal(history.samples[0].network.receivedBytes,123);
+ for(let i=0;i<605;i++){s.input.gamepadQueued=i;history.record(s);}
+ assert.equal(history.samples.length,600);assert.equal(history.samples[0].input.gamepadQueued,5);assert.equal(history.samples[599].input.gamepadQueued,604);
+ const samples=history.samples;history.reset();assert.equal(samples.length,0);assert.equal(history.samples,samples);
+ history.record({});assert.equal(history.samples[0].fec,null);assert.equal(history.samples[0].network.directVideoPackets,0);
+});
 test('packet pool counters are optional, bounded and versioned',()=>{
  const core={HEAPU8:new Uint8Array(256)};assert.equal(telemetry.readPacketPool(core),null);
  core._ml_packet_pool_metrics=()=>64;const v=new Float64Array(core.HEAPU8.buffer,64,8);v.set([1,1456,1024,4,80,2000,1,2]);

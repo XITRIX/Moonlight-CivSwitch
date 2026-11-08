@@ -15,9 +15,10 @@ parser=argparse.ArgumentParser(description=__doc__)
 parser.add_argument('console_ip')
 parser.add_argument('--phase',choices=['baseline','before','hybrid','split','current'],default='current')
 parser.add_argument('--continuous',action='store_true')
+parser.add_argument('--input-period-ms',type=int,choices=[10000,15000],help='Alternate idle and neutral input load in equal windows')
 parser.add_argument('--fps',type=int,choices=[30,60],default=60)
 parser.add_argument('--resolution',choices=['720','1080'],default='720')
-parser.add_argument('--bitrate',type=int,choices=[3000,5000,10000,15000,20000,25000,30000,40000,50000,60000,80000],default=3000)
+parser.add_argument('--bitrate',type=int,choices=[3000,5000,10000,15000,20000,25000,30000,40000,50000,60000,70000,80000],default=3000)
 parser.add_argument('--pump-ms',type=float,choices=[6+i*.5 for i in range(19)])
 parser.add_argument('--pre-pump-ms',type=int,choices=range(0,7),default=0)
 parser.add_argument('--synchronous-gpu',action='store_true')
@@ -73,7 +74,7 @@ with tempfile.TemporaryDirectory(prefix='pacing-probe-',dir=args.output.parent) 
    timing='var pumpElapsed=pumped-begin,drainElapsed=drained-pumped;'
   source=source[:start]+step+timing+'pumpMs+=pumpElapsed;drainMs+=drainElapsed;maxPumpMs=Math.max(maxPumpMs,pumpElapsed);maxDrainMs=Math.max(maxDrainMs,drainElapsed);iterations++;\n'+source[end:]
   paths[10]=directory/'stream-client.js';paths[10].write_text(source)
- selector=directory/'config.js';selector.write_text('window.__moonlightPacingProbe='+json.dumps({'durationMs':args.duration_ms,'phase':args.phase,'prePumpMs':args.pre_pump_ms,'completionPumpMs':args.completion_pump_ms or ((6 if pump_budget==12 and args.bitrate<40000 else 4) if args.phase=='current' and not args.pre_pump_ms else 0),'smoothVideo':not args.low_latency,'synchronousGpu':args.synchronous_gpu or args.phase!='current','continuous':args.continuous,'fps':args.fps,'pumpBudgetMs':pump_budget,'width':1920 if args.resolution=='1080' else 1280,'height':int(args.resolution),'bitrate':args.bitrate})+';\n')
+ selector=directory/'config.js';selector.write_text('window.__moonlightPacingProbe='+json.dumps({'durationMs':args.duration_ms,'phase':args.phase,'prePumpMs':args.pre_pump_ms,'completionPumpMs':args.completion_pump_ms or ((6 if pump_budget==12 and args.bitrate<40000 else 4) if args.phase=='current' and not args.pre_pump_ms else 0),'smoothVideo':not args.low_latency,'synchronousGpu':args.synchronous_gpu or args.phase!='current','continuous':args.continuous,'inputPeriodMs':args.input_period_ms,'fps':args.fps,'pumpBudgetMs':pump_budget,'width':1920 if args.resolution=='1080' else 1280,'height':int(args.resolution),'bitrate':args.bitrate})+';\n')
  if args.raw_video_profile:paths.append(here/'profile-raw-video.js')
  if args.reference_recovery:
   recovery=directory/'reference-recovery.js';recovery.write_text('''(function(){var make=window.MoonlightStreamIO.create;

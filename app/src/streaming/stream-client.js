@@ -33,16 +33,20 @@
   var mode=options.mode||(cpu?{width:320,height:180,fps:15,bitrate:1000}:{width:1280,height:720,fps:30,bitrate:5000});
   // Higher-rate streams need another receive/Opus turn before the next frame.
   // Keep room for rendering and input; lighter modes retain their 10 ms budget.
-  var highPacketRate=!cpu&&mode.bitrate>=80000;
-  var pumpBudgetMs=highPacketRate&&mode.fps===60?13.5:mode.fps===60&&(mode.width>1280||mode.height>720||mode.bitrate>=8000)?12:10;
+  // Loss recovery is also needed during busy 40–70 Mbps gameplay. Reserving
+  // this path for 80 Mbps left lower settings waiting for repeated IDRs.
+  var highPacketRate=!cpu&&mode.bitrate>=40000;
+  var pumpBudgetMs=highPacketRate&&mode.bitrate>=80000&&mode.fps===60?13.5:mode.fps===60&&(mode.width>1280||mode.height>720||mode.bitrate>=8000)?12:10;
   // At 40 Mbps, an earlier output check leaves more GPU overlap time.
   var completionBudgetMs=pumpBudgetMs===12&&mode.bitrate<40000?6:4;
   var telemetry=global.MoonlightTelemetry.create(),clock=createClock(),pumpMs=0,drainMs=0,iterations=0,maxPumpMs=0,maxDrainMs=0;
+  var inputStats={gamepadQueued:0,gamepadRejected:0};
   function collect(active){
    var snapshot=Object.assign({state:core._ml_session_state(),tasks:core._ml_runtime_tasks(),mode:Object.assign({},mode),pumpBudgetMs:pumpBudgetMs,network:Object.assign({},io.stats),clock:Object.assign({},clock.stats),budgetYields:core._ml_runtime_budget_yields?core._ml_runtime_budget_yields():null,pumpMs:pumpMs,drainMs:drainMs,iterations:iterations,maxPumpMs:maxPumpMs,maxDrainMs:maxDrainMs},media.stats());
    snapshot.fec=global.MoonlightTelemetry.readFec?global.MoonlightTelemetry.readFec(core):null;
    snapshot.referenceRecovery=core._ml_session_reference_recovery?!!core._ml_session_reference_recovery():false;
    snapshot.packetPool=global.MoonlightTelemetry.readPacketPool?global.MoonlightTelemetry.readPacketPool(core):null;
+   snapshot.input=Object.assign({},inputStats);
    snapshot.telemetry=telemetry.sample(snapshot,active?global.MoonlightTelemetry.readCore(core):null);return snapshot;
   }
   function status(text){if(options.onStatus)options.onStatus(text);}
@@ -64,7 +68,7 @@
      if(event===5&&!stopRequested)failure=Error("Stream terminated: "+a);
     }};
     core=await make({moonlightPlatform:platform});
-    // Reuse packet-sized allocations only at the experimental 80 Mbps rate.
+    // Reuse packet-sized allocations at high packet rates.
     // Configure before any C tasks can borrow buffers; release after they stop.
     if(highPacketRate&&core._ml_packet_pool_configure&&core._ml_packet_pool_configure(1)!==0)throw Error("Cannot prepare packet buffer pool");
     if(highPacketRate&&core._ml_fec_prepare_pair){
@@ -131,7 +135,7 @@
    return {error:failure,stats:latestStats};
   }
   function start(){if(!done){if(global.__moonlightStreamUnfinished)throw Error("Restart Civ VII to clear the previous stream");done=run();}return done;}
-  return {start:start,stop:stop,gamepad:function(buttons,lt,rt,lx,ly,rx,ry){if(core&&core._ml_session_state()===2)return core._ml_session_gamepad(buttons,lt,rt,lx,ly,rx,ry);return -1;},key:function(code,down,modifiers){if(core&&core._ml_session_state()===2)return core._ml_session_key(code,down?1:0,modifiers||0);return -1;},stats:function(){return latestStats;}};
+  return {start:start,stop:stop,gamepad:function(buttons,lt,rt,lx,ly,rx,ry){var result=core&&core._ml_session_state()===2?core._ml_session_gamepad(buttons,lt,rt,lx,ly,rx,ry):-1;if(result===0)inputStats.gamepadQueued++;else inputStats.gamepadRejected++;return result;},key:function(code,down,modifiers){if(core&&core._ml_session_state()===2)return core._ml_session_key(code,down?1:0,modifiers||0);return -1;},stats:function(){return latestStats;}};
  }
  global.MoonlightStreamClient={create:create,createClock:createClock};
 })(window);

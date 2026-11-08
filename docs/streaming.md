@@ -35,8 +35,9 @@ to the cached Games screen; it does not send Sunshine `/cancel` to terminate the
 host application. B from Games returns to Host; B again closes the UI.
 
 Open Settings from Host or the Games footer to choose 360p/540p/720p/1080p,
-15/30/60 FPS, and 1–80 Mbps presets (including 40, 50, 60 and the experimental 80 Mbps). D-pad up/down chooses a setting; left/right
-adjusts its value. Back/B saves to `save:/moonlight-experiment/settings.json`.
+15/30/60 FPS, and 1–80 Mbps presets (including 40, 50, 60, 70 and the experimental 80 Mbps). D-pad up/down chooses a setting; left/right
+adjusts its value. A on Bitrate opens all choices; D-pad chooses, A applies and
+B cancels the dropdown. Back/B from Settings saves to `save:/moonlight-experiment/settings.json`.
 Preferences survive reloading the UI and apply to the next launch or resume,
 including the core bitrate request. Defaults are 720p, 30 FPS, 5 Mbps; a selected
 frame rate is a request, not a guarantee of measured playback performance.
@@ -318,3 +319,18 @@ resumed bytes and task cleanup. Diagnostics remain under `investigation/`.
 limits and the 50/60 Mbps comparisons. The application retains nonblocking
 32-packet native receives and the existing 12 ms budget for demanding 60 FPS
 streams.
+
+
+### Rare gameplay stalls
+
+At 40–80 Mbps, the GPU renderer uses direct owned packet batches, packet reuse,
+paired FEC tables and negotiated H.264 reference-frame recovery. This avoids
+reserving the improved recovery path for the 80 Mbps setting; 40–70 Mbps
+retains its previous pump budget. See [Wreckfest evidence](../investigation/evidence/wreckfest-stalls.md).
+
+The UI retains up to ten minutes of one-second stream statistics and controller
+update counters in RAM, even with the overlay off. Stop the stream and close the
+UI before using `investigation/probes/read-stream-diagnostics.js` through
+`send-probe.py`; it exports the history to the sender after streaming. Starting
+another stream replaces the history, and restarting Civ VII loses it. This adds
+no Switch files and performs no loader TCP logging while streaming.

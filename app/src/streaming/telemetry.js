@@ -45,6 +45,19 @@
   }
   return {sample:sample};
  }
+ // Ten minutes of one-second samples, kept only in RAM. A rare stall can be
+ // inspected after play without TCP logging in the render/input loop.
+ function createHistory(){
+  var samples=[];
+  function copy(value){return value?Object.assign({},value):null;}
+  return {samples:samples,reset:function(){samples.length=0;},record:function(stats){
+   var net=stats.network||{};
+   samples.push({time:Date.now(),mode:copy(stats.mode),telemetry:copy(stats.telemetry),fec:copy(stats.fec),input:copy(stats.input),packetPool:copy(stats.packetPool),referenceRecovery:!!stats.referenceRecovery,
+    network:{receivedBytes:net.receivedBytes||0,sentBytes:net.sentBytes||0,directVideoPackets:net.directVideoPackets||0,batchCopiedBytes:net.batchCopiedBytes||0,receiveWouldBlock:net.receiveWouldBlock||0},
+    videoExpired:stats.videoExpired||0,videoBacklogDrops:stats.videoBacklogDrops||0,maxPumpMs:stats.maxPumpMs||0,maxDrainMs:stats.maxDrainMs||0});
+   if(samples.length>600)samples.shift();
+  }};
+ }
  function format(stats){
   var t=stats.telemetry||{},m=stats.mode||{};function f(v,digits){return typeof v==="number"&&Number.isFinite(v)?v.toFixed(digits===undefined?1:digits):"—";}
   return [m.width+" × "+m.height+" · "+m.fps+" FPS · "+f(m.bitrate/1000)+" Mbps requested",
@@ -61,5 +74,5 @@
    "Audio FEC "+f(t.audioRecovered,0)+" recovered / "+f(t.audioFecFailed,0)+" blocks failed · Skipped "+f(t.audioDiscardedMs,0)+" ms",
    "Texture timing excludes display scanout. − +: Exit"].join("\n");
  }
- global.MoonlightTelemetry={now:now,readCore:readCore,readFec:readFec,readPacketPool:readPacketPool,create:create,format:format};
+ global.MoonlightTelemetry={now:now,readCore:readCore,readFec:readFec,readPacketPool:readPacketPool,create:create,createHistory:createHistory,format:format};
 })(typeof window!=="undefined"?window:globalThis);

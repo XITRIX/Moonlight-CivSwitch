@@ -67,9 +67,18 @@ test('80 Mbps uses fractional receive headroom and owns packet reuse until all C
  assert.equal(result.error,null);assert.equal(result.stats.pumpBudgetMs,13.5);
  assert.deepEqual(batchCalls,[1]);assert.deepEqual(referenceCalls,[1]);assert.equal(ioOptions.directVideoBatch,true);assert.equal(result.stats.referenceRecovery,true);
  assert.deepEqual(order,['video','pump:4','finish','pump:9.5','finish','audio']);assert.deepEqual(poolCalls,[1,0]);assert.deepEqual(pairCalls,[...Array.from({length:256},(_,i)=>i),-1]);
- const lower=await runTick(false,false,"smooth",{...mode,bitrate:60000});assert.deepEqual(lower.poolCalls,[0]);assert.deepEqual(lower.pairCalls,[-1]);assert.equal(lower.result.stats.pumpBudgetMs,12);assert.deepEqual(lower.batchCalls,[]);assert.deepEqual(lower.referenceCalls,[]);assert.equal(lower.ioOptions.directVideoBatch,false);
+ const lower=await runTick(false,false,"smooth",{...mode,bitrate:30000});assert.deepEqual(lower.poolCalls,[0]);assert.deepEqual(lower.pairCalls,[-1]);assert.equal(lower.result.stats.pumpBudgetMs,12);assert.deepEqual(lower.batchCalls,[]);assert.deepEqual(lower.referenceCalls,[]);assert.equal(lower.ioOptions.directVideoBatch,false);
  const failed=await runTick(false,false,"smooth",mode,false,true);
  assert.match(failed.result.error.message,/live buffers/);assert(failed.unfinished.core);assert.equal(failed.ioClosed,false);
+});
+
+test('40–70 Mbps uses direct reception and reference recovery without increasing the pump budget',async()=>{
+ for(const bitrate of [40000,50000,60000,70000]){
+  const r=await runTick(false,false,"smooth",{width:1920,height:1080,fps:60,bitrate});
+  assert.equal(r.result.error,null);assert.equal(r.result.stats.pumpBudgetMs,12);
+  assert.deepEqual(r.batchCalls,[1]);assert.deepEqual(r.referenceCalls,[1]);assert.equal(r.ioOptions.directVideoBatch,true);
+  assert.deepEqual(r.poolCalls,[1,0]);assert.deepEqual(r.pairCalls,[...Array.from({length:256},(_,i)=>i),-1]);
+ }
 });
 
 test('cancel during 80 Mbps table preparation frees allocations before any host launch',async()=>{

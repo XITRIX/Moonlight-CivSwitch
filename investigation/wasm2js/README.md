@@ -141,6 +141,8 @@ recovery, suspension and kernel timing. See the
 
 The [follow-up](../evidence/quality-80mbps-followup.md) adds word/paired GF lookup
 kernels, packet-buffer reuse, and direct owned receive. These larger allocations
-and the H.264 reference-recovery capability are enabled at 80 Mbps only. Tables
+and the H.264 reference-recovery capability are enabled at 40–80 Mbps after the
+[Wreckfest stall investigation](../evidence/wreckfest-stalls.md) exposed IDR
+recovery stalls at 50 Mbps. The larger 13.5 ms pump budget remains 80 Mbps only. Tables
 are prepared before launch with cancellation points. Full upstream recovery
 remains enabled; experimental FEC cutoffs are archived outside the app.

@@ -517,3 +517,5 @@ backlog, settings persistence, Low latency forwarding, and timing counters.
 existing flows. `settings-screen-preview.png` and `performance-overlay-preview.png`
 were refreshed. `gpu-overlap-loaded-ui-switch.txt` records the normal updated UI
 ready after the fresh-process validation. Native analysis sessions were closed.
+
+[Wreckfest stalls](wreckfest-stalls.md): saved gameplay diagnostics, input-load comparison, and recovery improvements at 40–70 Mbps.

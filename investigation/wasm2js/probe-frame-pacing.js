@@ -12,7 +12,7 @@
    }return result;
   };return media;
  };
- function poll(){var t=now();if(activeAt){if(lastPoll)pollIntervals.push(t-lastPoll);lastPoll=t;if(pad)pad.poll();if(config.continuous&&pulses<Math.ceil((config.durationMs||24000)*(config.fps||60)/1000)&&client.gamepad(0,0,0,0,0,0,0)===0)pulses++;}raf=requestAnimationFrame(poll);}
+ function poll(){var t=now();if(activeAt){if(lastPoll)pollIntervals.push(t-lastPoll);lastPoll=t;if(pad)pad.poll();if(config.continuous&&(!config.inputPeriodMs||Math.floor((t-activeAt)/config.inputPeriodMs)%2===1)&&pulses<Math.ceil((config.durationMs||24000)*(config.fps||60)/1000)&&client.gamepad(0,0,0,0,0,0,0)===0)pulses++;}raf=requestAnimationFrame(poll);}
  function range(values){var v=values.filter(Number.isFinite).slice().sort(function(a,b){return a-b;});return {count:v.length,min:v[0],median:v[Math.floor(v.length/2)],p95:v[Math.floor((v.length-1)*.95)],max:v[v.length-1]};}
  function rounded(k,v){return typeof v==='number'?Math.round(v*1000)/1000:v;}
  async function out(k,v){await log('MOONLIGHT_PACING_'+k+': '+JSON.stringify(v,rounded));}
@@ -28,7 +28,7 @@
   });
   var result=await client.start();cancelAnimationFrame(raf);raf=null;var s=result.stats;
   await out('RESULT',{mode:s&&s.mode,fec:s&&s.fec,referenceRecovery:s&&s.referenceRecovery,packetPool:s&&s.packetPool,network:s&&s.network,budgetYields:s&&s.budgetYields,maxPumpMs:s&&s.maxPumpMs,maxDrainMs:s&&s.maxDrainMs,pumpBudgetMs:config.pumpBudgetMs||10,phase:config.phase||'baseline',prePumpMs:config.prePumpMs||0,completionPumpMs:config.completionPumpMs||0,synchronousGpu:!!config.synchronousGpu,smoothVideo:config.smoothVideo!==false,gpuTransferMs:s&&s.gpuTransferMs,gpuPollMs:s&&s.gpuPollMs,gpuPendingPolls:s&&s.gpuPendingPolls,gpuTailChecks:s&&s.gpuTailChecks,gpuTailCompleted:s&&s.gpuTailCompleted,gpuTailMs:s&&s.gpuTailMs,continuous:!!config.continuous,error:result.error?result.error.message:null,state:s&&s.state,tasks:s&&s.tasks,submitted:s&&s.submitted,decoded:s&&s.decoded,presented:s&&s.presented,superseded:s&&s.videoSuperseded,videoDeferredTicks:s&&s.videoDeferredTicks,videoExpired:s&&s.videoExpired,videoBacklogDrops:s&&s.videoBacklogDrops,audioDecoded:s&&s.audioDecoded,audioDiscardedMs:s&&s.audioDiscardedMs,pulses:pulses,clock:s&&s.clock,iterations:s&&s.iterations,pumpMs:s&&s.pumpMs,drainMs:s&&s.drainMs,histogram:hist,submitCostMs:range(submitCosts),drainCostMs:range(drainCosts),pollIntervalMs:range(pollIntervals),presentIntervalMs:range(presentIntervals)});
-  for(var i=0;i<samples.length;i++)await out('SAMPLE',samples[i].telemetry);
+  for(var i=0;i<samples.length;i++)await out('SAMPLE',Object.assign({},samples[i].telemetry,{input:samples[i].input,fec:samples[i].fec}));
   for(var i=0;i<trace.length;i+=10)await out('TRACE',trace.slice(i,i+10));
   for(var i=0;i<messages.length;i+=4)await out('LOGS',messages.slice(i,i+4));
   if(result.error||!s||s.state||s.tasks||s.presented<300)throw result.error||Error('Pacing test incomplete');

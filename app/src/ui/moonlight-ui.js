@@ -156,11 +156,12 @@
     var streamTask = null;
     // Native log() sends over the loader's TCP socket and can block on bad Wi-Fi.
     // Keep stream diagnostics bounded in RAM; the overlay remains live.
-    var streamDiagnostics={messages:[],stats:null,localOnly:false};window.__moonlightStreamDiagnostics=streamDiagnostics;
+    var streamHistory=window.MoonlightTelemetry.createHistory();
+    var streamDiagnostics={messages:[],stats:null,samples:streamHistory.samples,localOnly:false};window.__moonlightStreamDiagnostics=streamDiagnostics;
     function recordStreamMessage(text){streamDiagnostics.messages.push({time:Date.now(),text:String(text).slice(0,512)});if(streamDiagnostics.messages.length>64)streamDiagnostics.messages.shift();}
     var stream = window.MoonlightStreamScreen ? window.MoonlightStreamScreen.create({parent:root,
         log:recordStreamMessage,
-        onStats:function(stats){streamDiagnostics.stats=stats;},
+        onStats:function(stats){streamDiagnostics.stats=stats;streamHistory.record(stats);},
         onBack:function(){if(!closed){screen="games";games.resume("Stream stopped. Choose an application to reconnect.");hints.style.display="flex";ignoreInputUntil=Date.now()+250;paintFocus();}}
     }) : null;
     var games = window.MoonlightGames.create({parent:root,onBack:returnToHost,onRefresh:refreshGames,onLaunch:launchGame,onSettings:openSettings,
@@ -422,10 +423,12 @@
         if (connectionTask || streamTask || closed) return;
         if (!stream || !window.MoonlightStreamClient) { games.fail("Streaming runtime unavailable. Send the UI with --streaming."); return; }
         loadSettings();
+        streamHistory.reset();streamDiagnostics.messages.length=0;streamDiagnostics.stats=null;
         streamDiagnostics.localOnly=true;
         games.hide();screen="stream";hints.style.display="none";heldDirection="";
         try {
             streamTask=stream.show(gameHost.address,app,streamMode).then(function(result){
+                if(result&&result.stats)streamDiagnostics.stats=result.stats;
                 if(!closed && result && result.error)games.fail(result.error.message);
             }).catch(function(error){if(!closed){screen="games";games.resume(error.message);hints.style.display="flex";}report("MOONLIGHT_STREAM_ERROR: "+error.message);})
                 .finally(function(){streamTask=null;});

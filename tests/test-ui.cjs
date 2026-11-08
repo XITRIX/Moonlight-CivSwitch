@@ -209,6 +209,8 @@ const sleep=ms=>new Promise(r=>setTimeout(r,ms));
   await evaluate('window.__logBefore=window.log;window.log=()=>{throw Error("stream attempted TCP logging");};for(let i=0;i<100;i++)window.__streamOptions.log("diagnostic "+i);window.__streamOptions.onStats({mode:window.__streamOptions.mode,telemetry:{textureFps:59.8}});true');
   assert.equal(await evaluate('window.__moonlightStreamDiagnostics.messages.length'),64);
   assert.equal(await evaluate('window.__moonlightStreamDiagnostics.stats.telemetry.textureFps'),59.8);
+  assert.equal(await evaluate('window.__moonlightStreamDiagnostics.samples.length'),2);
+  assert.equal(await evaluate('window.__moonlightStreamDiagnostics.samples[1].telemetry.textureFps'),59.8);
   await evaluate('window.log=window.__logBefore;true');
   assert.equal(await evaluate('getComputedStyle(document.getElementById("moonlight-performance-overlay")).pointerEvents'),'none');
   const overlayPng=await call('Page.captureScreenshot',{format:'png'});
