@@ -5,6 +5,34 @@ CivSwitch loader. Sunshine status, PIN pairing, saved-pair reuse, native TLS,
 and the host's game/application list work. An experimental wasm2js streaming
 client now launches/resumes apps and decodes real host video on the Switch.
 
+## Package for CivHomebrew
+
+Packaging is a mandatory part of the [Moonlight development routine](AGENTS.md).
+Keep `payload.json` and the sender's `APP_SCRIPTS` synchronized whenever runtime
+files or their execution order change. Before a handoff or Switch test, rebuild
+any affected generated runtime, package the current sources, and inspect the
+result. The packager does not automatically update saved source paths.
+
+The repository's `payload.json` is the reusable source manifest. It includes the
+built streaming runtime, its CivHomebrew factory adapter, third-party license
+notices and the UI dependencies in the same order as `tools/send_ui.py`.
+Build the runtime first with `npm run build` if it is absent or stale, then:
+
+```sh
+python3 ../NS2-CivHomebrew/tools/package_payload.py --directory . \
+  --non-interactive -o dist/moonlight.civapp
+python3 ../NS2-CivHomebrew/tools/payload_menu.py inspect dist/moonlight.civapp
+node ../NS2-CivHomebrew/tests/moonlight-package.cjs dist/moonlight.civapp
+```
+
+Use `--version RELEASE` to update the saved package release, or pass
+`--no-save-metadata` for CI overrides. `app/assets/moonlight-switch.png` reuses
+Moonlight-Switch's original icon; its pinned source and license are alongside it.
+The package contains the full license texts in `app/civapp-notices.js`.
+This remains the experimental CivSwitch app, rather than the Moonlight-Switch NRO.
+It does not include host credentials or local pairing data. Install through the
+CivHomebrew companion; do not send the JSON package as a raw JS payload.
+
 ## Layout
 
 ```text
