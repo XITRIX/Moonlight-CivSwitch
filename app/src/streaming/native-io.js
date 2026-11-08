@@ -2,18 +2,20 @@
 (function(global){
  "use strict";
  function create(transport){
-  var allocations=[],descriptors=new Set(),bufferSize=2097152,heapBuffer=null,heapAddress=0n,socketTypes={};
+  var allocations=[],descriptors=new Set(),bufferSize=2097152,heapBuffer=null,heapAddress=0n,socketTypes={},interruptAfter=Infinity;
+  function now(){return global.performance&&global.performance.now?global.performance.now():Date.now();}
+  function isInterrupted(){return interruptAfter!==Infinity&&now()>=interruptAfter;}
   function alloc(size){var p=malloc(size);if(!p)throw Error("Native streaming allocation failed");allocations.push(p);return p;}
   function invoke(name,args){return call_rop.apply(null,[transport.resolveNativeSymbol(name)].concat((args||[]).map(BigInt)));}
   function signed(value){return Number(BigInt.asIntN(32,value));}
   function call(name,args){var result=signed(invoke("_ZN2nn6socket"+name,args));return result<0?-Number(invoke("_ZN2nn6socket12GetLastErrnoEv",[])):result;}
   function copy(pointer,length){var bytes=new Uint8Array(length),view=new DataView(bytes.buffer),i=0;for(;i+8<=length;i+=8)view.setBigUint64(i,read64(pointer+BigInt(i)),true);for(;i<length;i++)bytes[i]=Number(read8(pointer+BigInt(i)));return bytes;}
-  var scratch=alloc(bufferSize),address=alloc(128),addressLength=alloc(8),optionBuffer=alloc(128),optionLength=alloc(8),pollBuffer=alloc(64*8);
-  var stats={calls:0,sentBytes:0,receivedBytes:0,lastError:0,rtpTypes:{}};
+  var address=alloc(128),addressLength=alloc(8),optionBuffer=alloc(128),optionLength=alloc(8),pollBuffer=alloc(64*8);
+  var stats={calls:0,sentBytes:0,receivedBytes:0,directReceivedBytes:0,directSentBytes:0,receiveCalls:0,receiveWouldBlock:0,lastError:0,rtpTypes:{}};
   function bounds(heap,pointer,length){pointer=pointer>>>0;if(!Number.isInteger(length)||length<0||pointer+length>heap.length)throw Error("Streaming heap range rejected");return pointer;}
   function base(heap){
+   if(heap.byteOffset!==0||heap.byteLength!==heap.buffer.byteLength)throw Error("Expected complete core heap view");
    if(heap.buffer===heapBuffer)return heapAddress;
-   if(heap.byteOffset!==0)throw Error("Expected complete core heap view");
    var object=addrof_compressed(heap),external=read64_compressed(object+0x28n),compressedBase=read32_compressed(object+0x30n);
    if(compressedBase!==0n||external<0x100000000n||external>=0x8000000000n)throw Error("Core heap is not a validated external buffer");
    var bytes=copy(external,32);for(var i=0;i<32;i++)if(bytes[i]!==heap[i])throw Error("Core heap pointer verification failed");
@@ -36,6 +38,9 @@
    return [level,option];
   }
   function io(op,args,heap){
+   // Stop must not wait for network recovery or reliable-send/linger timers.
+   // A fatal socket result (not EINTR, which ENet retries) unwinds C callers.
+   if(isInterrupted()&&(op===3||op===4||op===5||op===11))return -104;
    stats.calls++;var a=args[0],b=args[1]>>>0,c=args[2]>>>0,d=args[3],e=args[4]>>>0,f=args[5]>>>0,result;
    try{
     if(op===1){
@@ -47,16 +52,20 @@
      result=call(op===2?"4BindEiPK8sockaddrj":"7ConnectEiPK8sockaddrj",[a,address,16]);
     }else if(op===4||op===5){
      if(c>bufferSize)return -90;bounds(heap,b,c);
-     var flags=0x80|(d&2);
+     // The socket call is synchronous, so this validated backing store stays
+     // alive and cannot grow while native code reads/writes its borrowed range.
+     var data=base(heap)+BigInt(b),flags=0x80|(d&2);
      if(op===4){
-      toNative(heap,b,c,scratch);
-      if(e){if(!inputAddress(heap,e,f))return -97;result=call("6SendToEiPKvmiPK8sockaddrj",[a,scratch,c,flags,address,16]);}
-      else result=call("4SendEiPKvmi",[a,scratch,c,flags]);
-      if(result>0)stats.sentBytes+=result;
+      if(e){if(!inputAddress(heap,e,f))return -97;result=call("6SendToEiPKvmiPK8sockaddrj",[a,data,c,flags,address,16]);}
+      else result=call("4SendEiPKvmi",[a,data,c,flags]);
+      if(result>0){if(result>c)throw Error("Native send exceeded borrowed range");stats.sentBytes+=result;stats.directSentBytes+=result;}
      }else{
-      write32(addressLength,16n);
-      result=e?call("8RecvFromEiPvmiP8sockaddrPj",[a,scratch,c,flags,address,addressLength]):call("4RecvEiPvmi",[a,scratch,c,flags]);
-      if(result>=0){fromNative(heap,b,result,scratch);outputAddress(heap,e,f);stats.receivedBytes+=result;if(socketTypes[a]===2&&result>=12){var packetType=heap[b].toString(16)+":"+heap[b+1].toString(16);stats.rtpTypes[packetType]=(stats.rtpTypes[packetType]||0)+1;}}
+      // Reject address ranges before a receive consumes a datagram.
+      if(e&&f){bounds(heap,f,4);bounds(heap,e,Math.min(new DataView(heap.buffer).getUint32(f,true),16));}
+      write32(addressLength,16n);stats.receiveCalls++;
+      result=e?call("8RecvFromEiPvmiP8sockaddrPj",[a,data,c,flags,address,addressLength]):call("4RecvEiPvmi",[a,data,c,flags]);
+      if(result>=0){if(result>c)throw Error("Native receive exceeded borrowed range");outputAddress(heap,e,f);stats.receivedBytes+=result;stats.directReceivedBytes+=result;if(socketTypes[a]===2&&result>=12){var packetType=heap[b].toString(16)+":"+heap[b+1].toString(16);stats.rtpTypes[packetType]=(stats.rtpTypes[packetType]||0)+1;}}
+      else if(result===-11)stats.receiveWouldBlock++;
      }
     }else if(op===6){
      write32(addressLength,16n);result=call(d?"11GetPeerNameEiP8sockaddrPj":"11GetSockNameEiP8sockaddrPj",[a,address,addressLength]);
@@ -76,6 +85,7 @@
    }catch(error){stats.lastError=5;throw error;}
   }
   return {io:io,stats:stats,invoke:invoke,copy:copy,toNative:toNative,fromNative:fromNative,heapAddress:base,
+   interrupt:function(graceMs){interruptAfter=Math.min(interruptAfter,now()+Math.max(0,Math.min(100,Number(graceMs)||0)));},isInterrupted:isInterrupted,
    randomFill:function(target){var p=alloc(Math.max(1,target.length));try{invoke("_ZN2nn6crypto36GenerateCryptographicallyRandomBytesEPvm",[p,target.length]);target.set(copy(p,target.length));}finally{allocations.pop();free(p);}},
    close:function(){for(var fd of descriptors)call("5CloseEi",[fd]);descriptors.clear();for(var p of allocations.reverse())free(p);allocations=[];heapBuffer=null;}
   };

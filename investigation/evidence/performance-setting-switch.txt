@@ -1,0 +1,4 @@
+Executing payload...
+MOONLIGHT_SETTINGS_PERSISTED: {"width":960,"height":540,"fps":60,"bitrate":8000,"showStats":true}
+MOONLIGHT_SETTINGS_RESTORED: {"width":1280,"height":720,"fps":60,"bitrate":5000,"showStats":false}
+Executed successfully

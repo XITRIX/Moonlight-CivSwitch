@@ -54,6 +54,14 @@ left/right changes resolution (360p, 540p, 720p), frame rate (15, 30, 60 FPS), o
 bitrate (1, 2, 3, 5, 8, 10 Mbps). A cycles a value or activates Back. Back/B saves
 to `save:/moonlight-experiment/settings.json` and returns to the previous screen.
 Changes apply to the next stream. Defaults remain 720p, 30 FPS, 5 Mbps.
+The saved **Performance overlay** switch enables in-stream FPS, RTT/variation,
+receive/decode/copy timing, frame pacing, decoder/audio buffering and loss
+indicators. It defaults to Off. Statistics describe texture submissions, rather
+than physical display timing.
+Playback presents the newest ready decoded frame per drain. Audio keeps at most
+60 ms of completed PCM plus a partial chunk under 20 ms, skipping stale waiting
+samples if the queue fills. The overlay shows intentional video/audio skips
+separately from network loss indicators.
 
 To enable streaming, build the pinned core once and preload it:
 
@@ -65,7 +73,11 @@ python3 -B tools/send_ui.py 192.168.1.182 --streaming
 
 Select a card to launch or resume that app. Video fills the screen while preserving
 its aspect ratio; playback controls and status text are hidden once frames arrive.
-Press − and + together (or press Escape on a keyboard) to stop and return to Games. The renderer requests
+Press − and + together (or press Escape on a keyboard) to stop and return to Games.
+A separate timer checks the local exit chord during rendering stalls; network
+shutdown gets at most 100 ms of grace before pending stream I/O is canceled.
+Streaming diagnostics stay in RAM to avoid blocking on the loader TCP connection.
+The renderer requests
 1280×720 H.264 at 30 fps and copies decoded frames directly into an owned Civ VII
 GPU texture, without JavaScript pixel conversion or per-frame PNGs. A fresh-start
 hardware run presented about 29.5 fps and cleaned up successfully.

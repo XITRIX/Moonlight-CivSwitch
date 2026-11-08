@@ -15,6 +15,10 @@ static int state,error_code,video_frames,audio_frames;
 static unsigned char* video_bytes;
 static size_t video_capacity;
 static int scheduler_test_result;
+static double frame_samples,receive_ms,receive_max_ms,queue_ms,queue_max_ms,host_samples,host_ms,host_max_ms;
+static double frame_gaps,decoder_rejected;
+static uint32_t last_frame;
+static bool have_last_frame;
 static void input_task(void* ignored);
 static int input_pending,input_buttons,input_lt,input_rt,input_lx,input_ly,input_rx,input_ry;
 static struct { short code;char action,modifiers; } keys[64];
@@ -24,11 +28,21 @@ static void logger(const char* format,...) { char text[1024];va_list args;va_sta
 static void stage_start(int stage) { ml_event(1,stage,0); }
 static void stage_complete(int stage) { ml_event(2,stage,0); }
 static void stage_failed(int stage,int code) { error_code=code;ml_event(3,stage,code); }
-static void connected(void) { state=2;ml_spawn_task(input_task,NULL);ml_event(4,0,0); }
+static void connected(void) { state=2;ml_spawn_input_task(input_task,NULL);ml_event(4,0,0); }
 static void terminated(int code) { if(state==4)return;error_code=code;state=3;ml_event(5,code,0); }
 static int video_setup(int format,int width,int height,int fps,void* context,int flags) { (void)context;(void)flags;return ml_video_setup(format,width,height,fps); }
 static int video_submit(PDECODE_UNIT unit) {
+    ml_runtime_checkpoint();
     if(unit->fullLength<=0||unit->fullLength>2097152)return DR_NEED_IDR;
+    uint32_t frame=(uint32_t)unit->frameNumber,advance=frame-last_frame;
+    if(have_last_frame&&advance>0&&advance<0x80000000u){if(advance>1)frame_gaps+=advance-1;last_frame=frame;}
+    if(!have_last_frame){last_frame=frame;have_last_frame=true;}
+    uint64_t now=PltGetMicroseconds();
+    double receive=unit->enqueueTimeUs>=unit->receiveTimeUs?(unit->enqueueTimeUs-unit->receiveTimeUs)/1000.0:0;
+    double queued=now>=unit->enqueueTimeUs?(now-unit->enqueueTimeUs)/1000.0:0;
+    frame_samples++;receive_ms+=receive;if(receive>receive_max_ms)receive_max_ms=receive;
+    queue_ms+=queued;if(queued>queue_max_ms)queue_max_ms=queued;
+    if(unit->frameHostProcessingLatency){double host=unit->frameHostProcessingLatency/10.0;host_samples++;host_ms+=host;if(host>host_max_ms)host_max_ms=host;}
     if((size_t)unit->fullLength>video_capacity){void* p=realloc(video_bytes,unit->fullLength);if(!p)return DR_NEED_IDR;video_bytes=p;video_capacity=unit->fullLength;}
     const void* sps=NULL;const void* pps=NULL;int sps_size=0,pps_size=0,total=0,entries=0;
     for(PLENTRY entry=unit->bufferList;entry;entry=entry->next){
@@ -40,14 +54,14 @@ static int video_submit(PDECODE_UNIT unit) {
     }
     if(total!=unit->fullLength)return DR_NEED_IDR;
     int result=ml_video_frame(video_bytes,total,unit->frameType,(double)unit->presentationTimeUs,sps,sps_size,pps,pps_size);
-    if(!result)video_frames++;
+    if(!result)video_frames++;else decoder_rejected++;
     return result==0?DR_OK:DR_NEED_IDR;
 }
 static int audio_setup(int audio_configuration,OPUS_MULTISTREAM_CONFIGURATION* opus,void* context,int flags) {
     (void)audio_configuration;(void)context;(void)flags;
     return ml_audio_setup(opus->sampleRate,opus->channelCount,opus->streams,opus->coupledStreams,opus->samplesPerFrame);
 }
-static void audio_submit(char* data,int length) { if(length>0&&length<65536){ml_audio_frame(data,length);audio_frames++;} }
+static void audio_submit(char* data,int length) { if(length>0&&length<65536){ml_runtime_checkpoint();ml_audio_frame(data,length);audio_frames++;} }
 static void start_task(void* ignored) {
     (void)ignored;
     CONNECTION_LISTENER_CALLBACKS listener;DECODER_RENDERER_CALLBACKS video;AUDIO_RENDERER_CALLBACKS audio;
@@ -70,17 +84,45 @@ int ml_session_start(const char* host,const char* app_version,const char* rtsp_u
     config.supportedVideoFormats=VIDEO_FORMAT_H264;config.encryptionFlags=0;config.clientRefreshRateX100=fps*100;
     memcpy(config.remoteInputAesKey,key,16);config.remoteInputAesIv[0]=key_id>>24;config.remoteInputAesIv[1]=key_id>>16;config.remoteInputAesIv[2]=key_id>>8;config.remoteInputAesIv[3]=key_id;
     state=1;error_code=video_frames=audio_frames=0;input_pending=0;keys_read=keys_write=0;
+    frame_samples=receive_ms=receive_max_ms=queue_ms=queue_max_ms=host_samples=host_ms=host_max_ms=0;
+    frame_gaps=decoder_rejected=0;have_last_frame=false;
     int result=ml_spawn_task(start_task,NULL);if(result)state=3;return result;
 }
-static void stop_task(void* ignored) { (void)ignored;LiStopConnection();state=0;free(video_bytes);video_bytes=NULL;video_capacity=0;ml_event(7,0,0); }
+static void stop_task(void* ignored) {
+    (void)ignored;
+    // Only releases may pass during the short shutdown grace; pending presses
+    // are discarded. The JS socket adapter bounds the time available to send.
+    LiSendMultiControllerEvent(0,1,0,0,0,0,0,0,0);
+    while(keys_read!=keys_write){typeof(keys[0]) key=keys[keys_read++%64];if(key.action==KEY_ACTION_UP)LiSendKeyboardEvent(key.code,key.action,key.modifiers);}
+    input_pending=0;LiStopConnection();state=0;free(video_bytes);video_bytes=NULL;video_capacity=0;ml_event(7,0,0);
+}
 void ml_session_stop(void) {
-    if(state==1){LiInterruptConnection();return;}
-    if(state==2||state==3){state=4;ml_spawn_task(stop_task,NULL);}
+    if(state==1||state==2||state==3)LiInterruptConnection();
+    if(state==1)return;
+    if(state==2||state==3){state=4;ml_spawn_input_task(stop_task,NULL);}
 }
 int ml_session_state(void) { return state; }
 int ml_session_error(void) { return error_code; }
 int ml_session_video_frames(void) { return video_frames; }
 int ml_session_audio_frames(void) { return audio_frames; }
+
+/* Versioned, read-only snapshot; only call between pumps while connected.
+   Queue APIs are deliberately omitted: both renderers use DIRECT_SUBMIT. */
+const double* ml_session_metrics(void) {
+    static double values[22];
+    if(state!=2)return NULL;
+    uint32_t rtt=0,variation=0;
+    const RTP_VIDEO_STATS* video=LiGetRTPVideoStats();const RTP_AUDIO_STATS* audio=LiGetRTPAudioStats();
+    values[0]=1;values[1]=frame_samples;values[2]=receive_ms;values[3]=receive_max_ms;
+    values[4]=queue_ms;values[5]=queue_max_ms;values[6]=host_samples;values[7]=host_ms;values[8]=host_max_ms;
+    values[9]=LiGetEstimatedRttInfo(&rtt,&variation);values[10]=rtt;values[11]=variation;
+    values[12]=video->packetCountVideo;values[13]=video->packetCountFec;
+    // This pinned core declares video recovery counters but never updates them.
+    values[14]=values[15]=-1;
+    values[16]=audio->packetCountAudio;values[17]=audio->packetCountFec;values[18]=audio->packetCountFecRecovered;values[19]=audio->packetCountFecFailed;
+    values[20]=frame_gaps;values[21]=decoder_rejected;
+    return values;
+}
 
 /* JS only queues state; upstream input APIs run on a cooperative C stack. */
 int ml_session_gamepad(int buttons,int lt,int rt,int lx,int ly,int rx,int ry) {
@@ -115,6 +157,45 @@ static void test_scheduler(void* ignored) {
 }
 int ml_scheduler_test_start(void) { if(ml_runtime_tasks())return -1;scheduler_test_result=test_counter=0;return ml_spawn_task(test_scheduler,NULL); }
 int ml_scheduler_test_result(void) { return scheduler_test_result; }
+
+static int budget_test_result;
+static void budget_test_worker(void* ignored) {
+    double until=LiGetMillis()+12;
+    while(LiGetMillis()<until)ml_runtime_checkpoint();
+    budget_test_result++;
+}
+int ml_budget_test_start(void) { if(ml_runtime_tasks())return -1;budget_test_result=0;return ml_spawn_task(budget_test_worker,NULL); }
+int ml_budget_test_result(void) { return budget_test_result; }
+
+static int input_priority_result;
+static PLT_EVENT input_priority_event;
+static PLT_THREAD input_priority_sender;
+static void test_priority_dispatch(void* ignored) { input_priority_result=1;PltSetEvent(&input_priority_event); }
+static void test_priority_send(void* ignored) { PltWaitForEvent(&input_priority_event);input_priority_result=input_priority_result*10+2; }
+static void test_priority_busy(void* ignored) {
+    double until=LiGetMillis()+12;
+    while(LiGetMillis()<until)ml_runtime_checkpoint();
+    PltJoinThread(&input_priority_sender);PltCloseEvent(&input_priority_event);
+    input_priority_result=input_priority_result*10+3;
+}
+int ml_input_priority_test_start(void) {
+    if(ml_runtime_tasks())return -1;input_priority_result=0;
+    if(PltCreateEvent(&input_priority_event))return -2;
+    if(ml_spawn_task(test_priority_busy,NULL)||PltCreateThread("InputSend",test_priority_send,NULL,&input_priority_sender)||ml_spawn_input_task(test_priority_dispatch,NULL))return -3;
+    return 0;
+}
+int ml_input_priority_test_result(void) { return input_priority_result; }
+
+static int interrupt_test_result;
+static void test_sleeping_thread(void* ignored) { PltSleepMs(60000);interrupt_test_result=1; }
+static void test_interrupt_driver(void* ignored) {
+    PLT_THREAD sleeper;
+    if(PltCreateThread("CancelTest",test_sleeping_thread,NULL,&sleeper)){interrupt_test_result=-1;return;}
+    PltSleepMs(1);PltInterruptThread(&sleeper);PltJoinThread(&sleeper);
+    interrupt_test_result=interrupt_test_result==1?42:-2;
+}
+int ml_interrupt_test_start(void) { if(ml_runtime_tasks())return -1;interrupt_test_result=0;return ml_spawn_task(test_interrupt_driver,NULL); }
+int ml_interrupt_test_result(void) { return interrupt_test_result; }
 
 static int network_result,network_port;
 static char network_host[64];

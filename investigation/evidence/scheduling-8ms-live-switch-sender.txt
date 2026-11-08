@@ -1,0 +1,162 @@
+Executing payload...
+MOONLIGHT_STREAM_UPLOAD: 1/7
+Executed successfully
+Executing payload...
+MOONLIGHT_STREAM_UPLOAD: 2/7
+Executed successfully
+Executing payload...
+MOONLIGHT_STREAM_UPLOAD: 3/7
+Executed successfully
+Executing payload...
+MOONLIGHT_STREAM_UPLOAD: 4/7
+Executed successfully
+Executing payload...
+MOONLIGHT_STREAM_UPLOAD: 5/7
+Executed successfully
+Executing payload...
+MOONLIGHT_STREAM_UPLOAD: 6/7
+Executed successfully
+Executing payload...
+MOONLIGHT_STREAM_UPLOAD: 7/7
+Executed successfully
+Executing payload...
+MOONLIGHT_STREAM_CORE: RTSP port: 48010
+
+MOONLIGHT_STREAM_CORE: Initializing platform...
+MOONLIGHT_STREAM_CORE: Event 1: 1, 0
+MOONLIGHT_STREAM_CORE: Event 2: 1, 0
+MOONLIGHT_STREAM_CORE: done
+
+MOONLIGHT_STREAM_CORE: Resolving host name...
+MOONLIGHT_STREAM_CORE: Event 1: 2, 0
+MOONLIGHT_STREAM_CORE: Event 2: 2, 0
+MOONLIGHT_STREAM_CORE: done
+
+MOONLIGHT_STREAM_CORE: Initializing audio stream...
+MOONLIGHT_STREAM_CORE: Event 1: 3, 0
+MOONLIGHT_STREAM_CORE: Event 2: 3, 0
+MOONLIGHT_STREAM_CORE: done
+
+MOONLIGHT_STREAM_CORE: Starting RTSP handshake...
+MOONLIGHT_STREAM_CORE: Event 1: 4, 0
+MOONLIGHT_STREAM_CORE: Audio port: 48000
+
+MOONLIGHT_STREAM_CORE: setsockopt(SO_PRIORITY, 6) failed: 50
+
+MOONLIGHT_STREAM_CORE: Video port: 47998
+
+MOONLIGHT_STREAM_CORE: Control port: 47999
+
+MOONLIGHT_STREAM_CORE: Event 2: 4, 0
+MOONLIGHT_STREAM_CORE: done
+
+MOONLIGHT_STREAM_CORE: Initializing control stream...
+MOONLIGHT_STREAM_CORE: Event 1: 5, 0
+MOONLIGHT_STREAM_CORE: Event 2: 5, 0
+MOONLIGHT_STREAM_CORE: done
+
+MOONLIGHT_STREAM_CORE: Initializing video stream...
+MOONLIGHT_STREAM_CORE: Event 1: 6, 0
+MOONLIGHT_STREAM_CORE: Event 2: 6, 0
+MOONLIGHT_STREAM_CORE: done
+
+MOONLIGHT_STREAM_CORE: Initializing input stream...
+MOONLIGHT_STREAM_CORE: Event 1: 7, 0
+MOONLIGHT_STREAM_CORE: Event 2: 7, 0
+MOONLIGHT_STREAM_CORE: done
+
+MOONLIGHT_STREAM_CORE: Starting control stream...
+MOONLIGHT_STREAM_CORE: Event 1: 8, 0
+MOONLIGHT_STREAM_CORE: Event 2: 8, 0
+MOONLIGHT_STREAM_CORE: done
+
+MOONLIGHT_STREAM_CORE: Starting video stream...
+MOONLIGHT_STREAM_CORE: Event 1: 9, 0
+MOONLIGHT_STREAM_CORE: setsockopt(SO_PRIORITY, 5) failed: 50
+
+MOONLIGHT_STREAM_CORE: Event 2: 9, 0
+MOONLIGHT_STREAM_CORE: done
+
+MOONLIGHT_STREAM_CORE: Starting audio stream...
+MOONLIGHT_STREAM_CORE: Event 1: 10, 0
+MOONLIGHT_STREAM_CORE: Event 2: 10, 0
+MOONLIGHT_STREAM_CORE: done
+
+MOONLIGHT_STREAM_CORE: Starting input stream...
+MOONLIGHT_STREAM_CORE: Event 1: 11, 0
+MOONLIGHT_STREAM_CORE: Event 2: 11, 0
+MOONLIGHT_STREAM_CORE: done
+
+MOONLIGHT_STREAM_CORE: Event 4: 0, 0
+MOONLIGHT_SCHEDULING_SAMPLE: {"telemetry":{"decodedFps":0,"textureFps":0,"receivedMbps":0.009,"rttMs":170,"rttVariationMs":197,"frameReceiveMs":null,"coreQueueMs":null,"hostProcessingMs":null,"decodeReadyMs":null,"copyPresentMs":null,"frameIntervalMs":null,"frameJitterMs":null,"loopHz":37.576,"pumpAvgMs":14.357,"drainAvgMs":0.004,"decoderPending":0,"videoSuperseded":0,"audioBufferedMsUpperBound":0,"audioQueueLimitMs":60,"audioCatchups":0,"audioDiscardedMs":0,"audioDropped":0,"videoFrameGaps":0,"decoderRejected":0,"audioRecovered":0,"audioFecFailed":0,"directReceivedBytes":1196},"clock":{"frameWakes":39,"timerWakes":0,"forcedWakes":0,"waitMs":469.014,"maxWaitMs":15.891},"budgetYields":11,"maxPumpMs":317.052,"maxDrainMs":0.162}
+MOONLIGHT_STREAM_CORE: Received first video packet after 100 ms
+
+MOONLIGHT_STREAM_CORE: Received first audio packet after 500 ms
+
+MOONLIGHT_STREAM_CORE: Initial audio resync period: 500 milliseconds
+
+MOONLIGHT_SCHEDULING_SAMPLE: {"telemetry":{"decodedFps":12.785,"textureFps":12.785,"receivedMbps":1.119,"rttMs":58,"rttVariationMs":70,"frameReceiveMs":2.732,"coreQueueMs":0.058,"hostProcessingMs":6.414,"decodeReadyMs":10.233,"copyPresentMs":2.046,"frameIntervalMs":67.697,"frameJitterMs":36.817,"loopHz":59.007,"pumpAvgMs":3.75,"drainAvgMs":0.677,"decoderPending":0,"videoSuperseded":0,"audioBufferedMsUpperBound":0,"audioQueueLimitMs":60,"audioCatchups":0,"audioDiscardedMs":0,"audioDropped":0,"videoFrameGaps":0,"decoderRejected":0,"audioRecovered":0,"audioFecFailed":0,"directReceivedBytes":143375},"clock":{"frameWakes":99,"timerWakes":0,"forcedWakes":0,"waitMs":1212.869,"maxWaitMs":16.523},"budgetYields":14,"maxPumpMs":317.052,"maxDrainMs":12.55}
+MOONLIGHT_SCHEDULING_SAMPLE: {"telemetry":{"decodedFps":29.373,"textureFps":28.394,"receivedMbps":2.335,"rttMs":28,"rttVariationMs":26,"frameReceiveMs":2.08,"coreQueueMs":0.345,"hostProcessingMs":1.587,"decodeReadyMs":9.1,"copyPresentMs":0.913,"frameIntervalMs":34.106,"frameJitterMs":8.914,"loopHz":58.746,"pumpAvgMs":6.587,"drainAvgMs":0.717,"decoderPending":1,"videoSuperseded":1,"audioBufferedMsUpperBound":55,"audioQueueLimitMs":60,"audioCatchups":0,"audioDiscardedMs":0,"audioDropped":0,"videoFrameGaps":0,"decoderRejected":0,"audioRecovered":0,"audioFecFailed":0,"directReceivedBytes":441495},"clock":{"frameWakes":159,"timerWakes":0,"forcedWakes":0,"waitMs":1788.59,"maxWaitMs":22.185},"budgetYields":37,"maxPumpMs":317.052,"maxDrainMs":12.55}
+MOONLIGHT_SCHEDULING_SAMPLE: {"telemetry":{"decodedFps":30.667,"textureFps":28.689,"receivedMbps":1.747,"rttMs":19,"rttVariationMs":10,"frameReceiveMs":1.715,"coreQueueMs":0.019,"hostProcessingMs":1.543,"decodeReadyMs":10.401,"copyPresentMs":0.891,"frameIntervalMs":35.078,"frameJitterMs":11.077,"loopHz":59.356,"pumpAvgMs":6.452,"drainAvgMs":0.692,"decoderPending":0,"videoSuperseded":3,"audioBufferedMsUpperBound":40,"audioQueueLimitMs":60,"audioCatchups":0,"audioDiscardedMs":0,"audioDropped":0,"videoFrameGaps":0,"decoderRejected":0,"audioRecovered":0,"audioFecFailed":0,"directReceivedBytes":662241},"clock":{"frameWakes":219,"timerWakes":0,"forcedWakes":0,"waitMs":2363.595,"maxWaitMs":27.26},"budgetYields":54,"maxPumpMs":317.052,"maxDrainMs":12.55}
+MOONLIGHT_SCHEDULING_SAMPLE: {"telemetry":{"decodedFps":29.458,"textureFps":28.476,"receivedMbps":1.662,"rttMs":15,"rttVariationMs":7,"frameReceiveMs":1.231,"coreQueueMs":0.85,"hostProcessingMs":1.457,"decodeReadyMs":8.95,"copyPresentMs":0.887,"frameIntervalMs":35.454,"frameJitterMs":12.974,"loopHz":58.916,"pumpAvgMs":6.446,"drainAvgMs":0.768,"decoderPending":0,"videoSuperseded":4,"audioBufferedMsUpperBound":40,"audioQueueLimitMs":60,"audioCatchups":0,"audioDiscardedMs":0,"audioDropped":0,"videoFrameGaps":0,"decoderRejected":0,"audioRecovered":0,"audioFecFailed":0,"directReceivedBytes":873853},"clock":{"frameWakes":279,"timerWakes":0,"forcedWakes":0,"waitMs":2941.659,"maxWaitMs":32.15},"budgetYields":75,"maxPumpMs":317.052,"maxDrainMs":12.55}
+MOONLIGHT_SCHEDULING_SAMPLE: {"telemetry":{"decodedFps":29.881,"textureFps":27.889,"receivedMbps":1.725,"rttMs":13,"rttVariationMs":4,"frameReceiveMs":2.693,"coreQueueMs":0.018,"hostProcessingMs":1.513,"decodeReadyMs":10.432,"copyPresentMs":0.875,"frameIntervalMs":35.735,"frameJitterMs":14.428,"loopHz":57.769,"pumpAvgMs":6.623,"drainAvgMs":0.786,"decoderPending":1,"videoSuperseded":6,"audioBufferedMsUpperBound":50,"audioQueueLimitMs":60,"audioCatchups":0,"audioDiscardedMs":0,"audioDropped":0,"videoFrameGaps":0,"decoderRejected":0,"audioRecovered":0,"audioFecFailed":0,"directReceivedBytes":1090325},"clock":{"frameWakes":337,"timerWakes":0,"forcedWakes":0,"waitMs":3508.813,"maxWaitMs":37.888},"budgetYields":97,"maxPumpMs":317.052,"maxDrainMs":12.55}
+MOONLIGHT_SCHEDULING_SAMPLE: {"telemetry":{"decodedFps":30.547,"textureFps":28.576,"receivedMbps":1.676,"rttMs":16,"rttVariationMs":8,"frameReceiveMs":0.785,"coreQueueMs":0.018,"hostProcessingMs":1.553,"decodeReadyMs":9.835,"copyPresentMs":0.862,"frameIntervalMs":35.186,"frameJitterMs":10.683,"loopHz":58.138,"pumpAvgMs":6.559,"drainAvgMs":0.813,"decoderPending":0,"videoSuperseded":8,"audioBufferedMsUpperBound":50,"audioQueueLimitMs":60,"audioCatchups":0,"audioDiscardedMs":0,"audioDropped":0,"videoFrameGaps":0,"decoderRejected":0,"audioRecovered":0,"audioFecFailed":0,"directReceivedBytes":1302985},"clock":{"frameWakes":396,"timerWakes":0,"forcedWakes":0,"waitMs":4081.543,"maxWaitMs":37.888},"budgetYields":118,"maxPumpMs":317.052,"maxDrainMs":12.55}
+MOONLIGHT_SCHEDULING_SAMPLE: {"telemetry":{"decodedFps":30.397,"textureFps":28.436,"receivedMbps":2.321,"rttMs":13,"rttVariationMs":5,"frameReceiveMs":3.09,"coreQueueMs":0.761,"hostProcessingMs":1.503,"decodeReadyMs":10.186,"copyPresentMs":0.941,"frameIntervalMs":35.657,"frameJitterMs":15.246,"loopHz":57.852,"pumpAvgMs":6.771,"drainAvgMs":0.819,"decoderPending":0,"videoSuperseded":10,"audioBufferedMsUpperBound":50,"audioQueueLimitMs":60,"audioCatchups":0,"audioDiscardedMs":0,"audioDropped":0,"videoFrameGaps":0,"decoderRejected":0,"audioRecovered":0,"audioFecFailed":0,"directReceivedBytes":1598837},"clock":{"frameWakes":455,"timerWakes":0,"forcedWakes":0,"waitMs":4646.355,"maxWaitMs":41.813},"budgetYields":143,"maxPumpMs":317.052,"maxDrainMs":12.55}
+MOONLIGHT_SCHEDULING_SAMPLE: {"telemetry":{"decodedFps":29.582,"textureFps":27.61,"receivedMbps":1.98,"rttMs":13,"rttVariationMs":4,"frameReceiveMs":1.788,"coreQueueMs":0.361,"hostProcessingMs":1.43,"decodeReadyMs":9.852,"copyPresentMs":0.867,"frameIntervalMs":36.199,"frameJitterMs":12.871,"loopHz":58.179,"pumpAvgMs":6.823,"drainAvgMs":0.812,"decoderPending":0,"videoSuperseded":12,"audioBufferedMsUpperBound":40,"audioQueueLimitMs":60,"audioCatchups":0,"audioDiscardedMs":0,"audioDropped":0,"videoFrameGaps":0,"decoderRejected":0,"audioRecovered":0,"audioFecFailed":0,"directReceivedBytes":1849823},"clock":{"frameWakes":514,"timerWakes":0,"forcedWakes":0,"waitMs":5202.441,"maxWaitMs":42.075},"budgetYields":163,"maxPumpMs":317.052,"maxDrainMs":12.55}
+MOONLIGHT_SCHEDULING_SAMPLE: {"telemetry":{"decodedFps":29.552,"textureFps":27.582,"receivedMbps":1.787,"rttMs":16,"rttVariationMs":8,"frameReceiveMs":1.313,"coreQueueMs":0.019,"hostProcessingMs":1.563,"decodeReadyMs":8.896,"copyPresentMs":0.888,"frameIntervalMs":35.116,"frameJitterMs":13.655,"loopHz":58.119,"pumpAvgMs":6.676,"drainAvgMs":0.808,"decoderPending":0,"videoSuperseded":14,"audioBufferedMsUpperBound":40,"audioQueueLimitMs":60,"audioCatchups":0,"audioDiscardedMs":0,"audioDropped":0,"videoFrameGaps":0,"decoderRejected":0,"audioRecovered":0,"audioFecFailed":0,"directReceivedBytes":2076579},"clock":{"frameWakes":573,"timerWakes":0,"forcedWakes":0,"waitMs":5768.441,"maxWaitMs":42.075},"budgetYields":179,"maxPumpMs":317.052,"maxDrainMs":12.55}
+MOONLIGHT_SCHEDULING_SAMPLE: {"telemetry":{"decodedFps":30.885,"textureFps":29.888,"receivedMbps":1.952,"rttMs":14,"rttVariationMs":6,"frameReceiveMs":1.822,"coreQueueMs":0.776,"hostProcessingMs":1.555,"decodeReadyMs":10.675,"copyPresentMs":0.877,"frameIntervalMs":34.544,"frameJitterMs":17.091,"loopHz":57.784,"pumpAvgMs":6.805,"drainAvgMs":0.873,"decoderPending":0,"videoSuperseded":15,"audioBufferedMsUpperBound":45,"audioQueueLimitMs":60,"audioCatchups":1,"audioDiscardedMs":20,"audioDropped":1,"videoFrameGaps":0,"decoderRejected":0,"audioRecovered":0,"audioFecFailed":0,"directReceivedBytes":2321551},"clock":{"frameWakes":631,"timerWakes":0,"forcedWakes":0,"waitMs":6319.364,"maxWaitMs":42.075},"budgetYields":199,"maxPumpMs":317.052,"maxDrainMs":12.55}
+MOONLIGHT_SCHEDULING_SAMPLE: {"telemetry":{"decodedFps":29.53,"textureFps":27.561,"receivedMbps":1.854,"rttMs":19,"rttVariationMs":8,"frameReceiveMs":3.072,"coreQueueMs":0.018,"hostProcessingMs":1.452,"decodeReadyMs":7.837,"copyPresentMs":0.912,"frameIntervalMs":35.727,"frameJitterMs":15.927,"loopHz":58.076,"pumpAvgMs":6.493,"drainAvgMs":0.84,"decoderPending":1,"videoSuperseded":17,"audioBufferedMsUpperBound":60,"audioQueueLimitMs":60,"audioCatchups":1,"audioDiscardedMs":20,"audioDropped":1,"videoFrameGaps":0,"decoderRejected":0,"audioRecovered":0,"audioFecFailed":0,"directReceivedBytes":2557027},"clock":{"frameWakes":690,"timerWakes":0,"forcedWakes":0,"waitMs":6895.347,"maxWaitMs":42.075},"budgetYields":222,"maxPumpMs":317.052,"maxDrainMs":12.55}
+MOONLIGHT_SCHEDULING_SAMPLE: {"telemetry":{"decodedFps":30.457,"textureFps":29.474,"receivedMbps":1.907,"rttMs":18,"rttVariationMs":9,"frameReceiveMs":1.357,"coreQueueMs":0.019,"hostProcessingMs":1.563,"decodeReadyMs":10.242,"copyPresentMs":0.87,"frameIntervalMs":34.445,"frameJitterMs":14.319,"loopHz":57.966,"pumpAvgMs":6.431,"drainAvgMs":0.95,"decoderPending":0,"videoSuperseded":18,"audioBufferedMsUpperBound":60,"audioQueueLimitMs":60,"audioCatchups":1,"audioDiscardedMs":20,"audioDropped":1,"videoFrameGaps":0,"decoderRejected":0,"audioRecovered":0,"audioFecFailed":0,"directReceivedBytes":2799661},"clock":{"frameWakes":749,"timerWakes":0,"forcedWakes":0,"waitMs":7470.581,"maxWaitMs":42.075},"budgetYields":242,"maxPumpMs":317.052,"maxDrainMs":12.55}
+MOONLIGHT_SCHEDULING_SAMPLE: {"telemetry":{"decodedFps":29.643,"textureFps":27.667,"receivedMbps":1.679,"rttMs":18,"rttVariationMs":7,"frameReceiveMs":0.794,"coreQueueMs":0.492,"hostProcessingMs":1.597,"decodeReadyMs":10.111,"copyPresentMs":0.885,"frameIntervalMs":35.704,"frameJitterMs":14.726,"loopHz":58.299,"pumpAvgMs":6.356,"drainAvgMs":0.956,"decoderPending":0,"videoSuperseded":20,"audioBufferedMsUpperBound":60,"audioQueueLimitMs":60,"audioCatchups":1,"audioDiscardedMs":20,"audioDropped":1,"videoFrameGaps":0,"decoderRejected":0,"audioRecovered":0,"audioFecFailed":0,"directReceivedBytes":3012017},"clock":{"frameWakes":808,"timerWakes":0,"forcedWakes":0,"waitMs":8043.862,"maxWaitMs":42.269},"budgetYields":259,"maxPumpMs":317.052,"maxDrainMs":12.55}
+MOONLIGHT_SCHEDULING_SAMPLE: {"telemetry":{"decodedFps":29.874,"textureFps":29.874,"receivedMbps":1.838,"rttMs":13,"rttVariationMs":9,"frameReceiveMs":0.92,"coreQueueMs":0.018,"hostProcessingMs":1.587,"decodeReadyMs":6.905,"copyPresentMs":0.846,"frameIntervalMs":33.889,"frameJitterMs":12.746,"loopHz":57.756,"pumpAvgMs":6.537,"drainAvgMs":0.864,"decoderPending":0,"videoSuperseded":20,"audioBufferedMsUpperBound":40,"audioQueueLimitMs":60,"audioCatchups":2,"audioDiscardedMs":40,"audioDropped":2,"videoFrameGaps":0,"decoderRejected":0,"audioRecovered":0,"audioFecFailed":0,"directReceivedBytes":3242773},"clock":{"frameWakes":866,"timerWakes":0,"forcedWakes":0,"waitMs":8611.829,"maxWaitMs":42.269},"budgetYields":274,"maxPumpMs":317.052,"maxDrainMs":12.55}
+MOONLIGHT_SCHEDULING_SAMPLE: {"telemetry":{"decodedFps":30.457,"textureFps":29.475,"receivedMbps":2.263,"rttMs":15,"rttVariationMs":6,"frameReceiveMs":2.314,"coreQueueMs":0.417,"hostProcessingMs":1.597,"decodeReadyMs":9.062,"copyPresentMs":0.883,"frameIntervalMs":33.906,"frameJitterMs":13.352,"loopHz":57.967,"pumpAvgMs":6.79,"drainAvgMs":1.005,"decoderPending":0,"videoSuperseded":21,"audioBufferedMsUpperBound":50,"audioQueueLimitMs":60,"audioCatchups":2,"audioDiscardedMs":40,"audioDropped":2,"videoFrameGaps":0,"decoderRejected":0,"audioRecovered":0,"audioFecFailed":0,"directReceivedBytes":3530627},"clock":{"frameWakes":925,"timerWakes":0,"forcedWakes":0,"waitMs":9162.708,"maxWaitMs":42.269},"budgetYields":296,"maxPumpMs":317.052,"maxDrainMs":12.55}
+MOONLIGHT_SCHEDULING_SAMPLE: {"telemetry":{"decodedFps":29.622,"textureFps":28.635,"receivedMbps":2.467,"rttMs":18,"rttVariationMs":9,"frameReceiveMs":2.615,"coreQueueMs":0.348,"hostProcessingMs":1.657,"decodeReadyMs":9.822,"copyPresentMs":0.988,"frameIntervalMs":34.941,"frameJitterMs":14.224,"loopHz":58.257,"pumpAvgMs":6.813,"drainAvgMs":1.007,"decoderPending":0,"videoSuperseded":22,"audioBufferedMsUpperBound":60,"audioQueueLimitMs":60,"audioCatchups":2,"audioDiscardedMs":40,"audioDropped":2,"videoFrameGaps":0,"decoderRejected":0,"audioRecovered":0,"audioFecFailed":0,"directReceivedBytes":3842975},"clock":{"frameWakes":984,"timerWakes":0,"forcedWakes":0,"waitMs":9706.993,"maxWaitMs":42.269},"budgetYields":316,"maxPumpMs":317.052,"maxDrainMs":12.55}
+MOONLIGHT_SCHEDULING_SAMPLE: {"telemetry":{"decodedFps":30.403,"textureFps":27.46,"receivedMbps":1.822,"rttMs":15,"rttVariationMs":4,"frameReceiveMs":0.902,"coreQueueMs":1.21,"hostProcessingMs":1.626,"decodeReadyMs":9.731,"copyPresentMs":0.886,"frameIntervalMs":36.419,"frameJitterMs":17.525,"loopHz":57.863,"pumpAvgMs":6.433,"drainAvgMs":0.923,"decoderPending":0,"videoSuperseded":25,"audioBufferedMsUpperBound":55,"audioQueueLimitMs":60,"audioCatchups":2,"audioDiscardedMs":40,"audioDropped":2,"videoFrameGaps":0,"decoderRejected":0,"audioRecovered":0,"audioFecFailed":0,"directReceivedBytes":4075191},"clock":{"frameWakes":1043,"timerWakes":0,"forcedWakes":0,"waitMs":10285.245,"maxWaitMs":42.269},"budgetYields":337,"maxPumpMs":317.052,"maxDrainMs":12.55}
+MOONLIGHT_SCHEDULING_SAMPLE: {"telemetry":{"decodedFps":29.669,"textureFps":27.691,"receivedMbps":2.109,"rttMs":18,"rttVariationMs":6,"frameReceiveMs":2.837,"coreQueueMs":0.419,"hostProcessingMs":1.467,"decodeReadyMs":9.448,"copyPresentMs":0.877,"frameIntervalMs":35.125,"frameJitterMs":12.879,"loopHz":58.348,"pumpAvgMs":6.644,"drainAvgMs":0.816,"decoderPending":0,"videoSuperseded":27,"audioBufferedMsUpperBound":50,"audioQueueLimitMs":60,"audioCatchups":3,"audioDiscardedMs":60,"audioDropped":3,"videoFrameGaps":0,"decoderRejected":0,"audioRecovered":0,"audioFecFailed":0,"directReceivedBytes":4341769},"clock":{"frameWakes":1102,"timerWakes":0,"forcedWakes":0,"waitMs":10849.169,"maxWaitMs":42.269},"budgetYields":360,"maxPumpMs":317.052,"maxDrainMs":12.55}
+MOONLIGHT_SCHEDULING_SAMPLE: {"telemetry":{"decodedFps":29.874,"textureFps":28.878,"receivedMbps":1.834,"rttMs":17,"rttVariationMs":9,"frameReceiveMs":1.28,"coreQueueMs":0.018,"hostProcessingMs":1.537,"decodeReadyMs":9.126,"copyPresentMs":0.892,"frameIntervalMs":35.053,"frameJitterMs":16.409,"loopHz":57.756,"pumpAvgMs":6.675,"drainAvgMs":0.871,"decoderPending":0,"videoSuperseded":28,"audioBufferedMsUpperBound":60,"audioQueueLimitMs":60,"audioCatchups":3,"audioDiscardedMs":60,"audioDropped":3,"videoFrameGaps":0,"decoderRejected":0,"audioRecovered":0,"audioFecFailed":0,"directReceivedBytes":4571947},"clock":{"frameWakes":1160,"timerWakes":0,"forcedWakes":0,"waitMs":11408.466,"maxWaitMs":42.269},"budgetYields":378,"maxPumpMs":317.052,"maxDrainMs":12.55}
+MOONLIGHT_SCHEDULING_SAMPLE: {"telemetry":{"decodedFps":29.438,"textureFps":27.475,"receivedMbps":1.928,"rttMs":15,"rttVariationMs":6,"frameReceiveMs":1.711,"coreQueueMs":0.019,"hostProcessingMs":1.645,"decodeReadyMs":7.645,"copyPresentMs":0.878,"frameIntervalMs":36.921,"frameJitterMs":15.402,"loopHz":57.894,"pumpAvgMs":6.434,"drainAvgMs":0.947,"decoderPending":1,"videoSuperseded":30,"audioBufferedMsUpperBound":50,"audioQueueLimitMs":60,"audioCatchups":3,"audioDiscardedMs":60,"audioDropped":3,"videoFrameGaps":0,"decoderRejected":0,"audioRecovered":0,"audioFecFailed":0,"directReceivedBytes":4817557},"clock":{"frameWakes":1219,"timerWakes":0,"forcedWakes":0,"waitMs":11984.799,"maxWaitMs":42.269},"budgetYields":394,"maxPumpMs":317.052,"maxDrainMs":12.55}
+MOONLIGHT_SCHEDULING_SAMPLE: {"telemetry":{"decodedFps":30.679,"textureFps":27.71,"receivedMbps":2.367,"rttMs":15,"rttVariationMs":5,"frameReceiveMs":2.369,"coreQueueMs":0.019,"hostProcessingMs":1.657,"decodeReadyMs":10.054,"copyPresentMs":0.979,"frameIntervalMs":35.709,"frameJitterMs":10.687,"loopHz":58.389,"pumpAvgMs":6.815,"drainAvgMs":1.011,"decoderPending":0,"videoSuperseded":33,"audioBufferedMsUpperBound":70,"audioQueueLimitMs":60,"audioCatchups":3,"audioDiscardedMs":60,"audioDropped":3,"videoFrameGaps":0,"decoderRejected":0,"audioRecovered":0,"audioFecFailed":0,"directReceivedBytes":5116511},"clock":{"frameWakes":1278,"timerWakes":0,"forcedWakes":0,"waitMs":12526.464,"maxWaitMs":42.269},"budgetYields":420,"maxPumpMs":317.052,"maxDrainMs":12.55}
+MOONLIGHT_SCHEDULING_SAMPLE: {"telemetry":{"decodedFps":29.85,"textureFps":29.85,"receivedMbps":2.086,"rttMs":17,"rttVariationMs":4,"frameReceiveMs":2.366,"coreQueueMs":0.783,"hostProcessingMs":1.655,"decodeReadyMs":10.74,"copyPresentMs":0.873,"frameIntervalMs":33.878,"frameJitterMs":14.724,"loopHz":57.71,"pumpAvgMs":6.772,"drainAvgMs":0.894,"decoderPending":1,"videoSuperseded":33,"audioBufferedMsUpperBound":50,"audioQueueLimitMs":60,"audioCatchups":4,"audioDiscardedMs":80,"audioDropped":4,"videoFrameGaps":0,"decoderRejected":0,"audioRecovered":0,"audioFecFailed":0,"directReceivedBytes":5378625},"clock":{"frameWakes":1336,"timerWakes":0,"forcedWakes":0,"waitMs":13079.608,"maxWaitMs":42.269},"budgetYields":443,"maxPumpMs":317.052,"maxDrainMs":12.55}
+MOONLIGHT_SCHEDULING_SAMPLE: {"telemetry":{"decodedFps":30.516,"textureFps":29.532,"receivedMbps":2.026,"rttMs":16,"rttVariationMs":5,"frameReceiveMs":2.129,"coreQueueMs":0.467,"hostProcessingMs":1.62,"decodeReadyMs":11.052,"copyPresentMs":0.902,"frameIntervalMs":33.863,"frameJitterMs":13.452,"loopHz":58.079,"pumpAvgMs":6.763,"drainAvgMs":0.862,"decoderPending":0,"videoSuperseded":34,"audioBufferedMsUpperBound":40,"audioQueueLimitMs":60,"audioCatchups":4,"audioDiscardedMs":80,"audioDropped":4,"videoFrameGaps":0,"decoderRejected":0,"audioRecovered":0,"audioFecFailed":0,"directReceivedBytes":5635853},"clock":{"frameWakes":1395,"timerWakes":0,"forcedWakes":0,"waitMs":13638.485,"maxWaitMs":42.269},"budgetYields":465,"maxPumpMs":317.052,"maxDrainMs":12.55}
+MOONLIGHT_SCHEDULING_SAMPLE: {"telemetry":{"decodedFps":29.614,"textureFps":28.627,"receivedMbps":1.893,"rttMs":18,"rttVariationMs":8,"frameReceiveMs":0.979,"coreQueueMs":0.018,"hostProcessingMs":1.58,"decodeReadyMs":6.776,"copyPresentMs":0.896,"frameIntervalMs":34.515,"frameJitterMs":12.766,"loopHz":58.241,"pumpAvgMs":6.42,"drainAvgMs":0.94,"decoderPending":0,"videoSuperseded":35,"audioBufferedMsUpperBound":60,"audioQueueLimitMs":60,"audioCatchups":4,"audioDiscardedMs":80,"audioDropped":4,"videoFrameGaps":0,"decoderRejected":0,"audioRecovered":0,"audioFecFailed":0,"directReceivedBytes":5875545},"clock":{"frameWakes":1454,"timerWakes":0,"forcedWakes":0,"waitMs":14209.95,"maxWaitMs":42.269},"budgetYields":484,"maxPumpMs":317.052,"maxDrainMs":12.55}
+MOONLIGHT_SCHEDULING_SAMPLE: {"telemetry":{"decodedFps":29.899,"textureFps":29.899,"receivedMbps":2.05,"rttMs":20,"rttVariationMs":12,"frameReceiveMs":1.925,"coreQueueMs":0.018,"hostProcessingMs":1.455,"decodeReadyMs":7.886,"copyPresentMs":0.886,"frameIntervalMs":33.329,"frameJitterMs":15.066,"loopHz":57.805,"pumpAvgMs":6.558,"drainAvgMs":0.975,"decoderPending":1,"videoSuperseded":35,"audioBufferedMsUpperBound":70,"audioQueueLimitMs":60,"audioCatchups":6,"audioDiscardedMs":120,"audioDropped":6,"videoFrameGaps":0,"decoderRejected":0,"audioRecovered":0,"audioFecFailed":0,"directReceivedBytes":6132607},"clock":{"frameWakes":1512,"timerWakes":0,"forcedWakes":0,"waitMs":14769.061,"maxWaitMs":42.269},"budgetYields":503,"maxPumpMs":317.052,"maxDrainMs":12.55}
+MOONLIGHT_SCHEDULING_SAMPLE: {"telemetry":{"decodedFps":29.511,"textureFps":27.544,"receivedMbps":1.95,"rttMs":20,"rttVariationMs":7,"frameReceiveMs":2.424,"coreQueueMs":0.018,"hostProcessingMs":1.493,"decodeReadyMs":12.317,"copyPresentMs":0.877,"frameIntervalMs":35.709,"frameJitterMs":15.608,"loopHz":58.038,"pumpAvgMs":6.697,"drainAvgMs":0.902,"decoderPending":1,"videoSuperseded":37,"audioBufferedMsUpperBound":60,"audioQueueLimitMs":60,"audioCatchups":6,"audioDiscardedMs":120,"audioDropped":6,"videoFrameGaps":0,"decoderRejected":0,"audioRecovered":0,"audioFecFailed":0,"directReceivedBytes":6380455},"clock":{"frameWakes":1571,"timerWakes":0,"forcedWakes":0,"waitMs":15330.219,"maxWaitMs":42.338},"budgetYields":523,"maxPumpMs":317.052,"maxDrainMs":12.55}
+MOONLIGHT_SCHEDULING_SAMPLE: {"telemetry":{"decodedFps":30.43,"textureFps":26.503,"receivedMbps":2.196,"rttMs":22,"rttVariationMs":15,"frameReceiveMs":4.557,"coreQueueMs":0.018,"hostProcessingMs":1.637,"decodeReadyMs":10.167,"copyPresentMs":0.885,"frameIntervalMs":38.927,"frameJitterMs":18.555,"loopHz":57.915,"pumpAvgMs":6.499,"drainAvgMs":0.908,"decoderPending":0,"videoSuperseded":41,"audioBufferedMsUpperBound":40,"audioQueueLimitMs":60,"audioCatchups":6,"audioDiscardedMs":120,"audioDropped":6,"videoFrameGaps":0,"decoderRejected":0,"audioRecovered":0,"audioFecFailed":0,"directReceivedBytes":6660101},"clock":{"frameWakes":1630,"timerWakes":0,"forcedWakes":0,"waitMs":15904.859,"maxWaitMs":42.338},"budgetYields":546,"maxPumpMs":317.052,"maxDrainMs":12.55}
+MOONLIGHT_SCHEDULING_SAMPLE: {"telemetry":{"decodedFps":30.591,"textureFps":30.591,"receivedMbps":2.018,"rttMs":17,"rttVariationMs":6,"frameReceiveMs":1.185,"coreQueueMs":0.345,"hostProcessingMs":1.648,"decodeReadyMs":7.131,"copyPresentMs":0.879,"frameIntervalMs":32.673,"frameJitterMs":8.099,"loopHz":58.221,"pumpAvgMs":6.751,"drainAvgMs":0.837,"decoderPending":0,"videoSuperseded":41,"audioBufferedMsUpperBound":50,"audioQueueLimitMs":60,"audioCatchups":7,"audioDiscardedMs":140,"audioDropped":7,"videoFrameGaps":0,"decoderRejected":0,"audioRecovered":0,"audioFecFailed":0,"directReceivedBytes":6915677},"clock":{"frameWakes":1689,"timerWakes":0,"forcedWakes":0,"waitMs":16463.41,"maxWaitMs":42.338},"budgetYields":568,"maxPumpMs":317.052,"maxDrainMs":12.55}
+MOONLIGHT_STREAM_CORE: Stopping input stream...
+MOONLIGHT_STREAM_CORE: done
+
+MOONLIGHT_STREAM_CORE: Stopping audio stream...
+MOONLIGHT_STREAM_CORE: done
+
+MOONLIGHT_STREAM_CORE: Stopping video stream...
+MOONLIGHT_STREAM_CORE: ENet wait interrupted
+
+MOONLIGHT_STREAM_CORE: Control stream connection failed: 27
+
+MOONLIGHT_STREAM_CORE: done
+
+MOONLIGHT_STREAM_CORE: Stopping control stream...
+MOONLIGHT_STREAM_CORE: ENet peer acknowledged disconnection
+
+MOONLIGHT_STREAM_CORE: done
+
+MOONLIGHT_STREAM_CORE: Cleaning up input stream...
+MOONLIGHT_STREAM_CORE: done
+
+MOONLIGHT_STREAM_CORE: Cleaning up video stream...
+MOONLIGHT_STREAM_CORE: done
+
+MOONLIGHT_STREAM_CORE: Cleaning up control stream...
+MOONLIGHT_STREAM_CORE: done
+
+MOONLIGHT_STREAM_CORE: Cleaning up audio stream...
+MOONLIGHT_STREAM_CORE: done
+
+MOONLIGHT_STREAM_CORE: Cleaning up platform...
+MOONLIGHT_STREAM_CORE: done
+
+MOONLIGHT_STREAM_CORE: Event 7: 0, 0
+MOONLIGHT_SCHEDULING_RESULT: {"error":null,"visibleMs":28998,"samples":29,"submitted":851,"decoded":850,"presented":807,"decodeSamples":850,"network":{"calls":24788,"sentBytes":18261,"receivedBytes":7035713,"directReceivedBytes":7035713,"directSentBytes":18261,"receiveCalls":20634,"receiveWouldBlock":5621,"lastError":11,"rtpTypes":{"80:0":3,"0:0":3,"90:0":6138,"80:61":5683,"80:7f":2840}},"clock":{"frameWakes":1726,"timerWakes":0,"forcedWakes":0,"waitMs":17005.609,"maxWaitMs":42.338},"budgetYields":576,"audioDiscardedMs":140,"lastTelemetry":{"decodedFps":30.591,"textureFps":30.591,"receivedMbps":2.018,"rttMs":17,"rttVariationMs":6,"frameReceiveMs":1.185,"coreQueueMs":0.345,"hostProcessingMs":1.648,"decodeReadyMs":7.131,"copyPresentMs":0.879,"frameIntervalMs":32.673,"frameJitterMs":8.099,"loopHz":58.221,"pumpAvgMs":6.751,"drainAvgMs":0.837,"decoderPending":0,"videoSuperseded":41,"audioBufferedMsUpperBound":50,"audioQueueLimitMs":60,"audioCatchups":7,"audioDiscardedMs":140,"audioDropped":7,"videoFrameGaps":0,"decoderRejected":0,"audioRecovered":0,"audioFecFailed":0,"directReceivedBytes":6915677}}
+MOONLIGHT_SCHEDULING_PASSED: true
+Executed successfully

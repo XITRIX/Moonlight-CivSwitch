@@ -40,10 +40,10 @@ exports = ['_malloc', '_free'] + ['_' + name for name in public] + [
     '_ml_test_rtsp', '_ml_test_fec', '_ml_test_crypto', '_ml_test_unaligned', '_ml_compare_runtime', '_ml_probe_threads', '_ml_random_probe']
 (build / 'exports.json').write_text(json.dumps(exports))
 stream_exports=[name for name in exports if name!='_ml_probe_threads']+[
-    '_ml_runtime_pump','_ml_runtime_tasks','_ml_session_start','_ml_session_stop',
+    '_ml_runtime_pump','_ml_runtime_tasks','_ml_runtime_budget_yields','_ml_budget_test_start','_ml_budget_test_result','_ml_session_start','_ml_session_stop',
     '_ml_session_state','_ml_session_error','_ml_session_video_frames','_ml_session_audio_frames',
-    '_ml_scheduler_test_start','_ml_scheduler_test_result','_ml_network_test_start','_ml_network_test_result',
-    '_ml_png_nv12','_ml_png_release','_ml_session_gamepad','_ml_session_key']
+    '_ml_scheduler_test_start','_ml_scheduler_test_result','_ml_input_priority_test_start','_ml_input_priority_test_result','_ml_interrupt_test_start','_ml_interrupt_test_result','_ml_network_test_start','_ml_network_test_result',
+    '_ml_png_nv12','_ml_png_release','_ml_session_gamepad','_ml_session_key','_ml_session_metrics']
 (build / 'stream-exports.json').write_text(json.dumps(stream_exports))
 subprocess.run([str(sdk / 'upstream/emscripten/emcmake'), 'cmake', '-S', str(here), '-B', str(build),
                 '-DCMAKE_BUILD_TYPE=Release', '-DCMAKE_POLICY_VERSION_MINIMUM=3.5'], env=env, check=True)

@@ -1,0 +1,1218 @@
+Final input-priority UI sent; saved preferences are preserved.
+Executing payload...
+MOONLIGHT_UI_READY
+MOONLIGHT_SETTINGS_SAVED: {"width":1280,"height":720,"fps":30,"bitrate":3000,"showStats":true}
+MOONLIGHT_SUNSHINE_CHECKING
+MOONLIGHT_SUNSHINE_ONLINE
+MOONLIGHT_SUNSHINE_CHECKING_PAIR
+MOONLIGHT_SUNSHINE_PAIRED
+MOONLIGHT_PAIRING_SAVED: reused
+MOONLIGHT_APPLIST_LOADING
+MOONLIGHT_APPLIST_LOADED: 3
+MOONLIGHT_ARTWORK_CACHED: 881448767 (8231 bytes)
+MOONLIGHT_ARTWORK_CACHED: 1093255277 (24833 bytes)
+MOONLIGHT_ARTWORK_CACHED: 382300562 (98678 bytes)
+MOONLIGHT_ARTWORK_DISPLAYED: 881448767
+MOONLIGHT_ARTWORK_DISPLAYED: 1093255277
+MOONLIGHT_ARTWORK_DISPLAYED: 382300562
+MOONLIGHT_STREAM_CORE: RTSP port: 48010
+
+MOONLIGHT_STREAM_CORE: Initializing platform...
+MOONLIGHT_STREAM_CORE: Event 1: 1, 0
+MOONLIGHT_STREAM_CORE: Event 2: 1, 0
+MOONLIGHT_STREAM_CORE: done
+
+MOONLIGHT_STREAM_CORE: Resolving host name...
+MOONLIGHT_STREAM_CORE: Event 1: 2, 0
+MOONLIGHT_STREAM_CORE: Event 2: 2, 0
+MOONLIGHT_STREAM_CORE: done
+
+MOONLIGHT_STREAM_CORE: Initializing audio stream...
+MOONLIGHT_STREAM_CORE: Event 1: 3, 0
+MOONLIGHT_STREAM_CORE: Event 2: 3, 0
+MOONLIGHT_STREAM_CORE: done
+
+MOONLIGHT_STREAM_CORE: Starting RTSP handshake...
+MOONLIGHT_STREAM_CORE: Event 1: 4, 0
+MOONLIGHT_STREAM_STATS: {"state":1,"mode":{"width":1280,"height":720,"fps":30,"bitrate":3000,"showStats":true},"decoded":0,"presented":0,"audioDecoded":0,"telemetry":{"decodedFps":null,"textureFps":null,"receivedMbps":null,"rttMs":null,"rttVariationMs":null,"frameReceiveMs":null,"coreQueueMs":null,"hostProcessingMs":null,"decodeReadyMs":null,"copyPresentMs":null,"frameIntervalMs":null,"frameJitterMs":null,"loopHz":null,"pumpAvgMs":57.689,"drainAvgMs":0.171,"decoderPending":0,"videoSuperseded":0,"audioBufferedMsUpperBound":0,"audioQueueLimitMs":60,"audioCatchups":0,"audioDiscardedMs":0,"audioDropped":0,"videoFrameGaps":null,"decoderRejected":null,"audioRecovered":null,"audioFecFailed":null,"directReceivedBytes":0}}
+MOONLIGHT_STREAM_CORE: Audio port: 48000
+
+MOONLIGHT_STREAM_CORE: setsockopt(SO_PRIORITY, 6) failed: 50
+
+MOONLIGHT_STREAM_CORE: Video port: 47998
+
+MOONLIGHT_STREAM_CORE: Control port: 47999
+
+MOONLIGHT_STREAM_CORE: Event 2: 4, 0
+MOONLIGHT_STREAM_CORE: done
+
+MOONLIGHT_STREAM_CORE: Initializing control stream...
+MOONLIGHT_STREAM_CORE: Event 1: 5, 0
+MOONLIGHT_STREAM_CORE: Event 2: 5, 0
+MOONLIGHT_STREAM_CORE: done
+
+MOONLIGHT_STREAM_CORE: Initializing video stream...
+MOONLIGHT_STREAM_CORE: Event 1: 6, 0
+MOONLIGHT_STREAM_CORE: Event 2: 6, 0
+MOONLIGHT_STREAM_CORE: done
+
+MOONLIGHT_STREAM_CORE: Initializing input stream...
+MOONLIGHT_STREAM_CORE: Event 1: 7, 0
+MOONLIGHT_STREAM_CORE: Event 2: 7, 0
+MOONLIGHT_STREAM_CORE: done
+
+MOONLIGHT_STREAM_CORE: Starting control stream...
+MOONLIGHT_STREAM_CORE: Event 1: 8, 0
+MOONLIGHT_STREAM_CORE: Event 2: 8, 0
+MOONLIGHT_STREAM_CORE: done
+
+MOONLIGHT_STREAM_CORE: Starting video stream...
+MOONLIGHT_STREAM_CORE: Event 1: 9, 0
+MOONLIGHT_STREAM_CORE: setsockopt(SO_PRIORITY, 5) failed: 50
+
+MOONLIGHT_STREAM_CORE: Event 2: 9, 0
+MOONLIGHT_STREAM_CORE: done
+
+MOONLIGHT_STREAM_CORE: Starting audio stream...
+MOONLIGHT_STREAM_CORE: Event 1: 10, 0
+MOONLIGHT_STREAM_CORE: Event 2: 10, 0
+MOONLIGHT_STREAM_CORE: done
+
+MOONLIGHT_STREAM_CORE: Starting input stream...
+MOONLIGHT_STREAM_CORE: Event 1: 11, 0
+MOONLIGHT_STREAM_CORE: Event 2: 11, 0
+MOONLIGHT_STREAM_CORE: done
+
+MOONLIGHT_STREAM_CORE: Event 4: 0, 0
+MOONLIGHT_STREAM_CORE: Received first video packet after 300 ms
+
+MOONLIGHT_STREAM_CORE: Received first audio packet after 700 ms
+
+MOONLIGHT_STREAM_CORE: Initial audio resync period: 500 milliseconds
+
+MOONLIGHT_STREAM_STATS: {"state":2,"mode":{"width":1280,"height":720,"fps":30,"bitrate":3000,"showStats":true},"decoded":88,"presented":87,"audioDecoded":512,"telemetry":{"decodedFps":30.528,"textureFps":29.543,"receivedMbps":2.674,"rttMs":15,"rttVariationMs":7,"frameReceiveMs":10.912,"coreQueueMs":0.018,"hostProcessingMs":1.755,"decodeReadyMs":7.519,"copyPresentMs":0.869,"frameIntervalMs":33.846,"frameJitterMs":19.062,"loopHz":60.072,"pumpAvgMs":7.446,"drainAvgMs":0.745,"decoderPending":0,"videoSuperseded":1,"audioBufferedMsUpperBound":40,"audioQueueLimitMs":60,"audioCatchups":0,"audioDiscardedMs":0,"audioDropped":0,"videoFrameGaps":0,"decoderRejected":0,"audioRecovered":0,"audioFecFailed":0,"directReceivedBytes":971165}}
+MOONLIGHT_STREAM_STATS: {"state":2,"mode":{"width":1280,"height":720,"fps":30,"bitrate":3000,"showStats":true},"decoded":237,"presented":235,"audioDecoded":1526,"telemetry":{"decodedFps":29.365,"textureFps":29.365,"receivedMbps":2.471,"rttMs":8,"rttVariationMs":5,"frameReceiveMs":3.04,"coreQueueMs":0.018,"hostProcessingMs":1.771,"decodeReadyMs":8.197,"copyPresentMs":0.921,"frameIntervalMs":33.316,"frameJitterMs":9.936,"loopHz":59.709,"pumpAvgMs":7.185,"drainAvgMs":0.902,"decoderPending":1,"videoSuperseded":2,"audioBufferedMsUpperBound":50,"audioQueueLimitMs":60,"audioCatchups":0,"audioDiscardedMs":0,"audioDropped":0,"videoFrameGaps":0,"decoderRejected":0,"audioRecovered":0,"audioFecFailed":0,"directReceivedBytes":2551649}}
+MOONLIGHT_STREAM_CORE: Unrecoverable frame 382: 6+0=6 received < 8 needed
+
+MOONLIGHT_STREAM_CORE: Unrecoverable frame 383: 2+0=2 received < 8 needed
+
+MOONLIGHT_STREAM_CORE: Network dropped 2 frames (frames 382 to 383)
+
+MOONLIGHT_STREAM_CORE: Waiting for IDR frame
+
+MOONLIGHT_STREAM_STATS: {"state":2,"mode":{"width":1280,"height":720,"fps":30,"bitrate":3000,"showStats":true},"decoded":381,"presented":370,"audioDecoded":2507,"telemetry":{"decodedFps":22.972,"textureFps":18.977,"receivedMbps":2.262,"rttMs":110,"rttVariationMs":81,"frameReceiveMs":19.822,"coreQueueMs":0.017,"hostProcessingMs":2.004,"decodeReadyMs":6.322,"copyPresentMs":0.907,"frameIntervalMs":49.698,"frameJitterMs":48.097,"loopHz":57.93,"pumpAvgMs":7.381,"drainAvgMs":0.546,"decoderPending":0,"videoSuperseded":11,"audioBufferedMsUpperBound":75,"audioQueueLimitMs":60,"audioCatchups":2,"audioDiscardedMs":40,"audioDropped":2,"videoFrameGaps":0,"decoderRejected":0,"audioRecovered":0,"audioFecFailed":0,"directReceivedBytes":4120603}}
+MOONLIGHT_STREAM_CORE: IDR frame request sent
+
+MOONLIGHT_STREAM_CORE: Waiting for IDR frame
+
+MOONLIGHT_STREAM_CORE: Waiting for IDR frame
+
+MOONLIGHT_STREAM_CORE: Waiting for IDR frame
+
+MOONLIGHT_STREAM_CORE: Waiting for IDR frame
+
+MOONLIGHT_STREAM_CORE: Waiting for IDR frame
+
+MOONLIGHT_STREAM_CORE: Waiting for IDR frame
+
+MOONLIGHT_STREAM_CORE: Waiting for IDR frame
+
+MOONLIGHT_STREAM_CORE: Unable to recover audio data block 3144 to 3147 (2+0=2 received < 4 needed)
+
+MOONLIGHT_STREAM_CORE: Network dropped audio data (expected 3140, but received 3146)
+
+MOONLIGHT_STREAM_CORE: Unable to recover audio data block 3148 to 3151 (2+0=2 received < 4 needed)
+
+MOONLIGHT_STREAM_CORE: Network dropped audio data (expected 3148, but received 3150)
+
+MOONLIGHT_STREAM_CORE: Unable to recover audio data block 3152 to 3155 (2+0=2 received < 4 needed)
+
+MOONLIGHT_STREAM_CORE: Network dropped audio data (expected 3154, but received 3156)
+
+MOONLIGHT_STREAM_CORE: Unable to recover audio data block 3160 to 3163 (2+0=2 received < 4 needed)
+
+MOONLIGHT_STREAM_CORE: Network dropped audio data (expected 3162, but received 3164)
+
+MOONLIGHT_STREAM_CORE: Unable to recover audio data block 3164 to 3167 (2+0=2 received < 4 needed)
+
+MOONLIGHT_STREAM_CORE: Unable to recover audio data block 3172 to 3175 (2+0=2 received < 4 needed)
+
+MOONLIGHT_STREAM_CORE: Network dropped audio data (expected 3166, but received 3174)
+
+MOONLIGHT_STREAM_CORE: Network dropped audio data (expected 3176, but received 3180)
+
+MOONLIGHT_STREAM_CORE: Unable to recover audio data block 3180 to 3183 (1+0=1 received < 4 needed)
+
+MOONLIGHT_STREAM_CORE: Unable to recover audio data block 3184 to 3187 (2+0=2 received < 4 needed)
+
+MOONLIGHT_STREAM_CORE: Network dropped audio data (expected 3181, but received 3186)
+
+MOONLIGHT_STREAM_CORE: Unable to recover audio data block 3188 to 3191 (2+0=2 received < 4 needed)
+
+MOONLIGHT_STREAM_CORE: Network dropped audio data (expected 3190, but received 3196)
+
+MOONLIGHT_STREAM_CORE: Unable to recover audio data block 3200 to 3203 (2+0=2 received < 4 needed)
+
+MOONLIGHT_STREAM_CORE: Network dropped audio data (expected 3200, but received 3202)
+
+MOONLIGHT_STREAM_CORE: Unable to recover audio data block 3208 to 3211 (2+0=2 received < 4 needed)
+
+MOONLIGHT_STREAM_CORE: Network dropped audio data (expected 3208, but received 3210)
+
+MOONLIGHT_STREAM_CORE: Network dropped audio data (expected 3212, but received 3224)
+
+MOONLIGHT_STREAM_CORE: Network dropped audio data (expected 3232, but received 3244)
+
+MOONLIGHT_STREAM_CORE: Unable to recover audio data block 3244 to 3247 (2+0=2 received < 4 needed)
+
+MOONLIGHT_STREAM_CORE: Unable to recover audio data block 3248 to 3251 (2+0=2 received < 4 needed)
+
+MOONLIGHT_STREAM_CORE: Network dropped audio data (expected 3246, but received 3250)
+
+MOONLIGHT_STREAM_CORE: Unable to recover audio data block 3256 to 3259 (2+0=2 received < 4 needed)
+
+MOONLIGHT_STREAM_CORE: Network dropped audio data (expected 3256, but received 3258)
+
+MOONLIGHT_STREAM_CORE: Network dropped audio data (expected 3260, but received 3268)
+
+MOONLIGHT_STREAM_CORE: Network dropped audio data (expected 3272, but received 3276)
+
+MOONLIGHT_STREAM_CORE: Unable to recover audio data block 3280 to 3283 (2+0=2 received < 4 needed)
+
+MOONLIGHT_STREAM_CORE: Network dropped audio data (expected 3280, but received 3282)
+
+MOONLIGHT_STREAM_CORE: Unable to recover audio data block 3288 to 3291 (2+0=2 received < 4 needed)
+
+MOONLIGHT_STREAM_CORE: Network dropped audio data (expected 3284, but received 3290)
+
+MOONLIGHT_STREAM_CORE: Network dropped audio data (expected 3292, but received 3296)
+
+MOONLIGHT_STREAM_CORE: Unable to recover audio data block 3296 to 3299 (3+0=3 received < 4 needed)
+
+MOONLIGHT_STREAM_CORE: Unable to recover audio data block 3312 to 3315 (2+0=2 received < 4 needed)
+
+MOONLIGHT_STREAM_CORE: Network dropped audio data (expected 3299, but received 3314)
+
+MOONLIGHT_STREAM_CORE: Unable to recover audio data block 3316 to 3319 (2+0=2 received < 4 needed)
+
+MOONLIGHT_STREAM_CORE: Network dropped audio data (expected 3316, but received 3318)
+
+MOONLIGHT_STREAM_CORE: Network dropped audio data (expected 3320, but received 3324)
+
+MOONLIGHT_STREAM_CORE: Unable to recover audio data block 3324 to 3327 (3+0=3 received < 4 needed)
+
+MOONLIGHT_STREAM_CORE: Unable to recover audio data block 3332 to 3335 (2+0=2 received < 4 needed)
+
+MOONLIGHT_STREAM_CORE: Network dropped audio data (expected 3327, but received 3334)
+
+MOONLIGHT_STREAM_CORE: Unable to recover audio data block 3336 to 3339 (1+1=2 received < 4 needed)
+
+MOONLIGHT_STREAM_CORE: Network dropped audio data (expected 3336, but received 3339)
+
+MOONLIGHT_STREAM_CORE: Network dropped audio data (expected 3340, but received 3344)
+
+MOONLIGHT_STREAM_CORE: Network dropped audio data (expected 3348, but received 3352)
+
+MOONLIGHT_STREAM_CORE: Unable to recover audio data block 3352 to 3355 (2+0=2 received < 4 needed)
+
+MOONLIGHT_STREAM_CORE: Network dropped audio data (expected 3354, but received 3356)
+
+MOONLIGHT_STREAM_CORE: Failed to queue async callback: 2
+
+MOONLIGHT_STREAM_CORE: Failed to queue async callback: 2
+
+MOONLIGHT_STREAM_CORE: Failed to queue async callback: 2
+
+MOONLIGHT_STREAM_CORE: Failed to queue async callback: 2
+
+MOONLIGHT_STREAM_CORE: Failed to queue async callback: 2
+
+MOONLIGHT_STREAM_CORE: Failed to queue async callback: 2
+
+MOONLIGHT_STREAM_CORE: Unable to recover audio data block 3356 to 3359 (2+0=2 received < 4 needed)
+
+MOONLIGHT_STREAM_CORE: Network dropped audio data (expected 3358, but received 3360)
+
+MOONLIGHT_STREAM_CORE: Network dropped audio data (expected 3368, but received 3372)
+
+MOONLIGHT_STREAM_CORE: Unable to recover audio data block 3372 to 3375 (2+0=2 received < 4 needed)
+
+MOONLIGHT_STREAM_CORE: Network dropped audio data (expected 3374, but received 3380)
+
+MOONLIGHT_STREAM_CORE: Unable to recover audio data block 3380 to 3383 (2+0=2 received < 4 needed)
+
+MOONLIGHT_STREAM_CORE: Unable to recover audio data block 3384 to 3387 (2+0=2 received < 4 needed)
+
+MOONLIGHT_STREAM_CORE: Network dropped audio data (expected 3382, but received 3386)
+
+MOONLIGHT_STREAM_CORE: Unable to recover audio data block 3388 to 3391 (1+0=1 received < 4 needed)
+
+MOONLIGHT_STREAM_CORE: Unable to recover audio data block 3396 to 3399 (2+0=2 received < 4 needed)
+
+MOONLIGHT_STREAM_CORE: Network dropped audio data (expected 3389, but received 3398)
+
+MOONLIGHT_STREAM_CORE: Unable to recover audio data block 3424 to 3427 (2+0=2 received < 4 needed)
+
+MOONLIGHT_STREAM_CORE: Network dropped audio data (expected 3400, but received 3426)
+
+MOONLIGHT_STREAM_STATS: {"state":2,"mode":{"width":1280,"height":720,"fps":30,"bitrate":3000,"showStats":true},"decoded":455,"presented":440,"audioDecoded":3141,"telemetry":{"decodedFps":4.931,"textureFps":4.931,"receivedMbps":0.455,"rttMs":1144,"rttVariationMs":333,"frameReceiveMs":206.964,"coreQueueMs":0.02,"hostProcessingMs":1.94,"decodeReadyMs":17.044,"copyPresentMs":0.874,"frameIntervalMs":282.827,"frameJitterMs":190.811,"loopHz":31.558,"pumpAvgMs":8.809,"drainAvgMs":0.295,"decoderPending":0,"videoSuperseded":15,"audioBufferedMsUpperBound":25,"audioQueueLimitMs":60,"audioCatchups":18,"audioDiscardedMs":360,"audioDropped":18,"videoFrameGaps":10,"decoderRejected":0,"audioRecovered":4,"audioFecFailed":30,"directReceivedBytes":5034583}}
+MOONLIGHT_STREAM_CORE: Unrecoverable frame 466: 4+0=4 received < 8 needed
+
+MOONLIGHT_STREAM_CORE: Unable to recover audio data block 3428 to 3431 (2+0=2 received < 4 needed)
+
+MOONLIGHT_STREAM_CORE: Unable to recover audio data block 3436 to 3439 (2+0=2 received < 4 needed)
+
+MOONLIGHT_STREAM_CORE: Network dropped audio data (expected 3430, but received 3438)
+
+MOONLIGHT_STREAM_CORE: Unrecoverable frame 467: 2+0=2 received < 8 needed
+
+MOONLIGHT_STREAM_CORE: Unable to recover audio data block 3444 to 3447 (2+0=2 received < 4 needed)
+
+MOONLIGHT_STREAM_CORE: Network dropped audio data (expected 3444, but received 3446)
+
+MOONLIGHT_STREAM_CORE: Network dropped audio data (expected 3448, but received 3460)
+
+MOONLIGHT_STREAM_CORE: Unrecoverable frame 468: 3+0=3 received < 8 needed
+
+MOONLIGHT_STREAM_CORE: Unrecoverable frame 469: 1+0=1 received < 8 needed
+
+MOONLIGHT_STREAM_CORE: Unrecoverable frame 471: 2+0=2 received < 8 needed
+
+MOONLIGHT_STREAM_CORE: Unrecoverable frame 472: 1+0=1 received < 8 needed
+
+MOONLIGHT_STREAM_CORE: Unrecoverable frame 474: 1+0=1 received < 8 needed
+
+MOONLIGHT_STREAM_CORE: Unrecoverable frame 475: 1+0=1 received < 8 needed
+
+MOONLIGHT_STREAM_CORE: Unrecoverable frame 476: 1+0=1 received < 8 needed
+
+MOONLIGHT_STREAM_CORE: Unable to recover audio data block 3460 to 3463 (2+0=2 received < 4 needed)
+
+MOONLIGHT_STREAM_CORE: Network dropped audio data (expected 3462, but received 3464)
+
+MOONLIGHT_STREAM_CORE: Unrecoverable frame 479: 2+0=2 received < 8 needed
+
+MOONLIGHT_STREAM_CORE: Unrecoverable frame 481: 1+0=1 received < 8 needed
+
+MOONLIGHT_STREAM_CORE: Network dropped audio data (expected 3468, but received 3472)
+
+MOONLIGHT_STREAM_CORE: Unable to recover audio data block 3472 to 3475 (1+0=1 received < 4 needed)
+
+MOONLIGHT_STREAM_CORE: Unable to recover audio data block 3484 to 3487 (2+0=2 received < 4 needed)
+
+MOONLIGHT_STREAM_CORE: Network dropped audio data (expected 3473, but received 3486)
+
+MOONLIGHT_STREAM_CORE: Unable to recover audio data block 3488 to 3491 (2+0=2 received < 4 needed)
+
+MOONLIGHT_STREAM_CORE: Network dropped audio data (expected 3488, but received 3490)
+
+MOONLIGHT_STREAM_CORE: Unrecoverable frame 482: 2+0=2 received < 8 needed
+
+MOONLIGHT_STREAM_CORE: Unrecoverable frame 483: 1+0=1 received < 8 needed
+
+MOONLIGHT_STREAM_CORE: Network dropped audio data (expected 3492, but received 3500)
+
+MOONLIGHT_STREAM_CORE: Unable to recover audio data block 3504 to 3507 (2+0=2 received < 4 needed)
+
+MOONLIGHT_STREAM_CORE: Network dropped audio data (expected 3506, but received 3508)
+
+MOONLIGHT_STREAM_CORE: Unrecoverable frame 484: 2+0=2 received < 8 needed
+
+MOONLIGHT_STREAM_CORE: Unrecoverable frame 486: 2+0=2 received < 8 needed
+
+MOONLIGHT_STREAM_CORE: Unable to recover audio data block 3516 to 3519 (2+0=2 received < 4 needed)
+
+MOONLIGHT_STREAM_CORE: Unable to recover audio data block 3548 to 3551 (2+0=2 received < 4 needed)
+
+MOONLIGHT_STREAM_CORE: Network dropped audio data (expected 3518, but received 3550)
+
+MOONLIGHT_STREAM_CORE: Unable to recover audio data block 3552 to 3555 (2+1=3 received < 4 needed)
+
+MOONLIGHT_STREAM_CORE: Network dropped audio data (expected 3552, but received 3554)
+
+MOONLIGHT_STREAM_CORE: Network dropped audio data (expected 3556, but received 3560)
+
+MOONLIGHT_STREAM_CORE: Unable to recover audio data block 3560 to 3563 (3+0=3 received < 4 needed)
+
+MOONLIGHT_STREAM_CORE: Network dropped audio data (expected 3561, but received 3562)
+
+MOONLIGHT_STREAM_CORE: Unrecoverable frame 487: 2+0=2 received < 8 needed
+
+MOONLIGHT_STREAM_CORE: Network dropped audio data (expected 3568, but received 3572)
+
+MOONLIGHT_STREAM_CORE: Unable to recover audio data block 3572 to 3575 (2+0=2 received < 4 needed)
+
+MOONLIGHT_STREAM_CORE: Network dropped audio data (expected 3574, but received 3576)
+
+MOONLIGHT_STREAM_CORE: Unrecoverable frame 488: 1+0=1 received < 8 needed
+
+MOONLIGHT_STREAM_CORE: Network dropped audio data (expected 3584, but received 3588)
+
+MOONLIGHT_STREAM_CORE: Unrecoverable frame 489: 1+0=1 received < 8 needed
+
+MOONLIGHT_STREAM_CORE: Unrecoverable frame 490: 2+0=2 received < 8 needed
+
+MOONLIGHT_STREAM_CORE: Unrecoverable frame 491: 1+0=1 received < 8 needed
+
+MOONLIGHT_STREAM_CORE: Unrecoverable frame 492: 2+0=2 received < 8 needed
+
+MOONLIGHT_STREAM_CORE: Unrecoverable frame 494: 2+0=2 received < 8 needed
+
+MOONLIGHT_STREAM_CORE: Unrecoverable frame 496: 1+0=1 received < 8 needed
+
+MOONLIGHT_STREAM_CORE: Unrecoverable frame 497: 1+0=1 received < 8 needed
+
+MOONLIGHT_STREAM_CORE: Unrecoverable frame 498: 1+0=1 received < 8 needed
+
+MOONLIGHT_STREAM_CORE: Unrecoverable frame 499: 1+0=1 received < 8 needed
+
+MOONLIGHT_STREAM_CORE: Unrecoverable frame 500: 1+0=1 received < 8 needed
+
+MOONLIGHT_STREAM_CORE: Unrecoverable frame 502: 1+0=1 received < 8 needed
+
+MOONLIGHT_STREAM_CORE: Unrecoverable frame 503: 2+0=2 received < 8 needed
+
+MOONLIGHT_STREAM_CORE: Unrecoverable frame 506: 2+0=2 received < 8 needed
+
+MOONLIGHT_STREAM_CORE: Unrecoverable frame 511: 1+0=1 received < 8 needed
+
+MOONLIGHT_STREAM_CORE: Unrecoverable frame 517: 1+0=1 received < 8 needed
+
+MOONLIGHT_STREAM_CORE: Unrecoverable frame 518: 2+0=2 received < 8 needed
+
+MOONLIGHT_STREAM_CORE: Unrecoverable frame 519: 1+0=1 received < 8 needed
+
+MOONLIGHT_STREAM_CORE: Unrecoverable frame 520: 1+0=1 received < 8 needed
+
+MOONLIGHT_STREAM_CORE: Unrecoverable frame 521: 3+0=3 received < 8 needed
+
+MOONLIGHT_STREAM_CORE: Unrecoverable frame 522: 5+0=5 received < 8 needed
+
+MOONLIGHT_STREAM_CORE: Unrecoverable frame 523: 5+0=5 received < 8 needed
+
+MOONLIGHT_STREAM_CORE: Unrecoverable frame 530: 1+0=1 received < 8 needed
+
+MOONLIGHT_STREAM_CORE: Unrecoverable frame 531: 1+0=1 received < 8 needed
+
+MOONLIGHT_STREAM_CORE: Unrecoverable frame 532: 3+0=3 received < 8 needed
+
+MOONLIGHT_STREAM_CORE: Unrecoverable frame 533: 1+0=1 received < 8 needed
+
+MOONLIGHT_STREAM_CORE: Unrecoverable frame 534: 5+0=5 received < 8 needed
+
+MOONLIGHT_STREAM_CORE: Unable to recover audio data block 3768 to 3771 (2+0=2 received < 4 needed)
+
+MOONLIGHT_STREAM_CORE: Unable to recover audio data block 3772 to 3775 (2+0=2 received < 4 needed)
+
+MOONLIGHT_STREAM_CORE: Network dropped audio data (expected 3770, but received 3774)
+
+MOONLIGHT_STREAM_CORE: Network dropped 69 frames (frames 466 to 534)
+
+MOONLIGHT_STREAM_CORE: Waiting for IDR frame
+
+MOONLIGHT_STREAM_CORE: Network dropped audio data (expected 3776, but received 3780)
+
+MOONLIGHT_STREAM_CORE: IDR frame request sent
+
+MOONLIGHT_STREAM_CORE: Network dropped audio data (expected 3792, but received 3796)
+
+MOONLIGHT_STREAM_CORE: Unable to recover audio data block 3796 to 3799 (2+0=2 received < 4 needed)
+
+MOONLIGHT_STREAM_CORE: Network dropped audio data (expected 3798, but received 3808)
+
+MOONLIGHT_STREAM_CORE: Unable to recover audio data block 3808 to 3811 (2+0=2 received < 4 needed)
+
+MOONLIGHT_STREAM_CORE: Network dropped audio data (expected 3810, but received 3812)
+
+MOONLIGHT_STREAM_CORE: Waiting for IDR frame
+
+MOONLIGHT_STREAM_CORE: Network dropped audio data (expected 3816, but received 3832)
+
+MOONLIGHT_STREAM_CORE: Unable to recover audio data block 3832 to 3835 (2+0=2 received < 4 needed)
+
+MOONLIGHT_STREAM_CORE: Network dropped audio data (expected 3834, but received 3836)
+
+MOONLIGHT_STREAM_CORE: Network dropped audio data (expected 3840, but received 3848)
+
+MOONLIGHT_STREAM_CORE: Unable to recover audio data block 3848 to 3851 (2+0=2 received < 4 needed)
+
+MOONLIGHT_STREAM_CORE: Network dropped audio data (expected 3850, but received 3852)
+
+MOONLIGHT_STREAM_CORE: Unable to recover audio data block 3856 to 3859 (1+0=1 received < 4 needed)
+
+MOONLIGHT_STREAM_CORE: Network dropped audio data (expected 3857, but received 3864)
+
+MOONLIGHT_STREAM_CORE: Unable to recover audio data block 3864 to 3867 (2+0=2 received < 4 needed)
+
+MOONLIGHT_STREAM_CORE: Network dropped audio data (expected 3866, but received 3868)
+
+MOONLIGHT_STREAM_CORE: Network dropped audio data (expected 3876, but received 3880)
+
+MOONLIGHT_STREAM_CORE: Unable to recover audio data block 3880 to 3883 (3+0=3 received < 4 needed)
+
+MOONLIGHT_STREAM_CORE: Unable to recover audio data block 3888 to 3891 (2+0=2 received < 4 needed)
+
+MOONLIGHT_STREAM_CORE: Network dropped audio data (expected 3883, but received 3890)
+
+MOONLIGHT_STREAM_CORE: Unable to recover audio data block 3892 to 3895 (2+1=3 received < 4 needed)
+
+MOONLIGHT_STREAM_CORE: Network dropped audio data (expected 3892, but received 3894)
+
+MOONLIGHT_STREAM_CORE: Unable to recover audio data block 3896 to 3899 (2+0=2 received < 4 needed)
+
+MOONLIGHT_STREAM_CORE: Network dropped audio data (expected 3896, but received 3898)
+
+MOONLIGHT_STREAM_CORE: Waiting for IDR frame
+
+MOONLIGHT_STREAM_CORE: Unable to recover audio data block 3904 to 3907 (2+0=2 received < 4 needed)
+
+MOONLIGHT_STREAM_CORE: Network dropped audio data (expected 3900, but received 3906)
+
+MOONLIGHT_STREAM_CORE: Unable to recover audio data block 3912 to 3915 (2+0=2 received < 4 needed)
+
+MOONLIGHT_STREAM_CORE: Network dropped audio data (expected 3908, but received 3914)
+
+MOONLIGHT_STREAM_CORE: Unable to recover audio data block 3916 to 3919 (2+0=2 received < 4 needed)
+
+MOONLIGHT_STREAM_CORE: Network dropped audio data (expected 3918, but received 3920)
+
+MOONLIGHT_STREAM_CORE: Unable to recover audio data block 3924 to 3927 (2+0=2 received < 4 needed)
+
+MOONLIGHT_STREAM_CORE: Network dropped audio data (expected 3926, but received 3928)
+
+MOONLIGHT_STREAM_CORE: Unable to recover audio data block 3932 to 3935 (2+0=2 received < 4 needed)
+
+MOONLIGHT_STREAM_CORE: Network dropped audio data (expected 3934, but received 3936)
+
+MOONLIGHT_STREAM_CORE: Unable to recover audio data block 3936 to 3939 (3+0=3 received < 4 needed)
+
+MOONLIGHT_STREAM_CORE: Network dropped audio data (expected 3939, but received 3940)
+
+MOONLIGHT_STREAM_CORE: Unable to recover audio data block 3940 to 3943 (2+0=2 received < 4 needed)
+
+MOONLIGHT_STREAM_CORE: Unable to recover audio data block 3948 to 3951 (2+0=2 received < 4 needed)
+
+MOONLIGHT_STREAM_CORE: Network dropped audio data (expected 3942, but received 3950)
+
+MOONLIGHT_STREAM_CORE: Unable to recover audio data block 3952 to 3955 (2+0=2 received < 4 needed)
+
+MOONLIGHT_STREAM_CORE: Network dropped audio data (expected 3952, but received 3954)
+
+MOONLIGHT_STREAM_CORE: Unable to recover audio data block 3956 to 3959 (2+0=2 received < 4 needed)
+
+MOONLIGHT_STREAM_CORE: Network dropped audio data (expected 3956, but received 3958)
+
+MOONLIGHT_STREAM_CORE: Waiting for IDR frame
+
+MOONLIGHT_STREAM_CORE: Unable to recover audio data block 3960 to 3963 (2+0=2 received < 4 needed)
+
+MOONLIGHT_STREAM_CORE: Unable to recover audio data block 3972 to 3975 (2+0=2 received < 4 needed)
+
+MOONLIGHT_STREAM_CORE: Network dropped audio data (expected 3962, but received 3974)
+
+MOONLIGHT_STREAM_CORE: Unable to recover audio data block 3976 to 3979 (2+0=2 received < 4 needed)
+
+MOONLIGHT_STREAM_CORE: Network dropped audio data (expected 3976, but received 3978)
+
+MOONLIGHT_STREAM_CORE: Unable to recover audio data block 3980 to 3983 (2+0=2 received < 4 needed)
+
+MOONLIGHT_STREAM_CORE: Network dropped audio data (expected 3980, but received 3982)
+
+MOONLIGHT_STREAM_CORE: Network dropped audio data (expected 3984, but received 3988)
+
+MOONLIGHT_STREAM_CORE: Unable to recover audio data block 3988 to 3991 (2+0=2 received < 4 needed)
+
+MOONLIGHT_STREAM_CORE: Network dropped audio data (expected 3990, but received 3992)
+
+MOONLIGHT_STREAM_CORE: Unable to recover audio data block 3992 to 3995 (2+0=2 received < 4 needed)
+
+MOONLIGHT_STREAM_CORE: Network dropped audio data (expected 3994, but received 4000)
+
+MOONLIGHT_STREAM_CORE: Unable to recover audio data block 4000 to 4003 (2+0=2 received < 4 needed)
+
+MOONLIGHT_STREAM_CORE: Unable to recover audio data block 4004 to 4007 (2+0=2 received < 4 needed)
+
+MOONLIGHT_STREAM_CORE: Network dropped audio data (expected 4002, but received 4006)
+
+MOONLIGHT_STREAM_CORE: Waiting for IDR frame
+
+MOONLIGHT_STREAM_CORE: Unable to recover audio data block 4012 to 4015 (2+0=2 received < 4 needed)
+
+MOONLIGHT_STREAM_CORE: Network dropped audio data (expected 4008, but received 4014)
+
+MOONLIGHT_STREAM_CORE: Unable to recover audio data block 4032 to 4035 (3+0=3 received < 4 needed)
+
+MOONLIGHT_STREAM_CORE: Unable to recover audio data block 4056 to 4059 (2+0=2 received < 4 needed)
+
+MOONLIGHT_STREAM_CORE: Network dropped audio data (expected 4035, but received 4058)
+
+MOONLIGHT_STREAM_CORE: Unable to recover audio data block 4060 to 4063 (2+0=2 received < 4 needed)
+
+MOONLIGHT_STREAM_CORE: Network dropped audio data (expected 4062, but received 4064)
+
+MOONLIGHT_STREAM_CORE: Unable to recover audio data block 4064 to 4067 (2+0=2 received < 4 needed)
+
+MOONLIGHT_STREAM_CORE: Waiting for IDR frame
+
+MOONLIGHT_STREAM_CORE: Network dropped audio data (expected 4066, but received 4072)
+
+MOONLIGHT_STREAM_CORE: Unable to recover audio data block 4072 to 4075 (2+0=2 received < 4 needed)
+
+MOONLIGHT_STREAM_CORE: Network dropped audio data (expected 4074, but received 4084)
+
+MOONLIGHT_STREAM_CORE: Unable to recover audio data block 4088 to 4091 (2+0=2 received < 4 needed)
+
+MOONLIGHT_STREAM_CORE: Network dropped audio data (expected 4088, but received 4090)
+
+MOONLIGHT_STREAM_CORE: Unable to recover audio data block 4092 to 4095 (1+0=1 received < 4 needed)
+
+MOONLIGHT_STREAM_CORE: Network dropped audio data (expected 4092, but received 4094)
+
+MOONLIGHT_STREAM_CORE: Network dropped audio data (expected 4095, but received 4100)
+
+MOONLIGHT_STREAM_CORE: Unable to recover audio data block 4116 to 4119 (2+0=2 received < 4 needed)
+
+MOONLIGHT_STREAM_CORE: Network dropped audio data (expected 4108, but received 4118)
+
+MOONLIGHT_STREAM_CORE: Unable to recover audio data block 4120 to 4123 (2+1=3 received < 4 needed)
+
+MOONLIGHT_STREAM_CORE: Network dropped audio data (expected 4120, but received 4122)
+
+MOONLIGHT_STREAM_CORE: Network dropped audio data (expected 4124, but received 4128)
+
+MOONLIGHT_STREAM_CORE: Unable to recover audio data block 4128 to 4131 (2+0=2 received < 4 needed)
+
+MOONLIGHT_STREAM_CORE: Unable to recover audio data block 4136 to 4139 (2+0=2 received < 4 needed)
+
+MOONLIGHT_STREAM_CORE: Network dropped audio data (expected 4130, but received 4138)
+
+MOONLIGHT_STREAM_CORE: Unable to recover audio data block 4140 to 4143 (3+0=3 received < 4 needed)
+
+MOONLIGHT_STREAM_CORE: Unable to recover audio data block 4144 to 4147 (2+0=2 received < 4 needed)
+
+MOONLIGHT_STREAM_CORE: Network dropped audio data (expected 4143, but received 4146)
+
+MOONLIGHT_STREAM_CORE: Unable to recover audio data block 4152 to 4155 (2+0=2 received < 4 needed)
+
+MOONLIGHT_STREAM_CORE: Network dropped audio data (expected 4148, but received 4154)
+
+MOONLIGHT_STREAM_CORE: Unable to recover audio data block 4156 to 4159 (3+0=3 received < 4 needed)
+
+MOONLIGHT_STREAM_CORE: Network dropped audio data (expected 4157, but received 4158)
+
+MOONLIGHT_STREAM_CORE: Network dropped audio data (expected 4160, but received 4164)
+
+MOONLIGHT_STREAM_CORE: Network dropped audio data (expected 4168, but received 4180)
+
+MOONLIGHT_STREAM_CORE: Unable to recover audio data block 4180 to 4183 (2+0=2 received < 4 needed)
+
+MOONLIGHT_STREAM_CORE: Network dropped audio data (expected 4182, but received 4184)
+
+MOONLIGHT_STREAM_CORE: Waiting for IDR frame
+
+MOONLIGHT_STREAM_CORE: Unable to recover audio data block 4192 to 4195 (2+0=2 received < 4 needed)
+
+MOONLIGHT_STREAM_CORE: Network dropped audio data (expected 4188, but received 4194)
+
+MOONLIGHT_STREAM_CORE: Unable to recover audio data block 4196 to 4199 (2+0=2 received < 4 needed)
+
+MOONLIGHT_STREAM_CORE: Network dropped audio data (expected 4196, but received 4198)
+
+MOONLIGHT_STREAM_CORE: Network dropped audio data (expected 4200, but received 4204)
+
+MOONLIGHT_STREAM_CORE: Waiting for IDR frame
+
+MOONLIGHT_STREAM_CORE: Unable to recover audio data block 4216 to 4219 (3+0=3 received < 4 needed)
+
+MOONLIGHT_STREAM_CORE: Unable to recover audio data block 4224 to 4227 (2+0=2 received < 4 needed)
+
+MOONLIGHT_STREAM_CORE: Network dropped audio data (expected 4219, but received 4226)
+
+MOONLIGHT_STREAM_CORE: Network dropped audio data (expected 4228, but received 4232)
+
+MOONLIGHT_STREAM_CORE: Network dropped audio data (expected 4240, but received 4244)
+
+MOONLIGHT_STREAM_CORE: Unable to recover audio data block 4244 to 4247 (2+0=2 received < 4 needed)
+
+MOONLIGHT_STREAM_CORE: Network dropped audio data (expected 4246, but received 4256)
+
+MOONLIGHT_STREAM_CORE: Unable to recover audio data block 4256 to 4259 (2+0=2 received < 4 needed)
+
+MOONLIGHT_STREAM_CORE: Network dropped audio data (expected 4258, but received 4260)
+
+MOONLIGHT_STREAM_CORE: Network dropped audio data (expected 4264, but received 4280)
+
+MOONLIGHT_STREAM_CORE: Unable to recover audio data block 4284 to 4287 (2+0=2 received < 4 needed)
+
+MOONLIGHT_STREAM_CORE: Network dropped audio data (expected 4286, but received 4292)
+
+MOONLIGHT_STREAM_CORE: Waiting for IDR frame
+
+MOONLIGHT_STREAM_CORE: Network dropped audio data (expected 4300, but received 4304)
+
+MOONLIGHT_STREAM_CORE: Unable to recover audio data block 4312 to 4315 (2+0=2 received < 4 needed)
+
+MOONLIGHT_STREAM_CORE: Network dropped audio data (expected 4312, but received 4314)
+
+MOONLIGHT_STREAM_CORE: Unable to recover audio data block 4316 to 4319 (2+0=2 received < 4 needed)
+
+MOONLIGHT_STREAM_CORE: Unable to recover audio data block 4320 to 4323 (2+0=2 received < 4 needed)
+
+MOONLIGHT_STREAM_CORE: Network dropped audio data (expected 4318, but received 4322)
+
+MOONLIGHT_STREAM_CORE: Unable to recover audio data block 4324 to 4327 (2+0=2 received < 4 needed)
+
+MOONLIGHT_STREAM_CORE: Network dropped audio data (expected 4324, but received 4326)
+
+MOONLIGHT_STREAM_CORE: Unable to recover audio data block 4348 to 4351 (2+0=2 received < 4 needed)
+
+MOONLIGHT_STREAM_CORE: Network dropped audio data (expected 4332, but received 4350)
+
+MOONLIGHT_STREAM_CORE: Waiting for IDR frame
+
+MOONLIGHT_STREAM_CORE: Unable to recover audio data block 4356 to 4359 (2+0=2 received < 4 needed)
+
+MOONLIGHT_STREAM_CORE: Network dropped audio data (expected 4356, but received 4358)
+
+MOONLIGHT_STREAM_CORE: Network dropped audio data (expected 4360, but received 4364)
+
+MOONLIGHT_STREAM_CORE: Unable to recover audio data block 4364 to 4367 (2+0=2 received < 4 needed)
+
+MOONLIGHT_STREAM_CORE: Network dropped audio data (expected 4366, but received 4368)
+
+MOONLIGHT_STREAM_CORE: Unable to recover audio data block 4368 to 4371 (2+0=2 received < 4 needed)
+
+MOONLIGHT_STREAM_CORE: Network dropped audio data (expected 4370, but received 4376)
+
+MOONLIGHT_STREAM_CORE: Unable to recover audio data block 4376 to 4379 (2+0=2 received < 4 needed)
+
+MOONLIGHT_STREAM_CORE: Network dropped audio data (expected 4378, but received 4380)
+
+MOONLIGHT_STREAM_CORE: Waiting for IDR frame
+
+MOONLIGHT_STREAM_CORE: Unable to recover audio data block 4412 to 4415 (2+0=2 received < 4 needed)
+
+MOONLIGHT_STREAM_CORE: Network dropped audio data (expected 4396, but received 4414)
+
+MOONLIGHT_STREAM_CORE: Unable to recover audio data block 4416 to 4419 (2+0=2 received < 4 needed)
+
+MOONLIGHT_STREAM_CORE: Network dropped audio data (expected 4416, but received 4418)
+
+MOONLIGHT_STREAM_CORE: Unable to recover audio data block 4420 to 4423 (2+0=2 received < 4 needed)
+
+MOONLIGHT_STREAM_CORE: Unable to recover audio data block 4424 to 4427 (2+0=2 received < 4 needed)
+
+MOONLIGHT_STREAM_CORE: Network dropped audio data (expected 4422, but received 4426)
+
+MOONLIGHT_STREAM_CORE: Unable to recover audio data block 4428 to 4431 (2+0=2 received < 4 needed)
+
+MOONLIGHT_STREAM_CORE: Network dropped audio data (expected 4430, but received 4432)
+
+MOONLIGHT_STREAM_CORE: Waiting for IDR frame
+
+MOONLIGHT_STREAM_CORE: Unable to recover audio data block 4432 to 4435 (2+0=2 received < 4 needed)
+
+MOONLIGHT_STREAM_CORE: Unable to recover audio data block 4436 to 4439 (2+0=2 received < 4 needed)
+
+MOONLIGHT_STREAM_CORE: Network dropped audio data (expected 4434, but received 4438)
+
+MOONLIGHT_STREAM_CORE: Unable to recover audio data block 4440 to 4443 (2+0=2 received < 4 needed)
+
+MOONLIGHT_STREAM_CORE: Network dropped audio data (expected 4440, but received 4442)
+
+MOONLIGHT_STREAM_CORE: Unable to recover audio data block 4448 to 4451 (2+0=2 received < 4 needed)
+
+MOONLIGHT_STREAM_CORE: Network dropped audio data (expected 4450, but received 4456)
+
+MOONLIGHT_STREAM_CORE: Unable to recover audio data block 4456 to 4459 (2+0=2 received < 4 needed)
+
+MOONLIGHT_STREAM_CORE: Network dropped audio data (expected 4458, but received 4464)
+
+MOONLIGHT_STREAM_STATS: {"state":2,"mode":{"width":1280,"height":720,"fps":30,"bitrate":3000,"showStats":true},"decoded":455,"presented":440,"audioDecoded":3683,"telemetry":{"decodedFps":0,"textureFps":0,"receivedMbps":0.346,"rttMs":2000,"rttVariationMs":795,"frameReceiveMs":null,"coreQueueMs":null,"hostProcessingMs":null,"decodeReadyMs":null,"copyPresentMs":null,"frameIntervalMs":null,"frameJitterMs":null,"loopHz":32.782,"pumpAvgMs":6.857,"drainAvgMs":0.116,"decoderPending":0,"videoSuperseded":15,"audioBufferedMsUpperBound":35,"audioQueueLimitMs":60,"audioCatchups":18,"audioDiscardedMs":360,"audioDropped":18,"videoFrameGaps":10,"decoderRejected":0,"audioRecovered":18,"audioFecFailed":116,"directReceivedBytes":5291259}}
+MOONLIGHT_STREAM_CORE: Unable to recover audio data block 4472 to 4475 (2+1=3 received < 4 needed)
+
+MOONLIGHT_STREAM_CORE: Network dropped audio data (expected 4472, but received 4474)
+
+MOONLIGHT_STREAM_CORE: Network dropped audio data (expected 4476, but received 4488)
+
+MOONLIGHT_STREAM_CORE: Unable to recover audio data block 4488 to 4491 (2+0=2 received < 4 needed)
+
+MOONLIGHT_STREAM_CORE: Network dropped audio data (expected 4490, but received 4492)
+
+MOONLIGHT_STREAM_CORE: Unable to recover audio data block 4496 to 4499 (2+0=2 received < 4 needed)
+
+MOONLIGHT_STREAM_CORE: Network dropped audio data (expected 4496, but received 4498)
+
+MOONLIGHT_STREAM_CORE: Network dropped audio data (expected 4500, but received 4504)
+
+MOONLIGHT_STREAM_CORE: Waiting for IDR frame
+
+MOONLIGHT_STREAM_CORE: Network dropped audio data (expected 4512, but received 4516)
+
+MOONLIGHT_STREAM_CORE: Unable to recover audio data block 4516 to 4519 (2+0=2 received < 4 needed)
+
+MOONLIGHT_STREAM_CORE: Network dropped audio data (expected 4518, but received 4528)
+
+MOONLIGHT_STREAM_CORE: Unable to recover audio data block 4528 to 4531 (2+0=2 received < 4 needed)
+
+MOONLIGHT_STREAM_CORE: Network dropped audio data (expected 4530, but received 4532)
+
+MOONLIGHT_STREAM_CORE: Unable to recover audio data block 4536 to 4539 (2+0=2 received < 4 needed)
+
+MOONLIGHT_STREAM_CORE: Network dropped audio data (expected 4538, but received 4540)
+
+MOONLIGHT_STREAM_CORE: Waiting for IDR frame
+
+MOONLIGHT_STREAM_CORE: Unable to recover audio data block 4552 to 4555 (2+0=2 received < 4 needed)
+
+MOONLIGHT_STREAM_CORE: Unable to recover audio data block 4584 to 4587 (2+0=2 received < 4 needed)
+
+MOONLIGHT_STREAM_CORE: Network dropped audio data (expected 4554, but received 4586)
+
+MOONLIGHT_STREAM_CORE: Unable to recover audio data block 4588 to 4591 (2+0=2 received < 4 needed)
+
+MOONLIGHT_STREAM_CORE: Network dropped audio data (expected 4590, but received 4592)
+
+MOONLIGHT_STREAM_CORE: Unable to recover audio data block 4592 to 4595 (3+0=3 received < 4 needed)
+
+MOONLIGHT_STREAM_CORE: Unable to recover audio data block 4596 to 4599 (2+0=2 received < 4 needed)
+
+MOONLIGHT_STREAM_CORE: Network dropped audio data (expected 4595, but received 4598)
+
+MOONLIGHT_STREAM_CORE: Unable to recover audio data block 4600 to 4603 (2+0=2 received < 4 needed)
+
+MOONLIGHT_STREAM_CORE: Network dropped audio data (expected 4602, but received 4604)
+
+MOONLIGHT_STREAM_CORE: Unable to recover audio data block 4604 to 4607 (2+0=2 received < 4 needed)
+
+MOONLIGHT_STREAM_CORE: Network dropped audio data (expected 4606, but received 4616)
+
+MOONLIGHT_STREAM_CORE: Unable to recover audio data block 4616 to 4619 (3+0=3 received < 4 needed)
+
+MOONLIGHT_STREAM_CORE: Network dropped audio data (expected 4617, but received 4618)
+
+MOONLIGHT_STREAM_CORE: Network dropped audio data (expected 4620, but received 4624)
+
+MOONLIGHT_STREAM_CORE: Unable to recover audio data block 4632 to 4635 (2+0=2 received < 4 needed)
+
+MOONLIGHT_STREAM_CORE: Network dropped audio data (expected 4628, but received 4634)
+
+MOONLIGHT_STREAM_CORE: Unable to recover audio data block 4636 to 4639 (1+0=1 received < 4 needed)
+
+MOONLIGHT_STREAM_CORE: Unable to recover audio data block 4640 to 4643 (2+0=2 received < 4 needed)
+
+MOONLIGHT_STREAM_CORE: Network dropped audio data (expected 4637, but received 4642)
+
+MOONLIGHT_STREAM_CORE: Waiting for IDR frame
+
+MOONLIGHT_STREAM_CORE: Unable to recover audio data block 4644 to 4647 (2+0=2 received < 4 needed)
+
+MOONLIGHT_STREAM_CORE: Network dropped audio data (expected 4646, but received 4648)
+
+MOONLIGHT_STREAM_CORE: Unable to recover audio data block 4680 to 4683 (2+0=2 received < 4 needed)
+
+MOONLIGHT_STREAM_CORE: Network dropped audio data (expected 4664, but received 4682)
+
+MOONLIGHT_STREAM_CORE: Unable to recover audio data block 4684 to 4687 (2+0=2 received < 4 needed)
+
+MOONLIGHT_STREAM_CORE: Network dropped audio data (expected 4684, but received 4686)
+
+MOONLIGHT_STREAM_CORE: Unable to recover audio data block 4696 to 4699 (2+0=2 received < 4 needed)
+
+MOONLIGHT_STREAM_CORE: Network dropped audio data (expected 4698, but received 4700)
+
+MOONLIGHT_STREAM_CORE: Unable to recover audio data block 4700 to 4703 (2+0=2 received < 4 needed)
+
+MOONLIGHT_STREAM_CORE: Waiting for IDR frame
+
+MOONLIGHT_STREAM_CORE: Unable to recover audio data block 4708 to 4711 (2+0=2 received < 4 needed)
+
+MOONLIGHT_STREAM_CORE: Network dropped audio data (expected 4702, but received 4710)
+
+MOONLIGHT_STREAM_CORE: Unrecoverable frame 551: 1+0=1 received < 8 needed
+
+MOONLIGHT_STREAM_CORE: Network dropped 117 frames (frames 551 to 667)
+
+MOONLIGHT_STREAM_CORE: Waiting for IDR frame
+
+MOONLIGHT_STREAM_CORE: IDR frame request sent
+
+MOONLIGHT_STREAM_CORE: Waiting for IDR frame
+
+MOONLIGHT_STREAM_CORE: Unrecoverable frame 670: 3+0=3 received < 8 needed
+
+MOONLIGHT_STREAM_CORE: Unrecoverable frame 672: 2+0=2 received < 8 needed
+
+MOONLIGHT_STREAM_CORE: Unrecoverable frame 673: 1+0=1 received < 8 needed
+
+MOONLIGHT_STREAM_CORE: Unrecoverable frame 675: 3+0=3 received < 8 needed
+
+MOONLIGHT_STREAM_CORE: Unrecoverable frame 676: 1+0=1 received < 8 needed
+
+MOONLIGHT_STREAM_CORE: Network dropped 9 frames (frames 670 to 678)
+
+MOONLIGHT_STREAM_CORE: Waiting for IDR frame
+
+MOONLIGHT_STREAM_CORE: Unrecoverable frame 684: 2+0=2 received < 8 needed
+
+MOONLIGHT_STREAM_CORE: Unrecoverable frame 685: 2+0=2 received < 8 needed
+
+MOONLIGHT_STREAM_CORE: Unrecoverable frame 687: 1+0=1 received < 8 needed
+
+MOONLIGHT_STREAM_CORE: IDR frame request sent
+
+MOONLIGHT_STREAM_CORE: Unrecoverable frame 688: 3+0=3 received < 8 needed
+
+MOONLIGHT_STREAM_CORE: Unrecoverable frame 689: 1+0=1 received < 8 needed
+
+MOONLIGHT_STREAM_CORE: Unrecoverable frame 691: 2+0=2 received < 8 needed
+
+MOONLIGHT_STREAM_CORE: Unrecoverable frame 692: 1+0=1 received < 8 needed
+
+MOONLIGHT_STREAM_CORE: Unrecoverable frame 695: 4+0=4 received < 8 needed
+
+MOONLIGHT_STREAM_CORE: Unrecoverable frame 696: 4+0=4 received < 8 needed
+
+MOONLIGHT_STREAM_CORE: Unrecoverable frame 701: 1+0=1 received < 8 needed
+
+MOONLIGHT_STREAM_CORE: Unrecoverable frame 702: 1+0=1 received < 8 needed
+
+MOONLIGHT_STREAM_CORE: Unrecoverable frame 703: 4+0=4 received < 8 needed
+
+MOONLIGHT_STREAM_CORE: Network dropped audio data (expected 4776, but received 4844)
+
+MOONLIGHT_STREAM_CORE: Network dropped 24 frames (frames 680 to 703)
+
+MOONLIGHT_STREAM_CORE: Waiting for IDR frame
+
+MOONLIGHT_STREAM_CORE: Waiting for IDR frame
+
+MOONLIGHT_STREAM_CORE: Waiting for IDR frame
+
+MOONLIGHT_STREAM_CORE: IDR frame request sent
+
+MOONLIGHT_STREAM_CORE: Waiting for IDR frame
+
+MOONLIGHT_STREAM_CORE: Waiting for IDR frame
+
+MOONLIGHT_STREAM_CORE: Waiting for IDR frame
+
+MOONLIGHT_STREAM_CORE: Waiting for IDR frame
+
+MOONLIGHT_STREAM_CORE: Waiting for IDR frame
+
+MOONLIGHT_STREAM_CORE: Waiting for IDR frame
+
+MOONLIGHT_STREAM_CORE: Waiting for IDR frame
+
+MOONLIGHT_STREAM_CORE: Unrecoverable frame 714: 1+0=1 received < 8 needed
+
+MOONLIGHT_STREAM_CORE: Network dropped 10 frames (frames 714 to 723)
+
+MOONLIGHT_STREAM_CORE: Waiting for IDR frame
+
+MOONLIGHT_STREAM_CORE: IDR frame request sent
+
+MOONLIGHT_STREAM_CORE: Waiting for IDR frame
+
+MOONLIGHT_STREAM_CORE: Waiting for IDR frame
+
+MOONLIGHT_STREAM_CORE: Waiting for IDR frame
+
+MOONLIGHT_STREAM_CORE: Network dropped audio data (expected 4956, but received 4964)
+
+MOONLIGHT_STREAM_CORE: Waiting for IDR frame
+
+MOONLIGHT_STREAM_CORE: Waiting for IDR frame
+
+MOONLIGHT_STREAM_CORE: Waiting for IDR frame
+
+MOONLIGHT_STREAM_CORE: Unable to recover audio data block 4972 to 4975 (2+0=2 received < 4 needed)
+
+MOONLIGHT_STREAM_CORE: Network dropped audio data (expected 4972, but received 4974)
+
+MOONLIGHT_STREAM_CORE: Network dropped audio data (expected 4980, but received 4984)
+
+MOONLIGHT_STREAM_CORE: Unable to recover audio data block 4984 to 4987 (2+0=2 received < 4 needed)
+
+MOONLIGHT_STREAM_CORE: Network dropped audio data (expected 4986, but received 4988)
+
+MOONLIGHT_STREAM_CORE: Waiting for IDR frame
+
+MOONLIGHT_STREAM_CORE: Waiting for IDR frame
+
+MOONLIGHT_STREAM_CORE: Waiting for IDR frame
+
+MOONLIGHT_STREAM_CORE: Unable to recover audio data block 4988 to 4991 (2+0=2 received < 4 needed)
+
+MOONLIGHT_STREAM_CORE: Unable to recover audio data block 4992 to 4995 (2+0=2 received < 4 needed)
+
+MOONLIGHT_STREAM_CORE: Network dropped audio data (expected 4990, but received 4994)
+
+MOONLIGHT_STREAM_CORE: Unable to recover audio data block 5004 to 5007 (2+0=2 received < 4 needed)
+
+MOONLIGHT_STREAM_CORE: Network dropped audio data (expected 5000, but received 5006)
+
+MOONLIGHT_STREAM_CORE: Waiting for IDR frame
+
+MOONLIGHT_STREAM_CORE: Network dropped 60 frames (frames 735 to 794)
+
+MOONLIGHT_STREAM_CORE: Waiting for IDR frame
+
+MOONLIGHT_STREAM_CORE: Unable to recover audio data block 5008 to 5011 (2+0=2 received < 4 needed)
+
+MOONLIGHT_STREAM_CORE: Unable to recover audio data block 5016 to 5019 (2+0=2 received < 4 needed)
+
+MOONLIGHT_STREAM_CORE: Network dropped audio data (expected 5010, but received 5018)
+
+MOONLIGHT_STREAM_CORE: Unable to recover audio data block 5020 to 5023 (2+0=2 received < 4 needed)
+
+MOONLIGHT_STREAM_CORE: Network dropped audio data (expected 5020, but received 5022)
+
+MOONLIGHT_STREAM_CORE: IDR frame request sent
+
+MOONLIGHT_STREAM_CORE: Waiting for IDR frame
+
+MOONLIGHT_STREAM_CORE: Waiting for IDR frame
+
+MOONLIGHT_STREAM_CORE: Waiting for IDR frame
+
+MOONLIGHT_STREAM_CORE: Unable to recover audio data block 5024 to 5027 (2+0=2 received < 4 needed)
+
+MOONLIGHT_STREAM_CORE: Network dropped audio data (expected 5024, but received 5026)
+
+MOONLIGHT_STREAM_CORE: Unable to recover audio data block 5032 to 5035 (2+0=2 received < 4 needed)
+
+MOONLIGHT_STREAM_CORE: Network dropped audio data (expected 5034, but received 5036)
+
+MOONLIGHT_STREAM_CORE: Waiting for IDR frame
+
+MOONLIGHT_STREAM_CORE: Network dropped audio data (expected 5040, but received 5044)
+
+MOONLIGHT_STREAM_CORE: Unable to recover audio data block 5048 to 5051 (2+0=2 received < 4 needed)
+
+MOONLIGHT_STREAM_CORE: Network dropped audio data (expected 5048, but received 5050)
+
+MOONLIGHT_STREAM_CORE: Network dropped audio data (expected 5052, but received 5056)
+
+MOONLIGHT_STREAM_CORE: Unable to recover audio data block 5056 to 5059 (2+0=2 received < 4 needed)
+
+MOONLIGHT_STREAM_CORE: Network dropped audio data (expected 5058, but received 5060)
+
+MOONLIGHT_STREAM_CORE: Waiting for IDR frame
+
+MOONLIGHT_STREAM_CORE: Network dropped audio data (expected 5068, but received 5080)
+
+MOONLIGHT_STREAM_CORE: Network dropped audio data (expected 5084, but received 5092)
+
+MOONLIGHT_STREAM_CORE: Unable to recover audio data block 5092 to 5095 (2+0=2 received < 4 needed)
+
+MOONLIGHT_STREAM_CORE: Network dropped audio data (expected 5094, but received 5104)
+
+MOONLIGHT_STREAM_CORE: Unable to recover audio data block 5112 to 5115 (2+0=2 received < 4 needed)
+
+MOONLIGHT_STREAM_CORE: Network dropped audio data (expected 5114, but received 5116)
+
+MOONLIGHT_STREAM_CORE: Network dropped audio data (expected 5128, but received 5132)
+
+MOONLIGHT_STREAM_CORE: Unable to recover audio data block 5132 to 5135 (2+0=2 received < 4 needed)
+
+MOONLIGHT_STREAM_CORE: Unable to recover audio data block 5148 to 5151 (2+0=2 received < 4 needed)
+
+MOONLIGHT_STREAM_CORE: Network dropped audio data (expected 5134, but received 5150)
+
+MOONLIGHT_STREAM_CORE: Network dropped audio data (expected 5152, but received 5156)
+
+MOONLIGHT_STREAM_CORE: Unable to recover audio data block 5160 to 5163 (2+0=2 received < 4 needed)
+
+MOONLIGHT_STREAM_CORE: Network dropped audio data (expected 5162, but received 5164)
+
+MOONLIGHT_STREAM_CORE: Unable to recover audio data block 5172 to 5175 (2+0=2 received < 4 needed)
+
+MOONLIGHT_STREAM_CORE: Network dropped audio data (expected 5174, but received 5180)
+
+MOONLIGHT_STREAM_CORE: Waiting for IDR frame
+
+MOONLIGHT_STREAM_CORE: Network dropped audio data (expected 5184, but received 5188)
+
+MOONLIGHT_STREAM_CORE: Unable to recover audio data block 5204 to 5207 (2+0=2 received < 4 needed)
+
+MOONLIGHT_STREAM_CORE: Network dropped audio data (expected 5192, but received 5206)
+
+MOONLIGHT_STREAM_CORE: Network dropped audio data (expected 5212, but received 5324)
+
+MOONLIGHT_STREAM_CORE: Waiting for IDR frame
+
+MOONLIGHT_STREAM_CORE: Waiting for IDR frame
+
+MOONLIGHT_STREAM_CORE: Unable to recover audio data block 5428 to 5431 (2+0=2 received < 4 needed)
+
+MOONLIGHT_STREAM_CORE: Network dropped audio data (expected 5430, but received 5432)
+
+MOONLIGHT_STREAM_CORE: Unable to recover audio data block 5432 to 5435 (2+0=2 received < 4 needed)
+
+MOONLIGHT_STREAM_CORE: Network dropped audio data (expected 5434, but received 5436)
+
+MOONLIGHT_STREAM_CORE: Waiting for IDR frame
+
+MOONLIGHT_STREAM_CORE: Reached consecutive drop limit
+
+MOONLIGHT_STREAM_CORE: IDR frame request sent
+
+MOONLIGHT_STREAM_CORE: Unable to recover audio data block 5436 to 5439 (2+0=2 received < 4 needed)
+
+MOONLIGHT_STREAM_CORE: Unable to recover audio data block 5444 to 5447 (2+0=2 received < 4 needed)
+
+MOONLIGHT_STREAM_CORE: Network dropped audio data (expected 5438, but received 5446)
+
+MOONLIGHT_STREAM_CORE: Unable to recover audio data block 5448 to 5451 (2+0=2 received < 4 needed)
+
+MOONLIGHT_STREAM_CORE: Network dropped audio data (expected 5448, but received 5450)
+
+MOONLIGHT_STREAM_CORE: Unable to recover audio data block 5452 to 5455 (2+0=2 received < 4 needed)
+
+MOONLIGHT_STREAM_CORE: Network dropped audio data (expected 5452, but received 5454)
+
+MOONLIGHT_STREAM_CORE: Network dropped audio data (expected 5456, but received 5460)
+
+MOONLIGHT_STREAM_CORE: Unable to recover audio data block 5460 to 5463 (2+0=2 received < 4 needed)
+
+MOONLIGHT_STREAM_CORE: Unable to recover audio data block 5464 to 5467 (2+0=2 received < 4 needed)
+
+MOONLIGHT_STREAM_CORE: Network dropped audio data (expected 5462, but received 5466)
+
+MOONLIGHT_STREAM_CORE: Waiting for IDR frame
+
+MOONLIGHT_STREAM_CORE: Unable to recover audio data block 5468 to 5471 (1+0=1 received < 4 needed)
+
+MOONLIGHT_STREAM_CORE: Unable to recover audio data block 5480 to 5483 (2+0=2 received < 4 needed)
+
+MOONLIGHT_STREAM_CORE: Network dropped audio data (expected 5469, but received 5482)
+
+MOONLIGHT_STREAM_CORE: Unable to recover audio data block 5484 to 5487 (2+0=2 received < 4 needed)
+
+MOONLIGHT_STREAM_CORE: Network dropped audio data (expected 5486, but received 5488)
+
+MOONLIGHT_STREAM_CORE: Unable to recover audio data block 5496 to 5499 (2+0=2 received < 4 needed)
+
+MOONLIGHT_STREAM_CORE: Network dropped audio data (expected 5492, but received 5498)
+
+MOONLIGHT_STREAM_CORE: Waiting for IDR frame
+
+MOONLIGHT_STREAM_CORE: Waiting for IDR frame
+
+MOONLIGHT_STREAM_CORE: Network dropped audio data (expected 5504, but received 5508)
+
+MOONLIGHT_STREAM_CORE: Unable to recover audio data block 5512 to 5515 (2+0=2 received < 4 needed)
+
+MOONLIGHT_STREAM_CORE: Network dropped audio data (expected 5512, but received 5514)
+
+MOONLIGHT_STREAM_CORE: Waiting for IDR frame
+
+MOONLIGHT_STREAM_CORE: Waiting for IDR frame
+
+MOONLIGHT_STREAM_CORE: Unable to recover audio data block 5516 to 5519 (2+0=2 received < 4 needed)
+
+MOONLIGHT_STREAM_CORE: Network dropped audio data (expected 5516, but received 5518)
+
+MOONLIGHT_STREAM_CORE: Network dropped audio data (expected 5520, but received 5524)
+
+MOONLIGHT_STREAM_CORE: Unable to recover audio data block 5524 to 5527 (1+0=1 received < 4 needed)
+
+MOONLIGHT_STREAM_CORE: Network dropped audio data (expected 5525, but received 5528)
+
+MOONLIGHT_STREAM_CORE: Network dropped audio data (expected 5532, but received 5536)
+
+MOONLIGHT_STREAM_CORE: Unable to recover audio data block 5536 to 5539 (2+0=2 received < 4 needed)
+
+MOONLIGHT_STREAM_CORE: Network dropped audio data (expected 5538, but received 5540)
+
+MOONLIGHT_STREAM_CORE: Unable to recover audio data block 5544 to 5547 (1+0=1 received < 4 needed)
+
+MOONLIGHT_STREAM_CORE: Network dropped audio data (expected 5544, but received 5546)
+
+MOONLIGHT_STREAM_CORE: Waiting for IDR frame
+
+MOONLIGHT_STREAM_CORE: Network dropped audio data (expected 5547, but received 5548)
+
+MOONLIGHT_STREAM_STATS: {"state":2,"mode":{"width":1280,"height":720,"fps":30,"bitrate":3000,"showStats":true},"decoded":455,"presented":440,"audioDecoded":4297,"telemetry":{"decodedFps":0,"textureFps":0,"receivedMbps":0.76,"rttMs":434,"rttVariationMs":179,"frameReceiveMs":null,"coreQueueMs":null,"hostProcessingMs":null,"decodeReadyMs":null,"copyPresentMs":null,"frameIntervalMs":null,"frameJitterMs":null,"loopHz":23.106,"pumpAvgMs":17.621,"drainAvgMs":0.164,"decoderPending":0,"videoSuperseded":15,"audioBufferedMsUpperBound":65,"audioQueueLimitMs":60,"audioCatchups":34,"audioDiscardedMs":680,"audioDropped":34,"videoFrameGaps":10,"decoderRejected":0,"audioRecovered":38,"audioFecFailed":175,"directReceivedBytes":5846811}}
+MOONLIGHT_STREAM_CORE: Control stream received unexpected disconnect event
+
+MOONLIGHT_STREAM_CORE: Unrecoverable frame 811: 5+0=5 received < 8 needed
+
+MOONLIGHT_STREAM_CORE: Unrecoverable frame 821: 1+0=1 received < 7 needed
+
+MOONLIGHT_STREAM_CORE: Unrecoverable frame 822: 3+0=3 received < 8 needed
+
+MOONLIGHT_STREAM_CORE: Unrecoverable frame 823: 1+0=1 received < 7 needed
+
+MOONLIGHT_STREAM_CORE: Unrecoverable frame 824: 1+0=1 received < 8 needed
+
+MOONLIGHT_STREAM_CORE: Event 5: -1, 0
+MOONLIGHT_STREAM_CORE: Failed to send ENet control packet
+
+MOONLIGHT_STREAM_CORE: Loss Stats: Sending frame FEC status message failed: 6
+
+MOONLIGHT_STREAM_CORE: Unrecoverable frame 825: 1+0=1 received < 8 needed
+
+MOONLIGHT_STREAM_CORE: Unrecoverable frame 826: 1+0=1 received < 8 needed
+
+MOONLIGHT_STREAM_CORE: Unrecoverable frame 827: 1+0=1 received < 7 needed
+
+MOONLIGHT_STREAM_CORE: Unrecoverable frame 829: 1+0=1 received < 8 needed
+
+MOONLIGHT_STREAM_CORE: Network dropped 19 frames (frames 811 to 829)
+
+MOONLIGHT_STREAM_CORE: Waiting for IDR frame
+
+MOONLIGHT_STREAM_CORE: Error: Stream terminated: -1
+MOONLIGHT_STREAM_CORE: Unable to recover audio data block 5624 to 5627 (2+0=2 received < 4 needed)
+
+MOONLIGHT_STREAM_CORE: Stopping input stream...
+MOONLIGHT_STREAM_CORE: Failed to send ENet control packet
+
+MOONLIGHT_STREAM_CORE: Request IDR Frame: Transaction failed: 6
+
+MOONLIGHT_STREAM_CORE: Waiting for IDR frame
+
+MOONLIGHT_STREAM_CORE: Waiting for IDR frame
+
+MOONLIGHT_STREAM_CORE: Network dropped audio data (expected 5626, but received 5660)
+
+MOONLIGHT_STREAM_CORE: done
+
+MOONLIGHT_STREAM_CORE: Stopping audio stream...
+MOONLIGHT_STREAM_CORE: Waiting for IDR frame
+
+MOONLIGHT_STREAM_CORE: Waiting for IDR frame
+
+MOONLIGHT_STREAM_CORE: Waiting for IDR frame
+
+MOONLIGHT_STREAM_CORE: done
+
+MOONLIGHT_STREAM_CORE: Stopping video stream...
+MOONLIGHT_STREAM_CORE: done
+
+MOONLIGHT_STREAM_CORE: Stopping control stream...
+MOONLIGHT_STREAM_CORE: ENet peer is already disconnected
+
+MOONLIGHT_STREAM_CORE: done
+
+MOONLIGHT_STREAM_CORE: Cleaning up input stream...
+MOONLIGHT_STREAM_CORE: done
+
+MOONLIGHT_STREAM_CORE: Cleaning up video stream...
+MOONLIGHT_STREAM_CORE: done
+
+MOONLIGHT_STREAM_CORE: Cleaning up control stream...
+MOONLIGHT_STREAM_CORE: done
+
+MOONLIGHT_STREAM_CORE: Cleaning up audio stream...
+MOONLIGHT_STREAM_CORE: done
+
+MOONLIGHT_STREAM_CORE: Cleaning up platform...
+MOONLIGHT_STREAM_CORE: done
+
+MOONLIGHT_STREAM_CORE: Event 7: 0, 0
+MOONLIGHT_HOST_SCREEN
+Executed successfully

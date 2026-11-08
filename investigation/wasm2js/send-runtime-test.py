@@ -17,7 +17,7 @@ parser.add_argument('--extra', type=Path, action='append', default=[])
 parser.add_argument('--timeout', type=int, default=60)
 args = parser.parse_args()
 scripts = [root / p for p in ['app/vendor/forge-1.4.3.min.js', 'app/src/storage/pairing-store.js',
-           'app/src/platform/native-network.js', 'app/src/streaming/native-io.js']]
+           'app/src/platform/native-network.js', 'app/src/streaming/native-io.js', 'app/src/streaming/telemetry.js']]
 args.output.parent.mkdir(parents=True, exist_ok=True)
 with args.output.open('wb') as output:
     upload_module(args.console_ip, (here / 'dist/moonlight-stream.js').read_text(), output)

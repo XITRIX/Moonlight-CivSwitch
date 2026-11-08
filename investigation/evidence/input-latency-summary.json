@@ -1,0 +1,715 @@
+{
+  "runs": {
+    "baseline_30fps": {
+      "source": "input-baseline-valid-switch.txt",
+      "pumpBudgetMs": 8,
+      "result": {
+        "error": null,
+        "state": 0,
+        "tasks": 0,
+        "pulses": 80,
+        "sent": 80,
+        "acked": 80,
+        "retries": 11,
+        "pending": 0,
+        "queueToSocketMs": {
+          "count": 80,
+          "min": 3.616,
+          "median": 19.945,
+          "p95": 22.261,
+          "max": 24.511
+        },
+        "socketToAckMs": {
+          "count": 80,
+          "min": 1.359,
+          "median": 13.226,
+          "p95": 19.923,
+          "max": 35.104
+        },
+        "sampleToAckMs": {
+          "count": 80,
+          "min": 6.45,
+          "median": 24.059,
+          "p95": 40.913,
+          "max": 56.808
+        },
+        "pollIntervalMs": {
+          "count": 1322,
+          "min": 10.743,
+          "median": 16.667,
+          "p95": 16.689,
+          "max": 27.717
+        },
+        "pollCostMs": {
+          "count": 1323,
+          "min": 0.18,
+          "median": 0.291,
+          "p95": 0.343,
+          "max": 1.313
+        },
+        "decoded": 660,
+        "presented": 656,
+        "audioDecoded": 4428,
+        "audioDiscardedMs": 0
+      },
+      "samples": 22,
+      "metrics": {
+        "decodedFps": {
+          "median": 29.988,
+          "min": 16.743,
+          "max": 30.968
+        },
+        "textureFps": {
+          "median": 29.937,
+          "min": 16.743,
+          "max": 30.968
+        },
+        "loopHz": {
+          "median": 60.001,
+          "min": 57.876,
+          "max": 60.336
+        },
+        "pumpAvgMs": {
+          "median": 6.891,
+          "min": 5.566,
+          "max": 7.105
+        },
+        "drainAvgMs": {
+          "median": 0.696,
+          "min": 0.424,
+          "max": 0.851
+        },
+        "decodeReadyMs": {
+          "median": 8.499,
+          "min": 6.713,
+          "max": 12.05
+        },
+        "rttMs": {
+          "median": 12.0,
+          "min": 9,
+          "max": 18
+        },
+        "rttVariationMs": {
+          "median": 5.5,
+          "min": 3,
+          "max": 19
+        }
+      },
+      "audioDiscardedPercent": 0.0,
+      "sampleMaxVideoFrameGaps": 0,
+      "sampleMaxDecoderRejected": 0,
+      "sampleMaxAudioFecFailures": 0
+    },
+    "priority_30fps": {
+      "source": "input-priority-switch.txt",
+      "pumpBudgetMs": 8,
+      "result": {
+        "error": null,
+        "state": 0,
+        "tasks": 0,
+        "pulses": 80,
+        "sent": 80,
+        "acked": 80,
+        "retries": 2,
+        "pending": 0,
+        "queueToSocketMs": {
+          "count": 80,
+          "min": 1.664,
+          "median": 1.762,
+          "p95": 2.051,
+          "max": 16.982
+        },
+        "socketToAckMs": {
+          "count": 80,
+          "min": 1.424,
+          "median": 5.546,
+          "p95": 16.737,
+          "max": 22.022
+        },
+        "sampleToAckMs": {
+          "count": 80,
+          "min": 3.133,
+          "median": 7.575,
+          "p95": 21.073,
+          "max": 23.806
+        },
+        "pollIntervalMs": {
+          "count": 1322,
+          "min": 10.788,
+          "median": 16.666,
+          "p95": 16.705,
+          "max": 28.672
+        },
+        "pollCostMs": {
+          "count": 1323,
+          "min": 0.177,
+          "median": 0.198,
+          "p95": 0.319,
+          "max": 1.217
+        },
+        "decoded": 663,
+        "presented": 652,
+        "audioDecoded": 4263,
+        "audioDiscardedMs": 40
+      },
+      "samples": 22,
+      "metrics": {
+        "decodedFps": {
+          "median": 29.784,
+          "min": 6.979,
+          "max": 30.961
+        },
+        "textureFps": {
+          "median": 29.528,
+          "min": 6.979,
+          "max": 30.961
+        },
+        "loopHz": {
+          "median": 59.95,
+          "min": 58.822,
+          "max": 60.355
+        },
+        "pumpAvgMs": {
+          "median": 7.018,
+          "min": 4.121,
+          "max": 7.127
+        },
+        "drainAvgMs": {
+          "median": 0.8,
+          "min": 0.473,
+          "max": 0.866
+        },
+        "decodeReadyMs": {
+          "median": 7.425,
+          "min": 5.261,
+          "max": 10.077
+        },
+        "rttMs": {
+          "median": 12.0,
+          "min": 7,
+          "max": 18
+        },
+        "rttVariationMs": {
+          "median": 6.5,
+          "min": 4,
+          "max": 10
+        }
+      },
+      "audioDiscardedPercent": 0.188,
+      "sampleMaxVideoFrameGaps": 0,
+      "sampleMaxDecoderRejected": 0,
+      "sampleMaxAudioFecFailures": 0
+    },
+    "priority_60fps": {
+      "source": "input-priority-60fps-switch.txt",
+      "pumpBudgetMs": 8,
+      "result": {
+        "fps": 60,
+        "error": null,
+        "state": 0,
+        "tasks": 0,
+        "pulses": 80,
+        "sent": 80,
+        "acked": 80,
+        "retries": 1,
+        "pending": 0,
+        "queueToSocketMs": {
+          "count": 80,
+          "min": 1.67,
+          "median": 1.738,
+          "p95": 2.09,
+          "max": 33.746
+        },
+        "socketToAckMs": {
+          "count": 80,
+          "min": 1.442,
+          "median": 5.261,
+          "p95": 20.495,
+          "max": 49.76
+        },
+        "sampleToAckMs": {
+          "count": 80,
+          "min": 3.191,
+          "median": 6.973,
+          "p95": 23.067,
+          "max": 51.904
+        },
+        "pollIntervalMs": {
+          "count": 1312,
+          "min": 10.587,
+          "median": 16.667,
+          "p95": 16.697,
+          "max": 28.54
+        },
+        "pollCostMs": {
+          "count": 1313,
+          "min": 0.179,
+          "median": 0.199,
+          "p95": 0.318,
+          "max": 1.299
+        },
+        "decoded": 1306,
+        "presented": 1102,
+        "audioDecoded": 4275,
+        "audioDiscardedMs": 20
+      },
+      "samples": 22,
+      "metrics": {
+        "decodedFps": {
+          "median": 59.99,
+          "min": 6.95,
+          "max": 61.007
+        },
+        "textureFps": {
+          "median": 50.326,
+          "min": 6.95,
+          "max": 53.112
+        },
+        "loopHz": {
+          "median": 59.99,
+          "min": 58.579,
+          "max": 60.227
+        },
+        "pumpAvgMs": {
+          "median": 7.674,
+          "min": 3.339,
+          "max": 7.788
+        },
+        "drainAvgMs": {
+          "median": 1.261,
+          "min": 0.483,
+          "max": 1.33
+        },
+        "decodeReadyMs": {
+          "median": 8.82,
+          "min": 7.709,
+          "max": 12.867
+        },
+        "rttMs": {
+          "median": 14.0,
+          "min": 11,
+          "max": 60
+        },
+        "rttVariationMs": {
+          "median": 7.0,
+          "min": 1,
+          "max": 104
+        }
+      },
+      "audioDiscardedPercent": 0.094,
+      "sampleMaxVideoFrameGaps": 0,
+      "sampleMaxDecoderRejected": 0,
+      "sampleMaxAudioFecFailures": 0
+    },
+    "priority_continuous_60fps": {
+      "source": "input-priority-continuous-switch.txt",
+      "pumpBudgetMs": 8,
+      "result": {
+        "fps": 60,
+        "continuousInput": true,
+        "timingValid": false,
+        "error": null,
+        "state": 0,
+        "tasks": 0,
+        "pulses": 1200,
+        "sent": 1120,
+        "acked": 1120,
+        "retries": 250,
+        "pending": 80,
+        "queueToSocketMs": null,
+        "socketToAckMs": {
+          "count": 1120,
+          "min": 1.231,
+          "median": 15.125,
+          "p95": 17.656,
+          "max": 39.599
+        },
+        "sampleToAckMs": null,
+        "pollIntervalMs": {
+          "count": 1306,
+          "min": 12.42,
+          "median": 16.666,
+          "p95": 16.695,
+          "max": 29.269
+        },
+        "pollCostMs": {
+          "count": 1307,
+          "min": 0.182,
+          "median": 0.201,
+          "p95": 0.322,
+          "max": 1.33
+        },
+        "decoded": 1289,
+        "presented": 845,
+        "audioDecoded": 4308,
+        "audioDiscardedMs": 140
+      },
+      "samples": 22,
+      "metrics": {
+        "decodedFps": {
+          "median": 60.992,
+          "min": 6.92,
+          "max": 64.869
+        },
+        "textureFps": {
+          "median": 38.005,
+          "min": 6.92,
+          "max": 47.989
+        },
+        "loopHz": {
+          "median": 59.999,
+          "min": 59.312,
+          "max": 60.103
+        },
+        "pumpAvgMs": {
+          "median": 8.296,
+          "min": 3.795,
+          "max": 8.351
+        },
+        "drainAvgMs": {
+          "median": 1.158,
+          "min": 0.464,
+          "max": 1.435
+        },
+        "decodeReadyMs": {
+          "median": 13.815,
+          "min": 9.687,
+          "max": 15.387
+        },
+        "rttMs": {
+          "median": 9.0,
+          "min": 6,
+          "max": 16
+        },
+        "rttVariationMs": {
+          "median": 8.0,
+          "min": 5,
+          "max": 13
+        }
+      },
+      "audioDiscardedPercent": 0.65,
+      "sampleMaxVideoFrameGaps": 0,
+      "sampleMaxDecoderRejected": 0,
+      "sampleMaxAudioFecFailures": 0
+    },
+    "priority_continuous_30fps": {
+      "source": "input-priority-continuous-30fps-switch.txt",
+      "pumpBudgetMs": 8,
+      "result": {
+        "fps": 30,
+        "continuousInput": true,
+        "timingValid": true,
+        "error": null,
+        "state": 0,
+        "tasks": 0,
+        "pulses": 1200,
+        "sent": 1200,
+        "acked": 1200,
+        "retries": 327,
+        "pending": 0,
+        "queueToSocketMs": {
+          "count": 1200,
+          "min": 1.633,
+          "median": 1.713,
+          "p95": 1.946,
+          "max": 21.976
+        },
+        "socketToAckMs": {
+          "count": 1200,
+          "min": 1.021,
+          "median": 2.386,
+          "p95": 17.429,
+          "max": 18.13
+        },
+        "sampleToAckMs": {
+          "count": 1200,
+          "min": 2.739,
+          "median": 4.143,
+          "p95": 19.157,
+          "max": 33.754
+        },
+        "pollIntervalMs": {
+          "count": 1310,
+          "min": 11.155,
+          "median": 16.666,
+          "p95": 16.697,
+          "max": 29.298
+        },
+        "pollCostMs": {
+          "count": 1311,
+          "min": 0.178,
+          "median": 0.199,
+          "p95": 0.322,
+          "max": 1.342
+        },
+        "decoded": 657,
+        "presented": 657,
+        "audioDecoded": 4333,
+        "audioDiscardedMs": 900
+      },
+      "samples": 22,
+      "metrics": {
+        "decodedFps": {
+          "median": 29.99,
+          "min": 7.867,
+          "max": 30.985
+        },
+        "textureFps": {
+          "median": 29.99,
+          "min": 7.867,
+          "max": 30.985
+        },
+        "loopHz": {
+          "median": 59.994,
+          "min": 59.004,
+          "max": 60.106
+        },
+        "pumpAvgMs": {
+          "median": 8.297,
+          "min": 3.709,
+          "max": 8.364
+        },
+        "drainAvgMs": {
+          "median": 0.74,
+          "min": 0.469,
+          "max": 0.932
+        },
+        "decodeReadyMs": {
+          "median": 15.793,
+          "min": 9.199,
+          "max": 17.996
+        },
+        "rttMs": {
+          "median": 8.0,
+          "min": 1,
+          "max": 59
+        },
+        "rttVariationMs": {
+          "median": 8.0,
+          "min": 4,
+          "max": 105
+        }
+      },
+      "audioDiscardedPercent": 4.154,
+      "sampleMaxVideoFrameGaps": 0,
+      "sampleMaxDecoderRejected": 0,
+      "sampleMaxAudioFecFailures": 0
+    },
+    "final_continuous_30fps": {
+      "source": "input-priority-10ms-30fps-switch.txt",
+      "pumpBudgetMs": 10,
+      "result": {
+        "fps": 30,
+        "continuousInput": true,
+        "timingValid": true,
+        "error": null,
+        "state": 0,
+        "tasks": 0,
+        "pulses": 1200,
+        "sent": 1200,
+        "acked": 1200,
+        "retries": 247,
+        "pending": 0,
+        "queueToSocketMs": {
+          "count": 1200,
+          "min": 1.614,
+          "median": 1.71,
+          "p95": 6.568,
+          "max": 19.042
+        },
+        "socketToAckMs": {
+          "count": 1200,
+          "min": 1.323,
+          "median": 4.292,
+          "p95": 17.568,
+          "max": 67.452
+        },
+        "sampleToAckMs": {
+          "count": 1200,
+          "min": 2.985,
+          "median": 6.574,
+          "p95": 19.897,
+          "max": 69.23
+        },
+        "pollIntervalMs": {
+          "count": 1312,
+          "min": 10.986,
+          "median": 16.667,
+          "p95": 16.704,
+          "max": 25.624
+        },
+        "pollCostMs": {
+          "count": 1313,
+          "min": 0.178,
+          "median": 0.199,
+          "p95": 0.315,
+          "max": 1.349
+        },
+        "decoded": 658,
+        "presented": 648,
+        "audioDecoded": 4365,
+        "audioDiscardedMs": 60
+      },
+      "samples": 22,
+      "metrics": {
+        "decodedFps": {
+          "median": 29.968,
+          "min": 7.947,
+          "max": 31.439
+        },
+        "textureFps": {
+          "median": 29.962,
+          "min": 7.947,
+          "max": 30.937
+        },
+        "loopHz": {
+          "median": 59.988,
+          "min": 58.606,
+          "max": 60.263
+        },
+        "pumpAvgMs": {
+          "median": 9.66,
+          "min": 4.538,
+          "max": 9.853
+        },
+        "drainAvgMs": {
+          "median": 0.694,
+          "min": 0.492,
+          "max": 0.939
+        },
+        "decodeReadyMs": {
+          "median": 8.029,
+          "min": 6.08,
+          "max": 11.556
+        },
+        "rttMs": {
+          "median": 4.5,
+          "min": 1,
+          "max": 12
+        },
+        "rttVariationMs": {
+          "median": 4.0,
+          "min": 2,
+          "max": 14
+        }
+      },
+      "audioDiscardedPercent": 0.275,
+      "sampleMaxVideoFrameGaps": 0,
+      "sampleMaxDecoderRejected": 0,
+      "sampleMaxAudioFecFailures": 0
+    },
+    "final_continuous_60fps": {
+      "source": "input-priority-10ms-60fps-switch.txt",
+      "pumpBudgetMs": 10,
+      "result": {
+        "fps": 60,
+        "continuousInput": true,
+        "timingValid": true,
+        "error": null,
+        "state": 0,
+        "tasks": 0,
+        "pulses": 1200,
+        "sent": 1200,
+        "acked": 1200,
+        "retries": 204,
+        "pending": 0,
+        "queueToSocketMs": {
+          "count": 1200,
+          "min": 1.618,
+          "median": 1.715,
+          "p95": 7.639,
+          "max": 18.755
+        },
+        "socketToAckMs": {
+          "count": 1200,
+          "min": 1.152,
+          "median": 4.467,
+          "p95": 17.305,
+          "max": 67.432
+        },
+        "sampleToAckMs": {
+          "count": 1200,
+          "min": 3.009,
+          "median": 6.636,
+          "p95": 19.665,
+          "max": 69.302
+        },
+        "pollIntervalMs": {
+          "count": 1309,
+          "min": 15.702,
+          "median": 16.666,
+          "p95": 16.701,
+          "max": 33.698
+        },
+        "pollCostMs": {
+          "count": 1310,
+          "min": 0.179,
+          "median": 0.199,
+          "p95": 0.32,
+          "max": 1.381
+        },
+        "decoded": 1299,
+        "presented": 1121,
+        "audioDecoded": 4261,
+        "audioDiscardedMs": 20
+      },
+      "samples": 22,
+      "metrics": {
+        "decodedFps": {
+          "median": 59.988,
+          "min": 6.918,
+          "max": 60.982
+        },
+        "textureFps": {
+          "median": 51.599,
+          "min": 6.918,
+          "max": 55.092
+        },
+        "loopHz": {
+          "median": 59.991,
+          "min": 59.301,
+          "max": 60.22
+        },
+        "pumpAvgMs": {
+          "median": 10.018,
+          "min": 3.727,
+          "max": 10.174
+        },
+        "drainAvgMs": {
+          "median": 1.192,
+          "min": 0.495,
+          "max": 1.571
+        },
+        "decodeReadyMs": {
+          "median": 8.564,
+          "min": 6.336,
+          "max": 16.146
+        },
+        "rttMs": {
+          "median": 4.0,
+          "min": 1,
+          "max": 18
+        },
+        "rttVariationMs": {
+          "median": 4.0,
+          "min": 1,
+          "max": 13
+        }
+      },
+      "audioDiscardedPercent": 0.094,
+      "sampleMaxVideoFrameGaps": 0,
+      "sampleMaxDecoderRejected": 0,
+      "sampleMaxAudioFecFailures": 0
+    }
+  },
+  "limits": [
+    "Neutral controller packets, not physical button-to-display measurements.",
+    "Sample-to-socket includes the local queue and encoding; socket-to-ACK includes client receive polling.",
+    "A packet ACK does not measure the host game applying the input.",
+    "Retransmissions are not a Wi-Fi packet-loss percentage.",
+    "Sample-based timing is suppressed when updates coalesce and one-to-one correspondence is unavailable.",
+    "Texture submissions are not display scanout; separate runs have different network conditions."
+  ],
+  "baselineCoreSha256": "41a8fd57e5eba6d48ea608341e4151ed73cec58c5d2761c98e34b8cb90909542",
+  "finalCoreSha256": "4e51137b94d6d1aa1ef5e720237a9e0243afd2625ede3a98e099103c1bdfc8ca"
+}

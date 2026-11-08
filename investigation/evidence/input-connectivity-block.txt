@@ -1,0 +1,20 @@
+Input-latency investigation, 2026-11-08.
+No streaming/input timing run completed during this attempt.
+
+Default TCP connections:
+192.168.1.182:9026 -- timed out (initial module upload, then separate 3-second check).
+192.168.1.4:47989 -- timed out (3-second check).
+
+Mac en0 IPv4 address: 192.168.1.94/24; interface active.
+route -n get 192.168.1.182:
+ destination 192.168.1.0/24; gateway 10.255.0.150; interface utun4; MTU 1380.
+Router 192.168.1.1: 3/3 ICMP replies, min/avg/max 3.473/5.986/9.517 ms.
+
+Separate diagnostic sockets bound to en0 using Darwin IP_BOUND_IF:
+192.168.1.182:9026 -- ConnectionRefusedError, errno 61.
+192.168.1.4:47989 -- ConnectionRefusedError, errno 61.
+No system route/VPN settings changed.
+
+These Mac connectivity results do not measure the Switch-to-Sunshine path or
+establish the cause of the user's input latency. Awaiting confirmation of current
+endpoint addresses and service readiness before retrying.

@@ -27,8 +27,13 @@
     var gameHost = null;
 
     function report(message) {
+        if(streamDiagnostics&&(streamDiagnostics.localOnly||screen==="stream")){recordStreamMessage(message);return;}
         // Diagnostic messages never include field contents.
-        if (typeof log === "function") Promise.resolve(log(message)).catch(function () {});
+        if (typeof log === "function") {
+            // CivSwitch's native log buffer is 2048 bytes; telemetry can be larger.
+            if(message.length>1000){for(var i=0;i<message.length;i+=256)Promise.resolve(log("MOONLIGHT_LOG_PART: "+JSON.stringify({text:message.slice(i,i+256),last:i+256>=message.length}))).catch(function(){});}
+            else Promise.resolve(log(message)).catch(function () {});
+        }
         else if (window.console) console.info(message);
     }
 
@@ -149,9 +154,13 @@
         screen="settings";heldDirection="";settings.show(streamMode);paintFocus();root.focus();
     }
     var streamTask = null;
+    // Native log() sends over the loader's TCP socket and can block on bad Wi-Fi.
+    // Keep stream diagnostics bounded in RAM; the overlay remains live.
+    var streamDiagnostics={messages:[],stats:null,localOnly:false};window.__moonlightStreamDiagnostics=streamDiagnostics;
+    function recordStreamMessage(text){streamDiagnostics.messages.push({time:Date.now(),text:String(text).slice(0,512)});if(streamDiagnostics.messages.length>64)streamDiagnostics.messages.shift();}
     var stream = window.MoonlightStreamScreen ? window.MoonlightStreamScreen.create({parent:root,
-        log:function(text){report("MOONLIGHT_STREAM_CORE: "+text);},
-        onStats:function(stats){report("MOONLIGHT_STREAM_STATS: "+JSON.stringify(stats));},
+        log:recordStreamMessage,
+        onStats:function(stats){streamDiagnostics.stats=stats;},
         onBack:function(){if(!closed){screen="games";games.resume("Stream stopped. Choose an application to reconnect.");hints.style.display="flex";ignoreInputUntil=Date.now()+250;paintFocus();}}
     }) : null;
     var games = window.MoonlightGames.create({parent:root,onBack:returnToHost,onRefresh:refreshGames,onLaunch:launchGame,onSettings:openSettings,
@@ -413,6 +422,7 @@
         if (connectionTask || streamTask || closed) return;
         if (!stream || !window.MoonlightStreamClient) { games.fail("Streaming runtime unavailable. Send the UI with --streaming."); return; }
         loadSettings();
+        streamDiagnostics.localOnly=true;
         games.hide();screen="stream";hints.style.display="none";heldDirection="";
         try {
             streamTask=stream.show(gameHost.address,app,streamMode).then(function(result){

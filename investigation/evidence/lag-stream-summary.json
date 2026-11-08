@@ -1,0 +1,86 @@
+{
+  "source": "low-latency-ui-switch.txt",
+  "activeSamples": 62,
+  "mode": {
+    "width": 1280,
+    "height": 720,
+    "fps": 30,
+    "bitrate": 3000,
+    "showStats": true
+  },
+  "metrics": {
+    "decodedFps": {
+      "median": 30.126,
+      "p95": 30.674,
+      "max": 31.415
+    },
+    "textureFps": {
+      "median": 20.613,
+      "p95": 22.647,
+      "max": 23.614
+    },
+    "rttMs": {
+      "median": 41.0,
+      "p95": 60,
+      "max": 82
+    },
+    "rttVariationMs": {
+      "median": 31.0,
+      "p95": 53,
+      "max": 71
+    },
+    "frameReceiveMs": {
+      "median": 1.616,
+      "p95": 2.453,
+      "max": 7.74
+    },
+    "hostProcessingMs": {
+      "median": 2.01,
+      "p95": 2.306,
+      "max": 8.8
+    },
+    "decodeReadyMs": {
+      "median": 17.531,
+      "p95": 22.893,
+      "max": 27.773
+    },
+    "copyPresentMs": {
+      "median": 1.019,
+      "p95": 1.216,
+      "max": 3.067
+    },
+    "frameIntervalMs": {
+      "median": 48.885,
+      "p95": 57.348,
+      "max": 102.405
+    },
+    "frameJitterMs": {
+      "median": 28.959,
+      "p95": 47.078,
+      "max": 59.757
+    }
+  },
+  "totals": {
+    "submitted": 1871,
+    "decoded": 1871,
+    "presented": 1276,
+    "videoSuperseded": 595,
+    "audioDecoded": 12470,
+    "audioDropped": 1613,
+    "audioDiscardedMs": 16130,
+    "iterations": 2252,
+    "pumpMs": 21403.127328013536,
+    "maxPumpMs": 320.0232639997266,
+    "drainMs": 2515.765695999842,
+    "maxDrainMs": 15.035807999782264,
+    "maxIntervalMs": 238.7757120002061
+  },
+  "lastLossIndicators": {
+    "videoFrameGaps": 0,
+    "decoderRejected": 0,
+    "audioRecovered": 0,
+    "audioFecFailed": 0
+  },
+  "audioDiscardedFraction": 0.2587,
+  "pumpMeanMsPerIteration": 9.504
+}

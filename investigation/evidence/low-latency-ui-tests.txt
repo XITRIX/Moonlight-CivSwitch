@@ -1,0 +1,5 @@
+
+> test:ui
+> node tests/test-ui.cjs
+
+UI tests passed: saved stream settings, save errors, settings-to-stream mode forwarding, overlay on/off and cleanup, PNG covers and lazy pages, download/decode fallback and cancellation, 720p/1080p grid, four-way input, paging, horizontal footer, safe titles, list errors/retry, reconnect, close.

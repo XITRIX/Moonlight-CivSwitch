@@ -1,0 +1,169 @@
+Executing payload...
+MOONLIGHT_UI_READY
+MOONLIGHT_SCHEDULING_UI_CONNECT
+MOONLIGHT_SUNSHINE_CHECKING
+MOONLIGHT_SUNSHINE_ONLINE
+MOONLIGHT_SUNSHINE_CHECKING_PAIR
+MOONLIGHT_SUNSHINE_PAIRED
+MOONLIGHT_PAIRING_SAVED: reused
+MOONLIGHT_APPLIST_LOADING
+MOONLIGHT_APPLIST_LOADED: 3
+MOONLIGHT_ARTWORK_CACHED: 881448767 (8231 bytes)
+MOONLIGHT_ARTWORK_CACHED: 1093255277 (24833 bytes)
+MOONLIGHT_ARTWORK_CACHED: 382300562 (98678 bytes)
+MOONLIGHT_ARTWORK_DISPLAYED: 881448767
+MOONLIGHT_ARTWORK_DISPLAYED: 1093255277
+MOONLIGHT_ARTWORK_DISPLAYED: 382300562
+MOONLIGHT_SCHEDULING_UI_START
+MOONLIGHT_SCHEDULING_UI_LAUNCHED
+MOONLIGHT_STREAM_CORE: RTSP port: 48010
+
+MOONLIGHT_STREAM_CORE: Initializing platform...
+MOONLIGHT_STREAM_CORE: Event 1: 1, 0
+MOONLIGHT_STREAM_CORE: Event 2: 1, 0
+MOONLIGHT_STREAM_CORE: done
+
+MOONLIGHT_STREAM_CORE: Resolving host name...
+MOONLIGHT_STREAM_CORE: Event 1: 2, 0
+MOONLIGHT_STREAM_CORE: Event 2: 2, 0
+MOONLIGHT_STREAM_CORE: done
+
+MOONLIGHT_STREAM_CORE: Initializing audio stream...
+MOONLIGHT_STREAM_CORE: Event 1: 3, 0
+MOONLIGHT_STREAM_CORE: Event 2: 3, 0
+MOONLIGHT_STREAM_CORE: done
+
+MOONLIGHT_STREAM_CORE: Starting RTSP handshake...
+MOONLIGHT_STREAM_CORE: Event 1: 4, 0
+MOONLIGHT_LOG_PART: {"text":"MOONLIGHT_STREAM_STATS: {\"state\":1,\"tasks\":1,\"mode\":{\"width\":1280,\"height\":720,\"fps\":30,\"bitrate\":3000,\"showStats\":true},\"network\":{\"calls\":7,\"sentBytes\":0,\"receivedBytes\":0,\"directReceivedBytes\":0,\"directSentBytes\":0,\"receiveCalls\":0,\"receiveWouldBlock\":0","last":false}
+MOONLIGHT_LOG_PART: {"text":",\"lastError\":115,\"rtpTypes\":{}},\"clock\":{\"frameWakes\":1,\"timerWakes\":0,\"forcedWakes\":0,\"waitMs\":7.642,\"maxWaitMs\":7.642},\"budgetYields\":1,\"pumpMs\":57.013,\"drainMs\":0.167,\"iterations\":1,\"maxPumpMs\":57.013,\"maxDrainMs\":0.167,\"renderer\":\"png\",\"submitted\":0,\"d","last":false}
+MOONLIGHT_LOG_PART: {"text":"ecoded\":0,\"presented\":0,\"videoSuperseded\":0,\"conversionMs\":0,\"maxConversionMs\":0,\"decodeSamples\":0,\"decodeMs\":0,\"maxDecodeMs\":0,\"decoderPending\":0,\"intervalCount\":0,\"intervalMs\":0,\"intervalSquaredMs\":0,\"maxIntervalMs\":0,\"audioBufferedMsUpperBound\":0,\"audio","last":false}
+MOONLIGHT_LOG_PART: {"text":"QueueLimitMs\":60,\"audioCatchups\":0,\"audioDiscardedMs\":0,\"audioDecoded\":0,\"audioQueued\":0,\"audioDropped\":0,\"telemetry\":{\"decodedFps\":null,\"textureFps\":null,\"receivedMbps\":null,\"rttMs\":null,\"rttVariationMs\":null,\"frameReceiveMs\":null,\"coreQueueMs\":null,\"host","last":false}
+MOONLIGHT_LOG_PART: {"text":"ProcessingMs\":null,\"decodeReadyMs\":null,\"copyPresentMs\":null,\"frameIntervalMs\":null,\"frameJitterMs\":null,\"loopHz\":null,\"pumpAvgMs\":57.013,\"drainAvgMs\":0.167,\"decoderPending\":0,\"videoSuperseded\":0,\"audioBufferedMsUpperBound\":0,\"audioQueueLimitMs\":60,\"audioC","last":false}
+MOONLIGHT_LOG_PART: {"text":"atchups\":0,\"audioDiscardedMs\":0,\"audioDropped\":0,\"videoFrameGaps\":null,\"decoderRejected\":null,\"audioRecovered\":null,\"audioFecFailed\":null,\"directReceivedBytes\":0}}","last":true}
+MOONLIGHT_STREAM_CORE: Audio port: 48000
+
+MOONLIGHT_STREAM_CORE: setsockopt(SO_PRIORITY, 6) failed: 50
+
+MOONLIGHT_STREAM_CORE: Video port: 47998
+
+MOONLIGHT_STREAM_CORE: Control port: 47999
+
+MOONLIGHT_STREAM_CORE: Event 2: 4, 0
+MOONLIGHT_STREAM_CORE: done
+
+MOONLIGHT_STREAM_CORE: Initializing control stream...
+MOONLIGHT_STREAM_CORE: Event 1: 5, 0
+MOONLIGHT_STREAM_CORE: Event 2: 5, 0
+MOONLIGHT_STREAM_CORE: done
+
+MOONLIGHT_STREAM_CORE: Initializing video stream...
+MOONLIGHT_STREAM_CORE: Event 1: 6, 0
+MOONLIGHT_STREAM_CORE: Event 2: 6, 0
+MOONLIGHT_STREAM_CORE: done
+
+MOONLIGHT_STREAM_CORE: Initializing input stream...
+MOONLIGHT_STREAM_CORE: Event 1: 7, 0
+MOONLIGHT_STREAM_CORE: Event 2: 7, 0
+MOONLIGHT_STREAM_CORE: done
+
+MOONLIGHT_STREAM_CORE: Starting control stream...
+MOONLIGHT_STREAM_CORE: Event 1: 8, 0
+MOONLIGHT_STREAM_CORE: Event 2: 8, 0
+MOONLIGHT_STREAM_CORE: done
+
+MOONLIGHT_STREAM_CORE: Starting video stream...
+MOONLIGHT_STREAM_CORE: Event 1: 9, 0
+MOONLIGHT_STREAM_CORE: setsockopt(SO_PRIORITY, 5) failed: 50
+
+MOONLIGHT_STREAM_CORE: Event 2: 9, 0
+MOONLIGHT_STREAM_CORE: done
+
+MOONLIGHT_STREAM_CORE: Starting audio stream...
+MOONLIGHT_STREAM_CORE: Event 1: 10, 0
+MOONLIGHT_STREAM_CORE: Event 2: 10, 0
+MOONLIGHT_STREAM_CORE: done
+
+MOONLIGHT_STREAM_CORE: Starting input stream...
+MOONLIGHT_STREAM_CORE: Event 1: 11, 0
+MOONLIGHT_STREAM_CORE: Event 2: 11, 0
+MOONLIGHT_STREAM_CORE: done
+
+MOONLIGHT_STREAM_CORE: Event 4: 0, 0
+MOONLIGHT_STREAM_CORE: Received first audio packet after 0 ms
+
+MOONLIGHT_STREAM_CORE: Initial audio resync period: 500 milliseconds
+
+MOONLIGHT_STREAM_CORE: Received first video packet after 100 ms
+
+MOONLIGHT_LOG_PART: {"text":"MOONLIGHT_STREAM_STATS: {\"state\":2,\"tasks\":10,\"mode\":{\"width\":1280,\"height\":720,\"fps\":30,\"bitrate\":3000,\"showStats\":true},\"network\":{\"calls\":3441,\"sentBytes\":5169,\"receivedBytes\":1001325,\"directReceivedBytes\":1001325,\"directSentBytes\":5169,\"receiveCalls\":2","last":false}
+MOONLIGHT_LOG_PART: {"text":"823,\"receiveWouldBlock\":717,\"lastError\":11,\"rtpTypes\":{\"80:0\":3,\"0:0\":3,\"80:61\":778,\"80:7f\":388,\"90:0\":876}},\"clock\":{\"frameWakes\":240,\"timerWakes\":0,\"forcedWakes\":0,\"waitMs\":3177.152,\"maxWaitMs\":34.611},\"budgetYields\":84,\"pumpMs\":2018.671,\"drainMs\":157.44","last":false}
+MOONLIGHT_LOG_PART: {"text":",\"iterations\":240,\"maxPumpMs\":313.063,\"maxDrainMs\":15.042,\"renderer\":\"native-gpu-texture\",\"submitted\":99,\"decoded\":99,\"presented\":99,\"videoSuperseded\":0,\"conversionMs\":104.257,\"maxConversionMs\":12.088,\"decodeSamples\":99,\"decodeMs\":1160.588,\"maxDecodeMs\":41","last":false}
+MOONLIGHT_LOG_PART: {"text":".481,\"decoderPending\":0,\"intervalCount\":98,\"intervalMs\":3655.696,\"intervalSquaredMs\":173023.771,\"maxIntervalMs\":114.746,\"audioBufferedMsUpperBound\":50,\"audioQueueLimitMs\":60,\"audioCatchups\":0,\"audioDiscardedMs\":0,\"audioDecoded\":678,\"audioQueued\":169,\"audio","last":false}
+MOONLIGHT_LOG_PART: {"text":"Dropped\":0,\"textureFrames\":99,\"textureUploadMs\":0,\"maxTextureUploadMs\":0,\"telemetry\":{\"decodedFps\":29.559,\"textureFps\":29.559,\"receivedMbps\":1.987,\"rttMs\":11,\"rttVariationMs\":7,\"frameReceiveMs\":1.799,\"coreQueueMs\":0.456,\"hostProcessingMs\":1.437,\"decodeRead","last":false}
+MOONLIGHT_LOG_PART: {"text":"yMs\":10.649,\"copyPresentMs\":0.886,\"frameIntervalMs\":33.333,\"frameJitterMs\":11.604,\"loopHz\":60.104,\"pumpAvgMs\":6.888,\"drainAvgMs\":0.671,\"decoderPending\":0,\"videoSuperseded\":0,\"audioBufferedMsUpperBound\":50,\"audioQueueLimitMs\":60,\"audioCatchups\":0,\"audioDisc","last":false}
+MOONLIGHT_LOG_PART: {"text":"ardedMs\":0,\"audioDropped\":0,\"videoFrameGaps\":0,\"decoderRejected\":0,\"audioRecovered\":0,\"audioFecFailed\":0,\"directReceivedBytes\":1001325}}","last":true}
+MOONLIGHT_LOG_PART: {"text":"MOONLIGHT_STREAM_STATS: {\"state\":2,\"tasks\":10,\"mode\":{\"width\":1280,\"height\":720,\"fps\":30,\"bitrate\":3000,\"showStats\":true},\"network\":{\"calls\":7971,\"sentBytes\":7587,\"receivedBytes\":2299523,\"directReceivedBytes\":2299523,\"directSentBytes\":7587,\"receiveCalls\":6","last":false}
+MOONLIGHT_LOG_PART: {"text":"581,\"receiveWouldBlock\":1771,\"lastError\":11,\"rtpTypes\":{\"80:0\":3,\"0:0\":3,\"80:61\":1788,\"80:7f\":894,\"90:0\":2013}},\"clock\":{\"frameWakes\":529,\"timerWakes\":0,\"forcedWakes\":0,\"waitMs\":5916.149,\"maxWaitMs\":36.054},\"budgetYields\":189,\"pumpMs\":4007.688,\"drainMs\":45","last":false}
+MOONLIGHT_LOG_PART: {"text":"1.738,\"iterations\":529,\"maxPumpMs\":313.063,\"maxDrainMs\":15.042,\"renderer\":\"native-gpu-texture\",\"submitted\":251,\"decoded\":250,\"presented\":242,\"videoSuperseded\":8,\"conversionMs\":241.043,\"maxConversionMs\":12.088,\"decodeSamples\":250,\"decodeMs\":2963.977,\"maxDec","last":false}
+MOONLIGHT_LOG_PART: {"text":"odeMs\":47.482,\"decoderPending\":1,\"intervalCount\":241,\"intervalMs\":8722.183,\"intervalSquaredMs\":380241.119,\"maxIntervalMs\":114.746,\"audioBufferedMsUpperBound\":60,\"audioQueueLimitMs\":60,\"audioCatchups\":5,\"audioDiscardedMs\":100,\"audioDecoded\":1688,\"audioQueue","last":false}
+MOONLIGHT_LOG_PART: {"text":"d\":416,\"audioDropped\":5,\"textureFrames\":242,\"textureUploadMs\":0,\"maxTextureUploadMs\":0,\"telemetry\":{\"decodedFps\":29.973,\"textureFps\":26.975,\"receivedMbps\":1.779,\"rttMs\":14,\"rttVariationMs\":5,\"frameReceiveMs\":1.254,\"coreQueueMs\":0.422,\"hostProcessingMs\":1.5","last":false}
+MOONLIGHT_LOG_PART: {"text":"27,\"decodeReadyMs\":12.081,\"copyPresentMs\":0.927,\"frameIntervalMs\":37.772,\"frameJitterMs\":15.511,\"loopHz\":58.946,\"pumpAvgMs\":6.597,\"drainAvgMs\":0.92,\"decoderPending\":1,\"videoSuperseded\":8,\"audioBufferedMsUpperBound\":60,\"audioQueueLimitMs\":60,\"audioCatchups\"","last":false}
+MOONLIGHT_LOG_PART: {"text":":5,\"audioDiscardedMs\":100,\"audioDropped\":5,\"videoFrameGaps\":0,\"decoderRejected\":0,\"audioRecovered\":0,\"audioFecFailed\":0,\"directReceivedBytes\":2299523}}","last":true}
+MOONLIGHT_LOG_PART: {"text":"MOONLIGHT_STREAM_STATS: {\"state\":2,\"tasks\":10,\"mode\":{\"width\":1280,\"height\":720,\"fps\":30,\"bitrate\":3000,\"showStats\":true},\"network\":{\"calls\":12177,\"sentBytes\":10258,\"receivedBytes\":3437117,\"directReceivedBytes\":3437117,\"directSentBytes\":10258,\"receiveCalls","last":false}
+MOONLIGHT_LOG_PART: {"text":"\":10112,\"receiveWouldBlock\":2755,\"lastError\":11,\"rtpTypes\":{\"80:0\":3,\"0:0\":4,\"80:61\":2796,\"80:7f\":1396,\"90:0\":2996}},\"clock\":{\"frameWakes\":806,\"timerWakes\":0,\"forcedWakes\":0,\"waitMs\":8780.025,\"maxWaitMs\":49.942},\"budgetYields\":284,\"pumpMs\":5900.88,\"drainMs","last":false}
+MOONLIGHT_LOG_PART: {"text":"\":700.45,\"iterations\":806,\"maxPumpMs\":313.063,\"maxDrainMs\":15.042,\"renderer\":\"native-gpu-texture\",\"submitted\":402,\"decoded\":402,\"presented\":379,\"videoSuperseded\":23,\"conversionMs\":364.506,\"maxConversionMs\":12.088,\"decodeSamples\":402,\"decodeMs\":4791.803,\"ma","last":false}
+MOONLIGHT_LOG_PART: {"text":"xDecodeMs\":61.786,\"decoderPending\":0,\"intervalCount\":378,\"intervalMs\":13755.772,\"intervalSquaredMs\":594002.04,\"maxIntervalMs\":114.746,\"audioBufferedMsUpperBound\":40,\"audioQueueLimitMs\":60,\"audioCatchups\":18,\"audioDiscardedMs\":360,\"audioDecoded\":2696,\"audio","last":false}
+MOONLIGHT_LOG_PART: {"text":"Queued\":656,\"audioDropped\":18,\"textureFrames\":379,\"textureUploadMs\":0,\"maxTextureUploadMs\":0,\"telemetry\":{\"decodedFps\":30.937,\"textureFps\":29.939,\"receivedMbps\":1.884,\"rttMs\":10,\"rttVariationMs\":4,\"frameReceiveMs\":4.331,\"coreQueueMs\":0.018,\"hostProcessingM","last":false}
+MOONLIGHT_LOG_PART: {"text":"s\":1.584,\"decodeReadyMs\":11.98,\"copyPresentMs\":0.895,\"frameIntervalMs\":33.966,\"frameJitterMs\":14.755,\"loopHz\":57.881,\"pumpAvgMs\":6.946,\"drainAvgMs\":0.823,\"decoderPending\":0,\"videoSuperseded\":23,\"audioBufferedMsUpperBound\":40,\"audioQueueLimitMs\":60,\"audioCa","last":false}
+MOONLIGHT_LOG_PART: {"text":"tchups\":18,\"audioDiscardedMs\":360,\"audioDropped\":18,\"videoFrameGaps\":0,\"decoderRejected\":0,\"audioRecovered\":0,\"audioFecFailed\":0,\"directReceivedBytes\":3437117}}","last":true}
+MOONLIGHT_LOG_PART: {"text":"MOONLIGHT_STREAM_STATS: {\"state\":2,\"tasks\":10,\"mode\":{\"width\":1280,\"height\":720,\"fps\":30,\"bitrate\":3000,\"showStats\":true},\"network\":{\"calls\":16535,\"sentBytes\":12716,\"receivedBytes\":4698311,\"directReceivedBytes\":4698311,\"directSentBytes\":12716,\"receiveCalls","last":false}
+MOONLIGHT_LOG_PART: {"text":"\":13769,\"receiveWouldBlock\":3733,\"lastError\":11,\"rtpTypes\":{\"80:0\":3,\"0:0\":4,\"80:61\":3809,\"80:7f\":1904,\"90:0\":4097}},\"clock\":{\"frameWakes\":1083,\"timerWakes\":0,\"forcedWakes\":0,\"waitMs\":11636.303,\"maxWaitMs\":51.103},\"budgetYields\":384,\"pumpMs\":7838.991,\"drai","last":false}
+MOONLIGHT_LOG_PART: {"text":"nMs\":942.964,\"iterations\":1083,\"maxPumpMs\":313.063,\"maxDrainMs\":15.042,\"renderer\":\"native-gpu-texture\",\"submitted\":554,\"decoded\":553,\"presented\":523,\"videoSuperseded\":30,\"conversionMs\":497.157,\"maxConversionMs\":12.088,\"decodeSamples\":553,\"decodeMs\":6772.64","last":false}
+MOONLIGHT_LOG_PART: {"text":"4,\"maxDecodeMs\":63.394,\"decoderPending\":1,\"intervalCount\":522,\"intervalMs\":18802.267,\"intervalSquaredMs\":813246.618,\"maxIntervalMs\":121.365,\"audioBufferedMsUpperBound\":45,\"audioQueueLimitMs\":60,\"audioCatchups\":31,\"audioDiscardedMs\":620,\"audioDecoded\":3709,","last":false}
+MOONLIGHT_LOG_PART: {"text":"\"audioQueued\":896,\"audioDropped\":31,\"textureFrames\":523,\"textureUploadMs\":0,\"maxTextureUploadMs\":0,\"telemetry\":{\"decodedFps\":29.542,\"textureFps\":28.557,\"receivedMbps\":1.806,\"rttMs\":14,\"rttVariationMs\":9,\"frameReceiveMs\":1.557,\"coreQueueMs\":0.018,\"hostProce","last":false}
+MOONLIGHT_LOG_PART: {"text":"ssingMs\":1.584,\"decodeReadyMs\":12.688,\"copyPresentMs\":0.924,\"frameIntervalMs\":34.364,\"frameJitterMs\":11.33,\"loopHz\":58.099,\"pumpAvgMs\":6.882,\"drainAvgMs\":0.822,\"decoderPending\":1,\"videoSuperseded\":30,\"audioBufferedMsUpperBound\":45,\"audioQueueLimitMs\":60,\"a","last":false}
+MOONLIGHT_LOG_PART: {"text":"udioCatchups\":31,\"audioDiscardedMs\":620,\"audioDropped\":31,\"videoFrameGaps\":0,\"decoderRejected\":0,\"audioRecovered\":0,\"audioFecFailed\":0,\"directReceivedBytes\":4698311}}","last":true}
+MOONLIGHT_LOG_PART: {"text":"MOONLIGHT_STREAM_STATS: {\"state\":2,\"tasks\":10,\"mode\":{\"width\":1280,\"height\":720,\"fps\":30,\"bitrate\":3000,\"showStats\":true},\"network\":{\"calls\":20724,\"sentBytes\":15216,\"receivedBytes\":5875657,\"directReceivedBytes\":5875657,\"directSentBytes\":15216,\"receiveCalls","last":false}
+MOONLIGHT_LOG_PART: {"text":"\":17281,\"receiveWouldBlock\":4657,\"lastError\":11,\"rtpTypes\":{\"80:0\":3,\"0:0\":4,\"80:61\":4818,\"80:7f\":2408,\"90:0\":5118}},\"clock\":{\"frameWakes\":1359,\"timerWakes\":0,\"forcedWakes\":0,\"waitMs\":14508.34,\"maxWaitMs\":51.372},\"budgetYields\":499,\"pumpMs\":9727.702,\"drain","last":false}
+MOONLIGHT_LOG_PART: {"text":"Ms\":1205.201,\"iterations\":1359,\"maxPumpMs\":313.063,\"maxDrainMs\":15.042,\"renderer\":\"native-gpu-texture\",\"submitted\":705,\"decoded\":705,\"presented\":661,\"videoSuperseded\":44,\"conversionMs\":622.459,\"maxConversionMs\":12.088,\"decodeSamples\":705,\"decodeMs\":8659.02","last":false}
+MOONLIGHT_LOG_PART: {"text":"8,\"maxDecodeMs\":71.852,\"decoderPending\":0,\"intervalCount\":660,\"intervalMs\":23872.431,\"intervalSquaredMs\":1036471.738,\"maxIntervalMs\":121.365,\"audioBufferedMsUpperBound\":50,\"audioQueueLimitMs\":60,\"audioCatchups\":42,\"audioDiscardedMs\":840,\"audioDecoded\":4718","last":false}
+MOONLIGHT_LOG_PART: {"text":",\"audioQueued\":1137,\"audioDropped\":42,\"textureFrames\":661,\"textureUploadMs\":0,\"maxTextureUploadMs\":0,\"telemetry\":{\"decodedFps\":30.471,\"textureFps\":29.488,\"receivedMbps\":1.918,\"rttMs\":14,\"rttVariationMs\":9,\"frameReceiveMs\":1.894,\"coreQueueMs\":0.018,\"hostPro","last":false}
+MOONLIGHT_LOG_PART: {"text":"cessingMs\":1.65,\"decodeReadyMs\":10.136,\"copyPresentMs\":0.869,\"frameIntervalMs\":34.521,\"frameJitterMs\":15.818,\"loopHz\":57.994,\"pumpAvgMs\":6.705,\"drainAvgMs\":0.852,\"decoderPending\":0,\"videoSuperseded\":44,\"audioBufferedMsUpperBound\":50,\"audioQueueLimitMs\":60,","last":false}
+MOONLIGHT_LOG_PART: {"text":"\"audioCatchups\":42,\"audioDiscardedMs\":840,\"audioDropped\":42,\"videoFrameGaps\":0,\"decoderRejected\":0,\"audioRecovered\":0,\"audioFecFailed\":0,\"directReceivedBytes\":5875657}}","last":true}
+MOONLIGHT_SCHEDULING_UI_CLOSE
+MOONLIGHT_STREAM_CORE: Stopping input stream...
+MOONLIGHT_STREAM_CORE: ENet wait interrupted
+
+MOONLIGHT_STREAM_CORE: Control stream connection failed: 27
+
+MOONLIGHT_STREAM_CORE: done
+
+MOONLIGHT_STREAM_CORE: Stopping audio stream...
+MOONLIGHT_STREAM_CORE: done
+
+MOONLIGHT_STREAM_CORE: Stopping video stream...
+MOONLIGHT_STREAM_CORE: done
+
+MOONLIGHT_STREAM_CORE: Stopping control stream...
+MOONLIGHT_STREAM_CORE: ENet peer acknowledged disconnection
+
+MOONLIGHT_STREAM_CORE: done
+
+MOONLIGHT_STREAM_CORE: Cleaning up input stream...
+MOONLIGHT_STREAM_CORE: done
+
+MOONLIGHT_STREAM_CORE: Cleaning up video stream...
+MOONLIGHT_STREAM_CORE: done
+
+MOONLIGHT_STREAM_CORE: Cleaning up control stream...
+MOONLIGHT_STREAM_CORE: done
+
+MOONLIGHT_STREAM_CORE: Cleaning up audio stream...
+MOONLIGHT_STREAM_CORE: done
+
+MOONLIGHT_STREAM_CORE: Cleaning up platform...
+MOONLIGHT_STREAM_CORE: done
+
+MOONLIGHT_STREAM_CORE: Event 7: 0, 0
+Executed successfully

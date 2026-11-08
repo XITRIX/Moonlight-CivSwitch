@@ -1,0 +1,1 @@
+Cooperative scheduler and NV12 → PNG pixel/CRC/bounds checks passed.

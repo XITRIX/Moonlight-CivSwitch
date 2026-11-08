@@ -1,20 +1,48 @@
 /* Own one core, native media objects, and native sockets for a stream. */
 (function(global){
  "use strict";
+ function createClock(){
+  var pending=null,stats={frameWakes:0,timerWakes:0,forcedWakes:0,waitMs:0,maxWaitMs:0};
+  function now(){return global.performance&&global.performance.now?global.performance.now():Date.now();}
+  function wait(){
+   if(pending)return pending.promise;
+   var resolve,promise=new Promise(function(done){resolve=done;}),entry={promise:promise,frame:null,timer:null,begin:now()};pending=entry;
+   entry.finish=function(reason){
+    if(pending!==entry)return;pending=null;
+    if(entry.frame!==null)global.cancelAnimationFrame(entry.frame);if(entry.timer!==null)clearTimeout(entry.timer);
+    var elapsed=now()-entry.begin;stats.waitMs+=elapsed;stats.maxWaitMs=Math.max(stats.maxWaitMs,elapsed);stats[reason+"Wakes"]++;resolve();
+   };
+   var framed=typeof global.requestAnimationFrame==="function";
+   // A hidden page may stop animation callbacks; keep startup/stop progressing.
+   entry.timer=setTimeout(function(){entry.finish("timer");},framed?50:2);
+   if(framed)entry.frame=global.requestAnimationFrame(function(){entry.finish("frame");});
+   return promise;
+  }
+  return {wait:wait,wake:function(){if(pending)pending.finish("forced");},stats:stats};
+ }
  function factory(){
-  if(global.__moonlightStreamFactory)return global.__moonlightStreamFactory;
-  var upload=global.__moonlightStreamModuleUpload;if(!upload||upload.parts.length!==upload.count)throw Error("Streaming runtime is not loaded. Send the UI with --streaming.");
+  var upload=global.__moonlightStreamModuleUpload;
+  if(global.__moonlightStreamFactory&&(!upload||upload.sha256===global.__moonlightStreamFactoryDigest)){if(upload)delete global.__moonlightStreamModuleUpload;return global.__moonlightStreamFactory;}
+  if(!upload||upload.parts.length!==upload.count)throw Error("Streaming runtime is not loaded. Send the UI with --streaming.");
   var source=upload.parts.join("");if(source.length!==upload.length)throw Error("Incomplete streaming runtime");
-  global.__moonlightStreamFactory=new Function(source+"\nreturn MoonlightStreamCore;")();delete global.__moonlightStreamModuleUpload;return global.__moonlightStreamFactory;
+  global.__moonlightStreamFactory=new Function(source+"\nreturn MoonlightStreamCore;")();global.__moonlightStreamFactoryDigest=upload.sha256;delete global.__moonlightStreamModuleUpload;return global.__moonlightStreamFactory;
  }
  function create(options){
   var signal={aborted:false},stopRequested=false,core,io,media,failure=null,done=null,startedAt=0,connectedAt=0,latestStats=null;
   var cpu=options.renderer==="png"||options.renderer==="native-texture";
   var mode=options.mode||(cpu?{width:320,height:180,fps:15,bitrate:1000}:{width:1280,height:720,fps:30,bitrate:5000});
+  var telemetry=global.MoonlightTelemetry.create(),clock=createClock(),pumpMs=0,drainMs=0,iterations=0,maxPumpMs=0,maxDrainMs=0;
+  function collect(active){
+   var snapshot=Object.assign({state:core._ml_session_state(),tasks:core._ml_runtime_tasks(),mode:Object.assign({},mode),network:Object.assign({},io.stats),clock:Object.assign({},clock.stats),budgetYields:core._ml_runtime_budget_yields?core._ml_runtime_budget_yields():null,pumpMs:pumpMs,drainMs:drainMs,iterations:iterations,maxPumpMs:maxPumpMs,maxDrainMs:maxDrainMs},media.stats());
+   snapshot.telemetry=telemetry.sample(snapshot,active?global.MoonlightTelemetry.readCore(core):null);return snapshot;
+  }
   function status(text){if(options.onStatus)options.onStatus(text);}
   function report(text){if(options.log)options.log(text);}
   function guarded(name,fallback){return function(){try{return media[name].apply(media,arguments);}catch(error){failure=error;stopRequested=true;return fallback;}};}
-  function stop(){stopRequested=true;signal.aborted=true;return done;}
+  // A fixed local grace lets healthy peers receive releases/disconnect. It is
+  // never extended by repeated stop requests and does not await network recovery.
+  function interrupt(){if(io&&io.interrupt)io.interrupt(100);if(core)core._ml_session_stop();}
+  function stop(){stopRequested=true;signal.aborted=true;interrupt();clock.wake();return done;}
   async function run(){
    try{
     status("Preparing streaming runtime…");var make=factory(),transport=global.MoonlightNative.create();transport.signal=signal;
@@ -42,26 +70,35 @@
     }finally{session.key.fill(0);for(var p of pointers)core._free(p);}
     startedAt=Date.now();var lastStats=0;
     while(!stopRequested){
-     core._ml_runtime_pump(5);media.drainVideo();
+     await clock.wait();if(stopRequested)break;
+     // Check completed video at a consistent early phase of the render tick.
+     // Pumping packets first made output checks alternate between empty and
+     // multiple ready frames. Keep one publication per tick and no extra queue.
+     var begin=global.MoonlightTelemetry.now();media.drainVideo();var early=global.MoonlightTelemetry.now();
+     core._ml_runtime_pump(10);var pumped=global.MoonlightTelemetry.now();media.drainAudio();var drained=global.MoonlightTelemetry.now();
+     var pumpElapsed=pumped-early,drainElapsed=early-begin+drained-pumped;
+     pumpMs+=pumpElapsed;drainMs+=drainElapsed;maxPumpMs=Math.max(maxPumpMs,pumpElapsed);maxDrainMs=Math.max(maxDrainMs,drainElapsed);iterations++;
      if(failure)throw failure;
      if(core._ml_session_state()===3)throw Error("Core connection failed: "+core._ml_session_error());
      if(!connectedAt&&Date.now()-startedAt>25000)throw Error("Stream connection timed out");
      if(connectedAt&&!core._ml_session_video_frames()&&Date.now()-connectedAt>12000)throw Error("No decodable video arrived");
      if(options.durationMs&&Date.now()-startedAt>=options.durationMs)stopRequested=true;
-     if(Date.now()-lastStats>=2000){latestStats=Object.assign({state:core._ml_session_state(),tasks:core._ml_runtime_tasks(),network:Object.assign({},io.stats)},media.stats());if(options.onStats)options.onStats(latestStats);lastStats=Date.now();}
-     await new Promise(function(resolve){setTimeout(resolve,2);});
+     if(Date.now()-lastStats>=1000){latestStats=collect(core._ml_session_state()===2);if(options.onStats)options.onStats(latestStats);lastStats=Date.now();}
     }
     if(failure)throw failure;
    }catch(error){if(!signal.aborted||failure){failure=failure||error;if(options.onError)options.onError(failure);}}
    finally{
     if(core){
+     interrupt();
      status("Stopping stream…");var deadline=Date.now()+15000;
-     while((core._ml_session_state()!==0||core._ml_runtime_tasks())&&Date.now()<deadline){core._ml_session_stop();core._ml_runtime_pump(5);await new Promise(function(resolve){setTimeout(resolve,2);});}
+     // Cleanup must progress even if rendering callbacks have stopped. A short
+     // timer also avoids spending the shutdown grace on the frame watchdog.
+     while((core._ml_session_state()!==0||core._ml_runtime_tasks())&&Date.now()<deadline){core._ml_session_stop();core._ml_runtime_pump(10);await new Promise(function(resolve){setTimeout(resolve,0);});}
      if(core._ml_runtime_tasks()){
       // Never free buffers still referenced by a suspended C task.
       failure=failure||Error("Core cleanup timed out; restart Civ VII before reusing streaming");report(failure.message);
       global.__moonlightStreamUnfinished={core:core,io:io,media:media};
-     }else{if(media){latestStats=Object.assign({},latestStats,{state:core._ml_session_state(),tasks:core._ml_runtime_tasks(),network:Object.assign({},io.stats)},media.stats());media.close();}if(io)io.close();}
+     }else{if(media){latestStats=collect(false);media.close();}if(io)io.close();}
     }else if(io)io.close();
     if(options.onStopped)options.onStopped(failure,latestStats);
    }
@@ -70,5 +107,5 @@
   function start(){if(!done){if(global.__moonlightStreamUnfinished)throw Error("Restart Civ VII to clear the previous stream");done=run();}return done;}
   return {start:start,stop:stop,gamepad:function(buttons,lt,rt,lx,ly,rx,ry){if(core&&core._ml_session_state()===2)return core._ml_session_gamepad(buttons,lt,rt,lx,ly,rx,ry);return -1;},key:function(code,down,modifiers){if(core&&core._ml_session_state()===2)return core._ml_session_key(code,down?1:0,modifiers||0);return -1;},stats:function(){return latestStats;}};
  }
- global.MoonlightStreamClient={create:create};
+ global.MoonlightStreamClient={create:create,createClock:createClock};
 })(window);

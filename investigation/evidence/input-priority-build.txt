@@ -1,0 +1,26 @@
+configure: cmake -S /Users/daniilvinogradov/Documents/Dev/NS2-experiments/investigation/wasm2js -B /Users/daniilvinogradov/Documents/Dev/NS2-experiments/investigation/wasm2js/build -DCMAKE_BUILD_TYPE=Release -DCMAKE_POLICY_VERSION_MINIMUM=3.5 -DCMAKE_TOOLCHAIN_FILE=/Users/daniilvinogradov/Documents/Dev/NS2-experiments/investigation/toolchains/emsdk/upstream/emscripten/cmake/Modules/Platform/Emscripten.cmake -DCMAKE_CROSSCOMPILING_EMULATOR=/Users/daniilvinogradov/Documents/Dev/NS2-experiments/investigation/toolchains/emsdk/node/24.19.0_64bit/bin/node
+CMake Deprecation Warning at /Users/daniilvinogradov/Documents/Dev/NS2-experiments/investigation/references/mbedtls/CMakeLists.txt:21 (cmake_minimum_required):
+  Compatibility with CMake < 3.10 will be removed from a future version of
+  CMake.
+
+  Update the VERSION argument <min> value.  Or, use the <min>...<max> syntax
+  to tell CMake that the project requires at least <min> but has been updated
+  to work with policies introduced by <max> or earlier.
+
+
+-- Configuring done (1.9s)
+-- Generating done (1.3s)
+-- Build files have been written to: /Users/daniilvinogradov/Documents/Dev/NS2-experiments/investigation/wasm2js/build
+[  4%] Built target fiber-proof
+[  5%] Built target p256m
+[  5%] Built target everest
+[ 56%] Built target mbedcrypto
+[ 58%] Building C object CMakeFiles/moonlight-stream.dir/Users/daniilvinogradov/Documents/Dev/NS2-experiments/app/native/io-cooperative.c.o
+[ 62%] Building C object CMakeFiles/moonlight-stream.dir/Users/daniilvinogradov/Documents/Dev/NS2-experiments/app/native/platform-cooperative.c.o
+[ 64%] Building C object CMakeFiles/moonlight-stream.dir/Users/daniilvinogradov/Documents/Dev/NS2-experiments/app/native/session.c.o
+[ 80%] Built target moonlight-core
+[ 81%] Linking C executable moonlight-stream.js
+cache:INFO: generating system asset: symbol_lists/0245cad189c551dbd2b0ef690a40ece0419d093e.json... (this will be cached in "/Users/daniilvinogradov/Documents/Dev/NS2-experiments/investigation/wasm2js/build/emscripten-cache/symbol_lists/0245cad189c551dbd2b0ef690a40ece0419d093e.json" for subsequent builds)
+cache:INFO:  - ok
+[100%] Built target moonlight-stream
+Built /Users/daniilvinogradov/Documents/Dev/NS2-experiments/investigation/wasm2js/dist/moonlight-core.js (741,461 bytes), 54 upstream API exports

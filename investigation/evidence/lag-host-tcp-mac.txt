@@ -1,0 +1,19 @@
+{
+  "connect": {
+    "count": 30,
+    "minMs": 3.55,
+    "medianMs": 5.45,
+    "meanMs": 17.82,
+    "p95Ms": 80.59,
+    "maxMs": 94.13
+  },
+  "HTTPfirstByte": {
+    "count": 30,
+    "minMs": 7.71,
+    "medianMs": 12.55,
+    "meanMs": 32.76,
+    "p95Ms": 101.62,
+    "maxMs": 105.11
+  },
+  "errors": []
+}

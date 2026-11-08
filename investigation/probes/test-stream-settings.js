@@ -1,7 +1,7 @@
 /* Verify the app's settings adapter on Switch, retaining the user's mode. */
 (async function(){
  var native=window.MoonlightNative.create(),previous=native.loadStreamSettings();
- var testMode={width:960,height:540,fps:60,bitrate:8000};
+ var testMode={width:960,height:540,fps:60,bitrate:8000,showStats:true};
  try{
   native.saveStreamSettings(testMode);
   var loaded=window.MoonlightNative.create().loadStreamSettings();

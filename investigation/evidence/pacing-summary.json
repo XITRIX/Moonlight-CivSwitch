@@ -1,0 +1,363 @@
+{
+  "date": "2026-11-08",
+  "mode": {
+    "width": 1280,
+    "height": 720,
+    "fps": 60,
+    "bitrate": 3000
+  },
+  "method": "Sequential LAN runs, not replayed packet traces. Steady summary omits the first two connected telemetry samples; no other samples are removed. Texture FPS counts submissions, not scanout.",
+  "variants": {
+    "baseline": {
+      "evidence": "pacing-baseline-switch.txt",
+      "result": {
+        "phase": "baseline",
+        "continuous": true,
+        "error": null,
+        "state": 0,
+        "tasks": 0,
+        "submitted": 1318,
+        "decoded": 1318,
+        "presented": 1103,
+        "superseded": 215,
+        "audioDecoded": 4401,
+        "audioDiscardedMs": 20,
+        "pulses": 1200,
+        "clock": {
+          "frameWakes": 1405,
+          "timerWakes": 0,
+          "forcedWakes": 0,
+          "waitMs": 8401.048,
+          "maxWaitMs": 16.199
+        },
+        "iterations": 1405,
+        "pumpMs": 13804.788,
+        "drainMs": 1704.883,
+        "histogram": {
+          "1:1": 882,
+          "0:0": 245,
+          "2:1": 178,
+          "3:1": 11
+        },
+        "submitCostMs": {
+          "count": 1318,
+          "min": 0.463,
+          "median": 0.537,
+          "p95": 0.802,
+          "max": 7.178
+        },
+        "drainCostMs": {
+          "count": 1316,
+          "min": 0.086,
+          "median": 1.268,
+          "p95": 1.65,
+          "max": 2.102
+        },
+        "pollIntervalMs": {
+          "count": 1319,
+          "min": 11.434,
+          "median": 16.667,
+          "p95": 16.693,
+          "max": 21.909
+        },
+        "presentIntervalMs": {
+          "count": 1071,
+          "min": 10.144,
+          "median": 16.757,
+          "p95": 34.005,
+          "max": 102.343
+        }
+      },
+      "steadySamples": 20,
+      "steadyTextureFpsMean": 49.142,
+      "steadyDecodedFpsMean": 57.87675,
+      "steadyRttMsMean": 6.4
+    },
+    "early": {
+      "evidence": "pacing-before-switch.txt",
+      "result": {
+        "phase": "before",
+        "continuous": true,
+        "error": null,
+        "state": 0,
+        "tasks": 0,
+        "submitted": 1320,
+        "decoded": 1318,
+        "presented": 1267,
+        "superseded": 51,
+        "audioDecoded": 4297,
+        "audioDiscardedMs": 40,
+        "pulses": 1200,
+        "clock": {
+          "frameWakes": 1405,
+          "timerWakes": 0,
+          "forcedWakes": 0,
+          "waitMs": 4519.663,
+          "maxWaitMs": 15.894
+        },
+        "iterations": 1405,
+        "pumpMs": 13861.921,
+        "drainMs": 5537.079,
+        "histogram": {
+          "0:0": 55,
+          "1:1": 1212,
+          "2:1": 45,
+          "3:1": 3
+        },
+        "submitCostMs": {
+          "count": 1320,
+          "min": 0.47,
+          "median": 0.544,
+          "p95": 0.805,
+          "max": 7.348
+        },
+        "drainCostMs": {
+          "count": 1315,
+          "min": 0.101,
+          "median": 4.146,
+          "p95": 5.153,
+          "max": 5.915
+        },
+        "pollIntervalMs": {
+          "count": 1318,
+          "min": 8.651,
+          "median": 16.667,
+          "p95": 17.555,
+          "max": 24.649
+        },
+        "presentIntervalMs": {
+          "count": 1260,
+          "min": 13.982,
+          "median": 16.676,
+          "p95": 18.107,
+          "max": 100.097
+        }
+      },
+      "steadySamples": 20,
+      "steadyTextureFpsMean": 57.77475,
+      "steadyDecodedFpsMean": 60.0105,
+      "steadyRttMsMean": 5.15
+    },
+    "hybrid": {
+      "evidence": "pacing-hybrid-switch.txt",
+      "result": {
+        "phase": "hybrid",
+        "continuous": true,
+        "error": null,
+        "state": 0,
+        "tasks": 0,
+        "submitted": 1320,
+        "decoded": 1319,
+        "presented": 1260,
+        "superseded": 59,
+        "audioDecoded": 4380,
+        "audioDiscardedMs": 40,
+        "pulses": 1200,
+        "clock": {
+          "frameWakes": 1404,
+          "timerWakes": 0,
+          "forcedWakes": 0,
+          "waitMs": 5219.797,
+          "maxWaitMs": 17.01
+        },
+        "iterations": 1404,
+        "pumpMs": 13840.596,
+        "drainMs": 4855.528,
+        "histogram": {
+          "0:0": 354,
+          "1:1": 1196,
+          "2:1": 55,
+          "3:1": 2
+        },
+        "submitCostMs": {
+          "count": 1320,
+          "min": 0.47,
+          "median": 0.546,
+          "p95": 0.823,
+          "max": 7.05
+        },
+        "drainCostMs": {
+          "count": 1607,
+          "min": 0.084,
+          "median": 3.841,
+          "p95": 5.154,
+          "max": 5.851
+        },
+        "pollIntervalMs": {
+          "count": 1319,
+          "min": 9.404,
+          "median": 16.667,
+          "p95": 17.486,
+          "max": 23.991
+        },
+        "presentIntervalMs": {
+          "count": 1253,
+          "min": 7.467,
+          "median": 16.677,
+          "p95": 24.635,
+          "max": 99.957
+        }
+      },
+      "steadySamples": 20,
+      "steadyTextureFpsMean": 57.539500000000004,
+      "steadyDecodedFpsMean": 60.0132,
+      "steadyRttMsMean": 6.15
+    },
+    "split": {
+      "evidence": "pacing-split-fresh-switch.txt",
+      "result": {
+        "phase": "split",
+        "continuous": true,
+        "error": null,
+        "state": 0,
+        "tasks": 0,
+        "submitted": 1207,
+        "decoded": 1204,
+        "presented": 989,
+        "superseded": 215,
+        "audioDecoded": 4173,
+        "audioDiscardedMs": 160,
+        "pulses": 1200,
+        "clock": {
+          "frameWakes": 1407,
+          "timerWakes": 0,
+          "forcedWakes": 0,
+          "waitMs": 8317.11,
+          "maxWaitMs": 15.802
+        },
+        "iterations": 1407,
+        "pumpMs": 13171.196,
+        "drainMs": 2449.28,
+        "histogram": {
+          "0:0": 245,
+          "1:1": 814,
+          "2:1": 132,
+          "3:1": 28,
+          "4:1": 9
+        },
+        "submitCostMs": {
+          "count": 1207,
+          "min": 0.464,
+          "median": 0.547,
+          "p95": 0.871,
+          "max": 7.157
+        },
+        "drainCostMs": {
+          "count": 1228,
+          "min": 0.093,
+          "median": 1.725,
+          "p95": 2.808,
+          "max": 3.46
+        },
+        "pollIntervalMs": {
+          "count": 1232,
+          "min": 9.893,
+          "median": 16.667,
+          "p95": 16.697,
+          "max": 23.453
+        },
+        "presentIntervalMs": {
+          "count": 983,
+          "min": 15.11,
+          "median": 16.885,
+          "p95": 33.902,
+          "max": 234.53
+        }
+      },
+      "steadySamples": 19,
+      "steadyTextureFpsMean": 49.626894736842104,
+      "steadyDecodedFpsMean": 60.10452631578948,
+      "steadyRttMsMean": 9.842105263157896
+    }
+  },
+  "input": {
+    "fps": 60,
+    "continuousInput": false,
+    "timingValid": true,
+    "error": null,
+    "state": 0,
+    "tasks": 0,
+    "pulses": 80,
+    "sent": 80,
+    "acked": 80,
+    "retries": 8,
+    "pending": 0,
+    "queueToSocketMs": {
+      "count": 80,
+      "min": 1.823,
+      "median": 4.578,
+      "p95": 5.331,
+      "max": 13.051
+    },
+    "socketToAckMs": {
+      "count": 80,
+      "min": 1.367,
+      "median": 6.83,
+      "p95": 19.446,
+      "max": 21.915
+    },
+    "sampleToAckMs": {
+      "count": 80,
+      "min": 4.412,
+      "median": 11.407,
+      "p95": 23.395,
+      "max": 26.308
+    },
+    "pollIntervalMs": {
+      "count": 1380,
+      "min": 10.685,
+      "median": 16.667,
+      "p95": 16.711,
+      "max": 22.62
+    },
+    "pollCostMs": {
+      "count": 1381,
+      "min": 0.177,
+      "median": 0.197,
+      "p95": 0.316,
+      "max": 1.222
+    },
+    "decoded": 1321,
+    "presented": 1219,
+    "audioDecoded": 4359,
+    "audioDiscardedMs": 20
+  },
+  "fullUI": {
+    "failed": false,
+    "healthy": false,
+    "error": null,
+    "blackhole": true,
+    "rafSuppressed": true,
+    "chordDetectedMs": 17.033,
+    "returnedToGamesMs": 196.743,
+    "state": 0,
+    "tasks": 0,
+    "tcpStreamLogs": 0,
+    "diagnosticMessages": 64,
+    "gracefulDisconnect": false,
+    "mode": {
+      "width": 1280,
+      "height": 720,
+      "fps": 60,
+      "bitrate": 3000,
+      "showStats": true
+    },
+    "steadySummary": {
+      "samples": 19,
+      "textureFpsMean": 51.9198947368421,
+      "textureFpsMedian": 53.502,
+      "decodedFpsMean": 57.63831578947369,
+      "note": "Includes one 17.946 decoded/presented FPS interval; no cause established for that interval. Most other intervals present 49\u201358 FPS."
+    }
+  },
+  "validation": {
+    "localTests": 39,
+    "uiLoaded": "pacing-loaded-ui-switch.txt",
+    "failedRuns": [
+      "pacing-split-switch-sender.txt",
+      "pacing-final-60-switch-sender.txt"
+    ],
+    "failureNote": "Two repeated-probe sessions disconnected without a completion marker and required restarting/reopening CivSwitch. Stage/cause unconfirmed; these are not passing measurements.",
+    "reportRecovery": "Full UI test returned to Games and completed. Its report was not awaited before UI close, causing partial asynchronous output; a first RAM read interleaved with it. Await added to the helper, and pacing-final-ui-60-stats.txt is the clean completed RAM read of the same test."
+  }
+}

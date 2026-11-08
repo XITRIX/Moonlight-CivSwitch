@@ -16,14 +16,15 @@ typedef struct Task {
     void* wait_object;
     uint32_t generation;
     double wake_time;
-    int state, detached, index, saved_errno;
+    int state, detached, index, saved_errno, priority;
 } Task;
 typedef struct { Task* owner; } Mutex;
 static Task* tasks[TASK_LIMIT];
 static Task* current;
 static emscripten_fiber_t root;
 static unsigned char root_async_stack[STACK_BYTES];
-static int cursor, pumping;
+static int cursor, pumping, budget_yields;
+static double pump_deadline;
 
 static void* load_pointer(void* storage) { void* p; memcpy(&p, storage, sizeof(p)); return p; }
 static void store_pointer(void* storage, void* p) { memcpy(storage, &p, sizeof(p)); }
@@ -60,32 +61,53 @@ static void destroy_task(Task* task) {
     free(task->stack); free(task->async_stack); free(task);
 }
 int ml_spawn_task(ML_TASK_ENTRY entry, void* argument) { Task* task; return create_task(entry, argument, 1, &task); }
+int ml_spawn_input_task(ML_TASK_ENTRY entry, void* argument) {
+    Task* task;int result=create_task(entry,argument,1,&task);if(!result)task->priority=2;return result;
+}
 int ml_runtime_current_task(void) { return current != NULL; }
 int ml_runtime_tasks(void) { int count=0; for(int i=0;i<TASK_LIMIT;i++)if(tasks[i])count++; return count; }
 void ml_yield_ms(int milliseconds) {
     current->wake_time = emscripten_get_now() + (milliseconds > 0 ? milliseconds : 0);
     current->state = SLEEPING; suspend_task();
 }
+void ml_runtime_checkpoint(void) {
+    if(current&&pumping&&emscripten_get_now()>=pump_deadline){budget_yields++;ml_yield_ms(0);}
+}
+int ml_runtime_budget_yields(void) { return budget_yields; }
+static int runnable(Task* task) {
+    return task->state == READY || (task->state == SLEEPING && emscripten_get_now() >= task->wake_time) ||
+        (task->state == WAIT_COND && *(uint32_t*)task->wait_object != task->generation) ||
+        (task->state == WAIT_MUTEX && ((Mutex*)task->wait_object)->owner == NULL) ||
+        (task->state == WAIT_JOIN && ((Task*)task->wait_object)->state == FINISHED);
+}
+static void run_task(Task* task) {
+    current=task;task->state=READY;emscripten_fiber_swap(&root,&task->fiber);current=NULL;
+}
 int ml_runtime_pump(int budget_ms) {
     if (pumping) return -1;
     pumping = 1;
     emscripten_fiber_init_from_current_context(&root, root_async_stack, sizeof(root_async_stack));
-    double deadline = emscripten_get_now() + (budget_ms > 0 ? budget_ms : 1);
+    pump_deadline = emscripten_get_now() + (budget_ms > 0 ? budget_ms : 1);
     int steps = 0;
+    // Dispatch the latest controller state, then upstream's InputSend task,
+    // before packet draining can consume this frame's budget. Each gets one
+    // turn; the normal round-robin pass still services every other task.
+    for(int priority=2;priority>0;priority--) {
+        for(int i=0;i<TASK_LIMIT;i++) {
+            Task* task=tasks[i];if(!task||task->priority!=priority||!runnable(task))continue;
+            run_task(task);steps++;
+            if(emscripten_get_now()>=pump_deadline)goto done;
+        }
+    }
     for (int scanned = 0; scanned < TASK_LIMIT * 8 && steps < 128; scanned++) {
         Task* task = tasks[cursor]; cursor = (cursor + 1) % TASK_LIMIT;
         if (!task) continue;
         if (task->state == FINISHED) { if (task->detached) destroy_task(task); continue; }
-        int runnable = task->state == READY || (task->state == SLEEPING && emscripten_get_now() >= task->wake_time) ||
-            (task->state == WAIT_COND && *(uint32_t*)task->wait_object != task->generation) ||
-            (task->state == WAIT_MUTEX && ((Mutex*)task->wait_object)->owner == NULL) ||
-            (task->state == WAIT_JOIN && ((Task*)task->wait_object)->state == FINISHED);
-        if (!runnable) continue;
-        current = task; task->state = READY;
-        emscripten_fiber_swap(&root, &task->fiber);
-        current = NULL; steps++;
-        if (emscripten_get_now() >= deadline) break;
+        if (!runnable(task)) continue;
+        run_task(task);steps++;
+        if (emscripten_get_now() >= pump_deadline) break;
     }
+done:
     pumping = 0;
     return steps;
 }
@@ -93,10 +115,13 @@ int ml_runtime_pump(int budget_ms) {
 void PltSleepMs(int ms) { ml_yield_ms(ms); }
 void PltSleepMsInterruptible(PLT_THREAD* thread, int ms) { while(ms>0&&!thread->cancelled){int step=ms<50?ms:50;PltSleepMs(step);ms-=step;} }
 int PltCreateThread(const char* name, ThreadEntry entry, void* context, PLT_THREAD* thread) {
-    (void)name; Task* task; int result=create_task(entry,context,0,&task);
-    if(!result){thread->thread=(pthread_t)task;thread->cancelled=false;}return result;
+    Task* task; int result=create_task(entry,context,0,&task);
+    if(!result){task->priority=name&&!strcmp(name,"InputSend")?1:0;thread->thread=(pthread_t)task;thread->cancelled=false;}return result;
 }
-void PltInterruptThread(PLT_THREAD* thread) { thread->cancelled=true; }
+void PltInterruptThread(PLT_THREAD* thread) {
+    thread->cancelled=true;Task* task=(Task*)thread->thread;
+    if(task&&task->state==SLEEPING)task->wake_time=0;
+}
 bool PltIsThreadInterrupted(PLT_THREAD* thread) { return thread->cancelled; }
 void PltJoinThread(PLT_THREAD* thread) {
     Task* task=(Task*)thread->thread;

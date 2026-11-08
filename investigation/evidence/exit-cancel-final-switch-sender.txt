@@ -1,0 +1,36 @@
+Executing payload...
+MOONLIGHT_STREAM_UPLOAD: 1/7
+Executed successfully
+Executing payload...
+MOONLIGHT_STREAM_UPLOAD: 2/7
+Executed successfully
+Executing payload...
+MOONLIGHT_STREAM_UPLOAD: 3/7
+Executed successfully
+Executing payload...
+MOONLIGHT_STREAM_UPLOAD: 4/7
+Executed successfully
+Executing payload...
+MOONLIGHT_STREAM_UPLOAD: 5/7
+Executed successfully
+Executing payload...
+MOONLIGHT_STREAM_UPLOAD: 6/7
+Executed successfully
+Executing payload...
+MOONLIGHT_STREAM_UPLOAD: 7/7
+Executed successfully
+Executing payload...
+MOONLIGHT_UI_READY
+MOONLIGHT_SUNSHINE_CHECKING
+MOONLIGHT_SUNSHINE_ONLINE
+MOONLIGHT_SUNSHINE_CHECKING_PAIR
+MOONLIGHT_SUNSHINE_PAIRED
+MOONLIGHT_PAIRING_SAVED: reused
+MOONLIGHT_APPLIST_LOADING
+MOONLIGHT_APPLIST_LOADED: 3
+MOONLIGHT_ARTWORK_CACHED: 881448767 (8231 bytes)
+MOONLIGHT_ARTWORK_CACHED: 1093255277 (24833 bytes)
+MOONLIGHT_ARTWORK_CACHED: 382300562 (98678 bytes)
+MOONLIGHT_OUTAGE_EXIT_RESULT: {"failed":false,"healthy":false,"error":null,"blackhole":true,"rafSuppressed":true,"chordDetectedMs":17.118,"returnedToGamesMs":261.028,"state":0,"tasks":0,"tcpStreamLogs":0,"diagnosticMessages":64,"gracefulDisconnect":false}
+Executed successfully
+{"failed": false, "healthy": false, "error": null, "blackhole": true, "rafSuppressed": true, "chordDetectedMs": 17.118, "returnedToGamesMs": 261.028, "state": 0, "tasks": 0, "tcpStreamLogs": 0, "diagnosticMessages": 64, "gracefulDisconnect": false}

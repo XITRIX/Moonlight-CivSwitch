@@ -1,0 +1,35 @@
+PING 192.168.1.182 (192.168.1.182): 56 data bytes
+64 bytes from 192.168.1.182: icmp_seq=0 ttl=64 time=118.634 ms
+64 bytes from 192.168.1.182: icmp_seq=1 ttl=64 time=8.819 ms
+64 bytes from 192.168.1.182: icmp_seq=2 ttl=64 time=13.695 ms
+64 bytes from 192.168.1.182: icmp_seq=3 ttl=64 time=20.966 ms
+64 bytes from 192.168.1.182: icmp_seq=4 ttl=64 time=70.051 ms
+64 bytes from 192.168.1.182: icmp_seq=5 ttl=64 time=67.627 ms
+64 bytes from 192.168.1.182: icmp_seq=6 ttl=64 time=9.537 ms
+64 bytes from 192.168.1.182: icmp_seq=7 ttl=64 time=29.084 ms
+64 bytes from 192.168.1.182: icmp_seq=8 ttl=64 time=14.786 ms
+64 bytes from 192.168.1.182: icmp_seq=9 ttl=64 time=93.584 ms
+64 bytes from 192.168.1.182: icmp_seq=10 ttl=64 time=96.590 ms
+64 bytes from 192.168.1.182: icmp_seq=11 ttl=64 time=10.855 ms
+64 bytes from 192.168.1.182: icmp_seq=12 ttl=64 time=17.289 ms
+64 bytes from 192.168.1.182: icmp_seq=13 ttl=64 time=19.059 ms
+64 bytes from 192.168.1.182: icmp_seq=14 ttl=64 time=13.195 ms
+64 bytes from 192.168.1.182: icmp_seq=15 ttl=64 time=15.444 ms
+64 bytes from 192.168.1.182: icmp_seq=16 ttl=64 time=7.167 ms
+64 bytes from 192.168.1.182: icmp_seq=17 ttl=64 time=57.424 ms
+64 bytes from 192.168.1.182: icmp_seq=18 ttl=64 time=35.938 ms
+64 bytes from 192.168.1.182: icmp_seq=19 ttl=64 time=15.461 ms
+64 bytes from 192.168.1.182: icmp_seq=20 ttl=64 time=15.766 ms
+64 bytes from 192.168.1.182: icmp_seq=21 ttl=64 time=17.767 ms
+64 bytes from 192.168.1.182: icmp_seq=22 ttl=64 time=80.217 ms
+64 bytes from 192.168.1.182: icmp_seq=23 ttl=64 time=61.895 ms
+64 bytes from 192.168.1.182: icmp_seq=24 ttl=64 time=6.936 ms
+64 bytes from 192.168.1.182: icmp_seq=25 ttl=64 time=9.636 ms
+64 bytes from 192.168.1.182: icmp_seq=26 ttl=64 time=10.213 ms
+64 bytes from 192.168.1.182: icmp_seq=27 ttl=64 time=145.456 ms
+64 bytes from 192.168.1.182: icmp_seq=28 ttl=64 time=108.100 ms
+64 bytes from 192.168.1.182: icmp_seq=29 ttl=64 time=12.207 ms
+
+--- 192.168.1.182 ping statistics ---
+30 packets transmitted, 30 packets received, 0.0% packet loss
+round-trip min/avg/max/stddev = 6.936/40.113/145.456/38.889 ms

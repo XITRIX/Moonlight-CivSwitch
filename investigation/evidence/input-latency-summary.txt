@@ -1,0 +1,7 @@
+baseline_30fps queue {'count': 80, 'min': 3.616, 'median': 19.945, 'p95': 22.261, 'max': 24.511} texture FPS 29.937 audio skipped % 0.0
+priority_30fps queue {'count': 80, 'min': 1.664, 'median': 1.762, 'p95': 2.051, 'max': 16.982} texture FPS 29.528 audio skipped % 0.188
+priority_60fps queue {'count': 80, 'min': 1.67, 'median': 1.738, 'p95': 2.09, 'max': 33.746} texture FPS 50.326 audio skipped % 0.094
+priority_continuous_60fps queue None texture FPS 38.005 audio skipped % 0.65
+priority_continuous_30fps queue {'count': 1200, 'min': 1.633, 'median': 1.713, 'p95': 1.946, 'max': 21.976} texture FPS 29.99 audio skipped % 4.154
+final_continuous_30fps queue {'count': 1200, 'min': 1.614, 'median': 1.71, 'p95': 6.568, 'max': 19.042} texture FPS 29.962 audio skipped % 0.275
+final_continuous_60fps queue {'count': 1200, 'min': 1.618, 'median': 1.715, 'p95': 7.639, 'max': 18.755} texture FPS 51.599 audio skipped % 0.094

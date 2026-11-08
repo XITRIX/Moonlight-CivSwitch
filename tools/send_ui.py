@@ -20,6 +20,7 @@ APP_SCRIPTS = (
     "src/ui/games-screen.js",
     "src/ui/settings-screen.js",
     "src/streaming/native-io.js",
+    "src/streaming/telemetry.js",
     "src/streaming/png-preview.js",
     "src/streaming/native-texture.js",
     "src/streaming/native-media.js",

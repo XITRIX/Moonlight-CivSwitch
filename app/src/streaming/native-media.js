@@ -1,9 +1,33 @@
 /* Existing movie/Opus/AudioOut functions; all pointers refer to owned buffers. */
 (function(global){
  "use strict";
+ // Keep at most two decoder slots while draining; every acquisition is released
+ // exactly once, including when format lookup or presentation fails.
+ function drainLatest(options){
+  var held=new Set(),latest=null,failure=null;
+  function release(frame){options.release(frame);held.delete(frame.index);}
+  try{
+   for(var attempt=0;attempt<32;attempt++){
+    var frame=options.acquire();if(!frame)break;
+    if(held.has(frame.index))throw Error("Decoder returned an already acquired output slot");
+    held.add(frame.index);options.decoded(frame);
+    if(!frame.displayable){release(frame);continue;}
+    if(!latest)latest=frame;
+    else if(frame.timestamp>=latest.timestamp){release(latest);latest=frame;options.superseded();}
+    else{release(frame);options.superseded();}
+   }
+   if(latest)options.present(latest);
+  }catch(error){failure=error;}
+  finally{held.forEach(function(index){try{options.release({index:index});}catch(error){if(!failure)failure=error;}});}
+  if(failure)throw failure;
+ }
  function create(io,core,options){
   options=options||{};var owned=[],objects=[],decoder=0n,started=false,configured=false,outputStorage=0n,outputLength=0,outputHeap=0,width=0,height=0,fields=null;
   var movie=null,audio=null,texture=null,gpu=false,frameInterval=0,lastPreview=0,videoSubmitted=0,videoDecoded=0,presented=0,conversionMs=0,maxConversionMs=0;
+  var pendingFrames=new Map(),decodeSamples=0,decodeMs=0,maxDecodeMs=0,lastPresentedAt=null,intervalCount=0,intervalMs=0,intervalSquaredMs=0,maxIntervalMs=0;
+  var videoSuperseded=0,audioBatchSamples=960,audioPoolSize=2;
+  function now(){return global.MoonlightTelemetry?global.MoonlightTelemetry.now():Date.now();}
+  function presentedFrame(){var time=now();if(lastPresentedAt!==null){var delta=time-lastPresentedAt;intervalCount++;intervalMs+=delta;intervalSquaredMs+=delta*delta;maxIntervalMs=Math.max(maxIntervalMs,delta);}lastPresentedAt=time;presented++;}
   function alloc(n){var p=malloc(n);if(!p)throw Error("Native media allocation failed");owned.push(p);return p;}
   function number(v){return Number(BigInt.asIntN(32,v));}
   function sdk(name,args){return io.invoke(name,args);}
@@ -63,14 +87,28 @@
    var slot=number(read32(index));if(slot<0)return -1;
    ok("_ZN5movie7Decoder14GetInputBufferEiPNS_6BufferE",[decoder,slot,input]);
    var capacity=Number(call("_ZNK5movie6Buffer8CapacityEv",[input])),data=call("_ZNK5movie6Buffer4DataEv",[input]);if(!data||length<1||length>capacity)throw Error("Compressed video exceeds native input buffer");
-   io.toNative(heap,pointer,length,data);ok("_ZN5movie7Decoder24SendInputBufferForDecodeEiiilj",[decoder,slot,0,length,Math.round(presentation),0]);videoSubmitted++;return 0;
+   io.toNative(heap,pointer,length,data);var submittedAt=now();ok("_ZN5movie7Decoder24SendInputBufferForDecodeEiiilj",[decoder,slot,0,length,Math.round(presentation),0]);
+   pendingFrames.set(String(Math.round(presentation)),submittedAt);if(pendingFrames.size>256)pendingFrames.delete(pendingFrames.keys().next().value);
+   videoSubmitted++;return 0;
   }
   function drainVideo(){
    if(!started)return;
-   for(var attempt=0;attempt<8;attempt++){
-    var result=number(call("_ZN5movie7Decoder24AcquireOutputBufferIndexEPiPlPjS1_",[decoder,index,pts,flags,available]));if(result===0x100e)break;if(result)throw Error("Video output acquisition failed: "+result);
-    var slot=number(read32(index));if(slot<0)break;
-    try{
+   drainLatest({
+    acquire:function(){
+     var result=number(call("_ZN5movie7Decoder24AcquireOutputBufferIndexEPiPlPjS1_",[decoder,index,pts,flags,available]));if(result===0x100e)return null;if(result)throw Error("Video output acquisition failed: "+result);
+     var slot=number(read32(index));if(slot<0)return null;
+     return {index:slot,timestamp:Number(BigInt.asIntN(64,read64(pts))),displayable:!(Number(read32(flags))&4)};
+    },
+    release:function(frame){ok("_ZN5movie7Decoder24ReleaseOutputBufferIndexEi",[decoder,frame.index]);},
+    superseded:function(){videoSuperseded++;},
+    decoded:function(frame){
+     var stamp=String(frame.timestamp),submittedAt=pendingFrames.get(stamp);
+     if(submittedAt!==undefined){var delay=now()-submittedAt;decodeSamples++;decodeMs+=delay;maxDecodeMs=Math.max(maxDecodeMs,delay);pendingFrames.delete(stamp);}
+     videoDecoded++;
+    },
+    present:function(frame){
+     if(now()-lastPreview<(texture?frameInterval:200)||(options.canPresent&&!options.canPresent()))return;
+     var slot=frame.index;
      if(!fields){
       ok("_ZN5movie7Decoder15GetOutputFormatEPNS_9MediaDataE",[decoder,format]);
       fields={width:integer(format,"width"),height:integer(format,"height")};
@@ -82,53 +120,74 @@
       outputStorage=(alloc(outputLength+4096)+4095n)&~4095n;outputHeap=core._malloc(outputLength);if(!outputHeap)throw Error("Cannot allocate video presentation buffer");
       call("_ZN5movie6Buffer18SetDataAndCapacityEPvm",[output,outputStorage,outputLength]);
      }
-     videoDecoded++;
-     var ready=!(Number(read32(flags))&4)&&Date.now()-lastPreview>=(texture?frameInterval:200)&&(!options.canPresent||options.canPresent());
      if(gpu){
-      if(ready){
-       var begin=Date.now();ok("_ZN5movie7Decoder15GetOutputBufferEiPNS_6BufferE",[decoder,slot,output]);
-       var url=texture.presentNative(),elapsed=Date.now()-begin;conversionMs+=elapsed;maxConversionMs=Math.max(maxConversionMs,elapsed);
-       if(options.onImage)options.onImage(url);lastPreview=begin;presented++;
-      }
-      continue;
+       var begin=now();ok("_ZN5movie7Decoder15GetOutputBufferEiPNS_6BufferE",[decoder,slot,output]);
+       var url=texture.presentNative(),elapsed=now()-begin;conversionMs+=elapsed;maxConversionMs=Math.max(maxConversionMs,elapsed);
+       if(options.onImage)options.onImage(url);lastPreview=begin;presentedFrame();
+       return;
      }
      ok("_ZN5movie7Decoder15GetOutputBufferEiPNS_6BufferE",[decoder,slot,output]);
-     if(ready){
       var data=call("_ZNK5movie6Buffer4DataEv",[output]),used=Number(call("_ZNK5movie6Buffer4SizeEv",[output]));if(!data||used>outputLength||used<1)throw Error("Invalid decoded frame bounds");
       io.fromNative(core.HEAPU8,outputHeap,used,data);
-      var begin=Date.now(),url;
+      var begin=now(),url;
       if(texture)url=texture.present(core.HEAPU8,outputHeap,used,fields);
       else if(global.MoonlightPreview)url=global.MoonlightPreview.encode(core.HEAPU8,outputHeap,used,width,height,fields.yStride,fields.uvStride,fields.yOffset,fields.uvOffset);
       else {var encoded=core._ml_png_nv12(outputHeap,used,width,height,fields.yStride,fields.uvStride,fields.yOffset,fields.uvOffset);if(!encoded)throw Error("Frame presentation conversion failed");url="data:image/png;base64,"+core.UTF8ToString(encoded);}
-      var elapsed=Date.now()-begin;conversionMs+=elapsed;maxConversionMs=Math.max(maxConversionMs,elapsed);
-      if(options.onImage)options.onImage(url);lastPreview=begin;presented++;
-     }
-    }finally{ok("_ZN5movie7Decoder24ReleaseOutputBufferIndexEi",[decoder,slot]);}
-   }
+      var elapsed=now()-begin;conversionMs+=elapsed;maxConversionMs=Math.max(maxConversionMs,elapsed);
+      if(options.onImage)options.onImage(url);lastPreview=begin;presentedFrame();
+    }
+   });
   }
   function audioSetup(rate,channels,streams,coupled,samples){
    if(rate!==48000||channels!==2||streams!==1||coupled!==1)throw Error("First audio adapter supports stereo Opus at 48 kHz");
    var stateBytes=number(sdk("nncodecLibopus_opus_decoder_get_size",[2]));if(stateBytes<1||stateBytes>1048576)throw Error("Invalid Opus state size");
-   audio={state:alloc(stateBytes),packet:alloc(65536),pcm:alloc(5760*4),staging:alloc(5760*4),stagedSamples:0,out:alloc(1024),parameter:alloc(64),buffers:[],opened:false,started:false,decoded:0,queued:0,dropped:0};
+   audio={state:alloc(stateBytes),packet:alloc(65536),pcm:alloc(5760*4),staging:alloc((5760+audioBatchSamples)*4),pending:alloc(audioBatchSamples*4),pendingSamples:0,stagedSamples:0,out:alloc(1024),parameter:alloc(64),buffers:[],opened:false,started:false,decoded:0,queued:0,dropped:0,catchups:0,discardedSamples:0};
    if(number(sdk("nncodecLibopus_opus_decoder_init",[audio.state,48000,2])))throw Error("Opus decoder initialization failed");
    sdk("_ZN2nn5audio27InitializeAudioOutParameterEPNS0_17AudioOutParameterE",[audio.parameter]);write32(audio.parameter,48000n);write16(audio.parameter+4n,2n);
    var result=sdk("_ZN2nn5audio19OpenDefaultAudioOutEPNS0_8AudioOutERKNS0_17AudioOutParameterE",[audio.out,audio.parameter]);if(result&0x3fffffn)throw Error("AudioOut failed: 0x"+(result&0x3fffffn).toString(16));audio.opened=true;
-   for(var i=0;i<20;i++)audio.buffers.push({node:alloc(64),data:(alloc(0x7000)+4095n)&~4095n,inUse:false});
+   for(var i=0;i<audioPoolSize;i++)audio.buffers.push({node:alloc(64),data:(alloc(0x7000)+4095n)&~4095n,inUse:false,samples:0});
    sdk("_ZN2nn5audio13StartAudioOutEPNS0_8AudioOutE",[audio.out]);audio.started=true;return 0;
+  }
+  function reclaimAudio(){
+   for(var i=0;i<audio.buffers.length;i++){
+    var released=sdk("_ZN2nn5audio25GetReleasedAudioOutBufferEPNS0_8AudioOutE",[audio.out]);if(!released)break;
+    var item=audio.buffers.find(function(item){return item.node===released;});if(!item)throw Error("AudioOut returned an unknown buffer");item.inUse=false;
+   }
+  }
+  function queueAudio(buffer,source){
+   var bytes=audioBatchSamples*4;
+   call_rop(memcpy_addr,buffer.data,source,BigInt(bytes));
+   sdk("_ZN2nn2os14FlushDataCacheEPKvm",[buffer.data,bytes]);write64(buffer.node,0n);write64(buffer.node+0x20n,0n);
+   sdk("_ZN2nn5audio21SetAudioOutBufferInfoEPNS0_14AudioOutBufferEPvmm",[buffer.node,buffer.data,0x6000,bytes]);
+   if(!sdk("_ZN2nn5audio20AppendAudioOutBufferEPNS0_8AudioOutEPNS0_14AudioOutBufferE",[audio.out,buffer.node]))throw Error("Native audio queue rejected PCM");
+   buffer.inUse=true;buffer.samples=audioBatchSamples;audio.queued++;
+  }
+  function discardPendingAudio(){
+   if(!audio.pendingSamples)return;
+   audio.discardedSamples+=audio.pendingSamples;audio.dropped++;audio.catchups++;audio.pendingSamples=0;
+  }
+  function drainAudio(){
+   if(!audio||!audio.started||!audio.pendingSamples)return;
+   reclaimAudio();var buffer=audio.buffers.find(function(item){return !item.inUse;});
+   if(buffer){queueAudio(buffer,audio.pending);audio.pendingSamples=0;}
   }
   function audioFrame(pointer,length,heap){
    if(!audio||!audio.started)return;
    io.toNative(heap,pointer,length,audio.packet);var samples=number(sdk("nncodecLibopus_opus_decode",[audio.state,audio.packet,length,audio.pcm,5760,0]));if(samples<0)throw Error("Native Opus decode failed: "+samples);audio.decoded++;
-   if(audio.stagedSamples+samples>5760){audio.dropped++;audio.stagedSamples=0;}
+   if(samples>5760)throw Error("Native Opus output exceeds PCM capacity");
    call_rop(memcpy_addr,audio.staging+BigInt(audio.stagedSamples*4),audio.pcm,BigInt(samples*4));audio.stagedSamples+=samples;
-   // Sunshine normally sends 5 ms packets. Queue 20 ms of PCM per AudioOut
-   // buffer to reduce native/IPC calls without accumulating a long audio queue.
-   if(audio.stagedSamples<960)return;
-   for(var i=0;i<20;i++){var released=sdk("_ZN2nn5audio25GetReleasedAudioOutBufferEPNS0_8AudioOutE",[audio.out]);if(!released)break;for(var item of audio.buffers)if(item.node===released)item.inUse=false;}
-   var buffer=audio.buffers.find(function(item){return !item.inUse;});if(!buffer){audio.dropped++;audio.stagedSamples=0;return;}
-   var bytes=audio.stagedSamples*4;call_rop(memcpy_addr,buffer.data,audio.staging,BigInt(bytes));audio.stagedSamples=0;sdk("_ZN2nn2os14FlushDataCacheEPKvm",[buffer.data,0x6000]);write64(buffer.node,0n);write64(buffer.node+0x20n,0n);
-   sdk("_ZN2nn5audio21SetAudioOutBufferInfoEPNS0_14AudioOutBufferEPvmm",[buffer.node,buffer.data,0x6000,bytes]);
-   if(!sdk("_ZN2nn5audio20AppendAudioOutBufferEPNS0_8AudioOutEPNS0_14AudioOutBufferE",[audio.out,buffer.node]))throw Error("Native audio queue rejected PCM");buffer.inUse=true;audio.queued++;
+   // Two 20 ms native buffers plus one replaceable latest chunk. Keep Opus
+   // state and active AudioOut buffers intact; drop only stale software PCM.
+   var consumed=0;
+   while(audio.stagedSamples-consumed>=audioBatchSamples){
+    reclaimAudio();var buffer=audio.buffers.find(function(item){return !item.inUse;}),source=audio.staging+BigInt(consumed*4);consumed+=audioBatchSamples;
+    // Preserve continuity when reclaimed capacity can hold the waiting chunk.
+    // Replace it only when the native queue really has no room.
+    if(buffer&&audio.pendingSamples){queueAudio(buffer,audio.pending);audio.pendingSamples=0;buffer=audio.buffers.find(function(item){return !item.inUse;});}
+    if(buffer)queueAudio(buffer,source);
+    else{discardPendingAudio();call_rop(memcpy_addr,audio.pending,source,BigInt(audioBatchSamples*4));audio.pendingSamples=audioBatchSamples;}
+   }
+   if(consumed){audio.stagedSamples-=consumed;if(audio.stagedSamples)call_rop(memcpy_addr,audio.staging,audio.staging+BigInt(consumed*4),BigInt(audio.stagedSamples*4));}
   }
 
   function close(){
@@ -137,10 +196,10 @@
    for(var entry of objects.reverse())call("_ZN5movie"+entry.type+"D1Ev",[entry.p]);objects=[];
    if(texture){texture.close();texture=null;}
    if(outputHeap)core._free(outputHeap);outputHeap=0;core._ml_png_release();
-   for(var p of owned.reverse())free(p);owned=[];started=false;configured=false;decoder=0n;audio=null;
+   for(var p of owned.reverse())free(p);owned=[];started=false;configured=false;decoder=0n;audio=null;pendingFrames.clear();
   }
-  return {videoSetup:videoSetup,videoFrame:videoFrame,audioSetup:audioSetup,audioFrame:audioFrame,drainVideo:drainVideo,close:close,
-   stats:function(){return Object.assign({renderer:texture?(gpu?"native-gpu-texture":"native-texture"):"png",submitted:videoSubmitted,decoded:videoDecoded,presented:presented,conversionMs:conversionMs,maxConversionMs:maxConversionMs,audioDecoded:audio?audio.decoded:0,audioQueued:audio?audio.queued:0,audioDropped:audio?audio.dropped:0},texture?texture.stats():{});}};
+  return {videoSetup:videoSetup,videoFrame:videoFrame,audioSetup:audioSetup,audioFrame:audioFrame,drainVideo:drainVideo,drainAudio:drainAudio,close:close,
+   stats:function(){return Object.assign({renderer:texture?(gpu?"native-gpu-texture":"native-texture"):"png",submitted:videoSubmitted,decoded:videoDecoded,presented:presented,videoSuperseded:videoSuperseded,conversionMs:conversionMs,maxConversionMs:maxConversionMs,decodeSamples:decodeSamples,decodeMs:decodeMs,maxDecodeMs:maxDecodeMs,decoderPending:Math.max(0,videoSubmitted-videoDecoded),intervalCount:intervalCount,intervalMs:intervalMs,intervalSquaredMs:intervalSquaredMs,maxIntervalMs:maxIntervalMs,audioBufferedMsUpperBound:audio?(audio.stagedSamples+audio.pendingSamples+audio.buffers.reduce(function(sum,item){return sum+(item.inUse?item.samples:0);},0))/48:0,audioQueueLimitMs:audioBatchSamples*(audioPoolSize+1)/48,audioCatchups:audio?audio.catchups:0,audioDiscardedMs:audio?audio.discardedSamples/48:0,audioDecoded:audio?audio.decoded:0,audioQueued:audio?audio.queued:0,audioDropped:audio?audio.dropped:0},texture?texture.stats():{});}};
  }
- global.MoonlightStreamMedia={create:create};
+ global.MoonlightStreamMedia={create:create,drainLatest:drainLatest};
 })(window);

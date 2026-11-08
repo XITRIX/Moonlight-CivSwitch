@@ -1,0 +1,85 @@
+{
+  "source": "scheduling-ui-final-live-switch.txt",
+  "mode": {
+    "width": 1280,
+    "height": 720,
+    "fps": 30,
+    "bitrate": 3000,
+    "showStats": true
+  },
+  "activeSamples": 5,
+  "metrics": {
+    "decodedFps": {
+      "median": 29.549,
+      "min": 29.497,
+      "max": 29.986
+    },
+    "textureFps": {
+      "median": 29.549,
+      "min": 27.531,
+      "max": 29.986
+    },
+    "loopHz": {
+      "median": 58.994,
+      "min": 58.015,
+      "max": 59.808
+    },
+    "pumpAvgMs": {
+      "median": 6.787,
+      "min": 6.369,
+      "max": 6.882
+    },
+    "drainAvgMs": {
+      "median": 0.859,
+      "min": 0.768,
+      "max": 0.985
+    },
+    "decodeReadyMs": {
+      "median": 11.164,
+      "min": 8.605,
+      "max": 12.51
+    },
+    "copyPresentMs": {
+      "median": 0.92,
+      "min": 0.884,
+      "max": 0.997
+    },
+    "rttMs": {
+      "median": 13,
+      "min": 9,
+      "max": 29
+    },
+    "rttVariationMs": {
+      "median": 8,
+      "min": 4,
+      "max": 12
+    }
+  },
+  "final": {
+    "error": null,
+    "state": 0,
+    "tasks": 0,
+    "decoded": 727,
+    "presented": 702,
+    "audioDecoded": 4853,
+    "audioDiscardedMs": 80,
+    "clock": {
+      "frameWakes": 1478,
+      "timerWakes": 0,
+      "forcedWakes": 1,
+      "waitMs": 14694.335,
+      "maxWaitMs": 50.51
+    },
+    "budgetYields": 467
+  },
+  "audioDecodedMs": 24265,
+  "audioDiscardedPercent": 0.33,
+  "sampleMaxAudioBufferedMs": 70,
+  "sampleMaxVideoGaps": 0,
+  "sampleMaxAudioFecFailures": 0,
+  "limitations": [
+    "Different session and network conditions from the earlier laggy run; not a controlled Wi-Fi A/B.",
+    "Texture submissions do not measure physical display scanout.",
+    "Measurements only; listening quality not assessed."
+  ]
+}

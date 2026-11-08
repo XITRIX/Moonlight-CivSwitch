@@ -6,10 +6,27 @@ const preview={Uint8Array,Uint32Array,Int32Array,Number,DataView,btoa:s=>Buffer.
 const make=require('./dist/moonlight-stream.js');
 (async()=>{
  const core=await make({moonlightPlatform:{randomFill:randomFillSync}});
+ assert.equal(core._ml_session_metrics(),0,'metrics are unavailable outside an active connection');
+ const yieldsBefore=core._ml_runtime_budget_yields();
+ assert.equal(core._ml_budget_test_start(),0);core._ml_runtime_pump(1);
+ assert.equal(core._ml_budget_test_result(),0,'checkpoint returns to JS before long-running work finishes');
+ assert(core._ml_runtime_budget_yields()>yieldsBefore);
+ const budgetDeadline=Date.now()+2000;
+ while(core._ml_runtime_tasks()&&Date.now()<budgetDeadline){core._ml_runtime_pump(1);await new Promise(r=>setTimeout(r,2));}
+ assert.equal(core._ml_budget_test_result(),1);assert.equal(core._ml_runtime_tasks(),0);
+ assert.equal(core._ml_input_priority_test_start(),0);core._ml_runtime_pump(2);
+ assert.equal(core._ml_input_priority_test_result(),12,'dispatch and InputSend run before a busy media task exhausts the budget');
+ const priorityDeadline=Date.now()+2000;
+ while(core._ml_runtime_tasks()&&Date.now()<priorityDeadline){core._ml_runtime_pump(2);await new Promise(r=>setTimeout(r,2));}
+ assert.equal(core._ml_input_priority_test_result(),123);assert.equal(core._ml_runtime_tasks(),0,'priority tasks join and release normally');
  assert.equal(core._ml_scheduler_test_start(),0);
  const end=Date.now()+2000;
  while(core._ml_runtime_tasks()&&Date.now()<end){core._ml_runtime_pump(5);await new Promise(r=>setTimeout(r,2));}
  assert.equal(core._ml_scheduler_test_result(),42);assert.equal(core._ml_runtime_tasks(),0);
+ assert.equal(core._ml_interrupt_test_start(),0);
+ const interruptDeadline=Date.now()+1000;
+ while(core._ml_runtime_tasks()&&Date.now()<interruptDeadline){core._ml_runtime_pump(5);await new Promise(r=>setTimeout(r,2));}
+ assert.equal(core._ml_interrupt_test_result(),42,'interrupt wakes a 60-second sleeper immediately');assert.equal(core._ml_runtime_tasks(),0);
  // Padded NV12 layout and BT.601 limited-range blue, matching the console fixture.
  const width=64,height=64,stride=80,offset=stride*height,length=offset+stride*height/2;
  const p=core._malloc(length);core.HEAPU8.fill(0,p,p+length);

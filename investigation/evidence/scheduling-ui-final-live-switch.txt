@@ -1,0 +1,135 @@
+Executing payload...
+MOONLIGHT_UI_READY
+MOONLIGHT_SCHEDULING_UI_CONNECT
+MOONLIGHT_SUNSHINE_CHECKING
+MOONLIGHT_SUNSHINE_ONLINE
+MOONLIGHT_SUNSHINE_CHECKING_PAIR
+MOONLIGHT_SUNSHINE_PAIRED
+MOONLIGHT_PAIRING_SAVED: reused
+MOONLIGHT_APPLIST_LOADING
+MOONLIGHT_APPLIST_LOADED: 3
+MOONLIGHT_ARTWORK_CACHED: 881448767 (8231 bytes)
+MOONLIGHT_ARTWORK_CACHED: 1093255277 (24833 bytes)
+MOONLIGHT_ARTWORK_CACHED: 382300562 (98678 bytes)
+MOONLIGHT_ARTWORK_DISPLAYED: 881448767
+MOONLIGHT_ARTWORK_DISPLAYED: 1093255277
+MOONLIGHT_ARTWORK_DISPLAYED: 382300562
+MOONLIGHT_SCHEDULING_UI_START
+MOONLIGHT_SCHEDULING_UI_LAUNCHED
+MOONLIGHT_STREAM_CORE: RTSP port: 48010
+
+MOONLIGHT_STREAM_CORE: Initializing platform...
+MOONLIGHT_STREAM_CORE: Event 1: 1, 0
+MOONLIGHT_STREAM_CORE: Event 2: 1, 0
+MOONLIGHT_STREAM_CORE: done
+
+MOONLIGHT_STREAM_CORE: Resolving host name...
+MOONLIGHT_STREAM_CORE: Event 1: 2, 0
+MOONLIGHT_STREAM_CORE: Event 2: 2, 0
+MOONLIGHT_STREAM_CORE: done
+
+MOONLIGHT_STREAM_CORE: Initializing audio stream...
+MOONLIGHT_STREAM_CORE: Event 1: 3, 0
+MOONLIGHT_STREAM_CORE: Event 2: 3, 0
+MOONLIGHT_STREAM_CORE: done
+
+MOONLIGHT_STREAM_CORE: Starting RTSP handshake...
+MOONLIGHT_STREAM_CORE: Event 1: 4, 0
+MOONLIGHT_STREAM_STATS: {"state":1,"mode":{"width":1280,"height":720,"fps":30,"bitrate":3000,"showStats":true},"decoded":0,"presented":0,"audioDecoded":0,"telemetry":{"decodedFps":null,"textureFps":null,"receivedMbps":null,"rttMs":null,"rttVariationMs":null,"frameReceiveMs":null,"coreQueueMs":null,"hostProcessingMs":null,"decodeReadyMs":null,"copyPresentMs":null,"frameIntervalMs":null,"frameJitterMs":null,"loopHz":null,"pumpAvgMs":57.573,"drainAvgMs":0.164,"decoderPending":0,"videoSuperseded":0,"audioBufferedMsUpperBound":0,"audioQueueLimitMs":60,"audioCatchups":0,"audioDiscardedMs":0,"audioDropped":0,"videoFrameGaps":null,"decoderRejected":null,"audioRecovered":null,"audioFecFailed":null,"directReceivedBytes":0}}
+MOONLIGHT_STREAM_CORE: Audio port: 48000
+
+MOONLIGHT_STREAM_CORE: setsockopt(SO_PRIORITY, 6) failed: 50
+
+MOONLIGHT_STREAM_CORE: Video port: 47998
+
+MOONLIGHT_STREAM_CORE: Control port: 47999
+
+MOONLIGHT_STREAM_CORE: Event 2: 4, 0
+MOONLIGHT_STREAM_CORE: done
+
+MOONLIGHT_STREAM_CORE: Initializing control stream...
+MOONLIGHT_STREAM_CORE: Event 1: 5, 0
+MOONLIGHT_STREAM_CORE: Event 2: 5, 0
+MOONLIGHT_STREAM_CORE: done
+
+MOONLIGHT_STREAM_CORE: Initializing video stream...
+MOONLIGHT_STREAM_CORE: Event 1: 6, 0
+MOONLIGHT_STREAM_CORE: Event 2: 6, 0
+MOONLIGHT_STREAM_CORE: done
+
+MOONLIGHT_STREAM_CORE: Initializing input stream...
+MOONLIGHT_STREAM_CORE: Event 1: 7, 0
+MOONLIGHT_STREAM_CORE: Event 2: 7, 0
+MOONLIGHT_STREAM_CORE: done
+
+MOONLIGHT_STREAM_CORE: Starting control stream...
+MOONLIGHT_STREAM_CORE: Event 1: 8, 0
+MOONLIGHT_STREAM_CORE: Event 2: 8, 0
+MOONLIGHT_STREAM_CORE: done
+
+MOONLIGHT_STREAM_CORE: Starting video stream...
+MOONLIGHT_STREAM_CORE: Event 1: 9, 0
+MOONLIGHT_STREAM_CORE: setsockopt(SO_PRIORITY, 5) failed: 50
+
+MOONLIGHT_STREAM_CORE: Event 2: 9, 0
+MOONLIGHT_STREAM_CORE: done
+
+MOONLIGHT_STREAM_CORE: Starting audio stream...
+MOONLIGHT_STREAM_CORE: Event 1: 10, 0
+MOONLIGHT_STREAM_CORE: Event 2: 10, 0
+MOONLIGHT_STREAM_CORE: done
+
+MOONLIGHT_STREAM_CORE: Starting input stream...
+MOONLIGHT_STREAM_CORE: Event 1: 11, 0
+MOONLIGHT_STREAM_CORE: Event 2: 11, 0
+MOONLIGHT_STREAM_CORE: done
+
+MOONLIGHT_STREAM_CORE: Event 4: 0, 0
+MOONLIGHT_STREAM_CORE: Received first audio packet after 100 ms
+
+MOONLIGHT_STREAM_CORE: Initial audio resync period: 500 milliseconds
+
+MOONLIGHT_STREAM_CORE: Received first video packet after 100 ms
+
+MOONLIGHT_STREAM_STATS: {"state":2,"mode":{"width":1280,"height":720,"fps":30,"bitrate":3000,"showStats":true},"decoded":100,"presented":98,"audioDecoded":670,"telemetry":{"decodedFps":29.904,"textureFps":29.904,"receivedMbps":1.693,"rttMs":13,"rttVariationMs":4,"frameReceiveMs":1.205,"coreQueueMs":0.018,"hostProcessingMs":1.5,"decodeReadyMs":11.028,"copyPresentMs":0.997,"frameIntervalMs":33.431,"frameJitterMs":11.594,"loopHz":59.808,"pumpAvgMs":6.805,"drainAvgMs":0.768,"decoderPending":0,"videoSuperseded":2,"audioBufferedMsUpperBound":50,"audioQueueLimitMs":60,"audioCatchups":0,"audioDiscardedMs":0,"audioDropped":0,"videoFrameGaps":0,"decoderRejected":0,"audioRecovered":0,"audioFecFailed":0,"directReceivedBytes":837192}}
+MOONLIGHT_STREAM_STATS: {"state":2,"mode":{"width":1280,"height":720,"fps":30,"bitrate":3000,"showStats":true},"decoded":252,"presented":245,"audioDecoded":1686,"telemetry":{"decodedFps":29.497,"textureFps":27.531,"receivedMbps":1.73,"rttMs":26,"rttVariationMs":12,"frameReceiveMs":0.828,"coreQueueMs":0.018,"hostProcessingMs":1.513,"decodeReadyMs":8.605,"copyPresentMs":0.884,"frameIntervalMs":36.293,"frameJitterMs":12.857,"loopHz":58.994,"pumpAvgMs":6.369,"drainAvgMs":0.815,"decoderPending":1,"videoSuperseded":7,"audioBufferedMsUpperBound":50,"audioQueueLimitMs":60,"audioCatchups":1,"audioDiscardedMs":20,"audioDropped":1,"videoFrameGaps":0,"decoderRejected":0,"audioRecovered":0,"audioFecFailed":0,"directReceivedBytes":1918724}}
+MOONLIGHT_STREAM_STATS: {"state":2,"mode":{"width":1280,"height":720,"fps":30,"bitrate":3000,"showStats":true},"decoded":404,"presented":393,"audioDecoded":2698,"telemetry":{"decodedFps":29.549,"textureFps":29.549,"receivedMbps":1.823,"rttMs":29,"rttVariationMs":12,"frameReceiveMs":1.34,"coreQueueMs":0.018,"hostProcessingMs":1.433,"decodeReadyMs":11.164,"copyPresentMs":0.92,"frameIntervalMs":33.824,"frameJitterMs":11.224,"loopHz":59.098,"pumpAvgMs":6.425,"drainAvgMs":0.985,"decoderPending":0,"videoSuperseded":11,"audioBufferedMsUpperBound":50,"audioQueueLimitMs":60,"audioCatchups":3,"audioDiscardedMs":60,"audioDropped":3,"videoFrameGaps":0,"decoderRejected":0,"audioRecovered":0,"audioFecFailed":0,"directReceivedBytes":3046572}}
+MOONLIGHT_STREAM_STATS: {"state":2,"mode":{"width":1280,"height":720,"fps":30,"bitrate":3000,"showStats":true},"decoded":555,"presented":540,"audioDecoded":3706,"telemetry":{"decodedFps":29.986,"textureFps":29.986,"receivedMbps":1.722,"rttMs":9,"rttVariationMs":8,"frameReceiveMs":0.82,"coreQueueMs":0.018,"hostProcessingMs":1.643,"decodeReadyMs":12.51,"copyPresentMs":0.965,"frameIntervalMs":33.342,"frameJitterMs":12.43,"loopHz":58.973,"pumpAvgMs":6.882,"drainAvgMs":0.933,"decoderPending":1,"videoSuperseded":15,"audioBufferedMsUpperBound":70,"audioQueueLimitMs":60,"audioCatchups":3,"audioDiscardedMs":60,"audioDropped":3,"videoFrameGaps":0,"decoderRejected":0,"audioRecovered":0,"audioFecFailed":0,"directReceivedBytes":4177044}}
+MOONLIGHT_STREAM_STATS: {"state":2,"mode":{"width":1280,"height":720,"fps":30,"bitrate":3000,"showStats":true},"decoded":707,"presented":682,"audioDecoded":4716,"telemetry":{"decodedFps":29.499,"textureFps":28.516,"receivedMbps":1.695,"rttMs":9,"rttVariationMs":5,"frameReceiveMs":0.801,"coreQueueMs":0.408,"hostProcessingMs":1.58,"decodeReadyMs":12.405,"copyPresentMs":0.896,"frameIntervalMs":35.068,"frameJitterMs":9.121,"loopHz":58.015,"pumpAvgMs":6.787,"drainAvgMs":0.859,"decoderPending":0,"videoSuperseded":25,"audioBufferedMsUpperBound":60,"audioQueueLimitMs":60,"audioCatchups":3,"audioDiscardedMs":60,"audioDropped":3,"videoFrameGaps":0,"decoderRejected":0,"audioRecovered":0,"audioFecFailed":0,"directReceivedBytes":5277498}}
+MOONLIGHT_SCHEDULING_UI_CLOSE
+MOONLIGHT_STREAM_CORE: Stopping input stream...
+MOONLIGHT_STREAM_CORE: done
+
+MOONLIGHT_STREAM_CORE: Stopping audio stream...
+MOONLIGHT_STREAM_CORE: ENet wait interrupted
+
+MOONLIGHT_STREAM_CORE: Control stream connection failed: 27
+
+MOONLIGHT_STREAM_CORE: done
+
+MOONLIGHT_STREAM_CORE: Stopping video stream...
+MOONLIGHT_STREAM_CORE: done
+
+MOONLIGHT_STREAM_CORE: Stopping control stream...
+MOONLIGHT_STREAM_CORE: ENet peer acknowledged disconnection
+
+MOONLIGHT_STREAM_CORE: done
+
+MOONLIGHT_STREAM_CORE: Cleaning up input stream...
+MOONLIGHT_STREAM_CORE: done
+
+MOONLIGHT_STREAM_CORE: Cleaning up video stream...
+MOONLIGHT_STREAM_CORE: done
+
+MOONLIGHT_STREAM_CORE: Cleaning up control stream...
+MOONLIGHT_STREAM_CORE: done
+
+MOONLIGHT_STREAM_CORE: Cleaning up audio stream...
+MOONLIGHT_STREAM_CORE: done
+
+MOONLIGHT_STREAM_CORE: Cleaning up platform...
+MOONLIGHT_STREAM_CORE: done
+
+MOONLIGHT_STREAM_CORE: Event 7: 0, 0
+MOONLIGHT_SCHEDULING_UI_RESULT: {"error":null,"state":0,"tasks":0,"decoded":727,"presented":702,"audioDecoded":4853,"audioDiscardedMs":80,"clock":{"frameWakes":1478,"timerWakes":0,"forcedWakes":1,"waitMs":14694.335,"maxWaitMs":50.51},"budgetYields":467}
+Executed successfully

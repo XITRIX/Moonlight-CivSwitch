@@ -1,0 +1,24 @@
+const assert=require('node:assert/strict');
+require('./stream-input-observer.js');
+const api=global.MoonlightInputObserver;
+// A reliable controller command followed by a ping, and a separate host ACK.
+const send=new Uint8Array([128,0,0,1,134,16,0,1,0,2,10,20,5,255,0,0]);
+const ack=new Uint8Array([0,0,1,16,0,1,0,1,0,2]);
+assert.equal(api.commands(send)[0].sequence,1);assert.equal(api.commands(send).length,2);
+assert.equal(api.commands(ack)[0].ack,1);
+assert.deepEqual(api.commands(send.subarray(0,11)),[]);
+assert.deepEqual(api.commands(new Uint8Array([192,0])),[],'compressed ENet packets are deliberately unsupported');
+const observer=api.create(),heap=new Uint8Array(128),address=64;
+heap[address+2]=47999>>8;heap[address+3]=47999&255;
+observer.enqueue(5);heap.set(send);
+observer.observe(4,[7,0,send.length,0,address,16],heap,-11,8,9);
+assert.equal(observer.samples[0].sent,null,'a failed native send is not a transmission');
+observer.observe(4,[7,0,send.length,0,address,16],heap,send.length,10,11);
+observer.observe(4,[7,0,send.length,0,address,16],heap,send.length,12,13);
+heap.set(ack);observer.observe(5,[8,0,64,0,0,0],heap,ack.length,19,20);
+assert.equal(observer.samples[0].ack,null,'a different socket cannot acknowledge the input');
+observer.observe(5,[7,0,64,0,0,0],heap,ack.length,20,21);
+observer.observe(5,[7,0,64,0,0,0],heap,ack.length,25,26);
+assert.equal(observer.samples[0].sent,10);assert.equal(observer.samples[0].ack,21);assert.equal(observer.summary().retries,1);
+assert.equal(observer.summary().pending,0);
+console.log('ENet timing parser: bounds, failed sends, reliable sequence, retry and first-ACK correlation passed.');

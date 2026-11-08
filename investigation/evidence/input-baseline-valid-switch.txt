@@ -1,0 +1,141 @@
+Executing payload...
+MOONLIGHT_INPUT_CORE: RTSP port: 48010
+
+MOONLIGHT_INPUT_CORE: Initializing platform...
+MOONLIGHT_INPUT_CORE: Event 1: 1, 0
+MOONLIGHT_INPUT_CORE: Event 2: 1, 0
+MOONLIGHT_INPUT_CORE: done
+
+MOONLIGHT_INPUT_CORE: Resolving host name...
+MOONLIGHT_INPUT_CORE: Event 1: 2, 0
+MOONLIGHT_INPUT_CORE: Event 2: 2, 0
+MOONLIGHT_INPUT_CORE: done
+
+MOONLIGHT_INPUT_CORE: Initializing audio stream...
+MOONLIGHT_INPUT_CORE: Event 1: 3, 0
+MOONLIGHT_INPUT_CORE: Event 2: 3, 0
+MOONLIGHT_INPUT_CORE: done
+
+MOONLIGHT_INPUT_CORE: Starting RTSP handshake...
+MOONLIGHT_INPUT_CORE: Event 1: 4, 0
+MOONLIGHT_INPUT_CORE: Audio port: 48000
+
+MOONLIGHT_INPUT_CORE: setsockopt(SO_PRIORITY, 6) failed: 50
+
+MOONLIGHT_INPUT_CORE: Video port: 47998
+
+MOONLIGHT_INPUT_CORE: Control port: 47999
+
+MOONLIGHT_INPUT_CORE: Event 2: 4, 0
+MOONLIGHT_INPUT_CORE: done
+
+MOONLIGHT_INPUT_CORE: Initializing control stream...
+MOONLIGHT_INPUT_CORE: Event 1: 5, 0
+MOONLIGHT_INPUT_CORE: Event 2: 5, 0
+MOONLIGHT_INPUT_CORE: done
+
+MOONLIGHT_INPUT_CORE: Initializing video stream...
+MOONLIGHT_INPUT_CORE: Event 1: 6, 0
+MOONLIGHT_INPUT_CORE: Event 2: 6, 0
+MOONLIGHT_INPUT_CORE: done
+
+MOONLIGHT_INPUT_CORE: Initializing input stream...
+MOONLIGHT_INPUT_CORE: Event 1: 7, 0
+MOONLIGHT_INPUT_CORE: Event 2: 7, 0
+MOONLIGHT_INPUT_CORE: done
+
+MOONLIGHT_INPUT_CORE: Starting control stream...
+MOONLIGHT_INPUT_CORE: Event 1: 8, 0
+MOONLIGHT_INPUT_CORE: Event 2: 8, 0
+MOONLIGHT_INPUT_CORE: done
+
+MOONLIGHT_INPUT_CORE: Starting video stream...
+MOONLIGHT_INPUT_CORE: Event 1: 9, 0
+MOONLIGHT_INPUT_CORE: setsockopt(SO_PRIORITY, 5) failed: 50
+
+MOONLIGHT_INPUT_CORE: Event 2: 9, 0
+MOONLIGHT_INPUT_CORE: done
+
+MOONLIGHT_INPUT_CORE: Starting audio stream...
+MOONLIGHT_INPUT_CORE: Event 1: 10, 0
+MOONLIGHT_INPUT_CORE: Event 2: 10, 0
+MOONLIGHT_INPUT_CORE: done
+
+MOONLIGHT_INPUT_CORE: Starting input stream...
+MOONLIGHT_INPUT_CORE: Event 1: 11, 0
+MOONLIGHT_INPUT_CORE: Event 2: 11, 0
+MOONLIGHT_INPUT_CORE: done
+
+MOONLIGHT_INPUT_CORE: Event 4: 0, 0
+MOONLIGHT_INPUT_CORE: Received first video packet after 100 ms
+
+MOONLIGHT_INPUT_CORE: Received first audio packet after 200 ms
+
+MOONLIGHT_INPUT_CORE: Initial audio resync period: 500 milliseconds
+
+MOONLIGHT_INPUT_CORE: Stopping input stream...
+MOONLIGHT_INPUT_CORE: ENet wait interrupted
+
+MOONLIGHT_INPUT_CORE: Control stream connection failed: 27
+
+MOONLIGHT_INPUT_CORE: done
+
+MOONLIGHT_INPUT_CORE: Stopping audio stream...
+MOONLIGHT_INPUT_CORE: done
+
+MOONLIGHT_INPUT_CORE: Stopping video stream...
+MOONLIGHT_INPUT_CORE: done
+
+MOONLIGHT_INPUT_CORE: Stopping control stream...
+MOONLIGHT_INPUT_CORE: ENet peer acknowledged disconnection
+
+MOONLIGHT_INPUT_CORE: done
+
+MOONLIGHT_INPUT_CORE: Cleaning up input stream...
+MOONLIGHT_INPUT_CORE: done
+
+MOONLIGHT_INPUT_CORE: Cleaning up video stream...
+MOONLIGHT_INPUT_CORE: done
+
+MOONLIGHT_INPUT_CORE: Cleaning up control stream...
+MOONLIGHT_INPUT_CORE: done
+
+MOONLIGHT_INPUT_CORE: Cleaning up audio stream...
+MOONLIGHT_INPUT_CORE: done
+
+MOONLIGHT_INPUT_CORE: Cleaning up platform...
+MOONLIGHT_INPUT_CORE: done
+
+MOONLIGHT_INPUT_CORE: Event 7: 0, 0
+MOONLIGHT_INPUT_RESULT: {"error":null,"state":0,"tasks":0,"pulses":80,"sent":80,"acked":80,"retries":11,"pending":0,"queueToSocketMs":{"count":80,"min":3.616,"median":19.945,"p95":22.261,"max":24.511},"socketToAckMs":{"count":80,"min":1.359,"median":13.226,"p95":19.923,"max":35.104},"sampleToAckMs":{"count":80,"min":6.45,"median":24.059,"p95":40.913,"max":56.808},"pollIntervalMs":{"count":1322,"min":10.743,"median":16.667,"p95":16.689,"max":27.717},"pollCostMs":{"count":1323,"min":0.18,"median":0.291,"p95":0.343,"max":1.313},"decoded":660,"presented":656,"audioDecoded":4428,"audioDiscardedMs":0}
+MOONLIGHT_INPUT_EVENTS: [{"queued":116151.957,"sent":116170.445,"ack":116171.986,"retries":0,"sendCallMs":0.267,"sequence":2},{"queued":116385.339,"sent":116407.149,"ack":116410.254,"retries":0,"sendCallMs":0.239,"sequence":3},{"queued":116618.718,"sent":116637.115,"ack":116639.003,"retries":0,"sendCallMs":0.298,"sequence":4},{"queued":116852.024,"sent":116870.327,"ack":116886.385,"retries":0,"sendCallMs":0.257,"sequence":5},{"queued":117085.398,"sent":117103.981,"ack":117105.599,"retries":0,"sendCallMs":0.288,"sequence":6},{"queued":117318.687,"sent":117338.715,"ack":117353.426,"retries":1,"sendCallMs":0.251,"sequence":7},{"queued":117552.067,"sent":117570.386,"ack":117572.442,"retries":0,"sendCallMs":0.254,"sequence":8},{"queued":117785.252,"sent":117809.763,"ack":117819.648,"retries":0,"sendCallMs":0.233,"sequence":9},{"queued":118018.712,"sent":118038.804,"ack":118040.527,"retries":0,"sendCallMs":0.214,"sequence":10},{"queued":118252.039,"sent":118258.69,"ack":118260.215,"retries":0,"sendCallMs":0.269,"sequence":11}]
+MOONLIGHT_INPUT_EVENTS: [{"queued":118485.377,"sent":118492.462,"ack":118506.771,"retries":0,"sendCallMs":0.262,"sequence":12},{"queued":118718.664,"sent":118726.674,"ack":118739.319,"retries":0,"sendCallMs":0.246,"sequence":13},{"queued":118952.037,"sent":118960.106,"ack":118973.859,"retries":0,"sendCallMs":0.279,"sequence":14},{"queued":119185.347,"sent":119206.525,"ack":119220.198,"retries":1,"sendCallMs":0.213,"sequence":15},{"queued":119418.892,"sent":119438.679,"ack":119453.778,"retries":1,"sendCallMs":0.236,"sequence":16},{"queued":119651.921,"sent":119671.727,"ack":119676.496,"retries":0,"sendCallMs":0.251,"sequence":17},{"queued":119885.36,"sent":119889.997,"ack":119891.81,"retries":0,"sendCallMs":0.267,"sequence":18},{"queued":120118.609,"sent":120138.819,"ack":120152.905,"retries":0,"sendCallMs":0.233,"sequence":19},{"queued":120352.041,"sent":120373.25,"ack":120386.296,"retries":0,"sendCallMs":0.23,"sequence":20},{"queued":120585.375,"sent":120592.486,"ack":120606.893,"retries":0,"sendCallMs":0.267,"sequence":21}]
+MOONLIGHT_INPUT_EVENTS: [{"queued":120818.674,"sent":120839.781,"ack":120844.045,"retries":0,"sendCallMs":0.248,"sequence":22},{"queued":121052.006,"sent":121058.522,"ack":121075.514,"retries":0,"sendCallMs":0.26,"sequence":23},{"queued":121285.37,"sent":121306.002,"ack":121319.693,"retries":0,"sendCallMs":0.236,"sequence":24},{"queued":121518.666,"sent":121538.942,"ack":121540.616,"retries":0,"sendCallMs":0.242,"sequence":25},{"queued":121752.081,"sent":121773.492,"ack":121786.67,"retries":1,"sendCallMs":0.229,"sequence":26},{"queued":121985.326,"sent":121993.379,"ack":122006.605,"retries":0,"sendCallMs":0.263,"sequence":27},{"queued":122218.655,"sent":122238.567,"ack":122259.705,"retries":1,"sendCallMs":0.224,"sequence":28},{"queued":122452.04,"sent":122473.84,"ack":122486.223,"retries":0,"sendCallMs":0.224,"sequence":29},{"queued":122685.394,"sent":122692,"ack":122706.765,"retries":0,"sendCallMs":0.292,"sequence":30},{"queued":122918.677,"sent":122939.131,"ack":122940.836,"retries":0,"sendCallMs":0.256,"sequence":31}]
+MOONLIGHT_INPUT_EVENTS: [{"queued":123151.994,"sent":123173.566,"ack":123174.926,"retries":0,"sendCallMs":0.219,"sequence":32},{"queued":123385.375,"sent":123393.295,"ack":123406.824,"retries":0,"sendCallMs":0.283,"sequence":33},{"queued":123618.662,"sent":123622.279,"ack":123636.203,"retries":0,"sendCallMs":0.297,"sequence":34},{"queued":123852.026,"sent":123858.795,"ack":123871.736,"retries":0,"sendCallMs":0.25,"sequence":35},{"queued":124085.331,"sent":124092.317,"ack":124106.845,"retries":0,"sendCallMs":0.263,"sequence":36},{"queued":124318.659,"sent":124339.74,"ack":124358.497,"retries":0,"sendCallMs":0.259,"sequence":37},{"queued":124552.054,"sent":124572.47,"ack":124589.857,"retries":0,"sendCallMs":0.243,"sequence":38},{"queued":124785.332,"sent":124806.987,"ack":124823.118,"retries":0,"sendCallMs":0.262,"sequence":39},{"queued":125018.709,"sent":125039.646,"ack":125059.568,"retries":0,"sendCallMs":0.259,"sequence":40},{"queued":125252.013,"sent":125270.379,"ack":125276.859,"retries":0,"sendCallMs":0.266,"sequence":41}]
+MOONLIGHT_INPUT_EVENTS: [{"queued":125485.402,"sent":125490.725,"ack":125503.278,"retries":0,"sendCallMs":0.244,"sequence":42},{"queued":125718.576,"sent":125736.952,"ack":125738.761,"retries":0,"sendCallMs":0.255,"sequence":43},{"queued":125952.029,"sent":125970.456,"ack":125972.59,"retries":0,"sendCallMs":0.266,"sequence":44},{"queued":126185.273,"sent":126207.189,"ack":126221.939,"retries":0,"sendCallMs":0.25,"sequence":45},{"queued":126418.728,"sent":126439.318,"ack":126452.913,"retries":0,"sendCallMs":0.247,"sequence":46},{"queued":126651.999,"sent":126673.282,"ack":126688.671,"retries":0,"sendCallMs":0.237,"sequence":47},{"queued":126885.396,"sent":126903.765,"ack":126905.609,"retries":0,"sendCallMs":0.262,"sequence":48},{"queued":127118.738,"sent":127139.629,"ack":127141.638,"retries":0,"sendCallMs":0.247,"sequence":49},{"queued":127352.001,"sent":127372.981,"ack":127386.62,"retries":1,"sendCallMs":0.217,"sequence":50},{"queued":127585.358,"sent":127590.403,"ack":127603.197,"retries":0,"sendCallMs":0.232,"sequence":51}]
+MOONLIGHT_INPUT_EVENTS: [{"queued":127818.717,"sent":127837.908,"ack":127856.157,"retries":0,"sendCallMs":0.261,"sequence":52},{"queued":128052.01,"sent":128072.135,"ack":128074.282,"retries":0,"sendCallMs":0.284,"sequence":53},{"queued":128285.379,"sent":128307.084,"ack":128342.187,"retries":1,"sendCallMs":0.246,"sequence":54},{"queued":128518.738,"sent":128537.089,"ack":128558.15,"retries":0,"sendCallMs":0.285,"sequence":55},{"queued":128752.035,"sent":128770.362,"ack":128771.826,"retries":0,"sendCallMs":0.26,"sequence":56},{"queued":128985.256,"sent":129007.809,"ack":129022.401,"retries":1,"sendCallMs":0.258,"sequence":57},{"queued":129218.686,"sent":129238.852,"ack":129253.476,"retries":2,"sendCallMs":0.222,"sequence":58},{"queued":129451.993,"sent":129471.937,"ack":129474.302,"retries":0,"sendCallMs":0.245,"sequence":59},{"queued":129685.379,"sent":129708.924,"ack":129725.837,"retries":0,"sendCallMs":0.24,"sequence":60},{"queued":129918.694,"sent":129940.201,"ack":129956.867,"retries":0,"sendCallMs":0.248,"sequence":61}]
+MOONLIGHT_INPUT_EVENTS: [{"queued":130152.022,"sent":130171.469,"ack":130176.08,"retries":0,"sendCallMs":0.254,"sequence":62},{"queued":130385.259,"sent":130407.519,"ack":130423.306,"retries":0,"sendCallMs":0.283,"sequence":63},{"queued":130618.607,"sent":130637.043,"ack":130639.417,"retries":0,"sendCallMs":0.258,"sequence":64},{"queued":130852.323,"sent":130872.249,"ack":130873.749,"retries":0,"sendCallMs":0.258,"sequence":65},{"queued":131085.262,"sent":131107.29,"ack":131122.115,"retries":0,"sendCallMs":0.245,"sequence":66},{"queued":131318.718,"sent":131342.374,"ack":131359.794,"retries":1,"sendCallMs":0.233,"sequence":67},{"queued":131552.092,"sent":131572.144,"ack":131574.136,"retries":0,"sendCallMs":0.269,"sequence":68},{"queued":131785.322,"sent":131805.991,"ack":131826.235,"retries":0,"sendCallMs":0.246,"sequence":69},{"queued":132018.718,"sent":132036.983,"ack":132040.507,"retries":0,"sendCallMs":0.256,"sequence":70},{"queued":132252.021,"sent":132271.796,"ack":132274.271,"retries":0,"sendCallMs":0.268,"sequence":71}]
+MOONLIGHT_INPUT_EVENTS: [{"queued":132485.387,"sent":132507.167,"ack":132522.282,"retries":0,"sendCallMs":0.279,"sequence":72},{"queued":132718.593,"sent":132725.495,"ack":132739.916,"retries":0,"sendCallMs":0.249,"sequence":73},{"queued":132952.021,"sent":132970.634,"ack":132972.082,"retries":0,"sendCallMs":0.294,"sequence":74},{"queued":133185.346,"sent":133207.443,"ack":133226.785,"retries":0,"sendCallMs":0.292,"sequence":75},{"queued":133418.662,"sent":133439.811,"ack":133456.786,"retries":0,"sendCallMs":0.27,"sequence":76},{"queued":133652.05,"sent":133671.819,"ack":133673.249,"retries":0,"sendCallMs":0.264,"sequence":77},{"queued":133885.354,"sent":133903.744,"ack":133908.584,"retries":0,"sendCallMs":0.251,"sequence":78},{"queued":134118.728,"sent":134140.142,"ack":134152.896,"retries":0,"sendCallMs":0.256,"sequence":79},{"queued":134352,"sent":134373.693,"ack":134390.019,"retries":0,"sendCallMs":0.287,"sequence":80},{"queued":134585.389,"sent":134593.076,"ack":134603.636,"retries":0,"sendCallMs":0.267,"sequence":81}]
+MOONLIGHT_INPUT_STREAM: {"decodedFps":22.951,"textureFps":22.951,"receivedMbps":1.723,"rttMs":18,"rttVariationMs":19,"frameReceiveMs":1.909,"coreQueueMs":0.039,"hostProcessingMs":1.904,"decodeReadyMs":7.52,"copyPresentMs":1.425,"frameIntervalMs":32.299,"frameJitterMs":8.75,"loopHz":57.876,"pumpAvgMs":5.566,"drainAvgMs":0.851,"decoderPending":0,"videoSuperseded":0,"audioBufferedMsUpperBound":20,"audioQueueLimitMs":60,"audioCatchups":0,"audioDiscardedMs":0,"audioDropped":0,"videoFrameGaps":0,"decoderRejected":0,"audioRecovered":0,"audioFecFailed":0,"directReceivedBytes":216921}
+MOONLIGHT_INPUT_STREAM: {"decodedFps":29.908,"textureFps":29.908,"receivedMbps":2.2,"rttMs":9,"rttVariationMs":8,"frameReceiveMs":1.65,"coreQueueMs":1.233,"hostProcessingMs":1.437,"decodeReadyMs":9.217,"copyPresentMs":0.915,"frameIntervalMs":33.451,"frameJitterMs":11.755,"loopHz":59.816,"pumpAvgMs":6.864,"drainAvgMs":0.713,"decoderPending":0,"videoSuperseded":0,"audioBufferedMsUpperBound":30,"audioQueueLimitMs":60,"audioCatchups":0,"audioDiscardedMs":0,"audioDropped":0,"videoFrameGaps":0,"decoderRejected":0,"audioRecovered":0,"audioFecFailed":0,"directReceivedBytes":492711}
+MOONLIGHT_INPUT_STREAM: {"decodedFps":30.544,"textureFps":29.558,"receivedMbps":2.561,"rttMs":10,"rttVariationMs":8,"frameReceiveMs":1.482,"coreQueueMs":0.474,"hostProcessingMs":1.416,"decodeReadyMs":7.026,"copyPresentMs":0.893,"frameIntervalMs":33.838,"frameJitterMs":8.319,"loopHz":60.102,"pumpAvgMs":7.045,"drainAvgMs":0.698,"decoderPending":0,"videoSuperseded":1,"audioBufferedMsUpperBound":20,"audioQueueLimitMs":60,"audioCatchups":0,"audioDiscardedMs":0,"audioDropped":0,"videoFrameGaps":0,"decoderRejected":0,"audioRecovered":0,"audioFecFailed":0,"directReceivedBytes":817581}
+MOONLIGHT_INPUT_STREAM: {"decodedFps":29.984,"textureFps":28.985,"receivedMbps":1.506,"rttMs":11,"rttVariationMs":5,"frameReceiveMs":1.01,"coreQueueMs":0.93,"hostProcessingMs":1.297,"decodeReadyMs":6.811,"copyPresentMs":0.871,"frameIntervalMs":34.5,"frameJitterMs":9.316,"loopHz":59.969,"pumpAvgMs":6.718,"drainAvgMs":0.67,"decoderPending":0,"videoSuperseded":2,"audioBufferedMsUpperBound":20,"audioQueueLimitMs":60,"audioCatchups":0,"audioDiscardedMs":0,"audioDropped":0,"videoFrameGaps":0,"decoderRejected":0,"audioRecovered":0,"audioFecFailed":0,"directReceivedBytes":1005887}
+MOONLIGHT_INPUT_STREAM: {"decodedFps":29.965,"textureFps":29.965,"receivedMbps":1.181,"rttMs":14,"rttVariationMs":5,"frameReceiveMs":0.728,"coreQueueMs":0.017,"hostProcessingMs":1.32,"decodeReadyMs":6.724,"copyPresentMs":0.875,"frameIntervalMs":33.374,"frameJitterMs":6.703,"loopHz":59.93,"pumpAvgMs":6.638,"drainAvgMs":0.689,"decoderPending":0,"videoSuperseded":2,"audioBufferedMsUpperBound":40,"audioQueueLimitMs":60,"audioCatchups":0,"audioDiscardedMs":0,"audioDropped":0,"videoFrameGaps":0,"decoderRejected":0,"audioRecovered":0,"audioFecFailed":0,"directReceivedBytes":1153653}
+MOONLIGHT_INPUT_STREAM: {"decodedFps":29.674,"textureFps":29.674,"receivedMbps":1.17,"rttMs":14,"rttVariationMs":5,"frameReceiveMs":0.324,"coreQueueMs":0.016,"hostProcessingMs":1.32,"decodeReadyMs":7.161,"copyPresentMs":0.885,"frameIntervalMs":33.32,"frameJitterMs":7.115,"loopHz":60.336,"pumpAvgMs":6.55,"drainAvgMs":0.682,"decoderPending":0,"videoSuperseded":2,"audioBufferedMsUpperBound":50,"audioQueueLimitMs":60,"audioCatchups":0,"audioDiscardedMs":0,"audioDropped":0,"videoFrameGaps":0,"decoderRejected":0,"audioRecovered":0,"audioFecFailed":0,"directReceivedBytes":1301563}
+MOONLIGHT_INPUT_STREAM: {"decodedFps":30.33,"textureFps":30.33,"receivedMbps":1.308,"rttMs":12,"rttVariationMs":4,"frameReceiveMs":0.417,"coreQueueMs":0.362,"hostProcessingMs":1.303,"decodeReadyMs":8.52,"copyPresentMs":0.879,"frameIntervalMs":33.336,"frameJitterMs":8.643,"loopHz":59.682,"pumpAvgMs":6.667,"drainAvgMs":0.707,"decoderPending":0,"videoSuperseded":2,"audioBufferedMsUpperBound":35,"audioQueueLimitMs":60,"audioCatchups":0,"audioDiscardedMs":0,"audioDropped":0,"videoFrameGaps":0,"decoderRejected":0,"audioRecovered":0,"audioFecFailed":0,"directReceivedBytes":1468611}
+MOONLIGHT_INPUT_STREAM: {"decodedFps":29.595,"textureFps":29.595,"receivedMbps":1.284,"rttMs":15,"rttVariationMs":6,"frameReceiveMs":0.814,"coreQueueMs":0.016,"hostProcessingMs":1.323,"decodeReadyMs":7.138,"copyPresentMs":0.872,"frameIntervalMs":33.329,"frameJitterMs":6.374,"loopHz":60.177,"pumpAvgMs":6.663,"drainAvgMs":0.685,"decoderPending":0,"videoSuperseded":2,"audioBufferedMsUpperBound":30,"audioQueueLimitMs":60,"audioCatchups":0,"audioDiscardedMs":0,"audioDropped":0,"videoFrameGaps":0,"decoderRejected":0,"audioRecovered":0,"audioFecFailed":0,"directReceivedBytes":1631269}
+MOONLIGHT_INPUT_STREAM: {"decodedFps":23.926,"textureFps":23.926,"receivedMbps":0.979,"rttMs":9,"rttVariationMs":5,"frameReceiveMs":0.321,"coreQueueMs":0.017,"hostProcessingMs":1.348,"decodeReadyMs":6.713,"copyPresentMs":0.895,"frameIntervalMs":42.375,"frameJitterMs":24.389,"loopHz":59.814,"pumpAvgMs":6.511,"drainAvgMs":0.584,"decoderPending":0,"videoSuperseded":2,"audioBufferedMsUpperBound":30,"audioQueueLimitMs":60,"audioCatchups":0,"audioDiscardedMs":0,"audioDropped":0,"videoFrameGaps":0,"decoderRejected":0,"audioRecovered":0,"audioFecFailed":0,"directReceivedBytes":1754045}
+MOONLIGHT_INPUT_STREAM: {"decodedFps":16.743,"textureFps":16.743,"receivedMbps":1.345,"rttMs":14,"rttVariationMs":4,"frameReceiveMs":5.371,"coreQueueMs":0.71,"hostProcessingMs":1.392,"decodeReadyMs":9.577,"copyPresentMs":0.872,"frameIntervalMs":57.84,"frameJitterMs":36.57,"loopHz":60.077,"pumpAvgMs":6.436,"drainAvgMs":0.424,"decoderPending":1,"videoSuperseded":2,"audioBufferedMsUpperBound":20,"audioQueueLimitMs":60,"audioCatchups":0,"audioDiscardedMs":0,"audioDropped":0,"videoFrameGaps":0,"decoderRejected":0,"audioRecovered":0,"audioFecFailed":0,"directReceivedBytes":1924815}
+MOONLIGHT_INPUT_STREAM: {"decodedFps":30.968,"textureFps":30.968,"receivedMbps":2.663,"rttMs":11,"rttVariationMs":3,"frameReceiveMs":3.248,"coreQueueMs":0.016,"hostProcessingMs":1.617,"decodeReadyMs":9.081,"copyPresentMs":0.904,"frameIntervalMs":33.326,"frameJitterMs":9.297,"loopHz":59.938,"pumpAvgMs":7.047,"drainAvgMs":0.721,"decoderPending":0,"videoSuperseded":2,"audioBufferedMsUpperBound":30,"audioQueueLimitMs":60,"audioCatchups":0,"audioDiscardedMs":0,"audioDropped":0,"videoFrameGaps":0,"decoderRejected":0,"audioRecovered":0,"audioFecFailed":0,"directReceivedBytes":2257993}
+MOONLIGHT_INPUT_STREAM: {"decodedFps":29.991,"textureFps":29.991,"receivedMbps":2.662,"rttMs":16,"rttVariationMs":6,"frameReceiveMs":3.34,"coreQueueMs":0.016,"hostProcessingMs":1.593,"decodeReadyMs":9.584,"copyPresentMs":0.901,"frameIntervalMs":33.346,"frameJitterMs":5.589,"loopHz":59.982,"pumpAvgMs":7.105,"drainAvgMs":0.715,"decoderPending":0,"videoSuperseded":2,"audioBufferedMsUpperBound":30,"audioQueueLimitMs":60,"audioCatchups":0,"audioDiscardedMs":0,"audioDropped":0,"videoFrameGaps":0,"decoderRejected":0,"audioRecovered":0,"audioFecFailed":0,"directReceivedBytes":2590869}
+MOONLIGHT_INPUT_STREAM: {"decodedFps":30.009,"textureFps":30.009,"receivedMbps":2.672,"rttMs":12,"rttVariationMs":5,"frameReceiveMs":3.691,"coreQueueMs":0.016,"hostProcessingMs":1.627,"decodeReadyMs":7.714,"copyPresentMs":0.863,"frameIntervalMs":33.322,"frameJitterMs":6.647,"loopHz":60.018,"pumpAvgMs":6.912,"drainAvgMs":0.681,"decoderPending":0,"videoSuperseded":2,"audioBufferedMsUpperBound":30,"audioQueueLimitMs":60,"audioCatchups":0,"audioDiscardedMs":0,"audioDropped":0,"videoFrameGaps":0,"decoderRejected":0,"audioRecovered":0,"audioFecFailed":0,"directReceivedBytes":2924767}
+MOONLIGHT_INPUT_STREAM: {"decodedFps":29.572,"textureFps":28.587,"receivedMbps":2.644,"rttMs":11,"rttVariationMs":7,"frameReceiveMs":4.312,"coreQueueMs":1.248,"hostProcessingMs":1.527,"decodeReadyMs":10.377,"copyPresentMs":0.903,"frameIntervalMs":34.982,"frameJitterMs":11.775,"loopHz":60.131,"pumpAvgMs":7.013,"drainAvgMs":0.682,"decoderPending":0,"videoSuperseded":3,"audioBufferedMsUpperBound":40,"audioQueueLimitMs":60,"audioCatchups":0,"audioDiscardedMs":0,"audioDropped":0,"videoFrameGaps":0,"decoderRejected":0,"audioRecovered":0,"audioFecFailed":0,"directReceivedBytes":3260043}
+MOONLIGHT_INPUT_STREAM: {"decodedFps":30.425,"textureFps":30.425,"receivedMbps":2.683,"rttMs":9,"rttVariationMs":8,"frameReceiveMs":3.988,"coreQueueMs":0.016,"hostProcessingMs":1.494,"decodeReadyMs":8.116,"copyPresentMs":0.887,"frameIntervalMs":32.868,"frameJitterMs":8.039,"loopHz":59.869,"pumpAvgMs":7.049,"drainAvgMs":0.708,"decoderPending":0,"videoSuperseded":3,"audioBufferedMsUpperBound":20,"audioQueueLimitMs":60,"audioCatchups":0,"audioDiscardedMs":0,"audioDropped":0,"videoFrameGaps":0,"decoderRejected":0,"audioRecovered":0,"audioFecFailed":0,"directReceivedBytes":3601715}
+MOONLIGHT_INPUT_STREAM: {"decodedFps":29.659,"textureFps":29.659,"receivedMbps":2.494,"rttMs":11,"rttVariationMs":7,"frameReceiveMs":4.888,"coreQueueMs":1.783,"hostProcessingMs":1.543,"decodeReadyMs":12.05,"copyPresentMs":0.915,"frameIntervalMs":33.718,"frameJitterMs":11.651,"loopHz":60.306,"pumpAvgMs":7.017,"drainAvgMs":0.719,"decoderPending":0,"videoSuperseded":3,"audioBufferedMsUpperBound":50,"audioQueueLimitMs":60,"audioCatchups":0,"audioDiscardedMs":0,"audioDropped":0,"videoFrameGaps":0,"decoderRejected":0,"audioRecovered":0,"audioFecFailed":0,"directReceivedBytes":3917061}
+MOONLIGHT_INPUT_STREAM: {"decodedFps":30.335,"textureFps":30.335,"receivedMbps":2.676,"rttMs":10,"rttVariationMs":8,"frameReceiveMs":2.44,"coreQueueMs":0.016,"hostProcessingMs":1.642,"decodeReadyMs":10.394,"copyPresentMs":0.875,"frameIntervalMs":32.964,"frameJitterMs":8.716,"loopHz":59.692,"pumpAvgMs":6.911,"drainAvgMs":0.702,"decoderPending":0,"videoSuperseded":3,"audioBufferedMsUpperBound":40,"audioQueueLimitMs":60,"audioCatchups":0,"audioDiscardedMs":0,"audioDropped":0,"videoFrameGaps":0,"decoderRejected":0,"audioRecovered":0,"audioFecFailed":0,"directReceivedBytes":4258857}
+MOONLIGHT_INPUT_STREAM: {"decodedFps":29.597,"textureFps":29.597,"receivedMbps":2.515,"rttMs":14,"rttVariationMs":3,"frameReceiveMs":3.596,"coreQueueMs":0.413,"hostProcessingMs":1.53,"decodeReadyMs":8.479,"copyPresentMs":0.892,"frameIntervalMs":33.191,"frameJitterMs":10.374,"loopHz":60.181,"pumpAvgMs":7.061,"drainAvgMs":0.691,"decoderPending":0,"videoSuperseded":3,"audioBufferedMsUpperBound":30,"audioQueueLimitMs":60,"audioCatchups":0,"audioDiscardedMs":0,"audioDropped":0,"videoFrameGaps":0,"decoderRejected":0,"audioRecovered":0,"audioFecFailed":0,"directReceivedBytes":4577497}
+MOONLIGHT_INPUT_STREAM: {"decodedFps":29.998,"textureFps":29.998,"receivedMbps":2.513,"rttMs":9,"rttVariationMs":6,"frameReceiveMs":3.152,"coreQueueMs":1.337,"hostProcessingMs":1.607,"decodeReadyMs":10.349,"copyPresentMs":0.892,"frameIntervalMs":33.932,"frameJitterMs":12.41,"loopHz":59.995,"pumpAvgMs":6.936,"drainAvgMs":0.7,"decoderPending":0,"videoSuperseded":3,"audioBufferedMsUpperBound":30,"audioQueueLimitMs":60,"audioCatchups":0,"audioDiscardedMs":0,"audioDropped":0,"videoFrameGaps":0,"decoderRejected":0,"audioRecovered":0,"audioFecFailed":0,"directReceivedBytes":4891641}
+MOONLIGHT_INPUT_STREAM: {"decodedFps":30.005,"textureFps":30.005,"receivedMbps":2.588,"rttMs":13,"rttVariationMs":4,"frameReceiveMs":2.896,"coreQueueMs":0.864,"hostProcessingMs":1.623,"decodeReadyMs":9.431,"copyPresentMs":0.896,"frameIntervalMs":33.328,"frameJitterMs":8.895,"loopHz":60.01,"pumpAvgMs":7.027,"drainAvgMs":0.702,"decoderPending":0,"videoSuperseded":3,"audioBufferedMsUpperBound":30,"audioQueueLimitMs":60,"audioCatchups":0,"audioDiscardedMs":0,"audioDropped":0,"videoFrameGaps":0,"decoderRejected":0,"audioRecovered":0,"audioFecFailed":0,"directReceivedBytes":5215147}
+MOONLIGHT_INPUT_STREAM: {"decodedFps":30.004,"textureFps":30.004,"receivedMbps":2.555,"rttMs":14,"rttVariationMs":5,"frameReceiveMs":3.762,"coreQueueMs":0.383,"hostProcessingMs":1.61,"decodeReadyMs":10.515,"copyPresentMs":0.866,"frameIntervalMs":33.329,"frameJitterMs":11.399,"loopHz":60.009,"pumpAvgMs":6.798,"drainAvgMs":0.689,"decoderPending":0,"videoSuperseded":3,"audioBufferedMsUpperBound":30,"audioQueueLimitMs":60,"audioCatchups":0,"audioDiscardedMs":0,"audioDropped":0,"videoFrameGaps":0,"decoderRejected":0,"audioRecovered":0,"audioFecFailed":0,"directReceivedBytes":5534453}
+MOONLIGHT_INPUT_STREAM: {"decodedFps":30.003,"textureFps":30.003,"receivedMbps":2.596,"rttMs":14,"rttVariationMs":7,"frameReceiveMs":2.385,"coreQueueMs":0.016,"hostProcessingMs":1.493,"decodeReadyMs":7.11,"copyPresentMs":0.873,"frameIntervalMs":32.88,"frameJitterMs":7.614,"loopHz":60.006,"pumpAvgMs":6.872,"drainAvgMs":0.695,"decoderPending":0,"videoSuperseded":3,"audioBufferedMsUpperBound":30,"audioQueueLimitMs":60,"audioCatchups":0,"audioDiscardedMs":0,"audioDropped":0,"videoFrameGaps":0,"decoderRejected":0,"audioRecovered":0,"audioFecFailed":0,"directReceivedBytes":5858961}
+Executed successfully

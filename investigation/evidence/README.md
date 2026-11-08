@@ -128,3 +128,315 @@ client. `settings-screen-preview.png` shows the separate screen at 1280×720.
 `settings-persistence-switch.txt` verifies native write/commit/reload of
 960×540, 60 FPS, 8000 kbit/s using a new native transport, then restores the prior
 720p/30 FPS/5000 kbit/s mode. Only the experiment's `settings.json` was written.
+
+Direct packet I/O and telemetry (2026-11-08): `performance-direct-io-switch.txt`
+passes native TCP/UDP and cooperative scheduling with all received/sent payload
+bytes going directly through the core heap. `performance-live-switch.txt` runs
+a bounded 720p60 Desktop stream and records 741 decoded/presented frames with
+741 matching decode timestamps, 3,659,719 bytes received directly, no reported
+video frame gaps/decoder rejects/local audio drops, and successful teardown.
+Steady interval rates were about 60 texture submissions/sec; decode-ready delay
+was roughly 10–13 ms and copy/presentation roughly 0.7–1.2 ms. These values do
+not include physical display scanout and are not a controlled before/after CPU
+benchmark. The timing data also shows substantial submission interval jitter.
+
+`performance-setting-switch.txt` verifies persistence of `showStats: true` and
+restores the user's previous mode/overlay preference. `performance-local-tests.txt`
+records 28 passing tests, including direct buffers, heap replacement, bounds,
+runtime factory replacement, telemetry calculations and settings. The rebuilt
+upstream core/runtime checks are in `performance-core-tests.txt` and
+`performance-runtime-tests.txt`; build output is `performance-runtime-build.txt`.
+`performance-ui-tests.txt` verifies overlay On/Off, saved preferences, removal on
+stop, and existing game/input behavior. `performance-overlay-preview.png` uses
+synthetic metrics for browser layout checks; hardware values are in the live log.
+
+Newest-frame presentation and bounded audio (2026-11-08):
+`low-latency-live-switch.txt` records a 20-second 720p60 test with one deliberate
+80 ms JavaScript stall. It decoded 1,088 frames and submitted 721 texture updates;
+the last complete sample counted 352 superseded decoded outputs. All compressed
+reference inputs were still fed to the decoder. The lower texture-update count
+reflects copying only the newest ready output per drain, rather than copying
+several outputs into the same texture before yielding.
+
+That run used three 10 ms native buffers and one replaceable
+10 ms waiting chunk, with less than 10 ms of partial staging. Observed audio
+buffering stayed at or below 40 ms in this run. Under pressure it skipped stale
+software PCM; the last sample counted 42 skips (420 ms), including recovery from
+the intentional stall. AudioOut was not restarted to catch up. Video frame gaps,
+native decoder rejects, and audio FEC failures remained zero; cleanup returned
+to the loader successfully. This is a queue/ownership test, not an input-latency
+measurement. The user had audio muted, so perceptual audio quality was not checked.
+
+Earlier tuning results are retained in `low-latency-restart-attempt*.txt`,
+`low-latency-20ms-attempt*.txt`, and `low-latency-continuity-attempt*.txt`.
+They motivated continuous playback, an extra 10 ms of jitter headroom, and
+preserving waiting samples whenever reclaimed capacity is available. None of
+the earlier output-reset policies remain in app code.
+
+`low-latency-local-tests.txt` records all 33 tests passing. Queue tests verify
+newest timestamp selection, release on errors, bounded drain work, native PCM
+ownership, continuity when capacity returns, long Opus packets, and sustained
+backpressure. `low-latency-ui-tests.txt` checks overlay settings and existing
+stream/navigation controls. Local skip counts and skipped audio duration are
+shown separately from network loss indicators in the overlay.
+
+Lag diagnosis (2026-11-08): the user's subsequent 720p30/3 Mbps run is summarized
+in `lag-stream-summary.json`, reconstructed from chunked reports in
+`low-latency-ui-switch.txt`. Median decoded rate was 30.13 FPS versus 20.61 texture
+submissions/sec. The final active sample had 595 superseded outputs among 1,871
+decoded frames, and 16.13 seconds of locally discarded PCM among about 62.35
+seconds decoded (25.9%). No video frame gaps, native decoder rejections, or audio
+FEC failures were reported. Median host processing was 2.01 ms, decode-ready
+17.53 ms, copy/presentation 1.02 ms, and measured ENet RTT 41 ms. Cooperative
+pumps averaged 9.50 ms per iteration and peaked at 320 ms. These timings identify
+a client scheduling/buffering problem as well as possible network jitter.
+
+The user confirmed Ethernet on the Sunshine PC and Wi-Fi on the Switch.
+`lag-native-tcp-switch.txt` measures actual Switch-to-PC TCP handshakes using
+native poll, avoiding JS timer wakeups: all 20 succeeded, median 10.60 ms,
+range 2.07–25.52 ms, p95 24.30 ms. This was measured with streaming stopped and
+does not prove the under-load latency during the earlier stream. The idle timer
+probe (`lag-idle-host-switch.txt`) found a requested 2 ms timer waking at a median
+16.65 ms. Its HTTP timings include the adapter's 20 ms polling sleeps, so they
+must not be presented as raw network RTT.
+
+Independent Mac probes also saw LAN jitter: `lag-ping-switch.txt` reports 30/30
+responses with 40.11 ms average and 145.46 ms maximum; `lag-ping-router.txt` has
+30/30 responses averaging 18.42 ms, maximum 91.97 ms. `lag-host-tcp-mac.txt` has
+30/30 successful PC TCP connects with median 5.45 ms and maximum 94.13 ms. The
+PC did not reply to ICMP (`lag-ping-host.txt`), despite successful TCP/HTTP, so
+that ICMP result is not evidence of 100% network packet loss. Mac-based timings
+include the Mac's own LAN path and cannot locate a specific radio problem.
+No application settings or Sunshine session state were changed by these probes.
+
+
+Frame scheduling and audio retuning (2026-11-08):
+`scheduling-stream-summary.json` summarizes the final full-UI run in
+`scheduling-ui-final-live-switch.txt`, at the saved 720p30/3 Mbps settings with
+native controller polling and the overlay enabled. Five active interval samples
+had median 29.55 decoded and texture FPS (texture range 27.53–29.99), versus
+20.61 median texture FPS in the earlier laggy session. The loop ran at a median
+58.99 Hz; average pump cost was 6.79 ms and drain cost 0.86 ms. Median decode-ready
+time was 11.16 ms; copy/presentation was 0.92 ms. Final totals were 727 decoded
+frames and 702 texture submissions. Of 24.265 seconds of decoded PCM, 80 ms was
+intentionally skipped (0.33%, versus 25.9% previously). Sampled audio buffering
+never exceeded 70 ms. No sampled video gaps, decoder rejections, or audio FEC
+failures were reported. Stop returned state 0/tasks 0, with one forced clock wake.
+
+These are different sessions, not a controlled Wi-Fi comparison. ENet RTT was
+also lower (median 13 ms, sampled 9–29 ms), so the full improvement cannot be
+attributed solely to code changes. Texture submissions are not display scanout,
+and the user requested measurements only; perceptual audio quality was not checked.
+
+The app now wakes on animation callbacks, with a 50 ms watchdog for suspended
+rendering callbacks and an immediate stop wake. The cooperative runtime checks an
+8 ms deadline in socket loops and media callbacks. Individual native/codec calls
+can still exceed this budget. The audio queue uses two 20 ms native buffers and
+one replaceable 20 ms software chunk, plus a partial chunk under 20 ms. Native
+buffer ownership and continuous playback remain unchanged. Compact console reports
+run every five seconds, while the overlay remains at one second. The preceding
+full-UI test (`scheduling-ui-8ms-live-switch.txt`) exposed extra audio skips from
+large chunked console snapshots; the final compact reports avoid those bursts.
+
+`scheduling-live-switch.txt` records the rejected 4 ms budget experiment. It kept
+local PCM skips at zero but starved packet handling and accumulated audio FEC
+failures; its generic direct-I/O/cleanup checks passed, not its performance goal.
+`scheduling-8ms-live-switch.txt` records the successful 8 ms bounded test before
+full-UI integration. `scheduling-wakeups-switch.txt` compares short timers and
+frame callbacks with 3 ms of work. Both had approximately 16.7 ms median wakeup
+intervals; frame callbacks were more consistent in this small workload. This does
+not establish that changing only the wakeup mechanism improves throughput.
+`scheduling-ui-live-switch.txt` is an invalid initial harness run (no stream).
+The corrected harness explicitly awaits the UI lifetime and dispatches DOM events.
+
+`scheduling-local-tests.txt` records 34 passing tests, including frame watchdog/
+stop cancellation, PCM backpressure/ownership, and loop telemetry. The rebuilt
+core checkpoint test passes in `scheduling-runtime-tests.txt`; build output is
+`scheduling-runtime-build.txt`. `scheduling-python-tests.txt` records two passing
+transport tests. `scheduling-ui-tests.txt` covers settings, overlay toggles,
+controller navigation and cleanup. `scheduling-final-ui-switch.txt` records loading
+the final normal UI. All new Switch experiment writes remain under
+`save:/moonlight-experiment/`; probes and evidence are kept on the Mac.
+
+
+Input latency investigation and priority scheduling (2026-11-08):
+`input-latency-summary.json` and its compact `.txt` counterpart compare seven
+completed 24-second streaming runs. The test sends neutral controller state,
+observes ENet channel 16 reliable sequences at the native socket boundary, and
+correlates host ACKs. It does not press host buttons or install host software.
+All probes use RAM only on the Switch. The user's saved stream preferences were
+preserved, and `input-final-ui-switch.txt` records the updated normal UI ready.
+
+At 720p30/3 Mbps, `input-baseline-valid-switch.txt` recorded 80/80 updates sent and
+acknowledged. Median sample-to-socket delay was 19.945 ms, p95 22.261 ms. Native
+controller polling itself took a median 0.291 ms at approximately 60 Hz. Giving
+our controller-dispatch task priority 2 and upstream's `InputSend` task priority 1
+reduced the corresponding median to 1.762 ms, p95 2.051 ms, in
+`input-priority-switch.txt` with the same 8 ms budget and sparse input cadence.
+Each priority task gets one turn before the regular round-robin pass; upstream
+sources, packet formats, encryption and reliable delivery remain unmodified.
+
+Continuous neutral input, once per animation callback, exposed insufficient
+processing headroom with that 8 ms budget. At 720p30 it still delivered all 1,200
+updates with 1.713 ms median local delay, but skipped 900 ms of decoded PCM
+(4.154%). At 720p60, it coalesced 80 of 1,200 updates and delivered a median 38.005
+texture updates/sec. One-to-one input timing is deliberately suppressed for that
+run, because pairing a coalesced packet with the oldest pending sample would
+produce fictitious queue delays. See `input-priority-continuous-30fps-switch.txt`
+and `input-priority-continuous-switch.txt`.
+
+The final shared budget is 10 ms. `input-priority-10ms-30fps-switch.txt` sent and
+acknowledged all 1,200 updates with 1.710 ms median sample-to-socket delay (p95
+6.568 ms). Median texture rate was 29.962 FPS; 60 ms of decoded PCM was skipped
+(0.275%). `input-priority-10ms-60fps-switch.txt` also delivered all 1,200 updates,
+with median 1.715 ms local delay (p95 7.639 ms), 51.599 texture updates/sec and
+20 ms skipped PCM (0.094%). Both returned state 0/tasks 0. No video frame gaps,
+decoder rejections or failed audio recovery blocks were sampled in either run.
+The earlier sparse-input 60 FPS run (`input-priority-60fps-switch.txt`) delivered
+50.326 median texture updates/sec even before the final budget change.
+
+Baseline socket-to-ACK time had median 13.226 ms, p95 19.923 ms and max 35.104 ms.
+Final continuous runs had medians 4.292/4.467 ms, p95 below 18 ms and max around
+67 ms. These values include receive polling, not only Wi-Fi airtime. Retransmits
+were observed; they are not a Wi-Fi packet-loss measurement because the client's
+service cadence can also delay ACK processing. The repeated local queue delay
+is demonstrably improvable. These tests do not measure physical button age,
+Bluetooth latency, host game response, capture-to-display delay or display scanout,
+and cannot rule out network trouble during a different gaming session. A 30 FPS
+capture spaces images about 33 ms apart; the 60 FPS option reduces that spacing
+but did not achieve 60 texture updates/sec under this workload.
+
+`input-priority-build.txt` records the rebuilt core. The runtime test in
+`input-priority-runtime-tests.txt` verifies dispatch/sender ordering ahead of a
+busy normal task, deadline yielding, joins and cleanup. `input-priority-local-tests.txt`
+records 34 passing app tests. `input-observer-tests.txt` checks ENet parser bounds,
+failed sends, reliable sequences, retransmissions, socket identity and first-ACK
+correlation. Large experiment logs are bounded and decoded by the existing probe
+transport. The new run helper includes all protocol dependencies and explicitly
+awaits the probe lifetime:
+
+```sh
+python3 -B investigation/probes/run-input-timing.py 192.168.1.182 --fps 30 --output investigation/evidence/input-recheck.txt
+python3 -B investigation/probes/run-input-timing.py 192.168.1.182 --fps 60 --continuous --skip-upload --output investigation/evidence/input-stress-recheck.txt
+python3 -B investigation/probes/summarize-input-timing.py
+```
+
+The initial attempt was blocked by the Mac's VPN route and refused direct LAN
+connections (`input-connectivity-block.txt`). After the laptop reboot, a raw
+large-payload attempt ended without execution output (`input-baseline-switch.txt`),
+and a subsequent bounded attempt lacked the in-memory streaming core
+(`input-baseline-run-switch.txt`). Neither contains valid timing data. Reloading
+the core (`input-upload-retry-switch.txt`) and using the complete bounded probe
+produced the valid baseline. No system network/VPN settings were changed.
+
+
+Local exit during network/render stalls (2026-11-08):
+The user reported a frozen stream that ignored −/+ for roughly 30 seconds.
+`input-final-ui-switch.txt` from that session shows ENet RTT rising through
+110 ms, 1,144 ms and 2,000 ms, then no texture updates and eventual host timeout.
+It does not show a prompt user-requested stop. Rendering callbacks were the only
+route polling the chord. Stream reports also called the loader's TCP logger
+synchronously; a stalled Wi-Fi path can block that native logger. The old stop
+path left reliable input draining/ENet linger and sleeping workers to unwind.
+
+The stream screen now checks local exit on a separate nominal 50 ms timer, even
+when remote input is suspended. Stop wakes the stream loop, immediately interrupts
+the core and prioritizes teardown. Neutral gamepad state and queued key-up events
+get a fixed grace of at most 100 ms. After its deadline, connect/send/receive/poll
+fail locally without calling the native socket API; repeated stop cannot extend
+the deadline. Close/shutdown and owned memory remain available until C tasks end.
+Interrupted sleeping workers wake immediately. Teardown uses short timers rather
+than animation callbacks. Existing unfinished-task quarantine is retained.
+
+Stream logs and the latest statistics stay in RAM. After a stream starts, other
+UI messages also stay local for the rest of that UI session, avoiding late artwork
+or Games/Host logging calls on the same stalled TCP connection. The bounded
+`window.__moonlightStreamDiagnostics` ring has 64 entries of at most 512 characters;
+there is no automatic network flush on exit, and no new Switch files. Read it
+with `read-stream-diagnostics.js` after closing the UI and restoring connectivity.
+The performance overlay still updates during playback.
+
+`exit-cancel-summary.json` records the final full-UI hardware checks. The test
+blackholes only core stream send/receive/poll operations, suppresses animation
+callbacks and injects −/+ through the Npad adapter. No system Wi-Fi/router settings
+are changed. In `exit-cancel-outage-fast-switch.txt`, the timer recognized the
+chord in 79.382 ms and Games returned in 234.596 ms. In the healthy companion run
+(`exit-cancel-healthy-fast-switch.txt`), detection took 33.663 ms, return took
+148.493 ms, and the host acknowledged graceful disconnect. Both returned state 0,
+tasks 0 and no live TCP stream logs. `exit-cancel-loaded-ui-switch.txt` records the
+final normal UI ready. These are injected-fault measurements, not a guarantee
+that JavaScript can preempt a blocking native driver or OS pause.
+
+Earlier steps remain as evidence: `exit-cancel-switch.txt` is the initial immediate
+cancellation test (121.522 ms to Games). `exit-cancel-final-switch.txt` tests the
+bounded grace before teardown pacing was fixed (261.028 ms). The first healthy
+check (`exit-cancel-healthy-switch.txt`) returned quickly but did not acknowledge
+disconnect: 50 ms animation-watchdog waits between shutdown stages exhausted the
+grace. `exit-cancel-healthy-diagnostics.txt` identified that step. Replacing those
+cleanup waits with short timers produced the final successful healthy/outage runs.
+
+`exit-cancel-local-tests.txt` records 37 passing tests, including cancellation,
+non-extended grace, immediate wake and deferred freeing of C-owned buffers.
+`exit-cancel-runtime-tests.txt` also verifies that a 60-second sleeping C worker
+interrupts and joins promptly. The rebuilt core is recorded in
+`exit-cancel-build.txt`. `exit-cancel-ui-tests.txt` checks exit with RAF suppressed
+and remote input suspended, bounded RAM logs with a throwing network logger,
+existing controls and overlay behavior. Reproduce the hardware checks with:
+
+```sh
+python3 -B investigation/probes/run-outage-exit.py 192.168.1.182 --output investigation/evidence/exit-outage-recheck.txt
+python3 -B investigation/probes/run-outage-exit.py 192.168.1.182 --healthy --skip-upload --output investigation/evidence/exit-healthy-recheck.txt
+```
+
+60 FPS presentation timing (2026-11-08):
+`pacing-summary.json` compares 720p60/3 Mbps runs with neutral controller updates
+on every animation tick. The renderer checked decoded output only after the
+10 ms packet pump. This alternated between empty checks and batches of two or
+more outputs, where the newest-only policy intentionally discarded older frames.
+The baseline acquired 1,318 outputs but published only 1,103; 215 were superseded.
+Moving the check before the packet pump acquired the same 1,318 outputs and
+published 1,267, with only 51 superseded. No extra decoded-frame queue was added.
+Each tick still publishes at most one texture update and releases all outputs.
+
+For the fixed telemetry selection (omit the first two connected samples), mean
+texture FPS rose from 49.14 to 57.77. The 95th-percentile texture update interval
+fell from 34.005 to 18.107 ms. These are sequential LAN runs, not packet replays;
+network and host timing can vary. Checking again after the pump did not improve
+consistency (57.54 FPS, interval p95 24.635 ms). A 2+8 ms split pump also failed to
+improve delivery (49.63 FPS), with more variable network/host conditions and nine
+frame gaps in that run. Neither alternative is in the app.
+
+The app now checks video early, pumps with the existing 10 ms budget, then drains
+pending audio. Timing counters account for both media phases separately from the
+core pump. `pacing-input-60-switch.txt` verifies all 80 sampled neutral updates
+were sent and acknowledged: median sample-to-socket 4.578 ms, p95 5.331 ms;
+median sample-to-host-ACK 11.407 ms. This includes a few milliseconds of early
+GPU/driver waiting before the prioritized input sender. It does not measure
+physical input-to-display latency.
+
+The complete UI with the overlay enabled was measured at 720p60/3 Mbps in
+`pacing-final-ui-60-stats.txt`. Its fixed steady selection averaged 51.92 texture
+FPS (median 53.50); most intervals delivered 49–58, with one interval at 17.946
+decoded/presented FPS. That interval's cause is unconfirmed. The isolated 57.77
+FPS result should not be presented as guaranteed full-UI performance or physical
+scanout. After the measurement, the same full-UI test blackholed stream sockets,
+suppressed RAF, and injected −/+: detection took 17.033 ms, return to Games
+196.743 ms, with state/tasks both zero and no live TCP stream logs.
+
+The full-UI report initially closed before its asynchronous long log finished;
+the first RAM read consequently interleaved with that unfinished report. The
+clean second read, `pacing-final-ui-60-stats.txt`, contains the same retained test
+result and all samples. The test helper now awaits reporting before closing.
+Two earlier repeated-probe attempts disconnected without completing and required
+reopening CivSwitch (`pacing-split-switch-sender.txt` and
+`pacing-final-60-switch-sender.txt`); their exact failure stage/cause is unresolved,
+and neither is counted as a passing measurement. `pacing-local-tests.txt` records
+39 passing tests, including presentation ordering, separate pump/drain accounting
+and cleanup after an early video error. `pacing-loaded-ui-switch.txt` records the
+normal updated UI ready. Probes use Switch RAM only and do not change saved
+stream preferences. Reproduce the isolated comparison with:
+
+```sh
+python3 -B investigation/probes/run-frame-pacing.py 192.168.1.182 --phase baseline --continuous --output investigation/evidence/pacing-baseline-recheck.txt
+python3 -B investigation/probes/run-frame-pacing.py 192.168.1.182 --phase current --continuous --skip-upload --output investigation/evidence/pacing-current-recheck.txt
+```

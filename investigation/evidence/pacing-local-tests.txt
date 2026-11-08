@@ -1,0 +1,57 @@
+
+> test
+> node --test tests/test-apps.cjs tests/test-artwork.cjs tests/test-artwork-store.cjs tests/test-settings.cjs tests/test-stream-io.cjs tests/test-stream-runtime-cache.cjs tests/test-stream-clock.cjs tests/test-stream-stop.cjs tests/test-stream-pacing.cjs tests/test-telemetry.cjs tests/test-media-queues.cjs tests/test-network.cjs tests/test-pairing.cjs tests/test-store.cjs tests/test-streaming.cjs tests/test-native-texture.cjs tests/test-controller-input.cjs
+
+Application tests passed: XML parsing, pinned HTTPS and saved identity, PNG artwork bytes/dimensions/limits, cancellation, TLS failure.
+✔ tests/test-apps.cjs (163.310167ms)
+✔ PNG bytes survive a cold cache instance without touching unrelated files (1.811ms)
+✔ checksum failures and missing PNGs become cache misses and remove stale entries (0.278084ms)
+✔ quota evicts least recently used files across reloads (0.202459ms)
+✔ bad or oversized indexes reset only disposable cover data (0.162625ms)
+✔ failed and short writes never produce a usable cached PNG (0.136042ms)
+Artwork queue tests passed: serial visible-page downloads, off-page queue replacement, bounded LRU, download/decode failure, cancellation and draining.
+✔ tests/test-artwork.cjs (146.04075ms)
+✔ native buttons follow standard positions and keep B available during play (1.017042ms)
+✔ both native sticks preserve orientation, dead zone and bounds (0.862042ms)
+✔ browser and native physical layouts agree, including triggers and exit chord (0.199375ms)
+✔ native adapter polls connected styles, handles disconnects, and frees only its buffers (0.921541ms)
+✔ video presents the newest timestamp once, releases every output, and keeps nondisplay frames out of the texture (1.658792ms)
+✔ video releases held outputs on acquisition, metadata and presentation errors and bounds catch-up work (0.384125ms)
+✔ audio batches for frame-paced service and keeps only the newest waiting chunk at the limit (1.4785ms)
+✔ large packets and sustained backpressure stay bounded and never overwrite active native PCM (1.24575ms)
+✔ reclaimed capacity preserves pending audio before admitting a newer chunk (0.611917ms)
+✔ NV12 respects row strides, plane offsets, alpha and limited-range luma (1.670542ms)
+✔ NV12 chroma conversion produces saturated red (0.152375ms)
+✔ NV12 rejects truncated planes and invalid coordinates before presenting (0.352916ms)
+✔ fast conversion preserves luma and bounds chroma approximation error (228.94675ms)
+✔ GPU presenter reuses its owned 720p texture without JS pixel buffers or CPU uploads (1.600875ms)
+✔ GPU presenter rejects a mismatched native getter and cleans its allocations (2.650208ms)
+Native transport tests passed: UTF-8/XML, binary bytes above 128 KiB, bounded headers/body, incomplete/chunked/duplicate lengths, cancellation, socket/allocation cleanup.
+✔ tests/test-network.cjs (295.958917ms)
+Pairing protocol tests passed: BigInt modular arithmetic vs OpenSSL at 1024/2048 bits, frozen Date and bounded RSA/witness loops, legacy URL, full handshake, saved identity/PKCS#12, reuse, wrong PIN, tampered hash/signature, malformed responses, HTTP rejection, TLS failure, HTTPS verification, cancellation, host validation, no Math.random.
+✔ tests/test-pairing.cjs (1736.972625ms)
+✔ stream settings survive a new store and reject unsupported stream modes (1.980334ms)
+✔ save failures are reported so the settings screen can remain open (0.245375ms)
+Storage tests passed: directory boundary, readback/commit failures, recovery, preserved identity, scoped cleanup.
+✔ tests/test-store.cjs (154.861791ms)
+✔ stream clock uses frame callbacks, cancels the watchdog and can wake immediately for stop (2.259708ms)
+✔ TCP/UDP receive and send borrow core memory without intermediate payload copies (5.097667ms)
+✔ heap replacement revalidates the pointer, and invalid ranges are rejected before receiving (1.727375ms)
+✔ local cancellation rejects network work immediately but leaves ownership intact until close (1.641875ms)
+✔ shutdown grace is bounded and repeated cancellation cannot extend it (2.083542ms)
+✔ presentation runs once per tick and GPU wait stays outside the core budget measurements (11.466209ms)
+✔ an early presentation failure still interrupts the core before freeing native media (5.233291ms)
+✔ a newly uploaded core replaces the cached factory and incomplete uploads cannot reuse a stale core (3.094917ms)
+✔ stop cancels core I/O immediately, wakes the loop, and frees media only after C tasks finish (7.2915ms)
+Streaming negotiation tests passed: launch/resume, pinned TLS, session keys, permissions, host-bound RTSP URLs, cancellation.
+✔ tests/test-streaming.cjs (134.107709ms)
+✔ interval FPS, throughput, decoder time, jitter and protocol metrics use actual elapsed time (1.060167ms)
+✔ core snapshots are bounded/versioned and overlay distinguishes unavailable metrics and texture timing (0.477917ms)
+ℹ tests 39
+ℹ suites 0
+ℹ pass 39
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 1752.484

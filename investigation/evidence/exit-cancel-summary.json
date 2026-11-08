@@ -1,0 +1,40 @@
+{
+  "runs": {
+    "outage": {
+      "source": "exit-cancel-outage-fast-switch.txt",
+      "failed": false,
+      "healthy": false,
+      "error": null,
+      "blackhole": true,
+      "rafSuppressed": true,
+      "chordDetectedMs": 79.382,
+      "returnedToGamesMs": 234.596,
+      "state": 0,
+      "tasks": 0,
+      "tcpStreamLogs": 0,
+      "diagnosticMessages": 64,
+      "gracefulDisconnect": false
+    },
+    "healthy": {
+      "source": "exit-cancel-healthy-fast-switch.txt",
+      "failed": false,
+      "healthy": true,
+      "error": null,
+      "blackhole": false,
+      "rafSuppressed": true,
+      "chordDetectedMs": 33.663,
+      "returnedToGamesMs": 148.493,
+      "state": 0,
+      "tasks": 0,
+      "tcpStreamLogs": 0,
+      "diagnosticMessages": 64,
+      "gracefulDisconnect": true
+    }
+  },
+  "localTests": 37,
+  "limits": [
+    "Outage and the Npad exit chord are injected inside the full real Switch UI.",
+    "Only stream sockets are blackholed; system Wi-Fi settings are unchanged.",
+    "Exit is cooperative and cannot preempt an individual blocking native driver call."
+  ]
+}

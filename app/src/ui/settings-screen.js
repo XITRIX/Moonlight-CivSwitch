@@ -6,7 +6,7 @@
   var panel=element("div",options.parent,{display:"none",flexDirection:"column",width:"600px",maxWidth:"88vw",padding:"32px",border:"1px solid #29354b",borderRadius:"18px",backgroundColor:"#131d2e",boxSizing:"border-box"});panel.id="moonlight-settings-screen";
   element("div",panel,{fontSize:"17px",color:"#94b6e2",marginBottom:"6px"},"Moonlight");
   element("h2",panel,{fontSize:"36px",lineHeight:"1.2",margin:"0 0 22px",color:"#f4f7ff"},"Settings");
-  var definitions=[{id:"resolution",label:"Resolution",values:global.MoonlightSettings.resolutions},{id:"fps",label:"Frame rate",values:global.MoonlightSettings.frameRates},{id:"bitrate",label:"Bitrate",values:global.MoonlightSettings.bitrates}];
+  var definitions=[{id:"resolution",label:"Resolution",values:global.MoonlightSettings.resolutions},{id:"fps",label:"Frame rate",values:global.MoonlightSettings.frameRates},{id:"bitrate",label:"Bitrate",values:global.MoonlightSettings.bitrates},{id:"showStats",label:"Performance overlay",values:[false,true]}];
   var rows=[],selected=0,mode=null;
   var style={display:"flex",alignItems:"center",justifyContent:"space-between",width:"100%",height:"58px",marginBottom:"14px",padding:"0 16px",border:"2px solid #35435b",borderRadius:"9px",backgroundColor:"#0c1423",color:"#f4f7ff",fontFamily:"Arial, sans-serif",fontSize:"22px",outline:"none",boxSizing:"border-box"};
   definitions.forEach(function(def,index){
@@ -18,7 +18,7 @@
   var back=element("button",panel,Object.assign({},style,{marginBottom:"0",justifyContent:"center",backgroundColor:"#284c83"}),"Back");back.id="moonlight-settings-back";back.type="button";back.tabIndex=-1;back.addEventListener("click",leave);
   function index(row){return row.definition.values.findIndex(function(v){return row.definition.id==="resolution"?v.width===mode.width&&v.height===mode.height:v===mode[row.definition.id];});}
   function paint(){
-   rows.forEach(function(row,i){var id=row.definition.id;row.value.textContent=id==="resolution"?mode.width+" × "+mode.height:id==="fps"?mode.fps+" FPS":mode.bitrate/1000+" Mbps";row.node.setAttribute("aria-label",row.definition.label+": "+row.value.textContent);row.node.setAttribute("data-value",id==="resolution"?mode.width+"x"+mode.height:String(mode[id]));});
+   rows.forEach(function(row,i){var id=row.definition.id;row.value.textContent=id==="resolution"?mode.width+" × "+mode.height:id==="fps"?mode.fps+" FPS":id==="showStats"?(mode.showStats?"On":"Off"):mode.bitrate/1000+" Mbps";row.node.setAttribute("aria-label",row.definition.label+": "+row.value.textContent);row.node.setAttribute("data-value",id==="resolution"?mode.width+"x"+mode.height:String(mode[id]));});
    rows.map(function(r){return r.node;}).concat([back]).forEach(function(n,i){var active=i===selected;n.style.borderColor=active?"#94c6ff":"#35435b";n.style.backgroundColor=active?"#284c83":"#0c1423";n.setAttribute("data-selected",active?"true":"false");});
   }
   function adjust(delta,wrap){if(selected>=rows.length)return;var row=rows[selected],values=row.definition.values,current=index(row),next=wrap?(current+delta+values.length)%values.length:Math.max(0,Math.min(values.length-1,current+delta));var v=values[next];if(row.definition.id==="resolution"){mode.width=v.width;mode.height=v.height;}else mode[row.definition.id]=v;paint();}

@@ -52,6 +52,7 @@ int __wrap_fcntl(int fd,int command,...) {
 int __wrap_poll(struct pollfd* fds,nfds_t count,int timeout) {
     double end=emscripten_get_now()+(timeout<0?2147483647.0:timeout);
     for(;;){
+        ml_runtime_checkpoint();
         int value=result(ml_io(IO_POLL,pointer(fds),count,0,0,0,0));
         if(value||timeout==0||emscripten_get_now()>=end)return value;
         if(!ml_runtime_current_task()){errno=EWOULDBLOCK;return -1;}ml_yield_ms(2);
@@ -62,6 +63,7 @@ static ssize_t transfer(int op,int fd,void* data,size_t length,int flags,struct 
     int timeout=op==IO_RECVFROM?sockets[fd].receive_timeout:sockets[fd].send_timeout;
     double end=emscripten_get_now()+(timeout>0?timeout:2147483647.0);
     for(;;){
+        ml_runtime_checkpoint();
         int value=result(ml_io(op,fd,pointer(data),length,flags,pointer(address),pointer(address_length)));
         if(value>=0||errno!=EAGAIN)return value;
         if(sockets[fd].nonblocking||(flags&MSG_DONTWAIT)||!ml_runtime_current_task()||emscripten_get_now()>=end)return -1;

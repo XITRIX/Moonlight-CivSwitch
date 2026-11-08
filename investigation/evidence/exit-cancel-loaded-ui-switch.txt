@@ -1,0 +1,4 @@
+Exit-safe Moonlight UI sent.
+Executing payload...
+MOONLIGHT_UI_READY
+Executed successfully

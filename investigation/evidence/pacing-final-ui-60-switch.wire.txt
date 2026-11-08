@@ -1,0 +1,15 @@
+Executing payload...
+MOONLIGHT_UI_READY
+MOONLIGHT_SUNSHINE_CHECKING
+MOONLIGHT_SUNSHINE_ONLINE
+MOONLIGHT_SUNSHINE_CHECKING_PAIR
+MOONLIGHT_SUNSHINE_PAIRED
+MOONLIGHT_PAIRING_SAVED: reused
+MOONLIGHT_APPLIST_LOADING
+MOONLIGHT_APPLIST_LOADED: 3
+MOONLIGHT_ARTWORK_CACHED: 881448767 (8231 bytes)
+MOONLIGHT_ARTWORK_CACHED: 1093255277 (24833 bytes)
+MOONLIGHT_ARTWORK_CACHED: 382300562 (98678 bytes)
+MOONLIGHT_PROBE_LOG_PART: {"text":"MOONLIGHT_OUTAGE_EXIT_RESULT: {\"failed\":false,\"healthy\":false,\"error\":null,\"blackhole\":true,\"rafSuppressed\":true,\"chordDetectedMs\":17.033,\"returnedToGamesMs\":196.743,\"state\":0,\"tasks\":0,\"tcpStreamLogs\":0,\"diagnosticMessages\":64,\"gracefulDisconnect\":false,\"","last":false}
+Executed successfully
+MOONLIGHT_PROBE_LOG_PART: {"text":"mode\":{\"width\":1280,\"height\":720,\"fps\":60,\"bitrate\":3000,\"showStats\":true},\"samples\":[{\"decodedFps\":44.382,\"textureFps\":26.629,\"receivedMbps\":2.136,\"rttMs\":13,\"rttVariationMs\":13,\"frameReceiveMs\":0.752,\"coreQueueMs\":0.029,\"hostProcessingMs\":1.659,\"decodeRe","last":false}

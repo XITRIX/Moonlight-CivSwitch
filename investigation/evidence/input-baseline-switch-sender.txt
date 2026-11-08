@@ -1,0 +1,28 @@
+Executing payload...
+MOONLIGHT_STREAM_UPLOAD: 1/7
+Executed successfully
+Executing payload...
+MOONLIGHT_STREAM_UPLOAD: 2/7
+Executed successfully
+Executing payload...
+MOONLIGHT_STREAM_UPLOAD: 3/7
+Executed successfully
+Executing payload...
+MOONLIGHT_STREAM_UPLOAD: 4/7
+Executed successfully
+Executing payload...
+MOONLIGHT_STREAM_UPLOAD: 5/7
+Executed successfully
+Executing payload...
+MOONLIGHT_STREAM_UPLOAD: 6/7
+Executed successfully
+Executing payload...
+MOONLIGHT_STREAM_UPLOAD: 7/7
+Executed successfully
+Traceback (most recent call last):
+  File "/Users/daniilvinogradov/Documents/Dev/NS2-experiments/investigation/wasm2js/send-runtime-test.py", line 25, in <module>
+    send_payload(args.console_ip, payload, output, args.timeout)
+    ~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/daniilvinogradov/Documents/Dev/NS2-experiments/tools/civswitch_sender.py", line 32, in send_payload
+    raise RuntimeError('Payload did not complete successfully; inspect logs before sending another payload')
+RuntimeError: Payload did not complete successfully; inspect logs before sending another payload

@@ -115,6 +115,10 @@ Settings open with an error. The next stream uses a validated snapshot for both
 Sunshine launch negotiation and the core stream configuration; a running stream
 is unaffected. Unsupported or unreadable stored settings fall back to the
 720p/30 FPS/5 Mbps defaults with a diagnostic, without changing pairing data.
+Performance overlay is a saved On/Off row in the same screen and file, defaulting
+to Off when absent. It applies to the next stream. A noninteractive overlay updates
+once a second and is removed on stop. Startup/stopping status and controller
+input remain independent of the overlay. No additional Switch files are used.
 
 To remove all experiment-owned Switch files, close the UI and run:
 
