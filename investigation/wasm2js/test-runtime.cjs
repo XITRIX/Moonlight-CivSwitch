@@ -19,6 +19,10 @@ const make=require('./dist/moonlight-stream.js');
  const priorityDeadline=Date.now()+2000;
  while(core._ml_runtime_tasks()&&Date.now()<priorityDeadline){core._ml_runtime_pump(2);await new Promise(r=>setTimeout(r,2));}
  assert.equal(core._ml_input_priority_test_result(),123);assert.equal(core._ml_runtime_tasks(),0,'priority tasks join and release normally');
+ assert.equal(core._ml_input_wake_test_start(),0);
+ const inputWakeDeadline=Date.now()+1000;
+ while(core._ml_runtime_tasks()&&Date.now()<inputWakeDeadline){core._ml_runtime_pump(2);await new Promise(r=>setTimeout(r,2));}
+ assert.equal(core._ml_input_wake_test_result(),42,'fresh input wakes a sleeping priority dispatcher');assert.equal(core._ml_runtime_tasks(),0);
  assert.equal(core._ml_scheduler_test_start(),0);
  const end=Date.now()+2000;
  while(core._ml_runtime_tasks()&&Date.now()<end){core._ml_runtime_pump(5);await new Promise(r=>setTimeout(r,2));}

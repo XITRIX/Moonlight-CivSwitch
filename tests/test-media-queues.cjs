@@ -2,6 +2,48 @@ const test=require('node:test'),assert=require('node:assert/strict'),fs=require(
 const source=fs.readFileSync('app/src/streaming/native-media.js','utf8');
 const scope={};scope.window=scope;vm.createContext(scope);vm.runInContext(source,scope);
 const drain=scope.MoonlightStreamMedia.drainLatest;
+const pipeline=scope.MoonlightStreamMedia.createGpuPipeline;
+test('one spare video frame bridges empty/burst ticks without publishing twice',()=>{
+ let time=0,frames=[],released=[],shown=[];const pacer=scope.MoonlightStreamMedia.createVideoPacer(()=>time,17);
+ const options={acquire:()=>frames.shift(),decoded(){},release:f=>released.push(f.index),superseded(){},present:f=>shown.push(f.index)};
+ function tick(t,ids){time=t;frames=ids.map(index=>({index,timestamp:index*17,submittedAt:t,displayable:true}));const count=shown.length;pacer.drain(options);assert(shown.length-count<=1);assert(pacer.pending()<=1);}
+ tick(0,[1]);assert.deepEqual(shown,[]);tick(17,[2]);tick(34,[]);tick(51,[3,4]);tick(68,[5]);tick(85,[]);
+ assert.deepEqual(shown,[1,2,3,4,5]);assert.deepEqual(released,[1,2,3,4,5]);pacer.close();
+});
+test('video pacing bounds backlog/age and releases all retained output on errors and stop',()=>{
+ let time=0,frames=[],released=[],skipped=0;const pacer=scope.MoonlightStreamMedia.createVideoPacer(()=>time,17);
+ const options={acquire:()=>frames.shift(),decoded(){},release:f=>released.push(f.index),superseded:()=>skipped++,present(){}};
+ frames=[1,2,3,4].map(index=>({index,timestamp:index,displayable:true}));pacer.drain(options);assert.equal(skipped,2);assert.equal(pacer.pending(),1);
+ time=60;pacer.drain(options);assert.equal(pacer.pending(),0);assert.equal(skipped,3);assert.deepEqual(released.sort(),[1,2,3,4]);
+ frames=[{index:5,timestamp:5,displayable:true}];options.decoded=()=>{throw Error('metadata');};assert.throws(()=>pacer.drain(options),/metadata/);assert(released.includes(5));
+ options.decoded=()=>{};frames=[{index:6,timestamp:6,displayable:true},{index:7,timestamp:7,displayable:true}];pacer.drain(options);pacer.close();assert.equal(new Set(released).size,7);
+});
+test('GPU transfers retain their decoder slot until completion and publish only once',()=>{
+ let ready=false;const queued=[],presented=[],released=[];
+ const gpu=pipeline({submit:f=>queued.push(f.index),ready:()=>ready,present:f=>presented.push(f.index),release:f=>released.push(f.index)});
+ const frames=[{index:1,timestamp:1,displayable:true},{index:2,timestamp:2,displayable:true}];
+ drain({acquire:()=>frames.shift(),release:f=>released.push(f.index),decoded(){},superseded(){},present:(frame,adopt)=>{adopt();gpu.submit(frame);}});
+ assert.deepEqual(queued,[2]);assert.deepEqual(released,[1]);assert(gpu.pending());
+ assert.equal(gpu.finish(),false);assert.deepEqual(presented,[]);assert.throws(()=>gpu.submit({index:3}),/pending/);
+ ready=true;assert.equal(gpu.finish(),true);assert.equal(gpu.finish(),false);
+ assert.deepEqual(presented,[2]);assert.deepEqual(released,[1,2]);gpu.close();
+});
+test('GPU stop does not publish or release an unfinished copy',()=>{
+ let ready=false;const released=[];
+ const gpu=pipeline({submit(){},ready:()=>ready,present:()=>assert.fail('stop must not publish'),release:f=>released.push(f.index)});
+ gpu.submit({index:7});assert.throws(()=>gpu.close(),/still pending/);assert(gpu.pending());assert.deepEqual(released,[]);
+ ready=true;gpu.close();gpu.close();assert.deepEqual(released,[7]);
+});
+test('GPU failures retain uncertain native work; presentation errors release completed work',()=>{
+ for(const stage of ['submit','ready','release']){
+  const released=[];const gpu=pipeline({submit(){if(stage==='submit')throw Error(stage);},ready(){if(stage==='ready')throw Error(stage);return true;},present(){},release(f){released.push(f.index);if(stage==='release')throw Error(stage);}});
+  if(stage==='submit')assert.throws(()=>gpu.submit({index:1}),/submit/);
+  else{gpu.submit({index:1});assert.throws(()=>gpu.finish(),new RegExp(stage));}
+  assert.throws(()=>gpu.close(),new RegExp(stage));assert.equal(released.length,stage==='release'?1:0);
+ }
+ const released=[];const gpu=pipeline({submit(){},ready:()=>true,present(){throw Error('image');},release:f=>released.push(f.index)});
+ gpu.submit({index:9});assert.throws(()=>gpu.finish(),/image/);gpu.close();assert.deepEqual(released,[9]);
+});
 test('video presents the newest timestamp once, releases every output, and keeps nondisplay frames out of the texture',()=>{
  const frames=[{index:1,timestamp:100,displayable:true},{index:2,timestamp:300,displayable:true},{index:3,timestamp:200,displayable:true},{index:4,timestamp:400,displayable:false}],released=[],decoded=[],presented=[];let skipped=0;
  drain({acquire:()=>frames.shift(),release:f=>released.push(f.index),decoded:f=>decoded.push(f.index),superseded:()=>skipped++,present:f=>presented.push(f.index)});

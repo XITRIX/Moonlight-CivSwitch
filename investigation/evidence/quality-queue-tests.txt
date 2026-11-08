@@ -1,0 +1,24 @@
+✔ one spare video frame bridges empty/burst ticks without publishing twice (1.804875ms)
+✔ video pacing bounds backlog/age and releases all retained output on errors and stop (0.376583ms)
+✔ 1080p smoothing absorbs a two-output burst and bounds the extra spare and total age (0.180792ms)
+✔ GPU transfers retain their decoder slot until completion and publish only once (0.256291ms)
+✔ GPU stop does not publish or release an unfinished copy (0.126417ms)
+✔ GPU failures retain uncertain native work; presentation errors release completed work (0.192959ms)
+✔ video presents the newest timestamp once, releases every output, and keeps nondisplay frames out of the texture (0.110916ms)
+✔ video releases held outputs on acquisition, metadata and presentation errors and bounds catch-up work (0.207417ms)
+✔ audio batches for frame-paced service and keeps only the newest waiting chunk at the limit (1.624167ms)
+✔ large packets and sustained backpressure stay bounded and never overwrite active native PCM (2.15325ms)
+✔ reclaimed capacity preserves pending audio before admitting a newer chunk (0.676208ms)
+✔ presentation runs once per tick and GPU wait stays outside the core budget measurements (7.071625ms)
+✔ an early presentation failure still interrupts the core before freeing native media (8.63475ms)
+✔ an unfinished GPU transfer quarantines native resources after C tasks stop (3.640209ms)
+✔ Low latency preference disables the spare-frame buffer (3.455542ms)
+✔ stop cancels core I/O immediately, wakes the loop, and frees media only after C tasks finish (8.135792ms)
+ℹ tests 16
+ℹ suites 0
+ℹ pass 16
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 176.827375

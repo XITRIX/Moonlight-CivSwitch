@@ -17,7 +17,7 @@
   return offset===bytes.length?result:[];
  }
  function create(){
-  var pending=[],sent=new Map(),samples=[],controlFd=null,retries=0;
+  var pending=[],sent=new Map(),samples=[],controlFd=null,retries=0,accepting=true;
   function enqueue(time){var item={queued:time,sent:null,ack:null,retries:0};pending.push(item);samples.push(item);return item;}
   function observe(op,args,heap,result,begin,end){
    var fd=args[0],p=args[1]>>>0,n=op===5?result:args[2]>>>0,remote=args[4]>>>0;
@@ -27,13 +27,14 @@
    commands(heap.subarray(p,p+n)).forEach(function(cmd){
     if(cmd.channel!==16)return;
     if(op===4&&cmd.type===6){
+     if(!accepting)return;
      if(sent.has(cmd.sequence)){var old=sent.get(cmd.sequence);if(old){old.retries++;retries++;}return;}
      var item=pending.shift()||null;sent.set(cmd.sequence,item);
      if(item){item.sent=begin;item.sendCallMs=end-begin;item.sequence=cmd.sequence;}
     }else if(op===5&&cmd.type===1){var item=sent.get(cmd.ack);if(item&&item.ack===null)item.ack=end;}
    });
   }
-  return {enqueue:enqueue,observe:observe,samples:samples,summary:function(){return {samples:samples,retries:retries,pending:pending.length,controlFd:controlFd};}};
+  return {enqueue:enqueue,observe:observe,finish:function(){accepting=false;},samples:samples,summary:function(){return {samples:samples,retries:retries,pending:pending.length,controlFd:controlFd};}};
  }
  global.MoonlightInputObserver={commands:commands,create:create};
 })(typeof window!=='undefined'?window:globalThis);

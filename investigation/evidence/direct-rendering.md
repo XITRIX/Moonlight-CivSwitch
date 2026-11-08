@@ -173,3 +173,44 @@ and texture recreation. The CPU path remains available explicitly. The bounded
 transfer/publication. See [live evidence](streaming-live.md) for audio, fresh-start,
 cleanup, user confirmation, and the allocator initialization fix. Other game builds,
 zero-copy surfaces, HDR, higher resolutions, and end-to-end latency remain untested.
+
+## Fence-based GPU transfer — 2026-11-08
+
+The decoder's existing `Buffer::SetNvnSync` path imports an initialized sync's
+fence, submits the copy, fences/flushed its own queue and returns an updated sync
+instead of finishing the queue on the CPU. The earlier transfer capture remains
+the static basis (`ev_3a6a2825633b54d61dfe78228a276e3919d647803d6417e16eb32a9ad35d1c2e`).
+`gpu-sync-code-switch.txt`, `gpu-sync-fence-code-switch.txt` and
+`gpu-sync-wait-tail-switch.txt` read the pointer cells and bounded driver code;
+they do not patch those cells or functions. The app initializes only its owned
+sync allocation and binds it to its own movie Buffer.
+
+| Movie-relative cell | Observed role |
+| --- | --- |
+| `0x4038698` | Initialize sync with device; clears its state |
+| `0x4038610` | Finalize sync |
+| `0x4038720` | Client wait with nanosecond timeout; app uses zero |
+| `0x4038708` | Fence sync on decoder's copy queue |
+| `0x4038710` | Flush queue |
+| `0x4038718` | Finish queue, used by the old null-sync path |
+
+REA analysis of the normalized driver captures is preserved in
+`gpu-sync-functions-analysis.json`, `gpu-sync-get-fence-analysis.json`, and
+`gpu-sync-wait-results-analysis.json`. Evidence IDs are
+`ev_8fae6b1068a3af49b547310b2517dc1349521ee8d0bd7921075b888091c1e573`,
+`ev_44a5cde594d0298c34c159f9ea97af5940d1c5fbff966450b1a517be60c1225b`, and
+`ev_39cce5666b8ed71b3bcecbdd31e999766fada384a5a3ee46888ce69c7c858fe5`.
+These are partial native captures with recovered types/control flow; they are
+not a complete public NVN ABI. The tested return handling is 0/1 completed,
+2 timeout/pending, and 3 failure. Decoder output ownership is retained across
+pending polls, and publication/release happen only after completion.
+
+`gpu-fence-wait-switch.txt` first retained synchronous completion: 973 copies
+queued in 251.221 ms total, then waited 2333.551 ms; all waits returned 1, with no
+fallbacks. The app then moved completion checks between/after 4+6 ms core pumps.
+A bounded one-spare-frame pacer was needed for 60 FPS consistency; removing CPU
+waits alone did not improve delivery. `gpu-overlap-summary.json` records isolated
+59.52 texture FPS and full-UI 57.07 FPS, plus input and stop checks. It also records
+one unresolved repeated-run startup crash; the fresh-process 30 FPS check passed.
+Native analysis sessions were closed. Physical scanout and end-to-end control
+latency remain unmeasured; Smooth pacing can add one frame of buffering.

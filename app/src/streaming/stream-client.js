@@ -31,9 +31,13 @@
   var signal={aborted:false},stopRequested=false,core,io,media,failure=null,done=null,startedAt=0,connectedAt=0,latestStats=null;
   var cpu=options.renderer==="png"||options.renderer==="native-texture";
   var mode=options.mode||(cpu?{width:320,height:180,fps:15,bitrate:1000}:{width:1280,height:720,fps:30,bitrate:5000});
+  // Higher-rate streams need another receive/Opus turn before the next frame.
+  // Keep room for rendering and input; lighter modes retain their 10 ms budget.
+  var pumpBudgetMs=mode.fps===60&&(mode.width>1280||mode.height>720||mode.bitrate>=8000)?12:10;
+  var completionBudgetMs=pumpBudgetMs===12?6:4;
   var telemetry=global.MoonlightTelemetry.create(),clock=createClock(),pumpMs=0,drainMs=0,iterations=0,maxPumpMs=0,maxDrainMs=0;
   function collect(active){
-   var snapshot=Object.assign({state:core._ml_session_state(),tasks:core._ml_runtime_tasks(),mode:Object.assign({},mode),network:Object.assign({},io.stats),clock:Object.assign({},clock.stats),budgetYields:core._ml_runtime_budget_yields?core._ml_runtime_budget_yields():null,pumpMs:pumpMs,drainMs:drainMs,iterations:iterations,maxPumpMs:maxPumpMs,maxDrainMs:maxDrainMs},media.stats());
+   var snapshot=Object.assign({state:core._ml_session_state(),tasks:core._ml_runtime_tasks(),mode:Object.assign({},mode),pumpBudgetMs:pumpBudgetMs,network:Object.assign({},io.stats),clock:Object.assign({},clock.stats),budgetYields:core._ml_runtime_budget_yields?core._ml_runtime_budget_yields():null,pumpMs:pumpMs,drainMs:drainMs,iterations:iterations,maxPumpMs:maxPumpMs,maxDrainMs:maxDrainMs},media.stats());
    snapshot.telemetry=telemetry.sample(snapshot,active?global.MoonlightTelemetry.readCore(core):null);return snapshot;
   }
   function status(text){if(options.onStatus)options.onStatus(text);}
@@ -56,7 +60,7 @@
     }};
     core=await make({moonlightPlatform:platform});
     if(global.MoonlightNativeTexture&&options.renderer==="native-texture"){status("Preparing native video colors…");await global.MoonlightNativeTexture.prepare();if(stopRequested)return;}
-    media=global.MoonlightStreamMedia.create(io,core,{onStatus:status,onImage:options.onImage,canPresent:options.canPresent,renderer:options.renderer});
+    media=global.MoonlightStreamMedia.create(io,core,{onStatus:status,onImage:options.onImage,canPresent:options.canPresent,renderer:options.renderer,synchronousGpu:options.synchronousGpu,smoothVideo:mode.videoPacing!=="latency"});
     platform.videoSetup=guarded("videoSetup",-1);platform.videoFrame=guarded("videoFrame",-1);
     platform.audioSetup=guarded("audioSetup",-1);platform.audioFrame=guarded("audioFrame",undefined);
     status("Starting application on Sunshine…");
@@ -71,12 +75,12 @@
     startedAt=Date.now();var lastStats=0;
     while(!stopRequested){
      await clock.wait();if(stopRequested)break;
-     // Check completed video at a consistent early phase of the render tick.
-     // Pumping packets first made output checks alternate between empty and
-     // multiple ready frames. Keep one publication per tick and no extra queue.
+     // Queue video early and service the core while its GPU copy completes.
+     // A nonblocking fence check publishes once; pending work keeps its slot.
      var begin=global.MoonlightTelemetry.now();media.drainVideo();var early=global.MoonlightTelemetry.now();
-     core._ml_runtime_pump(10);var pumped=global.MoonlightTelemetry.now();media.drainAudio();var drained=global.MoonlightTelemetry.now();
-     var pumpElapsed=pumped-early,drainElapsed=early-begin+drained-pumped;
+     core._ml_runtime_pump(completionBudgetMs);var pumpedEarly=global.MoonlightTelemetry.now();media.finishVideo();var finishedEarly=global.MoonlightTelemetry.now();
+     core._ml_runtime_pump(pumpBudgetMs-completionBudgetMs);var pumped=global.MoonlightTelemetry.now();media.finishVideo();media.drainAudio();var drained=global.MoonlightTelemetry.now();
+     var pumpElapsed=pumpedEarly-early+pumped-finishedEarly,drainElapsed=early-begin+finishedEarly-pumpedEarly+drained-pumped;
      pumpMs+=pumpElapsed;drainMs+=drainElapsed;maxPumpMs=Math.max(maxPumpMs,pumpElapsed);maxDrainMs=Math.max(maxDrainMs,drainElapsed);iterations++;
      if(failure)throw failure;
      if(core._ml_session_state()===3)throw Error("Core connection failed: "+core._ml_session_error());
@@ -98,7 +102,7 @@
       // Never free buffers still referenced by a suspended C task.
       failure=failure||Error("Core cleanup timed out; restart Civ VII before reusing streaming");report(failure.message);
       global.__moonlightStreamUnfinished={core:core,io:io,media:media};
-     }else{if(media){latestStats=collect(false);media.close();}if(io)io.close();}
+     }else{try{if(media){latestStats=collect(false);media.close();}if(io)io.close();}catch(error){failure=failure||error;report(error.message);global.__moonlightStreamUnfinished={core:core,io:io,media:media};}}
     }else if(io)io.close();
     if(options.onStopped)options.onStopped(failure,latestStats);
    }

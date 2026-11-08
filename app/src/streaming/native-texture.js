@@ -57,7 +57,7 @@
  }
  function create(io,core,width,height,options){
   var gpu=!!(options&&options.gpu);
-  if(!Number.isInteger(width)||!Number.isInteger(height)||width<1||height<1||width>(gpu?1280:640)||height>(gpu?720:360))throw Error("Unsupported native texture dimensions");
+  if(!Number.isInteger(width)||!Number.isInteger(height)||width<1||height<1||width>(gpu?1920:640)||height>(gpu?1080:360))throw Error("Unsupported native texture dimensions");
   if(global.__moonlightNativeTextureOwner)throw Error("A native stream texture is already active");
   if(!gpu&&!lookup)throw Error("Prepare native texture colors before starting a stream");
   var allocations=[],handle=0n,provider=0n,published=false,closed=false,rgbaHeap=0,frames=0,uploadMs=0,maxUploadMs=0;
@@ -129,8 +129,8 @@
   }
   function presentNative(){
    if(closed||!gpu||!handle)throw Error("GPU stream texture is unavailable");
-   // GetOutputBuffer with no NVN sync waits for the decoder's GPU copy queue.
-   // Publish only after that call succeeds; the texture handle stays unchanged.
+   // The caller must complete its synchronous transfer or observe its GPU fence
+   // before publishing. The texture handle stays unchanged.
    publish();frames++;return url;
   }
   return {present:present,target:target,presentNative:presentNative,close:close,stats:function(){return {textureFrames:frames,textureUploadMs:uploadMs,maxTextureUploadMs:maxUploadMs};}};

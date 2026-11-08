@@ -16,18 +16,63 @@
     else if(frame.timestamp>=latest.timestamp){release(latest);latest=frame;options.superseded();}
     else{release(frame);options.superseded();}
    }
-   if(latest)options.present(latest);
+   // An asynchronous presenter can explicitly take over the selected slot.
+   if(latest)options.present(latest,function(){held.delete(latest.index);});
   }catch(error){failure=error;}
   finally{held.forEach(function(index){try{options.release({index:index});}catch(error){if(!failure)failure=error;}});}
   if(failure)throw failure;
+ }
+ function createGpuPipeline(options){
+  var pending=null,failure=null;
+  function submit(frame){
+   if(pending||failure)throw Error("GPU transfer already pending or failed");pending=frame;
+   try{options.submit(frame);}catch(error){failure=error;throw error;}
+  }
+  function finish(publish){
+   if(failure)throw failure;if(!pending)return false;
+   var ready;try{ready=options.ready();}catch(error){failure=error;throw error;}
+   if(!ready)return false;
+   var frame=pending,presentationFailure=null;pending=null;
+   try{if(publish!==false)options.present(frame);}catch(error){presentationFailure=error;}
+   try{options.release(frame);}catch(error){failure=error;throw error;}
+   if(presentationFailure)throw presentationFailure;return true;
+  }
+  return {submit:submit,finish:finish,pending:function(){return !!pending;},close:function(){if(!finish(false)&&pending)throw Error("GPU transfer is still pending; native media retained");}};
+ }
+ function createVideoPacer(clock,period){
+  var queue=[],primed=false,firstAt=null,last=null,lastTimestamp=-Infinity;
+  function releaseAll(){var first=null;while(queue.length){try{last.release(queue.shift());}catch(error){if(!first)first=error;}}if(first)throw first;}
+  function discard(){last.release(queue.shift());last.superseded();}
+  return {pending:function(){return queue.length;},close:releaseAll,drain:function(options){
+   last=options;
+   try{
+    for(var attempt=0;attempt<32;attempt++){
+     var frame=options.acquire();if(!frame)break;
+     if(queue.some(function(f){return f.index===frame.index;}))throw Error("Decoder returned an already retained output slot");
+     queue.push(frame);frame.queuedAt=clock();options.decoded(frame);
+     if(!frame.displayable){queue.pop();options.release(frame);continue;}
+     if(frame.timestamp<=lastTimestamp){queue.pop();options.release(frame);options.superseded();continue;}
+     queue.sort(function(a,b){return a.timestamp-b.timestamp;});
+     while(queue.length>2)discard();
+    }
+    while(queue.length&&clock()-(queue[0].submittedAt===undefined?queue[0].queuedAt:queue[0].submittedAt)>period*2)discard();
+    if(!queue.length)return;
+    if(firstAt===null)firstAt=clock();
+    if(!primed&&queue.length<2&&clock()-firstAt<period)return;
+    primed=true;var selected=queue.shift(),owned=true;lastTimestamp=selected.timestamp;
+    try{options.present(selected,function(){owned=false;});}finally{if(owned)options.release(selected);}
+   }catch(error){try{releaseAll();}catch(_){}throw error;}
+  }};
  }
  function create(io,core,options){
   options=options||{};var owned=[],objects=[],decoder=0n,started=false,configured=false,outputStorage=0n,outputLength=0,outputHeap=0,width=0,height=0,fields=null;
   var movie=null,audio=null,texture=null,gpu=false,frameInterval=0,lastPreview=0,videoSubmitted=0,videoDecoded=0,presented=0,conversionMs=0,maxConversionMs=0;
   var pendingFrames=new Map(),decodeSamples=0,decodeMs=0,maxDecodeMs=0,lastPresentedAt=null,intervalCount=0,intervalMs=0,intervalSquaredMs=0,maxIntervalMs=0;
   var videoSuperseded=0,audioBatchSamples=960,audioPoolSize=2;
+  var gpuTransfers=0,gpuTransferMs=0,nativePublishMs=0,gpuPolls=0,gpuPendingPolls=0,gpuPollMs=0;
+  var movieBase=0n,gpuFence=null,gpuPipeline=null,gpuSubmissionAt=0,gpuCompletionSamples=0,gpuCompletionMs=0,gpuSubmitCost=0,videoPacer=null,presentAgeMs=0,presentAgeSamples=0;
   function now(){return global.MoonlightTelemetry?global.MoonlightTelemetry.now():Date.now();}
-  function presentedFrame(){var time=now();if(lastPresentedAt!==null){var delta=time-lastPresentedAt;intervalCount++;intervalMs+=delta;intervalSquaredMs+=delta*delta;maxIntervalMs=Math.max(maxIntervalMs,delta);}lastPresentedAt=time;presented++;}
+  function presentedFrame(frame){var time=now();if(frame&&frame.submittedAt!==undefined){presentAgeMs+=time-frame.submittedAt;presentAgeSamples++;}if(lastPresentedAt!==null){var delta=time-lastPresentedAt;intervalCount++;intervalMs+=delta;intervalSquaredMs+=delta*delta;maxIntervalMs=Math.max(maxIntervalMs,delta);}lastPresentedAt=time;presented++;}
   function alloc(n){var p=malloc(n);if(!p)throw Error("Native media allocation failed");owned.push(p);return p;}
   function number(v){return Number(BigInt.asIntN(32,v));}
   function sdk(name,args){return io.invoke(name,args);}
@@ -50,18 +95,27 @@
     if(count<1||count>10000||size<1||size>1048576||!readable(tags[6],count*24)||!readable(tags[5],size))continue;
     var symbols=io.copy(tags[6],count*24),strings=io.copy(tags[5],size),view=new DataView(symbols.buffer),exports={};
     for(var i=0;i<count;i++){var start=view.getUint32(i*24,true),name="";for(var j=start;j<strings.length&&j<start+4096&&strings[j];j++)name+=String.fromCharCode(strings[j]);var address=view.getBigUint64(i*24+8,true);if(address)exports[name]=base+address;}
-    if(exports._ZN5movie7DecoderC1ENS_11DecoderTypeENS_19DecoderOutputFormatE){movie=exports;break;}
+    if(exports._ZN5movie7DecoderC1ENS_11DecoderTypeENS_19DecoderOutputFormatE){movie=exports;movieBase=base;break;}
    }
    if(!movie)throw Error("Native movie module unavailable");
   }
   function call(name,args){if(!movie[name])throw Error("Missing native movie function "+name);return call_rop.apply(null,[movie[name]].concat((args||[]).map(BigInt)));}
   function ok(name,args){var result=number(call(name,args));if(result)throw Error("Native video error 0x"+result.toString(16));}
   function object(type){var p=alloc(128);call("_ZN5movie"+type+"C1Ev",[p]);objects.push({type:type,p:p});return p;}
+  function createGpuFence(device){
+   var info=alloc(64),page=alloc(8);
+   function range(p,n,permissions){if(call_rop(sdk_base+0x168b0cn,info,page,p)&0x3fffffn)throw Error("GPU sync memory query failed");if((Number(read32(info+24n))&permissions)!==permissions||p<read64(info)||p+BigInt(n)>read64(info)+read64(info+8n))throw Error("GPU sync pointer range rejected");}
+   function resolve(offset){var cell=movieBase+BigInt(offset);range(cell,8,1);var pointer=read64(cell);range(pointer,8,1);var target=read64(pointer);range(target,16,5);return target;}
+   var initialize=resolve(0x4038698),finalize=resolve(0x4038610),wait=resolve(0x4038720);
+   if(read32(initialize)!==0xf900181fn||read32(initialize+4n)!==0xa9017c1fn||read32(finalize)!==0xb9400808n||read32(wait)!==0xd503237fn)throw Error("Unsupported GPU sync ABI");
+   var pointer=alloc(256);if(!call_rop(initialize,pointer,device))throw Error("GPU sync initialization failed");
+   return {pointer:pointer,ready:function(){var begin=now(),result=number(call_rop(wait,pointer,0n));gpuPolls++;gpuPollMs+=now()-begin;if(result===2){gpuPendingPolls++;return false;}if(result!==0&&result!==1)throw Error("GPU completion failed: "+result);return true;},close:function(){call_rop(finalize,pointer);}};
+  }
   function integer(metadata,key){var k=alloc_string(key),v=alloc(8);try{if(!call("_ZNK5movie9MediaData9FindInt32EPKcPi",[metadata,k,v]))throw Error("Missing video format "+key);return number(read32(v));}finally{owned.pop();free(v);free(k);}}
   var config,input,output,format,index,available,pts,flags,size,alignment,spsNative,ppsNative;
   function videoSetup(videoFormat,w,h,fps){
    gpu=!!global.MoonlightNativeTexture&&options.renderer!=="png"&&options.renderer!=="native-texture";
-   if(videoFormat!==1||w<64||h<64||w>(gpu?1280:640)||h>(gpu?720:360))throw Error("Unsupported H.264 renderer dimensions");
+   if(videoFormat!==1||w<64||h<64||w>(gpu?1920:640)||h>(gpu?1080:360))throw Error("Unsupported H.264 renderer dimensions");
    findMovie();width=w;height=h;frameInterval=gpu?0:Math.max(1,Math.floor(1000/fps));
    // The decoder installs allocator callbacks. Construct it before MediaData or
    // owned Buffer allocations so creation and destruction use the same allocator.
@@ -71,6 +125,16 @@
    index=alloc(8);available=alloc(8);pts=alloc(8);flags=alloc(8);size=alloc(8);alignment=alloc(8);spsNative=alloc(65536);ppsNative=alloc(65536);
    if(global.MoonlightNativeTexture&&options.renderer!=="png")texture=global.MoonlightNativeTexture.create(io,core,w,h,{gpu:gpu});
    if(gpu){var target=texture.target();call("_ZN5movie6Buffer18SetDataAndCapacityEPvm",[output,target.texture,8]);call("_ZN5movie6Buffer9SetNvnDevEPv",[output,target.device]);}
+   if(gpu&&!options.synchronousGpu){
+    if(fps===60&&options.smoothVideo!==false)videoPacer=createVideoPacer(now,1000/fps);
+    gpuFence=createGpuFence(target.device);call("_ZN5movie6Buffer10SetNvnSyncEPv",[output,gpuFence.pointer]);
+    gpuPipeline=createGpuPipeline({
+     submit:function(frame){var begin=now();ok("_ZN5movie7Decoder15GetOutputBufferEiPNS_6BufferE",[decoder,frame.index,output]);gpuSubmissionAt=now();gpuSubmitCost=gpuSubmissionAt-begin;gpuTransferMs+=gpuSubmitCost;conversionMs+=gpuSubmitCost;gpuTransfers++;},
+     ready:gpuFence.ready,
+     present:function(frame){var begin=now();gpuCompletionSamples++;gpuCompletionMs+=begin-gpuSubmissionAt;var url=texture.presentNative(),elapsed=now()-begin;nativePublishMs+=elapsed;conversionMs+=elapsed;maxConversionMs=Math.max(maxConversionMs,gpuSubmitCost+elapsed);if(options.onImage)options.onImage(url);lastPreview=begin;presentedFrame(frame);},
+     release:function(frame){ok("_ZN5movie7Decoder24ReleaseOutputBufferIndexEi",[decoder,frame.index]);}
+    });
+   }
    if(options.onStatus)options.onStatus("Video decoder ready: "+w+"×"+h+" at "+fps+" fps");return 0;
   }
   function rawNal(heap,pointer,length){if(length>=4&&heap[pointer]===0&&heap[pointer+1]===0){if(heap[pointer+2]===1)return [pointer+3,length-3];if(heap[pointer+2]===0&&heap[pointer+3]===1)return [pointer+4,length-4];}return [pointer,length];}
@@ -80,7 +144,7 @@
     if(!sps||!pps)return -1;var a=rawNal(heap,sps,spsLength),b=rawNal(heap,pps,ppsLength);if(a[1]<4||b[1]<1||a[1]>65536||b[1]>65536)return -1;
     io.toNative(heap,a[0],a[1],spsNative);io.toNative(heap,b[0],b[1],ppsNative);
     if(!call("_ZN5movie34CreateH264DecoderConfigurationDataEPKhmS1_mPNS_9MediaDataE",[spsNative,a[1],ppsNative,b[1],config]))throw Error("Native H.264 configuration failed");
-    var key=alloc_string("max-input-size");try{call("_ZN5movie9MediaData8SetInt32EPKci",[config,key,262144]);}finally{free(key);}
+    var key=alloc_string("max-input-size");try{call("_ZN5movie9MediaData8SetInt32EPKci",[config,key,width>1280||height>720?1048576:262144]);}finally{free(key);}
     ok("_ZN5movie7Decoder9ConfigureEPNS_9MediaDataE",[decoder,config]);ok("_ZN5movie7Decoder5StartEv",[decoder]);configured=started=true;
    }
    var result=number(call("_ZN5movie7Decoder23AcquireInputBufferIndexEPiS1_",[decoder,index,available]));if(result===0x1011)return -1;if(result)throw Error("Video input acquisition failed: "+result);
@@ -93,7 +157,9 @@
   }
   function drainVideo(){
    if(!started)return;
-   drainLatest({
+   if(gpuPipeline&&gpuPipeline.pending()){gpuPipeline.finish();return;}
+   var drain=videoPacer?videoPacer.drain:drainLatest;
+   drain({
     acquire:function(){
      var result=number(call("_ZN5movie7Decoder24AcquireOutputBufferIndexEPiPlPjS1_",[decoder,index,pts,flags,available]));if(result===0x100e)return null;if(result)throw Error("Video output acquisition failed: "+result);
      var slot=number(read32(index));if(slot<0)return null;
@@ -103,10 +169,10 @@
     superseded:function(){videoSuperseded++;},
     decoded:function(frame){
      var stamp=String(frame.timestamp),submittedAt=pendingFrames.get(stamp);
-     if(submittedAt!==undefined){var delay=now()-submittedAt;decodeSamples++;decodeMs+=delay;maxDecodeMs=Math.max(maxDecodeMs,delay);pendingFrames.delete(stamp);}
+     if(submittedAt!==undefined){frame.submittedAt=submittedAt;var delay=now()-submittedAt;decodeSamples++;decodeMs+=delay;maxDecodeMs=Math.max(maxDecodeMs,delay);pendingFrames.delete(stamp);}
      videoDecoded++;
     },
-    present:function(frame){
+    present:function(frame,adopt){
      if(now()-lastPreview<(texture?frameInterval:200)||(options.canPresent&&!options.canPresent()))return;
      var slot=frame.index;
      if(!fields){
@@ -121,9 +187,10 @@
       call("_ZN5movie6Buffer18SetDataAndCapacityEPvm",[output,outputStorage,outputLength]);
      }
      if(gpu){
+       if(gpuPipeline){adopt();gpuPipeline.submit(frame);return;}
        var begin=now();ok("_ZN5movie7Decoder15GetOutputBufferEiPNS_6BufferE",[decoder,slot,output]);
-       var url=texture.presentNative(),elapsed=now()-begin;conversionMs+=elapsed;maxConversionMs=Math.max(maxConversionMs,elapsed);
-       if(options.onImage)options.onImage(url);lastPreview=begin;presentedFrame();
+       var copied=now(),url=texture.presentNative(),published=now(),elapsed=published-begin;gpuTransfers++;gpuTransferMs+=copied-begin;nativePublishMs+=published-copied;conversionMs+=elapsed;maxConversionMs=Math.max(maxConversionMs,elapsed);
+       if(options.onImage)options.onImage(url);lastPreview=begin;presentedFrame(frame);
        return;
      }
      ok("_ZN5movie7Decoder15GetOutputBufferEiPNS_6BufferE",[decoder,slot,output]);
@@ -134,7 +201,7 @@
       else if(global.MoonlightPreview)url=global.MoonlightPreview.encode(core.HEAPU8,outputHeap,used,width,height,fields.yStride,fields.uvStride,fields.yOffset,fields.uvOffset);
       else {var encoded=core._ml_png_nv12(outputHeap,used,width,height,fields.yStride,fields.uvStride,fields.yOffset,fields.uvOffset);if(!encoded)throw Error("Frame presentation conversion failed");url="data:image/png;base64,"+core.UTF8ToString(encoded);}
       var elapsed=now()-begin;conversionMs+=elapsed;maxConversionMs=Math.max(maxConversionMs,elapsed);
-      if(options.onImage)options.onImage(url);lastPreview=begin;presentedFrame();
+      if(options.onImage)options.onImage(url);lastPreview=begin;presentedFrame(frame);
     }
    });
   }
@@ -191,15 +258,18 @@
   }
 
   function close(){
+   if(gpuPipeline)gpuPipeline.close();
+   if(videoPacer){videoPacer.close();videoPacer=null;}
    if(audio&&audio.opened){if(audio.started)sdk("_ZN2nn5audio12StopAudioOutEPNS0_8AudioOutE",[audio.out]);sdk("_ZN2nn5audio20FlushAudioOutBuffersEPNS0_8AudioOutE",[audio.out]);sdk("_ZN2nn5audio13CloseAudioOutEPNS0_8AudioOutE",[audio.out]);}
    if(started)call("_ZN5movie7Decoder4StopEv",[decoder]);
    for(var entry of objects.reverse())call("_ZN5movie"+entry.type+"D1Ev",[entry.p]);objects=[];
+   if(gpuFence){gpuFence.close();gpuFence=null;}gpuPipeline=null;
    if(texture){texture.close();texture=null;}
    if(outputHeap)core._free(outputHeap);outputHeap=0;core._ml_png_release();
    for(var p of owned.reverse())free(p);owned=[];started=false;configured=false;decoder=0n;audio=null;pendingFrames.clear();
   }
-  return {videoSetup:videoSetup,videoFrame:videoFrame,audioSetup:audioSetup,audioFrame:audioFrame,drainVideo:drainVideo,drainAudio:drainAudio,close:close,
-   stats:function(){return Object.assign({renderer:texture?(gpu?"native-gpu-texture":"native-texture"):"png",submitted:videoSubmitted,decoded:videoDecoded,presented:presented,videoSuperseded:videoSuperseded,conversionMs:conversionMs,maxConversionMs:maxConversionMs,decodeSamples:decodeSamples,decodeMs:decodeMs,maxDecodeMs:maxDecodeMs,decoderPending:Math.max(0,videoSubmitted-videoDecoded),intervalCount:intervalCount,intervalMs:intervalMs,intervalSquaredMs:intervalSquaredMs,maxIntervalMs:maxIntervalMs,audioBufferedMsUpperBound:audio?(audio.stagedSamples+audio.pendingSamples+audio.buffers.reduce(function(sum,item){return sum+(item.inUse?item.samples:0);},0))/48:0,audioQueueLimitMs:audioBatchSamples*(audioPoolSize+1)/48,audioCatchups:audio?audio.catchups:0,audioDiscardedMs:audio?audio.discardedSamples/48:0,audioDecoded:audio?audio.decoded:0,audioQueued:audio?audio.queued:0,audioDropped:audio?audio.dropped:0},texture?texture.stats():{});}};
+  return {videoSetup:videoSetup,videoFrame:videoFrame,audioSetup:audioSetup,audioFrame:audioFrame,drainVideo:drainVideo,finishVideo:function(){return gpuPipeline?gpuPipeline.finish():false;},drainAudio:drainAudio,close:close,
+   stats:function(){return Object.assign({renderer:texture?(gpu?"native-gpu-texture":"native-texture"):"png",submitted:videoSubmitted,decoded:videoDecoded,presented:presented,videoSuperseded:videoSuperseded,gpuTransfers:gpuTransfers,gpuTransferMs:gpuTransferMs,nativePublishMs:nativePublishMs,gpuPolls:gpuPolls,gpuPendingPolls:gpuPendingPolls,gpuPollMs:gpuPollMs,gpuCompletionSamples:gpuCompletionSamples,gpuCompletionMs:gpuCompletionMs,videoPacerPending:videoPacer?videoPacer.pending():0,presentAgeMs:presentAgeMs,presentAgeSamples:presentAgeSamples,conversionMs:conversionMs,maxConversionMs:maxConversionMs,decodeSamples:decodeSamples,decodeMs:decodeMs,maxDecodeMs:maxDecodeMs,decoderPending:Math.max(0,videoSubmitted-videoDecoded),intervalCount:intervalCount,intervalMs:intervalMs,intervalSquaredMs:intervalSquaredMs,maxIntervalMs:maxIntervalMs,audioBufferedMsUpperBound:audio?(audio.stagedSamples+audio.pendingSamples+audio.buffers.reduce(function(sum,item){return sum+(item.inUse?item.samples:0);},0))/48:0,audioQueueLimitMs:audioBatchSamples*(audioPoolSize+1)/48,audioCatchups:audio?audio.catchups:0,audioDiscardedMs:audio?audio.discardedSamples/48:0,audioDecoded:audio?audio.decoded:0,audioQueued:audio?audio.queued:0,audioDropped:audio?audio.dropped:0},texture?texture.stats():{});}};
  }
- global.MoonlightStreamMedia={create:create,drainLatest:drainLatest};
+ global.MoonlightStreamMedia={create:create,drainLatest:drainLatest,createGpuPipeline:createGpuPipeline,createVideoPacer:createVideoPacer};
 })(window);

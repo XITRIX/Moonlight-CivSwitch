@@ -9,7 +9,7 @@ test('stop cancels core I/O immediately, wakes the loop, and frees media only af
  const scope={setTimeout,clearTimeout,Date,performance,Uint8Array,window:null,__moonlightStreamFactory:async()=>core,
   MoonlightTelemetry:{now:()=>performance.now(),create:()=>({sample:()=>({})}),readCore:()=>null},
   MoonlightNative:{create:()=>({})},MoonlightStreamIO:{create:()=>({stats:{},interrupt:()=>{interrupted=true;},close:()=>{assert.equal(tasks,0);assert(mediaClosed);closed=true;}})},
-  MoonlightStreamMedia:{create:()=>({drainVideo:()=>{},drainAudio:()=>{},stats:()=>({}),close:()=>{assert.equal(tasks,0);mediaClosed=true;}})},
+  MoonlightStreamMedia:{create:()=>({drainVideo:()=>{},finishVideo:()=>{},drainAudio:()=>{},stats:()=>({}),close:()=>{assert.equal(tasks,0);mediaClosed=true;}})},
   MoonlightSessionProtocol:{create:()=>({launch:async()=>({host:'host',version:'7',url:'rtsp://host',key:new Uint8Array(16),keyId:1,codecSupport:1})})}};
  scope.window=scope;vm.createContext(scope);vm.runInContext(fs.readFileSync('app/src/streaming/stream-client.js','utf8'),scope);
  const client=scope.MoonlightStreamClient.create({host:'host',app:{id:1},onStats:s=>{if(s.state===2)ready();}});

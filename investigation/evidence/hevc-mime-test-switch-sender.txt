@@ -1,0 +1,14 @@
+Executing payload...
+MOONLIGHT_CODEC_MIME: {"mime":"video/avc","codec":0}
+MOONLIGHT_CODEC_MIME: {"mime":"video/x-vnd.on2.vp8","codec":4}
+MOONLIGHT_CODEC_MIME: {"mime":"video/x-vnd.on2.vp9","codec":1}
+MOONLIGHT_CODEC_MIME: {"mime":"audio/mp4a-latm","codec":65}
+MOONLIGHT_CODEC_MIME: {"mime":"audio/vorbis","codec":66}
+MOONLIGHT_CODEC_MIME: {"mime":"video/hevc","codec":-1}
+MOONLIGHT_CODEC_MIME: {"mime":"video/h265","codec":-1}
+MOONLIGHT_CODEC_MIME: {"mime":"video/x-h265","codec":-1}
+MOONLIGHT_CODEC_MIME: {"mime":"video/hvc1","codec":-1}
+MOONLIGHT_CODEC_MIME: {"mime":"video/hev1","codec":-1}
+MOONLIGHT_HEVC_MIME_ASSERTIONS_PASSED: 10
+MOONLIGHT_HEVC_CORE_READY: true
+Executed successfully

@@ -1,0 +1,555 @@
+{
+  "date": "2026-11-08",
+  "mode": {
+    "width": 1280,
+    "height": 720,
+    "fps": 60,
+    "bitrate": 3000,
+    "showStats": true,
+    "videoPacing": "smooth"
+  },
+  "method": "Sequential LAN runs, not packet replays. Mean of connected telemetry samples after omitting the first two; other samples retained. Texture publications are not physical display scanout.",
+  "fullUI": {
+    "before": {
+      "file": "gpu-wait-baseline-ui-switch.txt",
+      "means": {
+        "decodedFps": 60.05655,
+        "textureFps": 49.44375,
+        "gpuTransferMs": 3.25765,
+        "nativePublishMs": 0.16435,
+        "loopHz": 59.06275,
+        "rttMs": 9.2,
+        "frameIntervalMs": 20.27385,
+        "frameJitterMs": 6.91195
+      }
+    },
+    "after": {
+      "file": "gpu-overlap-final-ui-switch.txt",
+      "means": {
+        "decodedFps": 59.98875,
+        "textureFps": 57.0674,
+        "gpuTransferMs": 0.23115,
+        "nativePublishMs": 0.09469999999999999,
+        "gpuCompletionMs": 4.44855,
+        "presentAgeMs": 28.65965,
+        "loopHz": 58.9979,
+        "rttMs": 8.3,
+        "frameIntervalMs": 17.53045,
+        "frameJitterMs": 5.86115
+      }
+    }
+  },
+  "isolated": {
+    "gpu-fence-wait-switch.txt": {
+      "result": {
+        "gpuProbe": {
+          "queuedMs": 251.221,
+          "waitMs": 2333.551,
+          "frames": 973,
+          "fallbacks": 0,
+          "codes": {
+            "1": 973
+          }
+        },
+        "phase": "gpu-fence-wait",
+        "continuous": false,
+        "error": null,
+        "state": 0,
+        "tasks": 0,
+        "submitted": 1305,
+        "decoded": 1302,
+        "presented": 973,
+        "superseded": 329,
+        "audioDecoded": 4227,
+        "audioDiscardedMs": 0,
+        "pulses": 0,
+        "clock": {
+          "frameWakes": 1392,
+          "timerWakes": 0,
+          "forcedWakes": 0,
+          "waitMs": 9811.132,
+          "maxWaitMs": 28.888
+        },
+        "iterations": 1392,
+        "pumpMs": 10460.261,
+        "drainMs": 3662.802,
+        "histogram": {
+          "0:0": 367,
+          "3:1": 7,
+          "1:1": 627,
+          "2:1": 300,
+          "4:1": 3
+        },
+        "submitCostMs": {
+          "count": 1305,
+          "min": 0.453,
+          "median": 0.506,
+          "p95": 0.798,
+          "max": 7.773
+        },
+        "drainCostMs": {
+          "count": 1304,
+          "min": 0.096,
+          "median": 2.764,
+          "p95": 4.957,
+          "max": 5.469
+        },
+        "pollIntervalMs": {
+          "count": 1307,
+          "min": 12.807,
+          "median": 16.666,
+          "p95": 16.698,
+          "max": 20.523
+        },
+        "presentIntervalMs": {
+          "count": 937,
+          "min": 11.548,
+          "median": 17.552,
+          "p95": 33.368,
+          "max": 115.699
+        }
+      },
+      "means": {
+        "decodedFps": 57.8185,
+        "textureFps": 42.97615,
+        "gpuTransferMs": 2.6504,
+        "nativePublishMs": 0.14755,
+        "loopHz": 59.9992,
+        "rttMs": 9.65,
+        "frameIntervalMs": 24.7506,
+        "frameJitterMs": 9.97175
+      }
+    },
+    "gpu-overlap-pacing-switch.txt": {
+      "result": {
+        "phase": "current",
+        "continuous": true,
+        "error": null,
+        "state": 0,
+        "tasks": 0,
+        "submitted": 1310,
+        "decoded": 1307,
+        "presented": 1052,
+        "superseded": 255,
+        "audioDecoded": 4369,
+        "audioDiscardedMs": 20,
+        "pulses": 1200,
+        "clock": {
+          "frameWakes": 1390,
+          "timerWakes": 0,
+          "forcedWakes": 0,
+          "waitMs": 9269.246,
+          "maxWaitMs": 31.596
+        },
+        "iterations": 1390,
+        "pumpMs": 13220.758,
+        "drainMs": 1427.489,
+        "histogram": {
+          "1:0": 797,
+          "0:0": 264,
+          "2:0": 245,
+          "4:0": 2,
+          "3:0": 2
+        },
+        "submitCostMs": {
+          "count": 1310,
+          "min": 0.45,
+          "median": 0.506,
+          "p95": 0.793,
+          "max": 7.726
+        },
+        "drainCostMs": {
+          "count": 1310,
+          "min": 0.099,
+          "median": 0.538,
+          "p95": 0.962,
+          "max": 1.43
+        },
+        "pollIntervalMs": {
+          "count": 1313,
+          "min": 13.543,
+          "median": 16.667,
+          "p95": 16.693,
+          "max": 19.774
+        },
+        "presentIntervalMs": {
+          "count": 1046,
+          "min": 10.819,
+          "median": 16.889,
+          "p95": 36.558,
+          "max": 108.875
+        }
+      },
+      "means": {
+        "decodedFps": 59.9619,
+        "textureFps": 47.7058,
+        "gpuTransferMs": 0.24495,
+        "nativePublishMs": 0.088,
+        "gpuCompletionMs": 9.50125,
+        "loopHz": 60.00965,
+        "rttMs": 4.85,
+        "frameIntervalMs": 21.014499999999998,
+        "frameJitterMs": 8.7139
+      }
+    },
+    "gpu-overlap-split3-switch.txt": {
+      "result": {
+        "phase": "current",
+        "prePumpMs": 3,
+        "synchronousGpu": false,
+        "gpuTransferMs": 307.016,
+        "gpuPollMs": 103,
+        "gpuPendingPolls": 0,
+        "continuous": true,
+        "error": null,
+        "state": 0,
+        "tasks": 0,
+        "submitted": 1303,
+        "decoded": 1300,
+        "presented": 1156,
+        "superseded": 144,
+        "audioDecoded": 4321,
+        "audioDiscardedMs": 0,
+        "pulses": 1200,
+        "clock": {
+          "frameWakes": 1393,
+          "timerWakes": 0,
+          "forcedWakes": 0,
+          "waitMs": 9064.981,
+          "maxWaitMs": 31.419
+        },
+        "iterations": 1393,
+        "pumpMs": 13546.045,
+        "drainMs": 1313.704,
+        "histogram": {
+          "0:0": 165,
+          "1:0": 1015,
+          "2:0": 126,
+          "3:0": 7,
+          "5:0": 1
+        },
+        "submitCostMs": {
+          "count": 1303,
+          "min": 0.458,
+          "median": 0.518,
+          "p95": 0.801,
+          "max": 7.134
+        },
+        "drainCostMs": {
+          "count": 1314,
+          "min": 0.089,
+          "median": 0.497,
+          "p95": 0.876,
+          "max": 1.574
+        },
+        "pollIntervalMs": {
+          "count": 1317,
+          "min": 11.367,
+          "median": 16.667,
+          "p95": 16.689,
+          "max": 21.958
+        },
+        "presentIntervalMs": {
+          "count": 1149,
+          "min": 9.658,
+          "median": 16.873,
+          "p95": 35.17,
+          "max": 106.636
+        }
+      },
+      "means": {
+        "decodedFps": 60.00755,
+        "textureFps": 53.35695,
+        "gpuTransferMs": 0.25965,
+        "nativePublishMs": 0.08825,
+        "gpuCompletionMs": 6.5389,
+        "loopHz": 60.00755,
+        "rttMs": 5.25,
+        "frameIntervalMs": 18.7909,
+        "frameJitterMs": 6.4927
+      }
+    },
+    "gpu-overlap-finish4-switch.txt": {
+      "result": {
+        "phase": "current",
+        "prePumpMs": 0,
+        "completionPumpMs": 4,
+        "synchronousGpu": false,
+        "gpuTransferMs": 282.013,
+        "gpuPollMs": 102.012,
+        "gpuPendingPolls": 0,
+        "continuous": true,
+        "error": null,
+        "state": 0,
+        "tasks": 0,
+        "submitted": 1314,
+        "decoded": 1311,
+        "presented": 1111,
+        "superseded": 200,
+        "audioDecoded": 4419,
+        "audioDiscardedMs": 0,
+        "pulses": 1200,
+        "clock": {
+          "frameWakes": 1392,
+          "timerWakes": 0,
+          "forcedWakes": 0,
+          "waitMs": 8969.121,
+          "maxWaitMs": 31.546
+        },
+        "iterations": 1392,
+        "pumpMs": 13691.774,
+        "drainMs": 1258.067,
+        "histogram": {
+          "0:0": 209,
+          "1:0": 909,
+          "2:0": 193,
+          "4:0": 1,
+          "5:0": 1
+        },
+        "submitCostMs": {
+          "count": 1314,
+          "min": 0.458,
+          "median": 0.507,
+          "p95": 0.818,
+          "max": 7.338
+        },
+        "drainCostMs": {
+          "count": 1313,
+          "min": 0.099,
+          "median": 0.535,
+          "p95": 0.969,
+          "max": 1.721
+        },
+        "pollIntervalMs": {
+          "count": 1316,
+          "min": 14.188,
+          "median": 16.667,
+          "p95": 16.69,
+          "max": 19.215
+        },
+        "presentIntervalMs": {
+          "count": 1104,
+          "min": 14.071,
+          "median": 16.768,
+          "p95": 33.427,
+          "max": 100.156
+        }
+      },
+      "means": {
+        "decodedFps": 60.0063,
+        "textureFps": 50.54495,
+        "gpuTransferMs": 0.2474,
+        "nativePublishMs": 0.08839999999999999,
+        "gpuCompletionMs": 4.4300500000000005,
+        "loopHz": 60.0058,
+        "rttMs": 5.65,
+        "frameIntervalMs": 19.8082,
+        "frameJitterMs": 6.64115
+      }
+    },
+    "gpu-overlap-paced-switch.txt": {
+      "result": {
+        "phase": "current",
+        "prePumpMs": 0,
+        "completionPumpMs": 4,
+        "synchronousGpu": false,
+        "gpuTransferMs": 320.947,
+        "gpuPollMs": 120.579,
+        "gpuPendingPolls": 7,
+        "continuous": true,
+        "error": null,
+        "state": 0,
+        "tasks": 0,
+        "submitted": 1308,
+        "decoded": 1305,
+        "presented": 1293,
+        "superseded": 12,
+        "audioDecoded": 4269,
+        "audioDiscardedMs": 40,
+        "pulses": 1200,
+        "clock": {
+          "frameWakes": 1390,
+          "timerWakes": 0,
+          "forcedWakes": 0,
+          "waitMs": 8929.496,
+          "maxWaitMs": 31.495
+        },
+        "iterations": 1390,
+        "pumpMs": 13673.368,
+        "drainMs": 1314.642,
+        "histogram": {
+          "0:0": 150,
+          "1:0": 1025,
+          "2:0": 133,
+          "4:0": 1,
+          "3:0": 1,
+          "0:1": 1
+        },
+        "submitCostMs": {
+          "count": 1308,
+          "min": 0.455,
+          "median": 0.514,
+          "p95": 0.806,
+          "max": 7.178
+        },
+        "drainCostMs": {
+          "count": 1311,
+          "min": 0.108,
+          "median": 0.539,
+          "p95": 0.757,
+          "max": 1.262
+        },
+        "pollIntervalMs": {
+          "count": 1314,
+          "min": 14.155,
+          "median": 16.666,
+          "p95": 16.691,
+          "max": 19.174
+        },
+        "presentIntervalMs": {
+          "count": 1287,
+          "min": 15.349,
+          "median": 16.668,
+          "p95": 17.238,
+          "max": 99.699
+        }
+      },
+      "means": {
+        "decodedFps": 60.01275,
+        "textureFps": 59.5192,
+        "gpuTransferMs": 0.2427,
+        "nativePublishMs": 0.08985,
+        "gpuCompletionMs": 4.4231,
+        "presentAgeMs": 18.49625,
+        "loopHz": 60.01275,
+        "rttMs": 4.9,
+        "frameIntervalMs": 16.80815,
+        "frameJitterMs": 1.19945
+      }
+    }
+  },
+  "input": {
+    "fps": 60,
+    "continuousInput": true,
+    "timingValid": true,
+    "error": null,
+    "state": 0,
+    "tasks": 0,
+    "pulses": 1200,
+    "sent": 1200,
+    "acked": 1200,
+    "retries": 223,
+    "pending": 0,
+    "queueToSocketMs": {
+      "count": 1200,
+      "min": 1.787,
+      "median": 2.278,
+      "p95": 7.949,
+      "max": 17.493
+    },
+    "socketToAckMs": {
+      "count": 1200,
+      "min": 1.218,
+      "median": 5.192,
+      "p95": 17.326,
+      "max": 50.249
+    },
+    "sampleToAckMs": {
+      "count": 1200,
+      "min": 3.435,
+      "median": 7.813,
+      "p95": 19.734,
+      "max": 52.947
+    },
+    "pollIntervalMs": {
+      "count": 1380,
+      "min": 9.449,
+      "median": 16.666,
+      "p95": 16.682,
+      "max": 23.904
+    },
+    "pollCostMs": {
+      "count": 1381,
+      "min": 0.181,
+      "median": 0.285,
+      "p95": 0.346,
+      "max": 1.319
+    },
+    "decoded": 1320,
+    "presented": 1314,
+    "audioDecoded": 4422,
+    "audioDiscardedMs": 0
+  },
+  "exit": {
+    "failed": false,
+    "healthy": false,
+    "error": null,
+    "blackhole": true,
+    "rafSuppressed": true,
+    "chordDetectedMs": 17.127,
+    "returnedToGamesMs": 186.968,
+    "state": 0,
+    "tasks": 0,
+    "tcpStreamLogs": 0,
+    "diagnosticMessages": 64,
+    "gracefulDisconnect": false,
+    "mode": {
+      "width": 1280,
+      "height": 720,
+      "fps": 60,
+      "bitrate": 3000,
+      "showStats": true,
+      "videoPacing": "smooth"
+    }
+  },
+  "healthy30": {
+    "failed": false,
+    "healthy": true,
+    "error": null,
+    "blackhole": false,
+    "rafSuppressed": true,
+    "chordDetectedMs": 17.183,
+    "returnedToGamesMs": 129.546,
+    "state": 0,
+    "tasks": 0,
+    "tcpStreamLogs": 0,
+    "diagnosticMessages": 64,
+    "gracefulDisconnect": true,
+    "mode": {
+      "width": 1280,
+      "height": 720,
+      "fps": 30,
+      "bitrate": 3000,
+      "showStats": true,
+      "videoPacing": "smooth"
+    }
+  },
+  "healthy30Means": {
+    "decodedFps": 28.2167,
+    "textureFps": 28.1171,
+    "gpuTransferMs": 0.2437,
+    "nativePublishMs": 0.0885,
+    "gpuCompletionMs": 4.2464,
+    "presentAgeMs": 18.341,
+    "loopHz": 59.8022,
+    "rttMs": 8,
+    "frameIntervalMs": 36.3028,
+    "frameJitterMs": 9.3522
+  },
+  "validation": {
+    "localTests": 46,
+    "browserTests": "gpu-overlap-ui-tests.txt",
+    "normalUI": "gpu-overlap-loaded-ui-switch.txt",
+    "repeatedRunCrash": "gpu-overlap-30-healthy-switch-sender.txt",
+    "crashNote": "A repeated-run test opened the UI, then disconnected before returning a result. The user confirmed Civ VII closed. Exact failing operation/cause remains unresolved. The same 30 FPS test passed after restart."
+  },
+  "REA": {
+    "transferPath": "ev_3a6a2825633b54d61dfe78228a276e3919d647803d6417e16eb32a9ad35d1c2e",
+    "queueInit": "ev_976b598ceb4b6dfaeef174d866060337b1f11ad14e3bcf07c16c28125a2135b3",
+    "syncInitializeAndFinalize": "ev_8fae6b1068a3af49b547310b2517dc1349521ee8d0bd7921075b888091c1e573",
+    "getFence": "ev_44a5cde594d0298c34c159f9ea97af5940d1c5fbff966450b1a517be60c1225b",
+    "waitResults": "ev_39cce5666b8ed71b3bcecbdd31e999766fada384a5a3ee46888ce69c7c858fe5",
+    "limits": "Partial bounded code captures; recovered pseudocode is not original source. Runtime tests corroborate only the tested Civ VII 1.0.0/CivSwitch build."
+  },
+  "tradeoff": "Smooth at 60 FPS retains one spare decoded frame, adding up to one frame of buffering; Low latency keeps newest-only selection. Full-UI decoder-submission-to-publication averaged 28.66 ms with Smooth; this excludes host, network, physical input and scanout."
+}

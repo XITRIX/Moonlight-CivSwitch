@@ -67,8 +67,8 @@ function nativeGPU(){
  vm.runInContext(fs.readFileSync('app/src/streaming/native-texture.js','utf8'),scope);
  return {renderer:scope.window.MoonlightNativeTexture,calls,owned,write,main,texture,device};
 }
-test('GPU presenter reuses its owned 720p texture without JS pixel buffers or CPU uploads',()=>{
- const env=nativeGPU(),presenter=env.renderer.create({toNative(){assert.fail('GPU frames must not upload CPU pixels');}},{_malloc(){assert.fail('GPU frames must not allocate a JS RGBA buffer');}},1280,720,{gpu:true});
+test('GPU presenter reuses its owned 1080p texture without JS pixel buffers or CPU uploads',()=>{
+ const env=nativeGPU(),presenter=env.renderer.create({toNative(){assert.fail('GPU frames must not upload CPU pixels');}},{_malloc(){assert.fail('GPU frames must not allocate a JS RGBA buffer');}},1920,1080,{gpu:true});
  const target=presenter.target();assert.equal(target.texture,env.texture);assert.equal(target.device,env.device);
  const url=presenter.presentNative();assert.match(url,/^live:\/moonlight-experiment\//);assert.equal(presenter.presentNative(),url);
  assert.equal(env.calls.filter(x=>x===0x771750n).length,1);assert.equal(env.calls.filter(x=>x===0x7716d0n).length,0);
@@ -81,5 +81,5 @@ test('GPU presenter rejects a mismatched native getter and cleans its allocation
  const env=nativeGPU(),presenter=env.renderer.create({}, {},1280,720,{gpu:true});
  env.write(env.main+0x781a10n,0n,4);assert.throws(()=>presenter.target(),/Unsupported/);
  assert.equal(env.calls.filter(x=>x===0x771750n).length,0);presenter.close();assert.equal(env.owned.size,0);
- assert.throws(()=>env.renderer.create({}, {},1281,720,{gpu:true}),/dimensions/);
+ assert.throws(()=>env.renderer.create({}, {},1921,1080,{gpu:true}),/dimensions/);
 });

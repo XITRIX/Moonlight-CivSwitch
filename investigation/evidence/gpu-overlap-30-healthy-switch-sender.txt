@@ -1,0 +1,9 @@
+Executing payload...
+MOONLIGHT_UI_READY
+Traceback (most recent call last):
+  File "/Users/daniilvinogradov/Documents/Dev/NS2-experiments/investigation/probes/run-outage-exit.py", line 34, in <module>
+    send_payload(args.console_ip,wrap_payload(source),trace,65)
+    ~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/daniilvinogradov/Documents/Dev/NS2-experiments/tools/civswitch_sender.py", line 32, in send_payload
+    raise RuntimeError('Payload did not complete successfully; inspect logs before sending another payload')
+RuntimeError: Payload did not complete successfully; inspect logs before sending another payload

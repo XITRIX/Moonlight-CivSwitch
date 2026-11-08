@@ -1,0 +1,18 @@
+✔ one spare video frame bridges empty/burst ticks without publishing twice (1.936292ms)
+✔ video pacing bounds backlog/age and releases all retained output on errors and stop (0.359334ms)
+✔ GPU transfers retain their decoder slot until completion and publish only once (0.255167ms)
+✔ GPU stop does not publish or release an unfinished copy (0.100542ms)
+✔ GPU failures retain uncertain native work; presentation errors release completed work (0.201334ms)
+✔ video presents the newest timestamp once, releases every output, and keeps nondisplay frames out of the texture (0.117625ms)
+✔ video releases held outputs on acquisition, metadata and presentation errors and bounds catch-up work (0.214666ms)
+✔ audio batches for frame-paced service and keeps only the newest waiting chunk at the limit (1.408583ms)
+✔ large packets and sustained backpressure stay bounded and never overwrite active native PCM (1.968667ms)
+✔ reclaimed capacity preserves pending audio before admitting a newer chunk (0.691ms)
+ℹ tests 10
+ℹ suites 0
+ℹ pass 10
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 180.897542

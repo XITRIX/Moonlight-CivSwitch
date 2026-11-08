@@ -1,0 +1,755 @@
+{
+  "result": {
+    "procedure": {
+      "address": "0x2b6a020",
+      "name": "sub_2b6a020",
+      "classification": null,
+      "body": {
+        "available": false,
+        "reason": "Hopper's public Python API does not expose complete function body ranges"
+      },
+      "signature": "int sub_2b6a020(int arg0, int arg1)",
+      "locals": [
+        {
+          "description": "<__main__.LocalVariable object at 0x12cbec830>",
+          "provenance": "hopper-public-python-api"
+        },
+        {
+          "description": "<__main__.LocalVariable object at 0x12cb23ed0>",
+          "provenance": "hopper-public-python-api"
+        },
+        {
+          "description": "<__main__.LocalVariable object at 0x12cb22850>",
+          "provenance": "hopper-public-python-api"
+        },
+        {
+          "description": "<__main__.LocalVariable object at 0x12cb8d220>",
+          "provenance": "hopper-public-python-api"
+        },
+        {
+          "description": "<__main__.LocalVariable object at 0x12cb8d5b0>",
+          "provenance": "hopper-public-python-api"
+        },
+        {
+          "description": "<__main__.LocalVariable object at 0x12cbdcef0>",
+          "provenance": "hopper-public-python-api"
+        },
+        {
+          "description": "<__main__.LocalVariable object at 0x12caf2690>",
+          "provenance": "hopper-public-python-api"
+        },
+        {
+          "description": "<__main__.LocalVariable object at 0x12caf39b0>",
+          "provenance": "hopper-public-python-api"
+        },
+        {
+          "description": "<__main__.LocalVariable object at 0x12ca5bd50>",
+          "provenance": "hopper-public-python-api"
+        },
+        {
+          "description": "<__main__.LocalVariable object at 0x12ca5bc50>",
+          "provenance": "hopper-public-python-api"
+        },
+        {
+          "description": "<__main__.LocalVariable object at 0x12ca6b020>",
+          "provenance": "hopper-public-python-api"
+        },
+        {
+          "description": "<__main__.LocalVariable object at 0x12ca6a8a0>",
+          "provenance": "hopper-public-python-api"
+        },
+        {
+          "description": "<__main__.LocalVariable object at 0x12cbc3cb0>",
+          "provenance": "hopper-public-python-api"
+        }
+      ]
+    },
+    "pseudocode": "    r19 = arg1;\n    r20 = arg0;\n    loc_2b69e20(arg0, arg1);\n    r20[0x1] = r19;\n    var_50 = 0x0;\n    (**0x4038648)(&var_50);\n    (**0x4038650)(&var_50, r19);\n    r0 = (**0x4038658)(r20 + 0x10, &var_50);\n    if ((r0 & 0xff) != 0x0) {\n            r21 = *r20;\n            r23 = r20 + 0x3000;\n            r23[0x10] = 0x1;\n            if (r21 == 0x0) {\n                    r8 = *0x4037b48;\n                    asm { ldaprb     w8, [x8] };\n                    if ((r8 & 0x1) != 0x0) {\n                            r21 = loc_2bd2430(*(int32_t *)*0x4037b50);\n                            r24 = 0x1000;\n                            r0 = loc_1bc360(0x1000, 0x1000, r21);\n                            r22 = r0;\n                            bool_7 = r0 == 0x0;\n                            bool_5 = r0 == 0x0;\n                            r0 = r20[0x64f];\n                            if (bool_5) {\n                                    r24 = 0x0;\n                            }\n                            if (bool_7) {\n                                    r21 = 0x0;\n                            }\n                            if (r0 != 0x0) {\n                                    loc_1ba9e0();\n                            }\n                            r20[0x64f] = r22;\n                            r20[0xca0] = r24;\n                            r20[0x651] = r21;\n                            if (r22 != 0x0) {\n                                    var_90 = 0x0;\n                                    (**0x4038660)(&var_90);\n                                    (**0x4038668)(&var_90, r19);\n                                    (**0x4038670)(&var_90, 0x12);\n                                    (**0x4038678)(&var_90, r20[0x64f], r20[0xca0]);\n                                    r0 = (**0x4038680)(r20 + 0x3018, &var_90);\n                                    if ((r0 & 0xff) != 0x0) {\n                                            var_94 = 0x0;\n                                            r23[0x118] = 0x1;\n                                            (**0x4038688)(r19, 0x14, &var_94);\n                                            if (*r20 == 0x0) {\n                                                    r0 = loc_2b6a200();\n                                            }\n                                            else {\n                                                    r0 = (null)();\n                                            }\n                                    }\n                                    else {\n                                            r0 = (null)();\n                                    }\n                            }\n                            else {\n                                    r0 = (null)();\n                            }\n                    }\n                    else {\n                            r0 = (null)();\n                    }\n            }\n            else {\n                    r24 = 0x1000;\n                    r0 = loc_1bc360(0x1000, 0x1000, r21);\n                    r22 = r0;\n                    bool_14 = r0 == 0x0;\n                    bool_3 = r0 == 0x0;\n                    r0 = r20[0x64f];\n                    if (bool_3) {\n                            r24 = 0x0;\n                    }\n                    if (bool_14) {\n                            r21 = 0x0;\n                    }\n                    if (r0 != 0x0) {\n                            loc_1ba9e0();\n                    }\n                    r20[0x64f] = r22;\n                    r20[0xca0] = r24;\n                    r20[0x651] = r21;\n                    if (r22 != 0x0) {\n                            var_90 = 0x0;\n                            (**0x4038660)(&var_90);\n                            (**0x4038668)(&var_90, r19);\n                            (**0x4038670)(&var_90, 0x12);\n                            (**0x4038678)(&var_90, r20[0x64f], r20[0xca0]);\n                            r0 = (**0x4038680)(r20 + 0x3018, &var_90);\n                            if ((r0 & 0xff) != 0x0) {\n                                    var_94 = 0x0;\n                                    r23[0x118] = 0x1;\n                                    (**0x4038688)(r19, 0x14, &var_94);\n                                    if (*r20 == 0x0) {\n                                            r0 = loc_2b6a200();\n                                    }\n                                    else {\n                                            r0 = (null)();\n                                    }\n                            }\n                            else {\n                                    r0 = (null)();\n                            }\n                    }\n                    else {\n                            r0 = (null)();\n                    }\n            }\n    }\n    else {\n            r0 = (null)();\n    }\n    return r0;\n",
+    "assembly": [
+      "0x2b6a020: pacibsp",
+      "0x2b6a024: sub sp, sp, #0xe0",
+      "0x2b6a028: stp fp, lr, [sp, #0xa0]",
+      "0x2b6a02c: stp x24, x23, [sp, #0xb0]",
+      "0x2b6a030: stp x22, x21, [sp, #0xc0]",
+      "0x2b6a034: stp x20, x19, [sp, #0xd0]",
+      "0x2b6a038: add fp, sp, #0xa0",
+      "0x2b6a03c: mov x19, x1",
+      "0x2b6a040: mov x20, x0",
+      "0x2b6a044: add x21, sp, #0x50",
+      "0x2b6a048: bl 0x2b69e20",
+      "0x2b6a04c: str x19, [x20, #0x8]",
+      "0x2b6a050: stp xzr, xzr, [x21, #0x40]",
+      "0x2b6a054: adrp x8, #0x4038000",
+      "0x2b6a058: add x0, sp, #0x50",
+      "0x2b6a05c: stp xzr, xzr, [sp, #0x80]",
+      "0x2b6a060: stp xzr, xzr, [sp, #0x70]",
+      "0x2b6a064: stp xzr, xzr, [sp, #0x60]",
+      "0x2b6a068: stp xzr, xzr, [sp, #0x50]",
+      "0x2b6a06c: ldr x8, [x8, #0x648]",
+      "0x2b6a070: ldr x8, [x8]",
+      "0x2b6a074: blr x8",
+      "0x2b6a078: adrp x8, #0x4038000",
+      "0x2b6a07c: add x0, sp, #0x50",
+      "0x2b6a080: mov x1, x19",
+      "0x2b6a084: ldr x8, [x8, #0x650]",
+      "0x2b6a088: ldr x8, [x8]",
+      "0x2b6a08c: blr x8",
+      "0x2b6a090: adrp x8, #0x4038000",
+      "0x2b6a094: add x0, x20, #0x10",
+      "0x2b6a098: add x1, sp, #0x50",
+      "0x2b6a09c: ldr x8, [x8, #0x658]",
+      "0x2b6a0a0: ldr x8, [x8]",
+      "0x2b6a0a4: blr x8",
+      "0x2b6a0a8: tst w0, #0xff",
+      "0x2b6a0b0: ldr x21, [x20]",
+      "0x2b6a0b4: add x23, x20, #0x3, lsl #12",
+      "0x2b6a0b8: mov w8, #0x1",
+      "0x2b6a0bc: strb w8, [x23, #0x10]",
+      "0x2b6a0c4: adrp x8, #0x4037000",
+      "0x2b6a0c8: ldr x8, [x8, #0xb48]",
+      "0x2b6a0cc: ldaprb w8, [x8]",
+      "0x2b6a0d4: adrp x8, #0x4037000",
+      "0x2b6a0d8: ldr x8, [x8, #0xb50]",
+      "0x2b6a0dc: ldr w0, [x8]",
+      "0x2b6a0e0: bl 0x2bd2430",
+      "0x2b6a114: ldr x1, [x20, #0x3288]",
+      "0x2b6a12c: stp xzr, xzr, [sp, #0x40]",
+      "0x2b6a130: stp xzr, xzr, [sp, #0x30]",
+      "0x2b6a134: adrp x8, #0x4038000",
+      "0x2b6a138: add x0, sp, #0x10",
+      "0x2b6a13c: stp xzr, xzr, [sp, #0x20]",
+      "0x2b6a140: stp xzr, xzr, [sp, #0x10]",
+      "0x2b6a144: ldr x8, [x8, #0x660]",
+      "0x2b6a148: ldr x8, [x8]",
+      "0x2b6a14c: blr x8",
+      "0x2b6a150: adrp x8, #0x4038000",
+      "0x2b6a154: add x0, sp, #0x10",
+      "0x2b6a158: mov x1, x19",
+      "0x2b6a15c: ldr x8, [x8, #0x668]",
+      "0x2b6a160: ldr x8, [x8]",
+      "0x2b6a164: blr x8",
+      "0x2b6a168: adrp x8, #0x4038000",
+      "0x2b6a16c: add x0, sp, #0x10",
+      "0x2b6a170: mov w1, #0x12",
+      "0x2b6a174: ldr x8, [x8, #0x670]",
+      "0x2b6a178: ldr x8, [x8]",
+      "0x2b6a17c: blr x8",
+      "0x2b6a180: adrp x8, #0x4038000",
+      "0x2b6a184: ldr x1, [x20, #0x3278]",
+      "0x2b6a188: ldr w2, [x20, #0x3280]",
+      "0x2b6a18c: add x0, sp, #0x10",
+      "0x2b6a190: ldr x8, [x8, #0x678]",
+      "0x2b6a194: ldr x8, [x8]",
+      "0x2b6a198: blr x8",
+      "0x2b6a19c: adrp x9, #0x4038000",
+      "0x2b6a1a0: mov w8, #0x3018",
+      "0x2b6a1a4: add x1, sp, #0x10",
+      "0x2b6a1a8: ldr x9, [x9, #0x680]",
+      "0x2b6a1ac: add x0, x20, x8",
+      "0x2b6a1b0: ldr x9, [x9]",
+      "0x2b6a1b4: blr x9",
+      "0x2b6a1b8: tst w0, #0xff",
+      "0x2b6a1c0: mov w8, #0x1",
+      "0x2b6a1c4: str wzr, [sp, #0xa0 + var_94]",
+      "0x2b6a1c8: add x2, sp, #0xc",
+      "0x2b6a1cc: mov w1, #0x14",
+      "0x2b6a1d0: mov x0, x19",
+      "0x2b6a1d4: strb w8, [x23, #0x118]",
+      "0x2b6a1d8: adrp x8, #0x4038000",
+      "0x2b6a1dc: ldr x8, [x8, #0x688]",
+      "0x2b6a1e0: ldr x8, [x8]",
+      "0x2b6a1e4: blr x8",
+      "0x2b6a1e8: ldrsw x21, [sp, #0xa0 + var_94]",
+      "0x2b6a1ec: ldr x22, [x20]",
+      "0x2b6a1f4: adrp x8, #0x4037000",
+      "0x2b6a1f8: adrp x22, #0x4037000",
+      "0x2b6a11c: str x22, [x20, #0x3278]",
+      "0x2b6a120: str w24, [x20, #0x3280]",
+      "0x2b6a124: str x21, [x20, #0x3288]",
+      "0x2b6a0e8: mov w0, #0x1000",
+      "0x2b6a0ec: mov w1, #0x1000",
+      "0x2b6a0f0: mov w24, #0x1000",
+      "0x2b6a0f4: mov x2, x21",
+      "0x2b6a0f8: bl 0x1bc360",
+      "0x2b6a0fc: mov x22, x0",
+      "0x2b6a100: cmp x0, #0x0",
+      "0x2b6a104: ldr x0, [x20, #0x3278]",
+      "0x2b6a108: csel w24, wzr, w24, eq",
+      "0x2b6a10c: csel x21, xzr, x21, eq"
+    ],
+    "comments": [],
+    "callers": [],
+    "callees": [],
+    "incoming_references": [
+      {
+        "source_address": "0x2b6a0c0",
+        "target_address": "0x2b6a0e8",
+        "source_procedure": {
+          "address": "0x2b6a020",
+          "name": "sub_2b6a020",
+          "classification": null,
+          "body": {
+            "available": false,
+            "reason": "Hopper's public Python API does not expose complete function body ranges"
+          }
+        },
+        "target_procedure": {
+          "address": "0x2b6a020",
+          "name": "sub_2b6a020",
+          "classification": null,
+          "body": {
+            "available": false,
+            "reason": "Hopper's public Python API does not expose complete function body ranges"
+          }
+        },
+        "kind": {
+          "available": false,
+          "reason": "Hopper's public Python API does not classify reference kinds"
+        }
+      },
+      {
+        "source_address": "0x2b6a110",
+        "target_address": "0x2b6a11c",
+        "source_procedure": {
+          "address": "0x2b6a020",
+          "name": "sub_2b6a020",
+          "classification": null,
+          "body": {
+            "available": false,
+            "reason": "Hopper's public Python API does not expose complete function body ranges"
+          }
+        },
+        "target_procedure": {
+          "address": "0x2b6a020",
+          "name": "sub_2b6a020",
+          "classification": null,
+          "body": {
+            "available": false,
+            "reason": "Hopper's public Python API does not expose complete function body ranges"
+          }
+        },
+        "kind": {
+          "available": false,
+          "reason": "Hopper's public Python API does not classify reference kinds"
+        }
+      },
+      {
+        "source_address": "0x2b6a48c",
+        "target_address": "0x2b6a020",
+        "source_procedure": {
+          "address": "0x2b6a380",
+          "name": "capture_2b6a380",
+          "classification": null,
+          "body": {
+            "available": false,
+            "reason": "Hopper's public Python API does not expose complete function body ranges"
+          }
+        },
+        "target_procedure": {
+          "address": "0x2b6a020",
+          "name": "sub_2b6a020",
+          "classification": null,
+          "body": {
+            "available": false,
+            "reason": "Hopper's public Python API does not expose complete function body ranges"
+          }
+        },
+        "kind": {
+          "available": false,
+          "reason": "Hopper's public Python API does not classify reference kinds"
+        }
+      }
+    ],
+    "outgoing_references": [],
+    "referenced_strings": [],
+    "referenced_names": [],
+    "basic_blocks": [
+      {
+        "start": "0x2b6a020",
+        "end": "0x2b6a0ac",
+        "successors": [
+          "0x2b6a0b0"
+        ]
+      },
+      {
+        "start": "0x2b6a0b0",
+        "end": "0x2b6a0c0",
+        "successors": [
+          "0x2b6a0c4",
+          "0x2b6a0e8"
+        ]
+      },
+      {
+        "start": "0x2b6a0c4",
+        "end": "0x2b6a0d0",
+        "successors": [
+          "0x2b6a0d4"
+        ]
+      },
+      {
+        "start": "0x2b6a0d4",
+        "end": "0x2b6a0e4",
+        "successors": [
+          "0x2b6a0e8"
+        ]
+      },
+      {
+        "start": "0x2b6a114",
+        "end": "0x2b6a118",
+        "successors": [
+          "0x2b6a11c"
+        ]
+      },
+      {
+        "start": "0x2b6a12c",
+        "end": "0x2b6a1bc",
+        "successors": [
+          "0x2b6a1c0"
+        ]
+      },
+      {
+        "start": "0x2b6a1c0",
+        "end": "0x2b6a1f0",
+        "successors": [
+          "0x2b6a1f4"
+        ]
+      },
+      {
+        "start": "0x2b6a1f4",
+        "end": "0x2b6a1fc",
+        "successors": []
+      },
+      {
+        "start": "0x2b6a11c",
+        "end": "0x2b6a128",
+        "successors": [
+          "0x2b6a12c"
+        ]
+      },
+      {
+        "start": "0x2b6a0e8",
+        "end": "0x2b6a110",
+        "successors": [
+          "0x2b6a114",
+          "0x2b6a11c"
+        ]
+      }
+    ],
+    "native_api": null,
+    "native_value_flow": null,
+    "limitations": [
+      "Hopper's public Python API does not classify reference kinds.",
+      "Hopper's public Python API does not expose equivalent external or thunk classification in this dossier.",
+      "Unresolved indirect calls without reported target addresses are not represented as call edges.",
+      "Pseudocode and assembly are provider-specific representations, not original source."
+    ]
+  },
+  "evidence_id": "ev_976b598ceb4b6dfaeef174d866060337b1f11ad14e3bcf07c16c28125a2135b3",
+  "evidence": {
+    "evidence_id": "ev_976b598ceb4b6dfaeef174d866060337b1f11ad14e3bcf07c16c28125a2135b3",
+    "subject": {
+      "name": "movie-gpu-transfer.elf",
+      "digest": {
+        "sha256": "4775f42621f4af24e36d0675f6d34a688c9e354bdeae0e1543970eed54706d07"
+      },
+      "format": "elf",
+      "architecture": "arm64",
+      "local_path": "/Users/daniilvinogradov/Documents/Dev/NS2-experiments/investigation/artifacts/movie-gpu-transfer.elf"
+    },
+    "provider": {
+      "id": "rea-workflow",
+      "name": "REA composed investigation workflow",
+      "version": "1"
+    },
+    "predicate_type": "rea.analysis",
+    "operation": "analyze_function",
+    "parameters": {
+      "procedure": "0x2b6a020"
+    },
+    "raw_result": null,
+    "normalized_result": {
+      "procedure": {
+        "address": "0x2b6a020",
+        "name": "sub_2b6a020",
+        "classification": null,
+        "body": {
+          "available": false,
+          "reason": "Hopper's public Python API does not expose complete function body ranges"
+        },
+        "signature": "int sub_2b6a020(int arg0, int arg1)",
+        "locals": [
+          {
+            "description": "<__main__.LocalVariable object at 0x12cbec830>",
+            "provenance": "hopper-public-python-api"
+          },
+          {
+            "description": "<__main__.LocalVariable object at 0x12cb23ed0>",
+            "provenance": "hopper-public-python-api"
+          },
+          {
+            "description": "<__main__.LocalVariable object at 0x12cb22850>",
+            "provenance": "hopper-public-python-api"
+          },
+          {
+            "description": "<__main__.LocalVariable object at 0x12cb8d220>",
+            "provenance": "hopper-public-python-api"
+          },
+          {
+            "description": "<__main__.LocalVariable object at 0x12cb8d5b0>",
+            "provenance": "hopper-public-python-api"
+          },
+          {
+            "description": "<__main__.LocalVariable object at 0x12cbdcef0>",
+            "provenance": "hopper-public-python-api"
+          },
+          {
+            "description": "<__main__.LocalVariable object at 0x12caf2690>",
+            "provenance": "hopper-public-python-api"
+          },
+          {
+            "description": "<__main__.LocalVariable object at 0x12caf39b0>",
+            "provenance": "hopper-public-python-api"
+          },
+          {
+            "description": "<__main__.LocalVariable object at 0x12ca5bd50>",
+            "provenance": "hopper-public-python-api"
+          },
+          {
+            "description": "<__main__.LocalVariable object at 0x12ca5bc50>",
+            "provenance": "hopper-public-python-api"
+          },
+          {
+            "description": "<__main__.LocalVariable object at 0x12ca6b020>",
+            "provenance": "hopper-public-python-api"
+          },
+          {
+            "description": "<__main__.LocalVariable object at 0x12ca6a8a0>",
+            "provenance": "hopper-public-python-api"
+          },
+          {
+            "description": "<__main__.LocalVariable object at 0x12cbc3cb0>",
+            "provenance": "hopper-public-python-api"
+          }
+        ]
+      },
+      "pseudocode": "    r19 = arg1;\n    r20 = arg0;\n    loc_2b69e20(arg0, arg1);\n    r20[0x1] = r19;\n    var_50 = 0x0;\n    (**0x4038648)(&var_50);\n    (**0x4038650)(&var_50, r19);\n    r0 = (**0x4038658)(r20 + 0x10, &var_50);\n    if ((r0 & 0xff) != 0x0) {\n            r21 = *r20;\n            r23 = r20 + 0x3000;\n            r23[0x10] = 0x1;\n            if (r21 == 0x0) {\n                    r8 = *0x4037b48;\n                    asm { ldaprb     w8, [x8] };\n                    if ((r8 & 0x1) != 0x0) {\n                            r21 = loc_2bd2430(*(int32_t *)*0x4037b50);\n                            r24 = 0x1000;\n                            r0 = loc_1bc360(0x1000, 0x1000, r21);\n                            r22 = r0;\n                            bool_7 = r0 == 0x0;\n                            bool_5 = r0 == 0x0;\n                            r0 = r20[0x64f];\n                            if (bool_5) {\n                                    r24 = 0x0;\n                            }\n                            if (bool_7) {\n                                    r21 = 0x0;\n                            }\n                            if (r0 != 0x0) {\n                                    loc_1ba9e0();\n                            }\n                            r20[0x64f] = r22;\n                            r20[0xca0] = r24;\n                            r20[0x651] = r21;\n                            if (r22 != 0x0) {\n                                    var_90 = 0x0;\n                                    (**0x4038660)(&var_90);\n                                    (**0x4038668)(&var_90, r19);\n                                    (**0x4038670)(&var_90, 0x12);\n                                    (**0x4038678)(&var_90, r20[0x64f], r20[0xca0]);\n                                    r0 = (**0x4038680)(r20 + 0x3018, &var_90);\n                                    if ((r0 & 0xff) != 0x0) {\n                                            var_94 = 0x0;\n                                            r23[0x118] = 0x1;\n                                            (**0x4038688)(r19, 0x14, &var_94);\n                                            if (*r20 == 0x0) {\n                                                    r0 = loc_2b6a200();\n                                            }\n                                            else {\n                                                    r0 = (null)();\n                                            }\n                                    }\n                                    else {\n                                            r0 = (null)();\n                                    }\n                            }\n                            else {\n                                    r0 = (null)();\n                            }\n                    }\n                    else {\n                            r0 = (null)();\n                    }\n            }\n            else {\n                    r24 = 0x1000;\n                    r0 = loc_1bc360(0x1000, 0x1000, r21);\n                    r22 = r0;\n                    bool_14 = r0 == 0x0;\n                    bool_3 = r0 == 0x0;\n                    r0 = r20[0x64f];\n                    if (bool_3) {\n                            r24 = 0x0;\n                    }\n                    if (bool_14) {\n                            r21 = 0x0;\n                    }\n                    if (r0 != 0x0) {\n                            loc_1ba9e0();\n                    }\n                    r20[0x64f] = r22;\n                    r20[0xca0] = r24;\n                    r20[0x651] = r21;\n                    if (r22 != 0x0) {\n                            var_90 = 0x0;\n                            (**0x4038660)(&var_90);\n                            (**0x4038668)(&var_90, r19);\n                            (**0x4038670)(&var_90, 0x12);\n                            (**0x4038678)(&var_90, r20[0x64f], r20[0xca0]);\n                            r0 = (**0x4038680)(r20 + 0x3018, &var_90);\n                            if ((r0 & 0xff) != 0x0) {\n                                    var_94 = 0x0;\n                                    r23[0x118] = 0x1;\n                                    (**0x4038688)(r19, 0x14, &var_94);\n                                    if (*r20 == 0x0) {\n                                            r0 = loc_2b6a200();\n                                    }\n                                    else {\n                                            r0 = (null)();\n                                    }\n                            }\n                            else {\n                                    r0 = (null)();\n                            }\n                    }\n                    else {\n                            r0 = (null)();\n                    }\n            }\n    }\n    else {\n            r0 = (null)();\n    }\n    return r0;\n",
+      "assembly": [
+        "0x2b6a020: pacibsp",
+        "0x2b6a024: sub sp, sp, #0xe0",
+        "0x2b6a028: stp fp, lr, [sp, #0xa0]",
+        "0x2b6a02c: stp x24, x23, [sp, #0xb0]",
+        "0x2b6a030: stp x22, x21, [sp, #0xc0]",
+        "0x2b6a034: stp x20, x19, [sp, #0xd0]",
+        "0x2b6a038: add fp, sp, #0xa0",
+        "0x2b6a03c: mov x19, x1",
+        "0x2b6a040: mov x20, x0",
+        "0x2b6a044: add x21, sp, #0x50",
+        "0x2b6a048: bl 0x2b69e20",
+        "0x2b6a04c: str x19, [x20, #0x8]",
+        "0x2b6a050: stp xzr, xzr, [x21, #0x40]",
+        "0x2b6a054: adrp x8, #0x4038000",
+        "0x2b6a058: add x0, sp, #0x50",
+        "0x2b6a05c: stp xzr, xzr, [sp, #0x80]",
+        "0x2b6a060: stp xzr, xzr, [sp, #0x70]",
+        "0x2b6a064: stp xzr, xzr, [sp, #0x60]",
+        "0x2b6a068: stp xzr, xzr, [sp, #0x50]",
+        "0x2b6a06c: ldr x8, [x8, #0x648]",
+        "0x2b6a070: ldr x8, [x8]",
+        "0x2b6a074: blr x8",
+        "0x2b6a078: adrp x8, #0x4038000",
+        "0x2b6a07c: add x0, sp, #0x50",
+        "0x2b6a080: mov x1, x19",
+        "0x2b6a084: ldr x8, [x8, #0x650]",
+        "0x2b6a088: ldr x8, [x8]",
+        "0x2b6a08c: blr x8",
+        "0x2b6a090: adrp x8, #0x4038000",
+        "0x2b6a094: add x0, x20, #0x10",
+        "0x2b6a098: add x1, sp, #0x50",
+        "0x2b6a09c: ldr x8, [x8, #0x658]",
+        "0x2b6a0a0: ldr x8, [x8]",
+        "0x2b6a0a4: blr x8",
+        "0x2b6a0a8: tst w0, #0xff",
+        "0x2b6a0b0: ldr x21, [x20]",
+        "0x2b6a0b4: add x23, x20, #0x3, lsl #12",
+        "0x2b6a0b8: mov w8, #0x1",
+        "0x2b6a0bc: strb w8, [x23, #0x10]",
+        "0x2b6a0c4: adrp x8, #0x4037000",
+        "0x2b6a0c8: ldr x8, [x8, #0xb48]",
+        "0x2b6a0cc: ldaprb w8, [x8]",
+        "0x2b6a0d4: adrp x8, #0x4037000",
+        "0x2b6a0d8: ldr x8, [x8, #0xb50]",
+        "0x2b6a0dc: ldr w0, [x8]",
+        "0x2b6a0e0: bl 0x2bd2430",
+        "0x2b6a114: ldr x1, [x20, #0x3288]",
+        "0x2b6a12c: stp xzr, xzr, [sp, #0x40]",
+        "0x2b6a130: stp xzr, xzr, [sp, #0x30]",
+        "0x2b6a134: adrp x8, #0x4038000",
+        "0x2b6a138: add x0, sp, #0x10",
+        "0x2b6a13c: stp xzr, xzr, [sp, #0x20]",
+        "0x2b6a140: stp xzr, xzr, [sp, #0x10]",
+        "0x2b6a144: ldr x8, [x8, #0x660]",
+        "0x2b6a148: ldr x8, [x8]",
+        "0x2b6a14c: blr x8",
+        "0x2b6a150: adrp x8, #0x4038000",
+        "0x2b6a154: add x0, sp, #0x10",
+        "0x2b6a158: mov x1, x19",
+        "0x2b6a15c: ldr x8, [x8, #0x668]",
+        "0x2b6a160: ldr x8, [x8]",
+        "0x2b6a164: blr x8",
+        "0x2b6a168: adrp x8, #0x4038000",
+        "0x2b6a16c: add x0, sp, #0x10",
+        "0x2b6a170: mov w1, #0x12",
+        "0x2b6a174: ldr x8, [x8, #0x670]",
+        "0x2b6a178: ldr x8, [x8]",
+        "0x2b6a17c: blr x8",
+        "0x2b6a180: adrp x8, #0x4038000",
+        "0x2b6a184: ldr x1, [x20, #0x3278]",
+        "0x2b6a188: ldr w2, [x20, #0x3280]",
+        "0x2b6a18c: add x0, sp, #0x10",
+        "0x2b6a190: ldr x8, [x8, #0x678]",
+        "0x2b6a194: ldr x8, [x8]",
+        "0x2b6a198: blr x8",
+        "0x2b6a19c: adrp x9, #0x4038000",
+        "0x2b6a1a0: mov w8, #0x3018",
+        "0x2b6a1a4: add x1, sp, #0x10",
+        "0x2b6a1a8: ldr x9, [x9, #0x680]",
+        "0x2b6a1ac: add x0, x20, x8",
+        "0x2b6a1b0: ldr x9, [x9]",
+        "0x2b6a1b4: blr x9",
+        "0x2b6a1b8: tst w0, #0xff",
+        "0x2b6a1c0: mov w8, #0x1",
+        "0x2b6a1c4: str wzr, [sp, #0xa0 + var_94]",
+        "0x2b6a1c8: add x2, sp, #0xc",
+        "0x2b6a1cc: mov w1, #0x14",
+        "0x2b6a1d0: mov x0, x19",
+        "0x2b6a1d4: strb w8, [x23, #0x118]",
+        "0x2b6a1d8: adrp x8, #0x4038000",
+        "0x2b6a1dc: ldr x8, [x8, #0x688]",
+        "0x2b6a1e0: ldr x8, [x8]",
+        "0x2b6a1e4: blr x8",
+        "0x2b6a1e8: ldrsw x21, [sp, #0xa0 + var_94]",
+        "0x2b6a1ec: ldr x22, [x20]",
+        "0x2b6a1f4: adrp x8, #0x4037000",
+        "0x2b6a1f8: adrp x22, #0x4037000",
+        "0x2b6a11c: str x22, [x20, #0x3278]",
+        "0x2b6a120: str w24, [x20, #0x3280]",
+        "0x2b6a124: str x21, [x20, #0x3288]",
+        "0x2b6a0e8: mov w0, #0x1000",
+        "0x2b6a0ec: mov w1, #0x1000",
+        "0x2b6a0f0: mov w24, #0x1000",
+        "0x2b6a0f4: mov x2, x21",
+        "0x2b6a0f8: bl 0x1bc360",
+        "0x2b6a0fc: mov x22, x0",
+        "0x2b6a100: cmp x0, #0x0",
+        "0x2b6a104: ldr x0, [x20, #0x3278]",
+        "0x2b6a108: csel w24, wzr, w24, eq",
+        "0x2b6a10c: csel x21, xzr, x21, eq"
+      ],
+      "comments": [],
+      "callers": [],
+      "callees": [],
+      "incoming_references": [
+        {
+          "source_address": "0x2b6a0c0",
+          "target_address": "0x2b6a0e8",
+          "source_procedure": {
+            "address": "0x2b6a020",
+            "name": "sub_2b6a020",
+            "classification": null,
+            "body": {
+              "available": false,
+              "reason": "Hopper's public Python API does not expose complete function body ranges"
+            }
+          },
+          "target_procedure": {
+            "address": "0x2b6a020",
+            "name": "sub_2b6a020",
+            "classification": null,
+            "body": {
+              "available": false,
+              "reason": "Hopper's public Python API does not expose complete function body ranges"
+            }
+          },
+          "kind": {
+            "available": false,
+            "reason": "Hopper's public Python API does not classify reference kinds"
+          }
+        },
+        {
+          "source_address": "0x2b6a110",
+          "target_address": "0x2b6a11c",
+          "source_procedure": {
+            "address": "0x2b6a020",
+            "name": "sub_2b6a020",
+            "classification": null,
+            "body": {
+              "available": false,
+              "reason": "Hopper's public Python API does not expose complete function body ranges"
+            }
+          },
+          "target_procedure": {
+            "address": "0x2b6a020",
+            "name": "sub_2b6a020",
+            "classification": null,
+            "body": {
+              "available": false,
+              "reason": "Hopper's public Python API does not expose complete function body ranges"
+            }
+          },
+          "kind": {
+            "available": false,
+            "reason": "Hopper's public Python API does not classify reference kinds"
+          }
+        },
+        {
+          "source_address": "0x2b6a48c",
+          "target_address": "0x2b6a020",
+          "source_procedure": {
+            "address": "0x2b6a380",
+            "name": "capture_2b6a380",
+            "classification": null,
+            "body": {
+              "available": false,
+              "reason": "Hopper's public Python API does not expose complete function body ranges"
+            }
+          },
+          "target_procedure": {
+            "address": "0x2b6a020",
+            "name": "sub_2b6a020",
+            "classification": null,
+            "body": {
+              "available": false,
+              "reason": "Hopper's public Python API does not expose complete function body ranges"
+            }
+          },
+          "kind": {
+            "available": false,
+            "reason": "Hopper's public Python API does not classify reference kinds"
+          }
+        }
+      ],
+      "outgoing_references": [],
+      "referenced_strings": [],
+      "referenced_names": [],
+      "basic_blocks": [
+        {
+          "start": "0x2b6a020",
+          "end": "0x2b6a0ac",
+          "successors": [
+            "0x2b6a0b0"
+          ]
+        },
+        {
+          "start": "0x2b6a0b0",
+          "end": "0x2b6a0c0",
+          "successors": [
+            "0x2b6a0c4",
+            "0x2b6a0e8"
+          ]
+        },
+        {
+          "start": "0x2b6a0c4",
+          "end": "0x2b6a0d0",
+          "successors": [
+            "0x2b6a0d4"
+          ]
+        },
+        {
+          "start": "0x2b6a0d4",
+          "end": "0x2b6a0e4",
+          "successors": [
+            "0x2b6a0e8"
+          ]
+        },
+        {
+          "start": "0x2b6a114",
+          "end": "0x2b6a118",
+          "successors": [
+            "0x2b6a11c"
+          ]
+        },
+        {
+          "start": "0x2b6a12c",
+          "end": "0x2b6a1bc",
+          "successors": [
+            "0x2b6a1c0"
+          ]
+        },
+        {
+          "start": "0x2b6a1c0",
+          "end": "0x2b6a1f0",
+          "successors": [
+            "0x2b6a1f4"
+          ]
+        },
+        {
+          "start": "0x2b6a1f4",
+          "end": "0x2b6a1fc",
+          "successors": []
+        },
+        {
+          "start": "0x2b6a11c",
+          "end": "0x2b6a128",
+          "successors": [
+            "0x2b6a12c"
+          ]
+        },
+        {
+          "start": "0x2b6a0e8",
+          "end": "0x2b6a110",
+          "successors": [
+            "0x2b6a114",
+            "0x2b6a11c"
+          ]
+        }
+      ],
+      "native_api": null,
+      "native_value_flow": null,
+      "limitations": [
+        "Hopper's public Python API does not classify reference kinds.",
+        "Hopper's public Python API does not expose equivalent external or thunk classification in this dossier.",
+        "Unresolved indirect calls without reported target addresses are not represented as call edges.",
+        "Pseudocode and assembly are provider-specific representations, not original source."
+      ]
+    },
+    "confidence": "derived",
+    "authority": "shipped-artifact",
+    "environment": null,
+    "limitations": [
+      "Derived by an REA workflow from one or more provider observations."
+    ],
+    "locations": [],
+    "evidence_links": [],
+    "analysis_profile": {
+      "provider": {
+        "id": "rea-workflow",
+        "name": "REA composed investigation workflow",
+        "version": "1"
+      },
+      "parameters": {
+        "upstream_analysis_profile": {
+          "provider": {
+            "id": "hopper",
+            "name": "Hopper Disassembler",
+            "version": "launcher-sha256:dad6f886261fad0d4cdd01aee6fcf57439c60d7b5c54e62fc97f0180116690e0"
+          },
+          "parameters": {
+            "target_kind": "executable",
+            "target_format": "elf",
+            "architecture": "arm64",
+            "available_architectures": [
+              "arm64"
+            ],
+            "loader": {
+              "source": "derived",
+              "argument_count": 3,
+              "arguments_sha256": "c3ff6b5a7f3b0c7cec7685924ab1532ea79a6b8921458239491a37b14c59040c"
+            }
+          },
+          "digest": "b0ba568e9120019acb82cf039da601e25ec3824a56db4ff2cfaa67f412b1f337"
+        }
+      },
+      "digest": "92b0eed0d44061eaeb493eb23559fafde4ac4ad19ca601cc6ec984f6fc6ef517"
+    }
+  }
+}

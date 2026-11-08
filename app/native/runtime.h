@@ -8,4 +8,5 @@ int ml_runtime_pump(int budget_ms);
 int ml_runtime_tasks(void);
 int ml_runtime_current_task(void);
 void ml_runtime_checkpoint(void);
+void ml_runtime_wake_input(void);
 int ml_runtime_budget_yields(void);

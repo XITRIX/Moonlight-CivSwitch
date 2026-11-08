@@ -1,0 +1,124 @@
+{
+  "result": {
+    "items": [
+      {
+        "address": "0x1027b0",
+        "status": "ok",
+        "pseudocode": "    arg0[0x6] = 0x0;\n    arg0[0x2] = 0x0;\n    arg0[0x3] = 0x0;\n    *arg0 = arg1;\n    arg0[0x1] = 0x0;\n    return 0x1;\n"
+      },
+      {
+        "address": "0x102870",
+        "status": "ok",
+        "pseudocode": "    r31 = r31 - 0x40;\n    saved_fp = r29;\n    decomp_var_m8 = r30;\n    saved_regs_10 = r19;\n    r19 = arg0;\n    arg0[0x6] = 0x0;\n    arg0[0x2] = 0x0;\n    arg0[0x3] = 0x0;\n    *arg0 = arg1;\n    arg0[0x1] = 0x0;\n    r0 = loc_106190(arg2, &decomp_var_20, 0x4);\n    r19[0x1] = 0x5;\n    *(r19 + 0xc) = r0;\n    if (r0 >= 0x1) {\n            asm { ubfiz      x2, x0, #0x3, #0x20 };\n            loc_2990f60(r19 + 0x10, &decomp_var_20);\n    }\n    return 0x1;\n"
+      },
+      {
+        "address": "0x102820",
+        "status": "ok",
+        "pseudocode": "    r0 = arg0;\n    if (r0[0x2] == 0x4) {\n            (*(*0x3df9030 + 0x18))(r0[0x2]);\n            r0[0x2] = 0x0;\n    }\n    return;\n"
+      },
+      {
+        "address": "0x102d00",
+        "status": "ok",
+        "pseudocode": "    r0 = loc_ae3c0(arg1, arg1);\n    r0 = sub_102d50(arg0, r0);\n    return r0;\n"
+      }
+    ],
+    "total": 4,
+    "succeeded": 4,
+    "failed": 0
+  },
+  "evidence_id": "ev_8fae6b1068a3af49b547310b2517dc1349521ee8d0bd7921075b888091c1e573",
+  "evidence": {
+    "evidence_id": "ev_8fae6b1068a3af49b547310b2517dc1349521ee8d0bd7921075b888091c1e573",
+    "subject": {
+      "name": "gpu-sync-native.elf",
+      "digest": {
+        "sha256": "e9154240036c85d8f3691ff9ab72c531044b74b2d2f4212bdcfe73dfca9caab6"
+      },
+      "format": "elf",
+      "architecture": "arm64",
+      "local_path": "/Users/daniilvinogradov/Documents/Dev/NS2-experiments/investigation/artifacts/gpu-sync-native.elf"
+    },
+    "provider": {
+      "id": "rea-workflow",
+      "name": "REA composed investigation workflow",
+      "version": "1"
+    },
+    "predicate_type": "rea.analysis",
+    "operation": "batch_decompile",
+    "parameters": {
+      "addresses": [
+        "0x1027b0",
+        "0x102870",
+        "0x102820",
+        "0x102d00"
+      ]
+    },
+    "raw_result": null,
+    "normalized_result": {
+      "items": [
+        {
+          "address": "0x1027b0",
+          "status": "ok",
+          "pseudocode": "    arg0[0x6] = 0x0;\n    arg0[0x2] = 0x0;\n    arg0[0x3] = 0x0;\n    *arg0 = arg1;\n    arg0[0x1] = 0x0;\n    return 0x1;\n"
+        },
+        {
+          "address": "0x102870",
+          "status": "ok",
+          "pseudocode": "    r31 = r31 - 0x40;\n    saved_fp = r29;\n    decomp_var_m8 = r30;\n    saved_regs_10 = r19;\n    r19 = arg0;\n    arg0[0x6] = 0x0;\n    arg0[0x2] = 0x0;\n    arg0[0x3] = 0x0;\n    *arg0 = arg1;\n    arg0[0x1] = 0x0;\n    r0 = loc_106190(arg2, &decomp_var_20, 0x4);\n    r19[0x1] = 0x5;\n    *(r19 + 0xc) = r0;\n    if (r0 >= 0x1) {\n            asm { ubfiz      x2, x0, #0x3, #0x20 };\n            loc_2990f60(r19 + 0x10, &decomp_var_20);\n    }\n    return 0x1;\n"
+        },
+        {
+          "address": "0x102820",
+          "status": "ok",
+          "pseudocode": "    r0 = arg0;\n    if (r0[0x2] == 0x4) {\n            (*(*0x3df9030 + 0x18))(r0[0x2]);\n            r0[0x2] = 0x0;\n    }\n    return;\n"
+        },
+        {
+          "address": "0x102d00",
+          "status": "ok",
+          "pseudocode": "    r0 = loc_ae3c0(arg1, arg1);\n    r0 = sub_102d50(arg0, r0);\n    return r0;\n"
+        }
+      ],
+      "total": 4,
+      "succeeded": 4,
+      "failed": 0
+    },
+    "confidence": "derived",
+    "authority": "shipped-artifact",
+    "environment": null,
+    "limitations": [
+      "Derived by an REA workflow from one or more provider observations."
+    ],
+    "locations": [],
+    "evidence_links": [],
+    "analysis_profile": {
+      "provider": {
+        "id": "rea-workflow",
+        "name": "REA composed investigation workflow",
+        "version": "1"
+      },
+      "parameters": {
+        "upstream_analysis_profile": {
+          "provider": {
+            "id": "hopper",
+            "name": "Hopper Disassembler",
+            "version": "launcher-sha256:dad6f886261fad0d4cdd01aee6fcf57439c60d7b5c54e62fc97f0180116690e0"
+          },
+          "parameters": {
+            "target_kind": "executable",
+            "target_format": "elf",
+            "architecture": "arm64",
+            "available_architectures": [
+              "arm64"
+            ],
+            "loader": {
+              "source": "derived",
+              "argument_count": 3,
+              "arguments_sha256": "c3ff6b5a7f3b0c7cec7685924ab1532ea79a6b8921458239491a37b14c59040c"
+            }
+          },
+          "digest": "b0ba568e9120019acb82cf039da601e25ec3824a56db4ff2cfaa67f412b1f337"
+        }
+      },
+      "digest": "92b0eed0d44061eaeb493eb23559fafde4ac4ad19ca601cc6ec984f6fc6ef517"
+    }
+  }
+}

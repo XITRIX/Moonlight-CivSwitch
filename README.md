@@ -50,15 +50,17 @@ between Refresh, Settings and Back. A selects; B returns to Host. B on Host clos
 the UI and releases the loader for another payload.
 
 Settings is available on Host and in the Games footer. Up/down selects a row;
-left/right changes resolution (360p, 540p, 720p), frame rate (15, 30, 60 FPS), or
+left/right changes resolution (360p, 540p, 720p, 1080p), frame rate (15, 30, 60 FPS), or
 bitrate (1, 2, 3, 5, 8, 10 Mbps). A cycles a value or activates Back. Back/B saves
 to `save:/moonlight-experiment/settings.json` and returns to the previous screen.
 Changes apply to the next stream. Defaults remain 720p, 30 FPS, 5 Mbps.
+**Frame pacing** offers Smooth (default) and Low latency. Smooth keeps one spare
+decoded frame at 60 FPS for steadier delivery, adding up to one frame of buffering.
 The saved **Performance overlay** switch enables in-stream FPS, RTT/variation,
 receive/decode/copy timing, frame pacing, decoder/audio buffering and loss
 indicators. It defaults to Off. Statistics describe texture submissions, rather
 than physical display timing.
-Playback presents the newest ready decoded frame per drain. Audio keeps at most
+Low latency presents the newest ready decoded frame per drain. Audio keeps at most
 60 ms of completed PCM plus a partial chunk under 20 ms, skipping stale waiting
 samples if the queue fills. The overlay shows intentional video/audio skips
 separately from network loss indicators.
@@ -77,10 +79,10 @@ Press − and + together (or press Escape on a keyboard) to stop and return to G
 A separate timer checks the local exit chord during rendering stalls; network
 shutdown gets at most 100 ms of grace before pending stream I/O is canceled.
 Streaming diagnostics stay in RAM to avoid blocking on the loader TCP connection.
-The renderer requests
-1280×720 H.264 at 30 fps and copies decoded frames directly into an owned Civ VII
-GPU texture, without JavaScript pixel conversion or per-frame PNGs. A fresh-start
-hardware run presented about 29.5 fps and cleaned up successfully.
+The renderer supports up to 1920×1080 H.264 at 60 fps and 10 Mbps, copying decoded
+frames directly into an owned Civ VII GPU texture, without JavaScript pixel
+conversion or per-frame PNGs. Requested FPS is not a guarantee of display FPS;
+see the [1080p performance measurements](investigation/evidence/quality-1080p.md).
 It remains a prototype; gameplay latency has not been measured. Native stereo
 Opus/PCM output and remote controller/keyboard forwarding are wired in.
 See [streaming implementation and evidence](docs/streaming.md).

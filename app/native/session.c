@@ -80,7 +80,9 @@ int ml_session_start(const char* host,const char* app_version,const char* rtsp_u
     if(!PltSafeStrcpy(address,sizeof(address),host)||!PltSafeStrcpy(version,sizeof(version),app_version)||!PltSafeStrcpy(url,sizeof(url),rtsp_url))return -3;
     LiInitializeServerInformation(&server);server.address=address;server.serverInfoAppVersion=version;server.rtspSessionUrl=url;server.serverCodecModeSupport=codec_support;
     LiInitializeStreamConfiguration(&config);config.width=width;config.height=height;config.fps=fps;config.bitrate=bitrate;
-    config.packetSize=1024;config.streamingRemotely=STREAM_CFG_LOCAL;config.audioConfiguration=AUDIO_CONFIGURATION_STEREO;
+    // IPv4 LAN only: 1392-byte video payloads plus RTP/UDP/IP headers fit a
+    // 1500-byte MTU, reducing socket/fiber work compared with 1024-byte packets.
+    config.packetSize=1392;config.streamingRemotely=STREAM_CFG_LOCAL;config.audioConfiguration=AUDIO_CONFIGURATION_STEREO;
     config.supportedVideoFormats=VIDEO_FORMAT_H264;config.encryptionFlags=0;config.clientRefreshRateX100=fps*100;
     memcpy(config.remoteInputAesKey,key,16);config.remoteInputAesIv[0]=key_id>>24;config.remoteInputAesIv[1]=key_id>>16;config.remoteInputAesIv[2]=key_id>>8;config.remoteInputAesIv[3]=key_id;
     state=1;error_code=video_frames=audio_frames=0;input_pending=0;keys_read=keys_write=0;
@@ -128,11 +130,11 @@ const double* ml_session_metrics(void) {
 int ml_session_gamepad(int buttons,int lt,int rt,int lx,int ly,int rx,int ry) {
     if(state!=2)return -1;
     if(lt<0||lt>255||rt<0||rt>255||lx<-32768||lx>32767||ly<-32768||ly>32767||rx<-32768||rx>32767||ry<-32768||ry>32767)return -2;
-    input_buttons=buttons;input_lt=lt;input_rt=rt;input_lx=lx;input_ly=ly;input_rx=rx;input_ry=ry;input_pending=1;return 0;
+    input_buttons=buttons;input_lt=lt;input_rt=rt;input_lx=lx;input_ly=ly;input_rx=rx;input_ry=ry;input_pending=1;ml_runtime_wake_input();return 0;
 }
 int ml_session_key(int code,int down,int modifiers) {
     if(state!=2)return -1;if(code<0||code>255||modifiers<0||modifiers>31)return -3;if(keys_write-keys_read>=64)return -2;
-    keys[keys_write++%64]=(typeof(keys[0])){code,down?KEY_ACTION_DOWN:KEY_ACTION_UP,modifiers};return 0;
+    keys[keys_write++%64]=(typeof(keys[0])){code,down?KEY_ACTION_DOWN:KEY_ACTION_UP,modifiers};ml_runtime_wake_input();return 0;
 }
 static void input_task(void* ignored) {
     (void)ignored;LiSendMultiControllerEvent(0,1,0,0,0,0,0,0,0);
@@ -185,6 +187,18 @@ int ml_input_priority_test_start(void) {
     return 0;
 }
 int ml_input_priority_test_result(void) { return input_priority_result; }
+
+static int input_wake_result;
+static void test_input_sleeper(void* ignored) { (void)ignored;input_wake_result=1;PltSleepMs(60000);input_wake_result=2; }
+static void test_input_waker(void* ignored) {
+    (void)ignored;while(input_wake_result!=1)PltSleepMs(1);
+    ml_runtime_wake_input();while(input_wake_result!=2)PltSleepMs(1);input_wake_result=42;
+}
+int ml_input_wake_test_start(void) {
+    if(ml_runtime_tasks())return -1;input_wake_result=0;
+    return ml_spawn_input_task(test_input_sleeper,NULL)||ml_spawn_task(test_input_waker,NULL);
+}
+int ml_input_wake_test_result(void) { return input_wake_result; }
 
 static int interrupt_test_result;
 static void test_sleeping_thread(void* ignored) { PltSleepMs(60000);interrupt_test_result=1; }

@@ -18,6 +18,10 @@ parser.add_argument('--output',type=Path,required=True)
 parser.add_argument('--healthy',action='store_true')
 parser.add_argument('--skip-upload',action='store_true')
 parser.add_argument('--fps',type=int,choices=[15,30,60],help='Override this test stream only; saved settings are unchanged')
+parser.add_argument('--resolution',choices=['720','1080'])
+parser.add_argument('--bitrate',type=int,choices=[3000,5000,10000])
+parser.add_argument('--completion-pump-ms',type=int,choices=[4,6])
+parser.add_argument('--no-overlay',action='store_true')
 parser.add_argument('--measure-ms',type=int,default=0,help='Collect ordinary UI telemetry before the fault (0–20000 ms)')
 args=parser.parse_args()
 if not 0<=args.measure_ms<=20000:parser.error('--measure-ms must be between 0 and 20000')
@@ -26,9 +30,14 @@ if not args.skip_upload:
     with args.output.with_suffix('.upload.txt').open('wb') as trace:
         upload_module(args.console_ip,(root/'investigation/wasm2js/dist/moonlight-stream.js').read_text(),trace)
 parts=[(APP_DIR/p).read_text() for p in APP_SCRIPTS[:-1]]
+if args.completion_pump_ms:
+    index=APP_SCRIPTS.index('src/streaming/stream-client.js')
+    source=parts[index]
+    assert source.count('var completionBudgetMs=pumpBudgetMs===12?6:4;')==1
+    parts[index]=source.replace('var completionBudgetMs=pumpBudgetMs===12?6:4;',f'var completionBudgetMs={args.completion_pump_ms};')
 entry=(APP_DIR/APP_SCRIPTS[-1]).read_text().rstrip().removesuffix(';')
 helper=(here/'test-stream-outage-exit.js').read_text()
-source=';\n'.join(parts)+';\n(async function(){window.__moonlightExitTestHealthy='+str(args.healthy).lower()+';window.__moonlightExitTestConfig='+json.dumps({'fps':args.fps,'measureMs':args.measure_ms})+';\n'+helper+'\nreturn await '+entry+';})();'
+source=';\n'.join(parts)+';\n(async function(){window.__moonlightExitTestHealthy='+str(args.healthy).lower()+';window.__moonlightExitTestConfig='+json.dumps({'fps':args.fps,'resolution':args.resolution,'bitrate':args.bitrate,'showStats':False if args.no_overlay else None,'measureMs':args.measure_ms})+';\n'+helper+'\nreturn await '+entry+';})();'
 wire=args.output.with_suffix('.wire.txt')
 with wire.open('wb') as trace:
     send_payload(args.console_ip,wrap_payload(source),trace,65)

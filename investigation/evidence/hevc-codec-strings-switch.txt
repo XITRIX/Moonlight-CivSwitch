@@ -1,0 +1,17 @@
+Executing payload...
+MOONLIGHT_CODEC_LITERAL: {"offset":"31961be","value":"audio/"}
+MOONLIGHT_CODEC_LITERAL: {"offset":"31ae212","value":"video/"}
+MOONLIGHT_CODEC_LITERAL: {"offset":"31b4410","value":"avc"}
+MOONLIGHT_CODEC_LITERAL: {"offset":"3235bd5","value":"x-vnd.on2.vp8"}
+MOONLIGHT_CODEC_LITERAL: {"offset":"31e5a1e","value":"x-vnd.on2.vp9"}
+MOONLIGHT_CODEC_LITERAL: {"offset":"322937e","value":"mp4a-latm"}
+MOONLIGHT_CODEC_LITERAL: {"offset":"31c0edb","value":"vorbis"}
+MOONLIGHT_CODEC_LITERAL: {"offset":"31961e9","value":"mime"}
+MOONLIGHT_CODEC_LITERAL: {"offset":"31a1f45","value":"video/avc"}
+MOONLIGHT_CODEC_LITERAL: {"offset":"31fe5be","value":"width"}
+MOONLIGHT_CODEC_LITERAL: {"offset":"31fe5b7","value":"height"}
+MOONLIGHT_CODEC_LITERAL: {"offset":"31e5a5a","value":"sar-width"}
+MOONLIGHT_CODEC_LITERAL: {"offset":"3235be3","value":"sar-height"}
+MOONLIGHT_CODEC_LITERAL: {"offset":"3241a3a","value":"avcc"}
+MOONLIGHT_CODEC_LITERAL: {"offset":"31b4414","value":"max-input-size"}
+Executed successfully

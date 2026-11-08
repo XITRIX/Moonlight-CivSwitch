@@ -5,6 +5,11 @@ implementations compiled to ordinary JavaScript with Emscripten/wasm2js. It does
 not require WebAssembly or native ARM64 payloads. The upstream checkout remains
 unmodified and pinned in `investigation/wasm2js/sources.lock.json`.
 
+Video uses H.264. The installed movie API exposes H.264, VP8, and VP9 video
+decoder types and rejects HEVC MIME types; there is no working HEVC option to
+expose in Settings. See the [on-console HEVC investigation](../investigation/evidence/hevc.md)
+for the runtime checks and the limits of this finding.
+
 ## Run
 
 Build with the local pinned toolchain, then leave CivSwitch waiting on port 9026:
@@ -29,12 +34,17 @@ status is visible during startup/stopping and hidden during playback. The app re
 to the cached Games screen; it does not send Sunshine `/cancel` to terminate the
 host application. B from Games returns to Host; B again closes the UI.
 
-Open Settings from Host or the Games footer to choose 360p/540p/720p,
+Open Settings from Host or the Games footer to choose 360p/540p/720p/1080p,
 15/30/60 FPS, and 1–10 Mbps presets. D-pad up/down chooses a setting; left/right
 adjusts its value. Back/B saves to `save:/moonlight-experiment/settings.json`.
 Preferences survive reloading the UI and apply to the next launch or resume,
 including the core bitrate request. Defaults are 720p, 30 FPS, 5 Mbps; a selected
 frame rate is a request, not a guarantee of measured playback performance.
+**Frame pacing** chooses Smooth (default) or Low latency. At 60 FPS, Smooth keeps
+one spare decoded frame to bridge uneven output arrival, adding up to one frame
+of buffering. Low latency presents the newest ready output and skips older ones.
+The spare-frame buffer is inactive at 15/30 FPS. Preferences still use the same
+settings file; no additional Switch files are created.
 The saved **Performance overlay** preference (Off by default) displays interval
 statistics during playback. Missing host data appears as a dash.
 
@@ -56,14 +66,32 @@ decoder's pending count is submitted minus acquired outputs. Buffered audio is a
 upper bound from unreclaimed PCM buffers plus staging; it includes the whole
 currently playing buffer and buffers that have finished since the last reclaim.
 
-The renderer drains ready outputs before copying to the shared texture, retaining
-the newest displayable timestamp and releasing superseded frames. Each drain is
-bounded to 32 outputs and holds at most two slots. All acquired slots are released
-on format/presentation errors. Encoded H.264 inputs are still decoded to preserve
-reference frames. The overlay's **Stale skipped** count tracks this deliberate
-presentation coalescing separately from network frame gaps and decoder rejects.
-Texture submissions can consequently be fewer than decoded frames: older outputs
-are no longer copied repeatedly into the same texture during a single drain.
+Low latency drains up to 32 outputs, retaining the newest displayable timestamp
+with at most two temporary slots. Smooth at 60 FPS retains the newest two ready
+outputs and submits the older one, leaving one spare to bridge an empty tick.
+It briefly holds at most three slots while trimming an extra acquisition. Outputs
+older than two frame periods since decoder submission are discarded before
+selection; non-increasing presentation timestamps are rejected. Initial priming
+waits for two outputs or one frame period. Neither mode publishes more than once
+per render tick, and all encoded inputs are decoded to preserve reference frames.
+The overlay's **Stale skipped** count separates deliberate coalescing/catch-up from
+network frame gaps and decoder rejects.
+
+GPU output uses an owned NVN sync object passed through `Buffer::SetNvnSync`.
+The early output check queues a native copy, then packet processing overlaps its
+execution. Zero-timeout fence polls publish only completed copies and release the
+selected decoder slot afterwards. An unfinished transfer retains its slot and
+prevents another submission. No GPU queue-finish or blocking fence wait runs per
+frame. CPU NV12/PNG diagnostics retain their synchronous path. On uncertain GPU
+submission/completion/release failures, native resources are quarantined and a
+restart is required rather than freeing memory still possibly in use.
+
+The overlay's GPU submit time measures CPU time in the native transfer call.
+Decoder-to-texture time spans decoder submission to publication, including pacing
+and polling, and excludes host, network, physical input and display scanout. The
+internal completion metric is time to observing a signaled fence, not exact GPU
+execution time. The copy/present counter excludes overlapped GPU execution; fence
+poll CPU cost is tracked separately.
 
 Audio uses fixed 20 ms PCM chunks, two native buffers (40 ms), and one replaceable
 software chunk (20 ms). The completed-PCM budget is 60 ms; partial staging adds
@@ -104,10 +132,11 @@ second. Diagnostics are not automatically flushed to the network on exit.
 
 The stream loop runs on animation callbacks, with a 50 ms watchdog when rendering
 callbacks stop. Each iteration first checks completed video, gives cooperative C
-tasks a 10 ms budget, then drains pending audio. Checking video before the packet
-pump reduces empty-check/multiple-output alternation at 60 FPS. There is still at
-most one texture publication per tick and no added decoded-frame queue. GPU copy
-and driver wait time remain outside the measured core budget. Socket loops and media callbacks check that deadline and
+tasks budgets of 4 ms and 6 ms. A fence check between the pumps releases completed
+video promptly; a second check after the remaining work covers later completions.
+Pending audio drains afterwards. Each pump prioritizes input. GPU submission,
+publication and fence-poll CPU costs remain outside the measured core budgets.
+Socket loops and media callbacks check their current pump's deadline and
 yield before starting more work. This is a cooperative limit: an individual native
 call or codec operation can still exceed it. The overlay reports loop frequency
 and average pump/drain costs so scheduling stalls can be distinguished from RTT.
@@ -126,11 +155,15 @@ and the existing unfinished-task safeguard still applies. This is a cooperative
 exit path; it cannot preempt an individual blocking native driver call.
 
 Each pump first gives the controller-dispatch task one turn, followed by upstream's
-`InputSend` task, before the regular round-robin pass. All tasks share the same
-10 ms deadline. This keeps incoming video/audio packet work from consuming the
+`InputSend` task, before the regular round-robin pass. All tasks in a pump share its
+deadline; the two per-frame pump budgets total 10 ms (4+6). Demanding 60 FPS
+modes—above 720p or at least 8 Mbps—use 12 ms (6+6), allowing more receive/audio
+work and checking GPU completion after 6 ms. This keeps incoming video/audio packet work from consuming the
 budget before newly sampled controller state can reach the socket. The pinned
 upstream thread name selects the input sender; upstream protocol, encryption,
 reliability and controller packet formats are unchanged.
+Queuing a controller update or key also wakes the sleeping dispatch task, so it
+does not wait for its 4 ms polling sleep to expire before the next priority pass.
 
 The input timing probe correlates neutral controller updates with ENet channel 16
 reliable sequence numbers and host acknowledgements. Sample-to-socket time measures
@@ -140,6 +173,9 @@ cadence or physical display scanout. Retransmission counts are not a Wi-Fi loss
 percentage: delayed ACK servicing can also trigger retransmission. Under continuous
 input, intentional coalescing can prevent one-to-one sample/packet correlation;
 the probe suppresses sample-based timing when not every update has a matching send.
+New send matching stops at stream interruption; teardown's neutral-controller
+packet cannot satisfy a measured sample. Sparse samples are used for the final
+1080p latency check to avoid ambiguity from continuous-state coalescing.
 
 ## Data path and limits
 
@@ -150,17 +186,26 @@ the probe suppresses sample-based timing when not every update has a matching se
   structures, options and errors to native SDK TCP/UDP. Blocking waits yield to
   preserve progress by the UI and other C tasks. There are no JS callbacks
   masquerading as native thread entry points.
+  Video packet size is 1392 bytes for this IPv4 LAN client, reducing per-packet
+  socket/fiber overhead while leaving room for RTP/UDP/IP and encryption headers
+  within a 1500-byte MTU. It is not an Internet path-MTU discovery mechanism.
 - The core assembles H.264 access units and feeds a private native `movie::Decoder`
   with output format 3 and mode 2. Its native GPU transfer writes into an app-owned
   RGBA Civ VII texture. The output Buffer points to the engine's NVN texture,
   has capacity 8, and receives the renderer's NVN device through `SetNvnDev`.
-  With no NVN sync supplied, the decoder finishes its copy queue before returning.
-  This is a GPU copy, not a zero-copy decoder surface. No decoded pixels cross JS.
+  An owned NVN sync allows asynchronous transfer; the app checks completion before
+  publication and decoder-slot release. This is a GPU copy, not a zero-copy
+  decoder surface. No decoded pixels cross JS.
   Gameface displays a private `live:/moonlight-experiment/<id>` image, reusing its
   handle through dynamic-image invalidation. There is no PNG encoding, Base64,
   JavaScript color conversion, or per-frame texture recreation on this path.
-  The default request is 1280×720, 30 fps, 5000 kbit/s. Bounded host runs sustained
-  roughly 30 presented fps. Input-to-display latency is not yet measured.
+  The default request is 1280×720, 30 fps, 5000 kbit/s. GPU decoder and texture
+  bounds allow up to 1920×1080, 60 fps, 10000 kbit/s. Above 720p, the compressed
+  native input buffer requests 1 MiB instead of 256 KiB to accommodate larger
+  keyframes; every submitted frame is still checked against actual capacity.
+  See the [1080p measurements](../investigation/evidence/quality-1080p.md) for
+  delivered FPS, input, audio and exit checks. Input-to-display latency is not
+  yet measured.
 - Construct the decoder before allocating MediaData/owned movie Buffers. Its
   initialization changes the allocator callbacks. Earlier probes that allocated
   configuration first crashed when destroying a buffer from the built-in pool.

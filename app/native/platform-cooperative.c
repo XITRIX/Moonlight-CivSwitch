@@ -74,6 +74,9 @@ void ml_runtime_checkpoint(void) {
     if(current&&pumping&&emscripten_get_now()>=pump_deadline){budget_yields++;ml_yield_ms(0);}
 }
 int ml_runtime_budget_yields(void) { return budget_yields; }
+void ml_runtime_wake_input(void) {
+    for(int i=0;i<TASK_LIMIT;i++)if(tasks[i]&&tasks[i]->priority==2&&tasks[i]->state==SLEEPING)tasks[i]->wake_time=0;
+}
 static int runnable(Task* task) {
     return task->state == READY || (task->state == SLEEPING && emscripten_get_now() >= task->wake_time) ||
         (task->state == WAIT_COND && *(uint32_t*)task->wait_object != task->generation) ||

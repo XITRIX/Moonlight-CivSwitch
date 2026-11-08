@@ -15,7 +15,7 @@
   function check(){if(options.signal&&options.signal.aborted)throw Error("Stream canceled");}
   async function launch(input,appId,mode,extra){
    if(!Number.isInteger(appId)||appId<1||appId>0xffffffff)throw Error("Invalid application ID");
-   if(!mode||![mode.width,mode.height,mode.fps,mode.bitrate].every(Number.isInteger)||mode.width<64||mode.width>1280||mode.height<64||mode.height>720||mode.fps<1||mode.fps>60||mode.bitrate<128||mode.bitrate>10000)throw Error("Invalid prototype stream mode");
+   if(!mode||![mode.width,mode.height,mode.fps,mode.bitrate].every(Number.isInteger)||mode.width<64||mode.width>1920||mode.height<64||mode.height>1080||mode.fps<1||mode.fps>60||mode.bitrate<128||mode.bitrate>10000)throw Error("Invalid prototype stream mode");
    var address=global.MoonlightPairing.parseHost(input),identity=await options.loadIdentity(),host=await options.loadHost(address.key);check();
    if(!identity||!host||!host.certificatePem||host.uniqueId!==identity.uniqueId)throw Error("Pair with this host first");
    if(!/^\d+\.\d+\.\d+\.\d+$/.test(address.host))throw Error("The streaming adapter currently requires an IPv4 address");

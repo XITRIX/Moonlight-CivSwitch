@@ -13,6 +13,14 @@ and the later native GPU decoder path at about 30 presented fps at 720p.
 [Live session evidence](streaming-live.md) tracks
 video/audio results and their remaining limitations.
 
+The [HEVC investigation](hevc.md) identifies all five installed movie decoder
+types and records on-console HEVC format rejection. The additional video types
+are VP8 and VP9, so the app retains H.264 without adding an unsupported setting.
+
+The [1080p quality investigation](quality-1080p.md) records 1080p60/10 Mbps
+decoder/texture validation, larger LAN packets, render/pump experiments, and
+full-UI, audio, input and local exit measurements.
+
 - `network-capabilities.txt`: actual JavaScript capability inventory; XHR external
   request returned404. WebSocket exists but external connectivity was not tested.
 - `native-network.txt`: direct native TCP GET returnedHTTP200/serverinfo. SDK
@@ -440,3 +448,56 @@ stream preferences. Reproduce the isolated comparison with:
 python3 -B investigation/probes/run-frame-pacing.py 192.168.1.182 --phase baseline --continuous --output investigation/evidence/pacing-baseline-recheck.txt
 python3 -B investigation/probes/run-frame-pacing.py 192.168.1.182 --phase current --continuous --skip-upload --output investigation/evidence/pacing-current-recheck.txt
 ```
+
+GPU overlap and bounded Smooth pacing (2026-11-08):
+`gpu-overlap-summary.json` records the next optimization. A fresh full-UI timing
+breakdown (`gpu-wait-baseline-ui-switch.txt`) found 3.258 ms average native GPU
+transfer time versus 0.164 ms publication time. The existing decoder's NVN sync
+path was inspected with bounded read-only captures and REA, then tested while
+still waiting synchronously (`gpu-fence-wait-switch.txt`): 973 copies queued in
+251.221 ms and waited 2333.551 ms, all completed without fallback. The native
+sync evidence and ABI limits are documented in `direct-rendering.md`.
+
+The app now queues the copy early, pumps the core for 4 ms, polls the fence with
+zero timeout, pumps for another 6 ms and polls again. A decoder output stays
+owned until its GPU copy completes. Only one copy can be outstanding and only
+one texture publication occurs per tick. Unknown GPU failures or an unfinished
+transfer at close quarantine media/IO/core ownership instead of freeing memory
+possibly still in use. Asynchronous transfer alone and shifted checks still
+coalesced too many outputs (`gpu-overlap-pacing-switch.txt`,
+`gpu-overlap-split3-switch.txt`, `gpu-overlap-finish4-switch.txt`). Smooth pacing
+at 60 FPS therefore retains one spare decoded frame, primes for at most one
+frame period, and discards stale/excess/backward-timestamp outputs. Low latency
+remains selectable in Settings and uses newest-only selection. Pacing is inactive
+at 15/30 FPS; GPU overlap is used in both modes. No additional Switch files are
+created; the preference uses the existing experiment settings file.
+
+For connected telemetry samples after the first two, isolated Smooth delivery
+averaged 59.519 texture FPS with p95 update gap 17.238 ms
+(`gpu-overlap-paced-switch.txt`). The complete UI with overlay enabled averaged
+57.067 FPS versus 49.444 before, with approximately 60 decoded FPS in both runs.
+Full-UI GPU submission averaged 0.231 ms and publication 0.095 ms. Measured
+decoder-submission-to-texture-publication age was 28.660 ms, including pacing;
+this is not input-to-display or host-to-display latency. Smooth adds up to one
+frame of buffering. These are sequential LAN runs, not replayed packet traces,
+and texture counters do not establish physical display scanout.
+
+`gpu-overlap-input-switch.txt` verified all 1,200 continuous neutral controller
+updates were sent and acknowledged. Median local send delay was 2.278 ms,
+p95 7.949 ms; median sample-to-ACK was 7.813 ms. The full-UI 60 FPS outage test
+returned to Games in 186.968 ms with state/tasks zero. A repeated-run 30 FPS
+test subsequently disconnected after UI ready; the user confirmed Civ VII
+closed (`gpu-overlap-30-healthy-switch-sender.txt`). Its exact cause remains
+unresolved. The same check passed from a restarted process in
+`gpu-overlap-30-fresh-switch.txt`, with host-acknowledged disconnect and return
+in 129.546 ms. Most ordinary intervals decoded/presented 29–30 FPS; two source/
+decode dips lowered both together. There was no active spare-frame buffer at
+30 FPS, and presented/decoded means were 28.117/28.217 respectively.
+
+`gpu-overlap-local-tests.txt` records 46 passing checks, covering retained GPU
+ownership, completion/error/stop paths, pacing burst/empty ticks, bounded age and
+backlog, settings persistence, Low latency forwarding, and timing counters.
+`gpu-overlap-ui-tests.txt` covers the new settings row, help text, navigation and
+existing flows. `settings-screen-preview.png` and `performance-overlay-preview.png`
+were refreshed. `gpu-overlap-loaded-ui-switch.txt` records the normal updated UI
+ready after the fresh-process validation. Native analysis sessions were closed.

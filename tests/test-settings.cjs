@@ -8,10 +8,12 @@ const settings=context.MoonlightSettings,plain=v=>JSON.parse(JSON.stringify(v));
 test('stream settings survive a new store and reject unsupported stream modes',()=>{
  let file=null,commits=0;
  const adapter={read:()=>file,write:text=>file=text,commit:()=>commits++};
- const store=settings.create(adapter),mode={width:960,height:540,fps:60,bitrate:8000,showStats:true};
- assert.deepEqual(plain(store.load()),{width:1280,height:720,fps:30,bitrate:5000,showStats:false});
+ const store=settings.create(adapter),mode={width:960,height:540,fps:60,bitrate:8000,showStats:true,videoPacing:"smooth"};
+ assert.deepEqual(plain(store.load()),{width:1280,height:720,fps:30,bitrate:5000,showStats:false,videoPacing:"smooth"});
  store.save(mode);assert.equal(commits,1);assert.deepEqual(plain(settings.create(adapter).load()),mode);
- for(const invalid of [{...mode,width:1920,height:1080},{...mode,fps:120},{...mode,bitrate:20000},{...mode,bitrate:'8000'},{...mode,showStats:'yes'}])assert.throws(()=>store.save(invalid),/Invalid/);
+ store.save({...mode,videoPacing:'latency'});assert.equal(settings.create(adapter).load().videoPacing,'latency');store.save(mode);
+ store.save({...mode,width:1920,height:1080,bitrate:10000});assert.equal(settings.create(adapter).load().width,1920);store.save(mode);
+ for(const invalid of [{...mode,width:2560,height:1440},{...mode,fps:120},{...mode,bitrate:20000},{...mode,bitrate:'8000'},{...mode,showStats:'yes'},{...mode,videoPacing:'unbounded'}])assert.throws(()=>store.save(invalid),/Invalid/);
  assert.deepEqual(plain(store.load()),mode);
  for(const text of ['{',JSON.stringify({version:2,mode}),JSON.stringify({version:1,mode:{...mode,fps:0}})]){file=text;assert.throws(()=>store.load());assert.equal(file,text);}
 });
