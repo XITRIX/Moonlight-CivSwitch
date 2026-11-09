@@ -9,6 +9,16 @@ Sunshine pairing, a game library, controller input, video and stereo audio.
 physical cartridge, version **1.0.0**, with CivSwitch already set up. Compatibility
 with other Switch models has not been established.
 
+## Screenshots
+
+| Pairing | Game library |
+| :---: | :---: |
+| [![Pair a PC with Moonlight](docs/images/pairing.jpg)](docs/images/pairing.jpg) | [![Browse the Moonlight game library](docs/images/games.jpg)](docs/images/games.jpg) |
+| **Stream settings** | **Streaming controls** |
+| [![Moonlight resolution, frame rate and bitrate settings](docs/images/settings.jpg)](docs/images/settings.jpg) | [![Moonlight disconnect and terminate controls during a stream](docs/images/streaming.jpg)](docs/images/streaming.jpg) |
+
+*Captured on Switch 2. Click a screenshot to enlarge.*
+
 ## Installation
 
 Have [Sunshine](https://github.com/LizardByte/Sunshine) running on your PC and
