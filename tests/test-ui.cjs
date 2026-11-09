@@ -65,6 +65,7 @@ const sleep=ms=>new Promise(r=>setTimeout(r,ms));
   assert.equal(await evaluate('document.querySelector("#moonlight-pair-screen h2").textContent'),'Pair');
   assert.equal(await evaluate('getComputedStyle(document.querySelector("#moonlight-pair-screen h2")).fontSize'),await evaluate('getComputedStyle(document.querySelector("#moonlight-hosts-screen h2")).fontSize'));
   assert.equal(await evaluate('document.getElementById("moonlight-pair").textContent'),'Pair');
+  assert.equal(await evaluate('document.getElementById("moonlight-host").value'),'','host example is only a placeholder');
   await evaluate('window.__pairMode="error"');await key('ArrowDown');await key('Enter');
   assert.equal(await evaluate('document.getElementById("moonlight-status").textContent'),'Incorrect PIN');
   assert.equal(await evaluate('document.getElementById("moonlight-pair-screen").style.display'),'flex');
@@ -78,7 +79,7 @@ const sleep=ms=>new Promise(r=>setTimeout(r,ms));
   await evaluate('window.__finishPair();delete window.__finishPair;window.__pairMode="success"');await sleep(250);
   assert.equal(await evaluate('window.__hosts.length'),0);
   // Pairing saves a host and returns to Hosts without fetching the application list.
-  await key('Enter');await key('ArrowDown');await key('Enter');
+  await key('Enter');await evaluate('document.getElementById("moonlight-host").value="192.168.1.4:47989"');await key('ArrowDown');await key('Enter');
   await until('document.querySelectorAll("#moonlight-host-list [data-host-address]").length===1');
   assert.equal(await evaluate('document.getElementById("moonlight-hosts-screen").style.display'),'flex');
   assert.equal(await evaluate('document.getElementById("moonlight-games-screen").style.display'),'none');
@@ -332,6 +333,50 @@ const sleep=ms=>new Promise(r=>setTimeout(r,ms));
   await key('Escape');await sleep(250);
   assert.equal(await evaluate('document.querySelector("#moonlight-host-list [data-selected=true]").getAttribute("data-host-address")'),'192.168.1.5:48000');
   await key('Escape');assert.equal(await evaluate('!!document.getElementById("moonlight-simple-ui")'),false);
+  // Mock the shipped textbox's Element-mode completion: stale input contents
+  // must be replaced by GenericData, with callback cleanup after it returns.
+  await evaluate(`
+   window.__imeSubscriptions=[];window.__editors=[];
+   window.engine={on(name,fn,owner){const s={name,fn,owner};__imeSubscriptions.push(s);return {clear(){const i=__imeSubscriptions.indexOf(s);if(i>=0)__imeSubscriptions.splice(i,1);}};},off(name,fn,owner){window.__imeSubscriptions=__imeSubscriptions.filter(s=>s.name!==name||s.fn!==fn||s.owner!==owner);}};
+   window.__emitIME=(name,data)=>{for(const s of __imeSubscriptions.slice())if(s.name===name)s.fn.call(s.owner,data);};
+   window.__createElement=document.createElement.bind(document);
+   class Textbox {
+    constructor(node){this.Root=node;this.textInput=__createElement('input');this.textInput.readOnly=true;node.appendChild(this.textInput);}
+    onAttributeChanged(name,old,value){if(name==='value')this.textInput.value=value;}
+    onActivate(){this.opened=this.textInput.value;this.editable=!this.textInput.readOnly;this.focused=document.activeElement===this.textInput;engine.on('IMEValidated',this.onVirtualKeyboardTextEntered,this);engine.on('IMECanceled',this.clearVirtualKeyboardCallbacks,this);}
+    onVirtualKeyboardTextEntered(){this.Root.setAttribute('value',this.textInput.value);this.Root.dispatchEvent(new CustomEvent('text-edit-stop',{detail:{confirmed:false}}));this.clearVirtualKeyboardCallbacks();this.attachedDuringCallback=this.Root.isConnected;}
+    clearVirtualKeyboardCallbacks(){engine.off('IMEValidated',this.onVirtualKeyboardTextEntered,this);engine.off('IMECanceled',this.clearVirtualKeyboardCallbacks,this);}
+   }
+   window.__originalIMECallback=Textbox.prototype.onVirtualKeyboardTextEntered;
+   document.createElement=function(tag){const node=__createElement(tag);if(tag==='fxs-textbox'){node.maybeComponent=new Textbox(node);__editors.push(node.maybeComponent);}return node;};
+   window.__hosts=[];true;
+  `);
+  const nativeSource=fs.readFileSync(path.join(__dirname,'../app/src/ui/moonlight-ui.js'),'utf8').replace('import("/core/ui/components/fxs-textbox.js")','Promise.resolve({})');
+  await evaluate('void eval('+JSON.stringify(nativeSource)+');true');
+  await key('Enter');await key('Enter');await until('__editors[0]?.opened!==undefined');
+  assert.deepEqual(await evaluate('({opened:__editors[0].opened,editable:__editors[0].editable,focused:__editors[0].focused})'),{opened:'',editable:true,focused:true});
+  await evaluate('__editors[0].textInput.value="old192.168.1.20";__emitIME("IMEValidated",{data:"192.168.1.20"});true');
+  await until('!document.querySelector("fxs-textbox")');
+  assert.equal(await evaluate('document.getElementById("moonlight-host").value'),'192.168.1.20');
+  assert.equal(await evaluate('__editors[0].attachedDuringCallback'),true);
+  assert.equal(await evaluate('__editors[0].onVirtualKeyboardTextEntered===__originalIMECallback'),true);
+  assert.equal(await evaluate('__imeSubscriptions.filter(s=>s.name!=="InputAction").length'),0);
+  await sleep(300);await key('Enter');await until('__editors[1]?.opened!==undefined');
+  assert.equal(await evaluate('__editors[1].opened'),'','reopening never prepopulates the previous host');
+  await evaluate('__editors[1].textInput.value="discard";__editors[1].Root.dispatchEvent(new CustomEvent("text-changed",{detail:{newStr:"discard"}}));__emitIME("IMECanceled");true');
+  await until('!document.querySelector("fxs-textbox")');
+  assert.equal(await evaluate('document.getElementById("moonlight-host").value'),'192.168.1.20','cancel preserves the previous host');
+  assert.equal(await evaluate('__imeSubscriptions.filter(s=>s.name!=="InputAction").length'),0);
+  await sleep(300);await key('Enter');await until('__editors[2]?.opened!==undefined');
+  await evaluate('__editors[2].textInput.value="192.168.1.30";__emitIME("IMEValidated");true');
+  await until('!document.querySelector("fxs-textbox")');
+  assert.equal(await evaluate('document.getElementById("moonlight-host").value'),'192.168.1.30','confirmation without GenericData reads the input');
+  await sleep(300);await key('ArrowDown');
+  assert.equal(await evaluate('document.getElementById("moonlight-pair").getAttribute("data-selected")'),'true','navigation resumes after confirmation');
+  await key('ArrowUp');await key('Enter');await until('__editors[3]?.opened!==undefined');
+  await evaluate('window.__moonlightSimpleUI.close();true');
+  assert.equal(await evaluate('__imeSubscriptions.length'),0,'closing removes every owned input/IME subscription');
+  assert.equal(await evaluate('!!document.querySelector("fxs-textbox")'),false);
   console.log('UI tests passed: Hosts/Pair navigation, pairing failure/cancellation, multiple saved hosts and reload, direct game selection, saved stream settings, save errors, settings-to-stream mode forwarding, overlay on/off and cleanup, PNG covers and lazy pages, download/decode fallback and cancellation, 720p/1080p grid, four-way input, paging, horizontal footer, safe titles, list errors/retry, reconnect, close.');
  }finally{
   if(socket)socket.close();

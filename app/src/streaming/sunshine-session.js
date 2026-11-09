@@ -42,9 +42,11 @@
    var response=await request(path),accepted=field(response,resume?"resume":"gamesession",true);
    if(!accepted||accepted==="0")throw Error("Sunshine did not start the stream");
    var url=field(response,"sessionUrl0");
-   // Keep both encrypted and plain RTSP on the paired host.
-   var match=/^rtsp(?:enc)?:\/\/([^/:\s]+):(\d{1,5})(?:\/[^\s]*)?$/.exec(url);
-   if(!match||match[1]!==address.host||Number(match[2])<1||Number(match[2])>65535||url.length>1000)throw Error("Unsupported Sunshine RTSP session URL");
+   // Sunshine may advertise its LAN address even when reached through NAT.
+   // Preserve its RTSP resource URL (including encryption and port); the core
+   // connects to session.host, supplied separately as SERVER_INFORMATION.address.
+   var match=/^rtsp(?:enc)?:\/\/([A-Za-z0-9][A-Za-z0-9.-]*):(\d{1,5})(?:\/[^\s]*)?$/.exec(url);
+   if(!match||Number(match[2])<1||Number(match[2])>65535||url.length>1000||/[\x00-\x20\x7f]/.test(url))throw Error("Unsupported Sunshine RTSP session URL");
    return {host:address.host,version:version,codecSupport:codec?Number(codec):1,url:url,key:key,keyId:keyId,resumed:resume};
   }
   return {launch:launch};

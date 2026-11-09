@@ -15,6 +15,8 @@ npm run test:runtime
   semantics, cooperative scheduling, cancellation, input wake and PNG bounds.
 - `test-direct-receive.cjs`: packet-buffer ownership across fiber suspension,
   partial batches, errors and fallback.
+- `test-session-routing.cjs`: LAN/WAN socket destinations with host-advertised
+  LAN RTSP URLs, plain/encrypted negotiation and automatic Internet packet sizing.
 - `test-wasm2js-specialization.py`: guarded compiler/source transformations,
   including rejection of unexpected source and generated-code shapes.
 - `native/`: C fixtures and the fiber proof built by the runtime CMake targets.

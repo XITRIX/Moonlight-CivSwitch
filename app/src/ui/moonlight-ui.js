@@ -102,7 +102,6 @@
     }
 
     var host = field("moonlight-host", "Host:", "text", "192.168.1.4:47989");
-    host.value = "192.168.1.4:47989";
     var pair = element("button", panel, {
         display: "flex", alignItems: "center", justifyContent: "center", width: "100%",
         height: "58px", marginTop: "4px", padding: "0 16px", border: "2px solid #5275b4",
@@ -238,7 +237,8 @@
             if (closed || nativeEditor !== editor) return;
             var value;
             try {
-                value = editor.node.value;
+                value = editor.value;
+                if (typeof value !== "string") value = editor.node.value;
                 if (typeof value !== "string" && editor.node.maybeComponent) value = editor.node.maybeComponent.value;
             } catch (_) {}
             if (editor.confirmed && typeof value === "string") editor.target.value = value;
@@ -264,20 +264,25 @@
         }, 0);
     }
 
-    function observeNativeCompletion(module, editor) {
-        var prototype = module.default && module.default.prototype;
+    function observeNativeCompletion(editor) {
+        var component = editor.component;
         var name = "onVirtualKeyboardTextEntered";
-        var descriptor = prototype && Object.getOwnPropertyDescriptor(prototype, name);
-        var original = descriptor && descriptor.value;
+        var descriptor = Object.getOwnPropertyDescriptor(component, name);
+        var original = component[name];
         if (typeof original !== "function") return;
-        function wrapped() {
-            var isOurTextbox = this.Root === editor.node;
+        function wrapped(data) {
+            // Element-mode completion can read stale DOM text instead of the
+            // IME result. Give both paths the exact replacement, as CivHomebrew does.
+            editor.value = data && typeof data.data === "string" ? data.data : editor.input.value;
+            editor.input.value = editor.value;
             try { return original.apply(this, arguments); }
-            finally { if (isOurTextbox) finishNativeEdit(editor, true, "native"); }
+            finally { finishNativeEdit(editor, true, "native"); }
         }
-        prototype[name] = wrapped;
+        component[name] = wrapped;
         editor.restoreCallbacks = function () {
-            if (prototype[name] === wrapped) Object.defineProperty(prototype, name, descriptor);
+            if (component[name] !== wrapped) return;
+            if (descriptor) Object.defineProperty(component, name, descriptor);
+            else delete component[name];
         };
         report("MOONLIGHT_KEYBOARD_HOOKS: " + name);
     }
@@ -333,16 +338,14 @@
         status.textContent = "Opening keyboard...";
         try {
             if (!textboxModule) textboxModule = import("/core/ui/components/fxs-textbox.js");
-            var module = await textboxModule;
+            await textboxModule;
             if (closed || nativeEditor !== editor) return;
-            observeNativeCompletion(module, editor);
             editor.node = document.createElement("fxs-textbox");
             Object.assign(editor.node.style, {
                 position: "fixed", left: "0", top: "0", width: "1px", height: "1px",
                 opacity: "0", pointerEvents: "none"
             });
-            editor.node.setAttribute("enabled", "true");
-            editor.node.setAttribute("value", editor.original);
+            editor.node.setAttribute("value", "");
             editor.node.setAttribute("max-length", "128");
             editor.node.setAttribute("type", "text");
             editor.node.addEventListener("text-changed", function (event) {
@@ -369,17 +372,26 @@
             });
             if (typeof component.onActivate !== "function") throw new Error("fxs-textbox activation unavailable");
             editor.component = component;
-            var input = editor.node.querySelector("input");
-            if (input) {
-                input.type = "text";
-                input.value = editor.original;
-                input.maxLength = 128;
-            }
+            var input = component.textInput || editor.node.querySelector("input");
+            if (!input) throw new Error("fxs-textbox input unavailable");
+            editor.input = input;
+            // The enabled attribute makes the shipped component's input
+            // read-only. Keep its real focused input editable and start blank.
+            component.overrideText = true;
+            component.isPlaceholderActive = false;
+            if (component.onAttributeChanged) component.onAttributeChanged("value", null, "");
+            input.type = "text";
+            input.value = "";
+            input.maxLength = 128;
+            input.readOnly = false;
+            observeNativeCompletion(editor);
             if (typeof editor.node.receiveFocus === "function") editor.node.receiveFocus();
             else editor.node.focus();
             // Gameface applies focus/layout during its next frame.
             await new Promise(function (resolve) { requestAnimationFrame(resolve); });
             if (closed || nativeEditor !== editor) return;
+            input.focus();
+            input.value = "";
             observeKeyboardCancelEvents(editor);
             editor.activatedAt = Date.now();
             component.onActivate();

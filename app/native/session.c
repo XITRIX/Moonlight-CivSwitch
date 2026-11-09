@@ -87,9 +87,9 @@ int ml_session_start(const char* host,const char* app_version,const char* rtsp_u
     if(!PltSafeStrcpy(address,sizeof(address),host)||!PltSafeStrcpy(version,sizeof(version),app_version)||!PltSafeStrcpy(url,sizeof(url),rtsp_url))return -3;
     LiInitializeServerInformation(&server);server.address=address;server.serverInfoAppVersion=version;server.rtspSessionUrl=url;server.serverCodecModeSupport=codec_support;
     LiInitializeStreamConfiguration(&config);config.width=width;config.height=height;config.fps=fps;config.bitrate=bitrate;
-    // IPv4 LAN only: 1392-byte video payloads plus RTP/UDP/IP headers fit a
-    // 1500-byte MTU, reducing socket/fiber work compared with 1024-byte packets.
-    config.packetSize=1392;config.streamingRemotely=STREAM_CFG_LOCAL;config.audioConfiguration=AUDIO_CONFIGURATION_STEREO;
+    // Keep 1392-byte payloads on LAN. The core detects public destinations and
+    // caps remote IPv4 payloads at 1024 bytes to avoid Internet fragmentation.
+    config.packetSize=1392;config.streamingRemotely=STREAM_CFG_AUTO;config.audioConfiguration=AUDIO_CONFIGURATION_STEREO;
     config.supportedVideoFormats=VIDEO_FORMAT_H264;config.encryptionFlags=0;config.clientRefreshRateX100=fps*100;
     memcpy(config.remoteInputAesKey,key,16);config.remoteInputAesIv[0]=key_id>>24;config.remoteInputAesIv[1]=key_id>>16;config.remoteInputAesIv[2]=key_id>>8;config.remoteInputAesIv[3]=key_id;
     state=1;error_code=video_frames=audio_frames=0;input_pending=0;keys_read=keys_write=0;

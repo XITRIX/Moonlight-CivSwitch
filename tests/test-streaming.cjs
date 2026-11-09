@@ -23,10 +23,26 @@ async function main(){
  requests=[];await api.launch('192.168.1.4',123,{width:1920,height:1080,fps:60,bitrate:80000},'');
  assert.equal(new URL('https://host'+requests[1].path).searchParams.get('mode'),'1920x1080x60');
  current=123;state='SUNSHINE_SERVER_BUSY';requests=[];assert.equal((await api.launch('192.168.1.4',123,mode,'&corever=1')).resumed,true);assert(requests[1].path.startsWith('/resume?'));
+ // A pinned Sunshine host can return its LAN URL through a forwarded WAN address.
+ // Keep the original resource/encryption/port, with transport bound separately.
+ for(const scheme of ['rtsp','rtspenc']){
+  for(const resuming of [false,true]){
+   current=resuming?123:0;state=resuming?'SUNSHINE_SERVER_BUSY':'SUNSHINE_SERVER_FREE';requests=[];
+   const url=scheme+'://192.168.1.4:49010/session';
+   response=xml({[resuming?'resume':'gamesession']:1,sessionUrl0:url});
+   const wan=await api.launch('203.0.113.10:47989',123,mode,'');
+   assert.equal(wan.host,'203.0.113.10');assert.equal(wan.url,url);assert.equal(wan.resumed,resuming);
+   assert(requests.every(r=>r.host==='203.0.113.10'&&r.pinnedCertificatePem==='PINNED'&&r.identity===identity));
+   assert(requests[1].path.startsWith(resuming?'/resume?':'/launch?'));
+  }
+ }
+ current=123;state='SUNSHINE_SERVER_BUSY';
  await assert.rejects(api.launch('192.168.1.4',124,mode,''),/Another application/);
  current=0;state='SUNSHINE_SERVER_FREE';response=xml({},403,'Permission denied');await assert.rejects(api.launch('192.168.1.4',123,mode,''),/403: Permission denied/);
  response=xml({gamesession:0,sessionUrl0:'rtsp://192.168.1.4:48010'});await assert.rejects(api.launch('192.168.1.4',123,mode,''),/did not start/);
- for(const url of ['rtspenc://192.168.1.99:48010','rtsp://192.168.1.4:0','https://192.168.1.4:48010','rtsp://192.168.1.4:99999']){
+ for(const url of ['rtsp://192.168.1.4:0','https://192.168.1.4:48010','rtsp://192.168.1.4:99999',
+  'rtsp://user@192.168.1.4:48010','rtsp://192.168.1.4:48010/\r\nInjected: value','rtspenc://192.168.1.4:48010/\0hidden',
+  'rtsp://192.168.1.4:48010/'+'x'.repeat(1000)]){
   response=xml({gamesession:1,sessionUrl0:url});await assert.rejects(api.launch('192.168.1.4',123,mode,''),/RTSP session URL/);
  }
  signal.aborted=true;await assert.rejects(api.launch('192.168.1.4',123,mode,''),/canceled/);signal.aborted=false;
@@ -34,6 +50,6 @@ async function main(){
  await assert.rejects(api.launch('192.168.1.4',123,{...mode,width:1921},''),/stream mode/);
  await assert.rejects(api.launch('192.168.1.4',123,{...mode,height:1081},''),/stream mode/);
  await assert.rejects(api.launch('192.168.1.4',123,{...mode,bitrate:80001},''),/stream mode/);
- console.log('Streaming negotiation tests passed: launch/resume, pinned TLS, session keys, permissions, host-bound RTSP URLs, cancellation.');
+ console.log('Streaming negotiation tests passed: launch/resume, pinned TLS, session keys, permissions, WAN transport with LAN RTSP URLs, malformed URLs, cancellation.');
 }
 main().catch(e=>{console.error(e);process.exitCode=1;});
