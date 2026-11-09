@@ -46,7 +46,7 @@ class PackagerTests(unittest.TestCase):
         self.assertEqual(output.read_bytes(), before)
 
     def test_wizard_prompts_and_saves_reusable_metadata_without_generated_art(self):
-        answers = [str(self.root), 'Sample App', '', 'Creator', '0.1.0', '', 'lib.js,app.js', 'yes']
+        answers = [str(self.root), 'Sample App', '', 'Creator', '0.1.0', '', '', 'lib.js,app.js', 'yes']
         with patch('sys.stdin.isatty', return_value=True), patch('builtins.input', side_effect=answers) as prompt:
             self.assertEqual(self.run_tool([]), 0)
         self.assertEqual(prompt.call_count, len(answers))
@@ -57,6 +57,79 @@ class PackagerTests(unittest.TestCase):
         self.assertEqual(pm.read_package(self.root/'dist/sample-app.civapp')['icon'], '')
         # Reusing an explicit no-icon decision never prompts again.
         self.assertEqual(self.run_tool([str(self.root), '--non-interactive']), 0)
+
+    def test_update_extension_survives_standalone_packaging_and_manifest_reuse(self):
+        self.run_tool(self.flags()+['--no-icon'])
+        path = self.root/'payload.json'
+        manifest = json.loads(path.read_text())
+        extensions = {'updates': {'schema': 1, 'releasesUrl': 'https://github.com/test/app/releases/latest',
+                                  'asset': 'app.civapp'}, 'future': {'label': '雪'}}
+        manifest['extensions'] = extensions
+        path.write_text(json.dumps(manifest))
+        self.run_tool([str(self.root), '--non-interactive'])
+        output = self.root/'dist/test-app.civapp'
+        self.assertEqual(pm.read_package(output)['metadata']['extensions'], extensions)
+        self.assertEqual(json.loads(path.read_text())['extensions'], extensions)
+        manifest['extensions'] = {'constructor': {}}
+        path.write_text(json.dumps(manifest))
+        previous = output.read_bytes()
+        with contextlib.redirect_stderr(io.StringIO()), self.assertRaises(SystemExit):
+            self.run_tool([str(self.root), '--non-interactive'])
+        self.assertEqual(output.read_bytes(), previous)
+
+    def test_update_cli_overrides_reuses_and_disables_without_losing_other_extensions(self):
+        self.run_tool(self.flags()+['--no-icon'])
+        manifest_path = self.root/'payload.json'
+        manifest = json.loads(manifest_path.read_text())
+        manifest['extensions'] = {'future': {'label': '雪'}}
+        manifest_path.write_text(json.dumps(manifest))
+        flags = [str(self.root), '--non-interactive', '--releases-url',
+                 'https://github.com/test/app/releases/latest/', '--update-asset', 'app.civapp']
+        self.run_tool(flags)
+        output = self.root/'dist/test-app.civapp'
+        metadata = pm.read_package(output)['metadata']
+        self.assertEqual(metadata['extensions']['updates'], {'schema': 1, 'releasesUrl': 'https://github.com/test/app/releases/latest', 'asset': 'app.civapp'})
+        self.assertEqual(metadata['extensions']['future'], {'label': '雪'})
+        before = manifest_path.read_bytes()
+        self.run_tool([str(self.root), '--non-interactive', '--update-asset', '', '--no-save-metadata'])
+        self.assertNotIn('asset', pm.read_package(output)['metadata']['extensions']['updates'])
+        self.assertEqual(manifest_path.read_bytes(), before)
+        self.run_tool([str(self.root), '--non-interactive', '--no-updates'])
+        self.assertIsNone(pm.read_package(output)['metadata']['extensions']['updates'])
+        self.assertEqual(pm.read_package(output)['metadata']['extensions']['future'], {'label': '雪'})
+        with patch('sys.stdin.isatty', return_value=True), patch('builtins.input', side_effect=AssertionError('saved choice must not prompt')):
+            self.run_tool([str(self.root)])
+
+    def test_update_wizard_remembers_url_and_asset(self):
+        answers = [str(self.root), 'Sample App', '', 'Creator', '1.2.3', '',
+                   'https://github.com/test/app/releases/latest', 'sample.civapp', 'lib.js,app.js', 'yes']
+        with patch('sys.stdin.isatty', return_value=True), patch('builtins.input', side_effect=answers):
+            self.run_tool([])
+        updates = pm.read_package(self.root/'dist/sample-app.civapp')['metadata']['extensions']['updates']
+        self.assertEqual(updates['asset'], 'sample.civapp')
+        self.assertEqual(updates['releasesUrl'], 'https://github.com/test/app/releases/latest')
+
+    def test_invalid_update_settings_never_publish_or_modify_metadata(self):
+        self.run_tool(self.flags()+['--no-icon'])
+        manifest_path = self.root/'payload.json'
+        output = self.root/'dist/test-app.civapp'
+        before, package_before = manifest_path.read_bytes(), output.read_bytes()
+        for extra in [
+            ['--update-asset', 'app.civapp'],
+            ['--releases-url', 'http://github.com/test/app/releases/latest'],
+            ['--releases-url', 'https://github.com.evil/test/app/releases/latest'],
+            ['--releases-url', 'https://github.com/test/../releases/latest'],
+            ['--releases-url', 'https://github.com/test/app/releases/latest', '--update-asset', '../app.civapp'],
+            ['--no-updates', '--update-asset', 'app.civapp'],
+        ]:
+            with contextlib.redirect_stderr(io.StringIO()), self.assertRaises(SystemExit):
+                self.run_tool([str(self.root), '--non-interactive']+extra)
+            self.assertEqual(manifest_path.read_bytes(), before)
+            self.assertEqual(output.read_bytes(), package_before)
+        for updates in [{'schema': True, 'releasesUrl': 'https://github.com/test/app/releases/latest'},
+                        {'schema': 2}, {'schema': 1, 'releasesUrl': 'https://github.com/test/app/releases/latest', 'asset': ''}]:
+            with self.assertRaises(ValueError):
+                packager.validate_updates(updates)
 
     def test_missing_icon_requires_explicit_ci_decision_and_decline_changes_nothing(self):
         with contextlib.redirect_stderr(io.StringIO()), self.assertRaises(SystemExit) as error:
@@ -78,9 +151,9 @@ class PackagerTests(unittest.TestCase):
 
     def test_partial_manifest_unknown_fields_preserved_and_missing_fields_prompted(self):
         (self.root/'payload.json').write_text(json.dumps({'name':'Existing','id':'existing','scripts':['app.js'],'icon':None,'source':'https://example.com'}))
-        with patch('sys.stdin.isatty', return_value=True), patch('builtins.input', side_effect=['Creator','3.0','']) as prompt:
+        with patch('sys.stdin.isatty', return_value=True), patch('builtins.input', side_effect=['Creator','3.0','','']) as prompt:
             self.run_tool([str(self.root)])
-        self.assertEqual(prompt.call_count, 3)
+        self.assertEqual(prompt.call_count, 4)
         manifest = json.loads((self.root/'payload.json').read_text())
         self.assertEqual(manifest['source'], 'https://example.com')
         self.assertEqual(manifest['release'], '3.0')
@@ -131,13 +204,14 @@ class PackagerTests(unittest.TestCase):
         standalone.write_bytes((ROOT/'tools/package_payload.py').read_bytes())
         output = self.root/'artifacts/example.civapp'
         command = [sys.executable, '-I', '-B', str(standalone)]
-        flags = self.flags()+['--no-icon', '--no-save-metadata', '-o', str(output)]
+        flags = self.flags()+['--no-icon', '--no-save-metadata', '--releases-url', 'https://github.com/test/app/releases/latest', '--update-asset', 'app.civapp', '-o', str(output)]
         result = subprocess.run(command+flags, cwd=standalone.parent,
                                 stdin=subprocess.DEVNULL, capture_output=True, text=True, timeout=5)
         self.assertEqual(result.returncode, 0, result.stderr)
         self.assertFalse((self.root/'payload.json').exists())
         package = json.loads(output.read_text())
         self.assertEqual(package['id'], 'test-app')
+        self.assertEqual(package['metadata']['extensions']['updates']['asset'], 'app.civapp')
         self.assertEqual([script['name'] for script in package['scripts']], ['lib.js', 'app.js'])
         self.assertEqual(package['scripts'][0]['source'], 'var greeting="雪";')
         result = subprocess.run(command+['--inspect', str(output)], cwd=standalone.parent,

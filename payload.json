@@ -5,6 +5,13 @@
   "release": "0.1.0",
   "description": "Experimental Sunshine/Moonlight streaming client for CivSwitch.",
   "api": 1,
+  "extensions": {
+    "updates": {
+      "schema": 1,
+      "releasesUrl": "https://github.com/XITRIX/Moonlight-CivSwitch/releases/latest",
+      "asset": "moonlight.civapp"
+    }
+  },
   "scripts": [
     "app/civapp-notices.js",
     "dist/runtime/moonlight-stream.js",

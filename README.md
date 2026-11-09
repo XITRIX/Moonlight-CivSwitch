@@ -35,6 +35,12 @@ connect the PC and Switch to the same local network. Choose either method below.
 
 The app stays installed in the game’s save data, ready to launch from CivHomebrew.
 
+In a CivHomebrew version supporting app updates, select Moonlight and open
+**X Menu → Check app updates**. The package declares this repository's latest
+GitHub release and the `moonlight.civapp` asset. A newer release offers confirmation
+before installation; its tag and packaged `release` must use matching SemVer
+versions. Pairing and settings are kept outside the installation folder.
+
 ### 2. Upload to Gezine’s launcher
 
 Build the project below, then leave Gezine’s original CivSwitch loader waiting
@@ -91,6 +97,10 @@ above. No separate CivHomebrew checkout is needed. `payload.json` defines the
 bundled files and their order; rebuild the package after changing the app.
 The single-file Python packager can also be copied into other repositories;
 see [reuse and CI examples](tools/README.md).
+
+The manual **Release Moonlight** GitHub Actions workflow accepts a version,
+builds/tests the app and publishes an update-ready `moonlight.civapp` release.
+See [release workflow](docs/releases.md).
 
 ### Development checks
 

@@ -229,6 +229,48 @@ The scripts in `investigation/probes/` are
 standalone diagnostic payloads. The native diagnostic targets the configured
 LAN host and lists relevant SDK symbols without invoking TLS or writing files.
 
+## CivHomebrew update declaration · 2026-11-09
+
+`payload.json` declares schema 1 app updates from
+`https://github.com/XITRIX/Moonlight-CivSwitch/releases/latest`, selecting the
+`moonlight.civapp` asset. The bundled standalone Python packager now preserves
+and validates generic manifest extensions. Runtime files, dependency order and
+the final UI lifetime script are unchanged; the existing generated runtime matches
+its build-manifest digest and was not rebuilt for this metadata-only change.
+
+A fresh 1,873,666-byte package was built and inspected. All 11 Python packager
+checks and the Chrome package smoke passed, including extension preservation,
+source matching, icon decode, pending lifetime and clean close.
+
+Installed on `192.168.211.39` after verifying core `f8614ff3` and launcher
+`c1861ace` were active and acknowledged. Finite console readback verified the
+installed metadata, all 25 script entries and catalog checksum `c0b9e8d7`.
+Marker: `CIV_MOONLIGHT_UPDATES_INSTALLED_OK release=v0.1.0 scripts=25
+checksum=c0b9e8d7`, followed by `Executed successfully`. The launcher was restored;
+Hello CivSwitch remains installed. No streaming session was started. The GitHub
+latest-release endpoint returned HTTP 404 at implementation time; a stable release
+with the matching package asset is needed for online discovery.
+
+## Manual release CI and packager fields · 2026-11-09
+
+The manual Release Moonlight workflow accepts a stable version, bootstraps the
+pinned toolchain, builds the runtime, packages matching release/update metadata
+without rewriting source manifests, runs checks, and publishes verified assets
+from a draft as Latest. See [release instructions](releases.md). Its standard
+library helper and the standalone packager are synchronized with CivHomebrew.
+
+The packager now supports `--releases-url`, `--update-asset`, `--no-updates` and
+interactive saved update choices. All 14 packager checks pass, including a copied
+script under isolated Python. The final release-helper suite passes 10 cases
+with one intentional CivHomebrew-only skip; GitHub operations are mocked.
+Both workflows pass actionlint. Local release-artifact builds pass without
+publication. After a pinned runtime rebuild, 67 host tests, generated-runtime
+checks, fresh package creation/inspection, Chrome package smoke using the CI
+version argument, and browser navigation checks pass. All 25 script paths exist;
+the notices/runtime/adapter prefix and final UI lifetime script are unchanged.
+This CI/PC-tool change installed nothing on a Switch and published no GitHub
+release; an actual hosted workflow run remains unverified.
+
 ## Browser preview
 
 Run `python3 -m http.server 8000 --directory app` from the repository root and open

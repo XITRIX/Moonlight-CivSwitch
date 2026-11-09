@@ -24,6 +24,54 @@ def text_length(value):
     return len(value.encode('utf-16-le'))//2
 
 
+def validate_updates(value):
+    if value is None:
+        return
+    if not isinstance(value, dict) or type(value.get('schema')) is not int or value['schema'] != 1:
+        raise ValueError('App updates require schema 1 or null to disable')
+    url = value.get('releasesUrl')
+    match = isinstance(url, str) and re.fullmatch(r'https://github\.com/([A-Za-z0-9][A-Za-z0-9-]{0,38})/([A-Za-z0-9_.-]{1,100})/releases/latest/?', url)
+    if not match or match[2] in ('.', '..'):
+        raise ValueError('Releases URL must be https://github.com/OWNER/REPO/releases/latest')
+    if 'asset' in value and (not isinstance(value['asset'], str) or not re.fullmatch(r'[A-Za-z0-9][A-Za-z0-9_.-]{0,95}\.civapp', value['asset'])):
+        raise ValueError('Update asset must be a .civapp filename, without directories')
+
+
+def validate_extensions(value):
+    count = 0
+    def visit(v, depth):
+        nonlocal count
+        count += 1
+        if count > 2048 or depth > 8:
+            raise ValueError('Manifest extensions are too complex')
+        if v is None or isinstance(v, (str, bool)):
+            return
+        if isinstance(v, (int, float)):
+            import math
+            try:
+                finite = math.isfinite(v)
+            except OverflowError:
+                finite = False
+            if not finite:
+                raise ValueError('Invalid manifest extension number')
+            return
+        if isinstance(v, list):
+            for item in v:
+                visit(item, depth + 1)
+            return
+        if not isinstance(v, dict):
+            raise ValueError('Invalid manifest extension value')
+        for key, item in v.items():
+            if not isinstance(key, str) or not key or text_length(key) > 80 or re.search(r'[\x00-\x1f\x7f]', key) or key in ('__proto__', 'prototype', 'constructor'):
+                raise ValueError('Invalid manifest extension key')
+            visit(item, depth + 1)
+    if not isinstance(value, dict):
+        raise ValueError('Manifest extensions must be an object')
+    visit(value, 0)
+    if len(json.dumps(value, ensure_ascii=False, separators=(',', ':'), allow_nan=False).encode('utf-8')) > 16384:
+        raise ValueError('Manifest extensions exceed 16 KiB')
+
+
 def validate(p):
     if not isinstance(p, dict) or p.get('format') != 'civswitch-app' or type(p.get('version')) is not int or p['version'] != 1:
         raise ValueError('Unsupported .civapp format/version')
@@ -62,6 +110,10 @@ def validate(p):
             raise ValueError('Invalid '+key+' metadata')
     if type(m.get('api', 1)) is not int or m.get('api', 1) != 1:
         raise ValueError('Unsupported launcher API')
+    if 'extensions' in m:
+        validate_extensions(m['extensions'])
+        if 'updates' in m['extensions']:
+            validate_updates(m['extensions']['updates'])
     icon = p.get('icon', '')
     if not isinstance(icon, str):
         raise ValueError('Invalid PNG icon')
@@ -103,6 +155,8 @@ def pack_directory(directory, manifest=None):
         raise ValueError('Manifest icon is missing')
     metadata = {k: manifest.get(k, '') for k in ('author', 'release', 'description')}
     metadata['api'] = manifest.get('api', 1)
+    if 'extensions' in manifest:
+        metadata['extensions'] = manifest['extensions']
     p = {'format':'civswitch-app', 'version':1, 'id':manifest['id'], 'name':manifest['name'],
          'metadata':metadata, 'scripts':[], 'icon':''}
     for name in scripts:
@@ -191,6 +245,43 @@ def build(args):
     elif 'description' not in manifest:
         manifest['description'] = ask('Description (optional)', '--description', optional=True) if interactive else ''
     manifest['api'] = args.api if args.api is not None else manifest.get('api', 1)
+    extensions = dict(manifest.get('extensions', {}))
+    update_configured = 'updates' in extensions
+    updates = extensions.get('updates')
+    if args.no_updates:
+        if args.update_asset is not None:
+            raise ValueError('--no-updates cannot be combined with --update-asset')
+        extensions['updates'] = None
+    else:
+        url = args.releases_url
+        if url is None and not update_configured and interactive:
+            url = ask('GitHub releases URL for app updates (optional)', '--releases-url', optional=True)
+        if url is not None:
+            if url:
+                updates = dict(updates) if isinstance(updates, dict) else {}
+                updates.update(schema=1, releasesUrl=url.rstrip('/'))
+                validate_updates({'schema': 1, 'releasesUrl': updates['releasesUrl']})
+                if args.update_asset is None and interactive:
+                    asset = ask('Update asset filename (blank: discover one .civapp)', '--update-asset', default=updates.get('asset', ''))
+                    if asset:
+                        updates['asset'] = asset
+                    else:
+                        updates.pop('asset', None)
+                extensions['updates'] = updates
+            else:
+                extensions['updates'] = None
+        if args.update_asset is not None:
+            updates = extensions.get('updates')
+            if not isinstance(updates, dict):
+                raise ValueError('--update-asset requires --releases-url or saved update settings')
+            updates = dict(updates)
+            if args.update_asset:
+                updates['asset'] = args.update_asset
+            else:
+                updates.pop('asset', None)
+            extensions['updates'] = updates
+    if extensions:
+        manifest['extensions'] = extensions
     if args.script is not None:
         manifest['scripts'] = args.script
     elif 'scripts' not in manifest:
@@ -251,6 +342,10 @@ def main(argv=None):
     parser.add_argument('--version', '--release', dest='version', help='App release version, not the package format version')
     parser.add_argument('--description', help='Optional short description')
     parser.add_argument('--api', type=int, choices=[1], help='Launcher API version (default: 1)')
+    updates = parser.add_mutually_exclusive_group()
+    updates.add_argument('--releases-url', help='GitHub https://github.com/OWNER/REPO/releases/latest URL for app updates')
+    updates.add_argument('--no-updates', action='store_true', help='Disable app updates and remember this choice')
+    parser.add_argument('--update-asset', help='Exact .civapp release asset name; empty string enables automatic discovery')
     parser.add_argument('--script', action='append', help='Relative JS path; repeat in launch order, entry script last')
     icons = parser.add_mutually_exclusive_group()
     icons.add_argument('--icon', help='Relative path to a 256×256 PNG inside the payload directory')

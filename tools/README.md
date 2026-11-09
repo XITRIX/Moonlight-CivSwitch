@@ -67,6 +67,29 @@ python3 tools/package_payload.py --directory . --non-interactive \
 Arguments override saved metadata. `--version RELEASE` changes the app release,
 not the package format version. See `--help` for all options.
 
+## App updates
+
+Configure updates with flags or the interactive prompts:
+
+```sh
+python3 tools/package_payload.py --directory . --non-interactive \
+  --releases-url https://github.com/OWNER/REPO/releases/latest \
+  --update-asset my-app.civapp -o dist/my-app.civapp
+```
+
+The tool saves `extensions.updates` with `schema: 1`, `releasesUrl`, and the
+optional `asset`. Moonlight already declares its own repository and
+`moonlight.civapp`. URL and filename validation runs before writing any output.
+Omit the asset to discover exactly one `.civapp` in the release, or pass
+`--update-asset ""` to clear a saved name. `--no-updates` disables updates while
+preserving other extensions. An interactive blank URL saves `updates: null`,
+remembering the disabled choice. Complete saved settings are reused without
+prompts; `--no-save-metadata` makes all overrides temporary.
+
+App updates require public GitHub releases and matching SemVer release tags/app
+versions. The [manual release workflow](../docs/releases.md) builds and publishes
+the correct package version and declaration automatically.
+
 ## Provenance and checks
 
 Adapted from [XITRIX/CivHomebrew](https://github.com/XITRIX/CivHomebrew), revision
