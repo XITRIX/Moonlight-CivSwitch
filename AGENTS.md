@@ -23,16 +23,16 @@ For every Moonlight development task:
    validate a fresh package from the repository root:
 
    ```sh
-   python3 ../NS2-CivHomebrew/tools/package_payload.py --directory . \
+   python3 tools/package_payload.py --directory . \
      --non-interactive -o dist/moonlight.civapp
-   python3 ../NS2-CivHomebrew/tools/payload_menu.py inspect dist/moonlight.civapp
+   python3 tools/package_payload.py --inspect dist/moonlight.civapp
    ```
 
 4. Run checks appropriate to the change. When changing packaging, script order,
    the runtime adapter or app lifecycle, also run:
 
    ```sh
-   node ../NS2-CivHomebrew/tests/moonlight-package.cjs dist/moonlight.civapp
+   npm run test:package
    ```
 
 The packager reuses the saved paths; it does not discover dependencies or update

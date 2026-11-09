@@ -30,7 +30,7 @@
  function create(options){
   var signal={aborted:false},stopRequested=false,core,io,media,failure=null,done=null,startedAt=0,connectedAt=0,latestStats=null;
   var cpu=options.renderer==="png"||options.renderer==="native-texture";
-  var mode=options.mode||(cpu?{width:320,height:180,fps:15,bitrate:1000}:{width:1280,height:720,fps:30,bitrate:5000});
+  var mode=options.mode||(cpu?{width:320,height:180,fps:15,bitrate:1000}:{width:1280,height:720,fps:60,bitrate:20000});
   // Higher-rate streams need another receive/Opus turn before the next frame.
   // Keep room for rendering and input; lighter modes retain their 10 ms budget.
   // Loss recovery is also needed during busy 40–70 Mbps gameplay. Reserving

@@ -1,181 +1,112 @@
-# CivSwitch Moonlight
+# Moonlight for CivSwitch
 
-A personal Switch 2 experiment running a Moonlight-style UI inside Civ VII's
-CivSwitch loader. Sunshine status, PIN pairing, saved-pair reuse, native TLS,
-and the host's game/application list work. An experimental wasm2js streaming
-client now launches/resumes apps and decodes real host video on the Switch.
+Stream your PC games to Nintendo Switch 2 through Civilization VII.
+An experimental [Moonlight](https://moonlight-stream.org/) client running inside
+[Gezine’s CivSwitch](https://github.com/Gezine/CivSwitch), with
+Sunshine pairing, a game library, controller input, video and stereo audio.
 
-## Package for CivHomebrew
+**Tested on Switch 2.** Requires the Switch 1 edition of Civilization VII on a
+physical cartridge, version **1.0.0**, with CivSwitch already set up. Compatibility
+with other Switch models has not been established.
 
-Packaging is a mandatory part of the [Moonlight development routine](AGENTS.md).
-Keep `payload.json` and the sender's `APP_SCRIPTS` synchronized whenever runtime
-files or their execution order change. Before a handoff or Switch test, rebuild
-any affected generated runtime, package the current sources, and inspect the
-result. The packager does not automatically update saved source paths.
+## Installation
 
-The repository's `payload.json` is the reusable source manifest. It includes the
-built streaming runtime, its CivHomebrew factory adapter, third-party license
-notices and the UI dependencies in the same order as `tools/send_ui.py`.
-Build the runtime first with `npm run build` if it is absent or stale, then:
+Have [Sunshine](https://github.com/LizardByte/Sunshine) running on your PC and
+connect the PC and Switch to the same local network. Choose either method below.
 
-```sh
-python3 ../NS2-CivHomebrew/tools/package_payload.py --directory . \
-  --non-interactive -o dist/moonlight.civapp
-python3 ../NS2-CivHomebrew/tools/payload_menu.py inspect dist/moonlight.civapp
-node ../NS2-CivHomebrew/tests/moonlight-package.cjs dist/moonlight.civapp
-```
+### 1. CivHomebrew — recommended
 
-Use `--version RELEASE` to update the saved package release, or pass
-`--no-save-metadata` for CI overrides. `app/assets/moonlight-switch.png` reuses
-Moonlight-Switch's original icon; its pinned source and license are alongside it.
-The package contains the full license texts in `app/civapp-notices.js`.
-This remains the experimental CivSwitch app, rather than the Moonlight-Switch NRO.
-It does not include host credentials or local pairing data. Install through the
-CivHomebrew companion; do not send the JSON package as a raw JS payload.
+1. Set up [CivHomebrew](https://github.com/XITRIX/CivHomebrew) on your Switch.
+2. Get a `moonlight.civapp` package, or build one using the instructions below.
+3. In CivHomebrew, open **Y Options → FTP** and enable the FTP server.
+4. Connect an FTP client to the Switch (default port **5000**) and upload
+   `moonlight.civapp` into **Install civapp**.
+5. Select **Moonlight** in the launcher and press **A**.
 
-## Layout
+The app stays installed in the game’s save data, ready to launch from CivHomebrew.
 
-```text
-app/
-  index.html           Browser preview entry
-  native/              C cooperative runtime, sockets, callbacks, PNG preview
-  src/
-    ui/                Hosts, Pair and Games screens, keyboard/controller input
-    protocol/          Sunshine pairing and application-list client
-    platform/          CivSwitch native sockets, TLS, and file access
-    storage/           Persistent pairing store
-    streaming/         Launch negotiation, core lifecycle, native media adapters
-    clear-switch-data.js
-  vendor/              Bundled Forge library, license, and modification notes
-tools/
-  wasm2js/             Bootstrap, CMake build, guarded compiler transforms
-  send_ui.py           App payload sender
-  civswitch_sender.py  Shared loader transport
-third_party/
-  sources.lock.json    Pinned upstream sources and SDK revisions
-  moonlight-common-c/  Downloaded dependency, ignored
-  mbedtls/             Downloaded dependency, ignored
-toolchains/emsdk/      Local pinned SDK, ignored
-build/wasm2js/         Generated objects and compiler cache, ignored
-dist/runtime/         Generated JS, manifest, and licenses, ignored
-tests/
-  runtime/             Generated-runtime tests and native C fixtures
-                       Other tests cover protocol, storage, and browser UI
-docs/                  Implementation notes
-investigation/
-  probes/              Standalone console investigation payloads
-  evidence/            Captured results and test preview
-  references/          CivSwitch checkout and nxhid reference bundle
-```
+### 2. Upload to Gezine’s launcher
 
-App source lives under `app/`; the sender preloads the streaming core from
-`dist/runtime/` by default. Use `--no-streaming` for UI-only debugging.
-The [runtime build](tools/wasm2js/README.md) uses pinned
-dependencies documented in [third_party/](third_party/README.md).
-Research checkouts remain separate in
-[investigation/references/](investigation/references/README.md).
-
-## Run
-
-For a modded Switch, [JKSV setup](docs/jksv-setup.md) builds the persistent
-CivSwitch loader save offline to avoid the chat keyboard bootstrap.
-
-From the repository root, with CivSwitch waiting on the Switch:
+Build the project below, then leave Gezine’s original CivSwitch loader waiting
+for a payload. From the Moonlight repository, run:
 
 ```sh
+python3 tools/send_ui.py SWITCH_IP
+```
+
+Replace `SWITCH_IP` with your console’s local IP address. The sender uploads the
+streaming runtime and app automatically. Keep the terminal open while using it;
+close Moonlight before uploading another payload.
+
+## First launch
+
+Choose **Pair new host**, enter your PC’s IP address, and approve the displayed
+PIN in Sunshine. Select the paired PC, then choose a game or Desktop to stream.
+
+- **D-pad / A:** navigate and select. **B:** go back or close Moonlight from Hosts.
+- **− and + together:** stop streaming and return to the game library.
+- **Settings:** adjust resolution, frame rate, bitrate and frame pacing.
+  Defaults are **720p, 60 FPS, 20 Mbps**.
+
+Pairing and settings are saved between sessions.
+
+## Build from source
+
+Install **Git, Python 3.10+, Node.js 22+ with npm, CMake, and a C/C++ build toolchain**
+(Xcode Command Line Tools on macOS, or build-essential on Linux). Then run:
+
+```sh
+git clone https://github.com/XITRIX/Moonlight-CivSwitch.git
+cd Moonlight-CivSwitch
 npm run bootstrap
 npm run build
-python3 tools/send_ui.py 192.168.1.182
 ```
 
-Bootstrap and build are needed once, then again when the native runtime changes.
+Bootstrap downloads the pinned dependencies and installs Emscripten **3.1.74**
+locally; no global SDK setup or `npm install` is needed. The build produces
+`dist/runtime/moonlight-stream.js`. You can now upload with `tools/send_ui.py`.
+Run `npm run build` again after changing native runtime sources.
 
-Keep the sender open. Hosts lists saved paired PCs; selecting a host opens its
-Games. Choose **Pair new host** at the end of the list to open Pair, enter the
-host address, and select **Pair**. Successful pairing returns to Hosts with that
-host selected. Covers load from Sunshine for the visible page and are cached in memory
-and under `save:/moonlight-experiment/artwork/` for reuse after closing the UI.
-The D-pad navigates the card grid in four directions; left/right switches
-between Refresh, Settings and Back. A selects; B from Games or Pair returns to Hosts. B on Hosts closes
-the UI and releases the loader for another payload.
+### Optional: create a .civapp package
 
-Settings is available on Hosts and in the Games footer. Up/down selects a row;
-left/right changes resolution (360p, 540p, 720p, 1080p), frame rate (15, 30, 60 FPS), or
-bitrate (1, 2, 3, 5, 8, 10, 15, 20, 25, 30, 40, 50, 60, 80 Mbps). A cycles a value or activates Back. Back/B saves
-to `save:/moonlight-experiment/settings.json` and returns to the previous screen.
-Changes apply to the next stream. Defaults remain 720p, 30 FPS, 5 Mbps.
-80 Mbps is an experimental stress setting; see the
-[50/60/80 Mbps measurements](investigation/evidence/quality-80mbps.md).
-The [80 Mbps follow-up](investigation/evidence/quality-80mbps-followup.md) records
-the newer direct-receive and reference-recovery improvements and live results.
-**Frame pacing** offers Smooth (default) and Low latency. Smooth keeps one spare
-decoded frame at 60 FPS for steadier delivery, adding up to one frame of buffering.
-The saved **Performance overlay** switch enables in-stream FPS, RTT/variation,
-receive/decode/copy timing, frame pacing, decoder/audio buffering and loss
-indicators. It defaults to Off. Statistics describe texture submissions, rather
-than physical display timing.
-Low latency presents the newest ready decoded frame per drain. Audio keeps at most
-60 ms of completed PCM plus a partial chunk under 20 ms, skipping stale waiting
-samples if the queue fills. The overlay shows intentional video/audio skips
-separately from network loss indicators.
-
-For UI-only debugging, skip the streaming runtime upload:
+After building, package from the Moonlight root with the included tool:
 
 ```sh
-python3 -B tools/send_ui.py 192.168.1.182 --no-streaming
+npm run package
 ```
 
-Select a card to launch or resume that app. Video fills the screen while preserving
-its aspect ratio; playback controls and status text are hidden once frames arrive.
-Press − and + together (or press Escape on a keyboard) to stop and return to Games.
-A separate timer checks the local exit chord during rendering stalls; network
-shutdown gets at most 100 ms of grace before pending stream I/O is canceled.
-Streaming diagnostics stay in RAM to avoid blocking on the loader TCP connection.
-The renderer accepts up to 1920×1080 H.264 at 60 fps and the 80 Mbps stress setting, copying decoded
-frames directly into an owned Civ VII GPU texture, without JavaScript pixel
-conversion or per-frame PNGs. Requested FPS is not a guarantee of display FPS;
-see the [current high-bitrate measurements](investigation/evidence/quality-80mbps-followup.md).
-It remains a prototype; gameplay latency has not been measured. Native stereo
-Opus/PCM output and remote controller/keyboard forwarding are wired in.
-See [streaming implementation and evidence](docs/streaming.md).
+This creates and validates `dist/moonlight.civapp`, ready to install using method 1
+above. No separate CivHomebrew checkout is needed. `payload.json` defines the
+bundled files and their order; rebuild the package after changing the app.
+The single-file Python packager can also be copied into other repositories;
+see [reuse and CI examples](tools/README.md).
 
-For a local UI preview:
-
-```sh
-python3 -m http.server 8000 --directory app
-```
-
-Open `http://localhost:8000`. Real pairing and host requests need CivSwitch.
-
-## Check
-
-Node 22+ and Python 3 are used by the development tools. No package installation
-is needed; the runtime crypto library is bundled.
+### Development checks
 
 ```sh
 npm test
-npm run test:ui
 npm run test:runtime
+npm run test:ui
+npm run test:package
 ```
 
-UI tests need Chrome. Set `CHROME_BIN` if it is not at the default macOS path.
-Runtime tests require the pinned dependencies and a completed `npm run build`;
-they check the generated JavaScript and compiler transforms locally. See
-[runtime checks](tests/runtime/README.md). The default `npm test` remains independent
-of the downloaded SDK and generated runtime.
+Runtime checks require a completed build; package checks also require
+`npm run package`. UI and package checks require Chrome; set
+`CHROME_BIN` if needed. See the [build details](tools/wasm2js/README.md),
+[streaming notes](docs/streaming.md) and [development routine](AGENTS.md) for more.
 
-## Switch data
+## Credits
 
-All app-owned Switch files stay inside `save:/moonlight-experiment/`. The native
-file-access layer rejects paths outside this directory. To delete its contents
-and the directory, close the UI and run:
+- **[Gezine](https://github.com/Gezine/CivSwitch)** — CivSwitch and the loader
+  that makes this possible.
+- **[Moonlight](https://github.com/moonlight-stream/moonlight-common-c)** and
+  **[Sunshine](https://github.com/LizardByte/Sunshine)** — streaming protocol,
+  client core and host software.
+- **[XITRIX / Moonlight-Switch](https://github.com/XITRIX/Moonlight-Switch)** —
+  my original Switch client and the app icon used here.
+- **[Emscripten](https://emscripten.org/)**, **[Mbed TLS](https://github.com/Mbed-TLS/mbedtls)**,
+  **[Forge](https://github.com/digitalbazaar/forge)**, **ENet** and **nanors** —
+  compiler, cryptography and networking foundations.
 
-```sh
-python3 tools/send_ui.py 192.168.1.182 --clear-switch-data
-```
-
-Sunshine's paired-client entry is stored on the PC separately.
-
-See [implementation notes](docs/implementation.md) for protocol and input
-details, and [investigation findings](investigation/README.md) for hardware
-evidence and reference material.
+Third-party licenses and attribution are included in the
+[bundled notices](app/civapp-notices.js).

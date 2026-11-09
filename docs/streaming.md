@@ -40,7 +40,7 @@ Open Settings from Hosts or the Games footer to choose 360p/540p/720p/1080p,
 adjusts its value. A on Bitrate opens all choices; D-pad chooses, A applies and
 B cancels the dropdown. Back/B from Settings saves to `save:/moonlight-experiment/settings.json`.
 Preferences survive reloading the UI and apply to the next launch or resume,
-including the core bitrate request. Defaults are 720p, 30 FPS, 5 Mbps; a selected
+including the core bitrate request. Defaults are 720p, 60 FPS, 20 Mbps; a selected
 frame rate is a request, not a guarantee of measured playback performance.
 **Frame pacing** chooses Smooth (default) or Low latency. At 60 FPS, Smooth keeps
 one spare decoded frame to bridge uneven output arrival, adding up to one frame
@@ -223,7 +223,7 @@ packet cannot satisfy a measured sample. Sparse samples are used for the final
   Gameface displays a private `live:/moonlight-experiment/<id>` image, reusing its
   handle through dynamic-image invalidation. There is no PNG encoding, Base64,
   JavaScript color conversion, or per-frame texture recreation on this path.
-  The default request is 1280×720, 30 fps, 5000 kbit/s. Native stream settings
+  The default request is 1280×720, 60 fps, 20000 kbit/s. Native stream settings
   allow up to 1920×1080, 60 fps, 80000 kbit/s. Above 720p, the compressed
   native input buffer requests 1 MiB instead of 256 KiB to accommodate larger
   keyframes; every submitted frame is still checked against actual capacity.

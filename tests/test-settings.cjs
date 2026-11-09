@@ -9,7 +9,7 @@ test('stream settings survive a new store and reject unsupported stream modes',(
  let file=null,commits=0;
  const adapter={read:()=>file,write:text=>file=text,commit:()=>commits++};
  const store=settings.create(adapter),mode={width:960,height:540,fps:60,bitrate:8000,showStats:true,videoPacing:"smooth"};
- assert.deepEqual(plain(store.load()),{width:1280,height:720,fps:30,bitrate:5000,showStats:false,videoPacing:"smooth"});
+ assert.deepEqual(plain(store.load()),{width:1280,height:720,fps:60,bitrate:20000,showStats:false,videoPacing:"smooth"});
  store.save(mode);assert.equal(commits,1);assert.deepEqual(plain(settings.create(adapter).load()),mode);
  store.save({...mode,videoPacing:'latency'});assert.equal(settings.create(adapter).load().videoPacing,'latency');store.save(mode);
  for(const bitrate of [10000,15000,20000,25000,30000,40000,50000,60000,70000,80000]){store.save({...mode,width:1920,height:1080,bitrate});assert.equal(settings.create(adapter).load().bitrate,bitrate);}store.save(mode);
@@ -22,5 +22,5 @@ test('save failures are reported so the settings screen can remain open',()=>{
   const store=settings.create({read:()=>null,write:()=>{if(stage==='write')throw Error('disk full');},commit:()=>{if(stage==='commit')throw Error('commit failed');}});
   assert.throws(()=>store.save(settings.defaults()),/disk full|commit failed|verified/);
  }
- const mode=settings.defaults();mode.fps=60;assert.equal(settings.defaults().fps,30);
+ const mode=settings.defaults();mode.fps=30;assert.equal(settings.defaults().fps,60);
 });
