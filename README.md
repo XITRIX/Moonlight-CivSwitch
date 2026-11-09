@@ -44,7 +44,8 @@ Choose **Pair new host**, enter your PC’s IP address, and approve the displaye
 PIN in Sunshine. Select the paired PC, then choose a game or Desktop to stream.
 
 - **D-pad / A:** navigate and select. **B:** go back or close Moonlight from Hosts.
-- **− and + together:** stop streaming and return to the game library.
+- **− and + together:** open stream options. **Disconnect** returns to the library and keeps the PC app running; **Terminate** also closes the PC app. **B** dismisses the popup and resumes streaming.
+- A running PC app appears first in the library; other cards are dimmed and disabled until it stops. Use **Terminate app** at the top right to close it.
 - **Settings:** adjust resolution, frame rate, bitrate and frame pacing.
   Defaults are **720p, 60 FPS, 20 Mbps**.
 

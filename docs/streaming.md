@@ -29,11 +29,13 @@ written on the Switch. Existing pairing files remain exclusively inside
 Connect, then select a game card to launch it. Selecting an already running app
 resumes it. A different running app is reported without terminating it. The host
 must grant this paired client permission to launch apps and receive input.
-Press − and + together, or press Escape on a keyboard, to disconnect. B is sent
+Press − and + together, or press Escape on a keyboard, to open stream options.
+Choose **Disconnect** to leave the PC app running, or **Terminate** to disconnect
+and close it. B dismisses the popup and returns to the stream. Outside the popup, B is sent
 to the remote game. Video fills the viewport and preserves its aspect ratio;
-status is visible during startup/stopping and hidden during playback. The app returns
-to the cached Games screen; it does not send Sunshine `/cancel` to terminate the
-host application. B from Games returns to Hosts; B again closes the UI.
+status is visible during startup/stopping and hidden during playback. On return,
+the Games screen refreshes the running-app state while reusing cached covers.
+B from Games returns to Hosts; B again closes the UI.
 
 Open Settings from Hosts or the Games footer to choose 360p/540p/720p/1080p,
 15/30/60 FPS, and 1–80 Mbps presets (including 40, 50, 60, 70 and the experimental 80 Mbps). D-pad up/down chooses a setting; left/right
@@ -249,7 +251,8 @@ packet cannot satisfy a measured sample. Sparse samples are used for the final
   disconnects and releases input on focus loss. Nintendo B/A/Y/X match the physical
   Xbox A/B/X/Y positions; native up-positive stick Y is preserved. Browser standard
   gamepads provide the same layout, with Y inverted from their down-positive axes.
-  The combined −/+ state is consumed locally to stop streaming. Native game actions
+  The combined −/+ state opens a local Disconnect/Terminate popup. Popup input stays
+  local and held dismissal buttons must be released before remote input resumes. Native game actions
   remain a partial fallback when full controller state is unavailable. Keyboard keys
   use Moonlight's Win32 key events. C APIs that may take locks run in a cooperative
   task, with bounded queues and coalesced controller state. Rumble, gyro, touch,
@@ -267,8 +270,9 @@ npm run test:ui
 npm run test:runtime
 ```
 
-The browser suite covers card launch, key forwarding, Escape/−+ stop and
-return to the grid. Protocol tests cover launch/resume, keys, pinned TLS,
+The browser suite covers card launch, key forwarding, the Escape/−+ popup,
+Disconnect versus Terminate, B dismissal, running-app sorting and disabled cards,
+top-right termination with cancellation/error handling, and returning to the grid. Protocol tests cover launch/resume, keys, pinned TLS,
 permissions, cancellation and host-bound RTSP URLs. The generated-runtime tests
 exercise upstream algorithms, cooperative scheduling and PNG pixels/CRCs/bounds.
 
@@ -334,3 +338,24 @@ UI before using `investigation/probes/read-stream-diagnostics.js` through
 `send-probe.py`; it exports the history to the sender after streaming. Starting
 another stream replaces the history, and restarting Civ VII loses it. This adds
 no Switch files and performs no loader TCP logging while streaming.
+
+### Running applications and termination
+
+The library reads authenticated `/serverinfo` together with `/applist` when opened,
+refreshed, or restored after a stream. A busy host's `currentgame` appears first
+with a Running badge; the remaining cards are dimmed, disabled, and skipped during
+controller navigation. Selecting the running card resumes it. **Terminate app**
+at the top right opens a Cancel/Terminate confirmation.
+
+While refreshing, an animated progress overlay dims the existing cards and blocks
+launches until both the application list and running status arrive. B still
+returns to the host list and cancels the request.
+
+Disconnect only stops the local stream client. Terminate waits for stream cleanup,
+then uses the paired, pinned HTTPS `/cancel` endpoint. Both termination controls
+recheck the running application ID before requesting cancellation and surface
+host errors. A successful `/cancel` response is followed by bounded `/serverinfo`
+polling for up to 15 seconds, since acknowledgment can precede process cleanup.
+The library remains busy until the old application stops, then refreshes its
+Running badge and enabled cards. A host that stays busy produces an explicit
+error instead of a false success; the kill request is never repeated by polling.

@@ -5,7 +5,8 @@
         var apps = [], selected = 0, page = 0, loading = false, visible = false;
         var columns = 4, pageSize = 4, cardWidth = 240, cardHeight = 320, gap = 16;
         var preferredColumn = 0, lastCard = 0, cardNodes = [];
-        var artwork=null,artworkHost=null,artworkTasks=[];
+        var runningAppId=0, hostName="";
+        var artwork=null,artworkHost=null,artworkTasks=[],busyTimer=null;
         function stopArtwork() {
             if(!artwork)return;
             var pending=artwork.close();artwork=null;artworkTasks.push(pending);
@@ -24,13 +25,34 @@
         });
         panel.id = "moonlight-games-screen";
         element("div",panel,{fontSize:"17px",color:"#94b6e2",marginBottom:"6px"},"Moonlight");
-        element("h2",panel,{fontSize:"36px",lineHeight:"1.2",margin:"0 0 6px 0",color:"#f4f7ff"},"Games");
+        var header=element("div",panel,{display:"flex",alignItems:"center",justifyContent:"space-between",marginBottom:"6px"});
+        element("h2",header,{fontSize:"36px",lineHeight:"1.2",margin:"0",color:"#f4f7ff"},"Games");
         var hostname = element("div",panel,{fontSize:"18px",color:"#a7b6cf",marginBottom:"16px"});
         // Explicit flex rows work in Gameface without relying on CSS Grid.
-        var grid = element("div",panel,{display:"flex",flexDirection:"column"});
+        var library = element("div",panel,{position:"relative"});
+        var grid = element("div",library,{display:"flex",flexDirection:"column"});
         grid.id = "moonlight-game-list";
         grid.setAttribute("role","grid");
         grid.setAttribute("aria-label","Host games and applications");
+        var busy = element("div",library,{display:"none",position:"absolute",left:"0",right:"0",top:"0",bottom:"0",alignItems:"center",justifyContent:"center",zIndex:"2"});
+        busy.id="moonlight-games-progress";
+        var busyBox=element("div",busy,{display:"flex",flexDirection:"column",alignItems:"center",padding:"24px 32px",border:"1px solid #35435b",borderRadius:"10px",backgroundColor:"#131d2e"});
+        var dots=element("div",busyBox,{display:"flex",marginBottom:"14px"});
+        var indicators=[0,1,2].map(function(){return element("span",dots,{display:"block",width:"10px",height:"10px",margin:"0 4px",borderRadius:"5px",backgroundColor:"#35435b"});});
+        var busyText=element("div",busyBox,{fontSize:"22px",lineHeight:"28px",color:"#f4f7ff"});
+        element("div",busyBox,{fontSize:"16px",lineHeight:"24px",marginTop:"6px",color:"#b7c6dd"},"B to go back");
+        function updateBusy(){
+            if(busyTimer!==null){clearInterval(busyTimer);busyTimer=null;}
+            var active=loading&&visible;
+            busy.style.display=active?"flex":"none";
+            grid.style.opacity=loading?"0.3":"1";
+            grid.setAttribute("aria-busy",loading?"true":"false");
+            if(active){
+                var frame=0;
+                function tick(){indicators.forEach(function(dot,index){dot.style.backgroundColor=index===frame%3?"#00efcf":"#35435b";});frame++;}
+                tick();busyTimer=setInterval(tick,300);
+            }
+        }
         var message = element("div",panel,{
             fontSize:"16px",lineHeight:"1.4",minHeight:"24px",marginTop:"12px",color:"#b7c6dd",
             whiteSpace:"nowrap",overflow:"hidden",textOverflow:"ellipsis"
@@ -41,6 +63,9 @@
         var count = element("div",footer,{fontSize:"16px",color:"#a7b6cf",flexGrow:"1"});
         var buttonStyle = {height:"44px",padding:"0 18px",marginLeft:"12px",fontSize:"18px",fontFamily:"Arial, sans-serif",
             color:"#fff",border:"2px solid #35435b",borderRadius:"8px",backgroundColor:"#0c1423",outline:"none"};
+        var terminate=element("button",header,Object.assign({},buttonStyle,{display:"none",alignItems:"center",justifyContent:"center",textAlign:"center",lineHeight:"22px",boxSizing:"border-box",width:"180px",flexShrink:"0"}));
+        element("span",terminate,{display:"block",lineHeight:"22px"},"Terminate app");
+        terminate.id="moonlight-games-terminate";terminate.type="button";terminate.tabIndex=-1;
         var refresh = element("button",footer,buttonStyle,"Refresh");
         var settings = element("button",footer,buttonStyle,"Settings");
         var back = element("button",footer,buttonStyle,"Back");
@@ -73,13 +98,19 @@
         }
         function paint() {
             cardNodes.forEach(function (card) {
-                var active = card.index === selected;
+                var active = !loading&&card.index === selected;
                 highlight(card.node,active);
                 card.art.style.backgroundColor=active?"#233e60":"#1b2c45";
                 card.node.setAttribute("aria-selected",active?"true":"false");
             });
             footerButtons.forEach(function(button,index){highlight(button,selected===apps.length+index);});
             refresh.setAttribute("aria-disabled",loading?"true":"false");
+            refresh.disabled=loading;settings.disabled=loading;
+            refresh.textContent=loading?"Refreshing…":"Refresh";
+            terminate.style.display=runningAppId?"flex":"none";
+            terminate.disabled=loading;terminate.setAttribute("aria-disabled",loading?"true":"false");
+            highlight(terminate,selected===apps.length+3);
+            hostname.textContent=hostName+(runningAppId?" · Running "+runningTitle():"");
             count.textContent=apps.length ? apps.length+" apps · Page "+(page+1)+" / "+Math.ceil(apps.length/pageSize) : "0 apps";
         }
         function initials(title) {
@@ -140,6 +171,13 @@
                             border:"2px solid #35435b",borderRadius:"10px",boxSizing:"border-box",outline:"none",
                             fontFamily:"Arial, sans-serif",color:"#f4f7ff",backgroundColor:"#0c1423",textAlign:"left"
                         });
+                        card.disabled=loading||!!runningAppId&&app.id!==runningAppId;
+                        card.style.opacity=runningAppId&&app.id!==runningAppId?"0.35":"1";
+                        card.setAttribute("aria-disabled",card.disabled?"true":"false");
+                        if(app.id===runningAppId){
+                            card.setAttribute("data-running","true");
+                            card.setAttribute("aria-description","Running — select to resume");
+                        }
                         card.type="button";
                         card.tabIndex=-1;
                         card.setAttribute("role","gridcell");
@@ -152,6 +190,12 @@
                             width:"100%",position:"relative",overflow:"hidden",
                             fontSize:"54px",fontWeight:"700",color:"#94b6e2",backgroundColor:"#1b2c45"
                         });
+                        if(app.id===runningAppId){
+                            var badge=element("span",art,{display:"flex",alignItems:"center",position:"absolute",right:"8px",top:"8px",zIndex:"1",padding:"5px 10px",borderRadius:"6px",backgroundColor:"#00efcf",color:"#1b1e21",fontSize:"16px",fontWeight:"700",lineHeight:"20px"});
+                            // Draw the play indicator instead of relying on a glyph the game font may lack.
+                            element("span",badge,{display:"block",width:"0",height:"0",borderTop:"6px solid transparent",borderBottom:"6px solid transparent",borderLeft:"9px solid #1b1e21",marginRight:"7px",flexShrink:"0"});
+                            element("span",badge,{display:"block",lineHeight:"20px"},"Running");
+                        }
                         var placeholder=element("span",art,{},initials(app.title));
                         art.setAttribute("aria-hidden","true");
                         element("span",card,{
@@ -184,7 +228,21 @@
             }
             paint();
         }
+        function runningTitle(){var app=apps.filter(function(app){return app.id===runningAppId;})[0];return app?app.title:"application #"+runningAppId;}
+        function available(){
+            var values=[];apps.forEach(function(app,i){if(!runningAppId||app.id===runningAppId)values.push(i);});
+            return values.concat([apps.length,apps.length+1,apps.length+2],runningAppId?[apps.length+3]:[]);
+        }
         function move(direction) {
+            if(runningAppId){
+                var card=apps.length&&apps[0].id===runningAppId,top=apps.length+3;
+                if(selected===top){if(direction==="left"&&card)choose(0,false);else if(direction==="down")choose(card?0:apps.length,false);}
+                else if(selected<apps.length){if(direction==="right"||direction==="up")choose(top,false);else if(direction==="down")choose(apps.length,false);}
+                else if(direction==="up")choose(card?0:top,false);
+                else if(direction==="left")choose(Math.max(apps.length,selected-1),false);
+                else if(direction==="right")choose(Math.min(apps.length+2,selected+1),false);
+                return;
+            }
             if (selected >= apps.length) {
                 if (direction==="left") choose(Math.max(apps.length,selected-1),false);
                 else if (direction==="right") choose(Math.min(apps.length+footerButtons.length-1,selected+1),false);
@@ -202,9 +260,14 @@
             }
         }
         function step(delta) {
-            choose((selected+delta+apps.length+footerButtons.length)%(apps.length+footerButtons.length),true);
+            var values=available(),index=values.indexOf(selected);
+            choose(values[(index+delta+values.length)%values.length],true);
         }
         function activate() {
+            if(selected===apps.length+2){options.onBack();return;}
+            if(selected===apps.length+3){if(runningAppId&&!loading&&options.onTerminate)options.onTerminate({id:runningAppId,title:runningTitle()});return;}
+            if(loading)return;
+            if(selected<apps.length&&runningAppId&&apps[selected].id!==runningAppId)return;
             if(selected===apps.length){if(!loading)options.onRefresh();}
             else if(selected===apps.length+1){if(options.onSettings)options.onSettings();}
             else if(selected===apps.length+2)options.onBack();
@@ -213,17 +276,19 @@
         }
         function resized() {if(visible){layout();render();}}
         global.addEventListener("resize",resized);
+        terminate.addEventListener("click",function(){choose(apps.length+3,false);activate();});
         refresh.addEventListener("click",function(){choose(apps.length,false);activate();});
         settings.addEventListener("click",function(){choose(apps.length+1,false);activate();});
         back.addEventListener("click",options.onBack);
         return {
-            show:function(name){hostname.textContent=name;apps=[];selected=0;page=0;preferredColumn=0;lastCard=0;visible=true;layout();panel.style.display="flex";},
-            hide:function(){visible=false;if(artwork)artwork.pause();panel.style.display="none";detachCards();},
+            show:function(name){hostName=name;hostname.textContent=name;runningAppId=0;terminate.style.display="none";apps=[];selected=0;page=0;preferredColumn=0;lastCard=0;visible=true;layout();panel.style.display="flex";},
+            hide:function(){visible=false;updateBusy();if(artwork)artwork.pause();panel.style.display="none";detachCards();},
             resume:function(text){visible=true;layout();panel.style.display="flex";if(text)message.textContent=text;render();},
-            startLoading:function(){if(artwork)artwork.pause();loading=true;message.textContent="Fetching games from Sunshine…";render();},
-            setApps:function(value,loadArtwork,hostKey){
+            startLoading:function(text){if(artwork)artwork.pause();loading=true;busyText.textContent=text||"Refreshing games…";message.textContent=text||"Fetching games and running status from Sunshine…";updateBusy();render();},
+            setApps:function(value,loadArtwork,hostKey,currentAppId){
                 if(artworkHost!==hostKey){stopArtwork();artworkHost=hostKey;}
-                apps=value;loading=false;selected=0;page=0;preferredColumn=0;lastCard=0;
+                runningAppId=currentAppId||0;
+                apps=value.filter(function(app){return app.id===runningAppId;}).concat(value.filter(function(app){return app.id!==runningAppId;}));loading=false;selected=runningAppId&&(!apps.length||apps[0].id!==runningAppId)?apps.length+3:0;page=0;preferredColumn=0;lastCard=0;
                 if(artwork)artwork.setLoader(loadArtwork);
                 else if(loadArtwork)artwork=global.MoonlightArtwork.create({
                     load:loadArtwork,
@@ -233,10 +298,10 @@
                     },
                     onError:function(id,error){if(options.onArtworkError)options.onArtworkError(id,error);}
                 });
-                layout();message.textContent=apps.length?"Choose a game or application.":"No games or applications are configured in Sunshine.";render();
+                updateBusy();layout();message.textContent=runningAppId?"Resume the running application, or terminate it to choose another.":apps.length?"Choose a game or application.":"No games or applications are configured in Sunshine.";render();
             },
-            fail:function(error){loading=false;message.textContent=error;render();},
-            destroy:function(){visible=false;stopArtwork();global.removeEventListener("resize",resized);return Promise.all(artworkTasks);},
+            fail:function(error){loading=false;updateBusy();message.textContent=error;render();},
+            destroy:function(){visible=false;updateBusy();stopArtwork();global.removeEventListener("resize",resized);return Promise.all(artworkTasks);},
             move:move,step:step,activate:activate
         };
     }

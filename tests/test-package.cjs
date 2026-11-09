@@ -57,10 +57,10 @@ const pause=ms=>new Promise(resolve=>setTimeout(resolve,ms));
     staleUpload:!!window.__moonlightStreamModuleUpload,pending:!__done,
     hosts:document.getElementById('moonlight-hosts-screen')?.style.display};
   })()`);
-  assert.equal(result.scripts,24);assert.equal(result.factory,'function');assert.equal(result.staleUpload,false);
+  assert.equal(result.scripts,manifest.scripts.length);assert.equal(result.factory,'function');assert.equal(result.staleUpload,false);
   assert.equal(result.pending,true);assert.equal(result.hosts,'flex');
   assert.equal(await evaluate('(async()=>{window.__moonlightSimpleUI.close();await __lifetime;return __done;})()'),true);
-  console.log('Moonlight package smoke passed: 24 bundled scripts matching sources, decoded 256×256 icon, runtime factory, visible Hosts UI, pending lifetime and clean close.');
+  console.log('Moonlight package smoke passed: bundled scripts matching sources, decoded 256×256 icon, runtime factory, visible Hosts UI, pending lifetime and clean close.');
  }finally{
   if(socket)socket.close();chrome.kill('SIGTERM');
   await Promise.race([new Promise(r=>chrome.once('exit',r)),pause(3000)]);

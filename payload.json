@@ -18,6 +18,7 @@
     "app/src/protocol/sunshine-apps.js",
     "app/src/ui/game-artwork.js",
     "app/src/ui/hosts-screen.js",
+    "app/src/ui/app-dialog.js",
     "app/src/ui/games-screen.js",
     "app/src/ui/settings-screen.js",
     "app/src/streaming/native-io.js",

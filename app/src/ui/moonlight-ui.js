@@ -163,14 +163,16 @@
     function recordStreamMessage(text){streamDiagnostics.messages.push({time:Date.now(),text:String(text).slice(0,512)});if(streamDiagnostics.messages.length>64)streamDiagnostics.messages.shift();}
     var stream = window.MoonlightStreamScreen ? window.MoonlightStreamScreen.create({parent:root,
         log:recordStreamMessage,
+        onTerminate:terminateStreamApp,
         onStats:function(stats){streamDiagnostics.stats=stats;streamHistory.record(stats);},
-        onBack:function(){if(!closed){screen="games";games.resume("Stream stopped. Choose an application to reconnect.");hints.style.display="flex";ignoreInputUntil=Date.now()+250;paintFocus();}}
+        onBack:function(){if(!closed){screen="games";games.resume("Stream stopped. Checking the running application…");hints.style.display="flex";ignoreInputUntil=Date.now()+250;paintFocus();}}
     }) : null;
-    var games = window.MoonlightGames.create({parent:root,onBack:returnToHosts,onRefresh:refreshGames,onLaunch:launchGame,onSettings:openSettings,
+    var games = window.MoonlightGames.create({parent:root,onBack:returnToHosts,onRefresh:refreshGames,onLaunch:launchGame,onSettings:openSettings,onTerminate:confirmTerminateApp,
         onArtworkLoaded:function(id,bytes,cached){report((cached?"MOONLIGHT_ARTWORK_CACHED: ":"MOONLIGHT_ARTWORK_LOADED: ")+id+" ("+bytes+" bytes)");},
         onArtworkDisplayed:function(id){report("MOONLIGHT_ARTWORK_DISPLAYED: "+id);},
         onArtworkError:function(id,error){report("MOONLIGHT_ARTWORK_ERROR: "+id+" "+error.message);}
     });
+    var appDialog=window.MoonlightAppDialog.create({parent:root,id:"moonlight-terminate-app",onCancel:function(){ignoreInputUntil=Date.now()+250;heldDirection="";}});
     root.appendChild(hints);
 
     function paintFocus() {
@@ -434,6 +436,27 @@
         }
     }
 
+    function terminateStreamApp(address,app,signal){
+        var options=window.MoonlightNative.create();options.signal=signal;
+        return window.MoonlightApps.create(options).terminateApp(address,gameHost.httpsPort,app.id);
+    }
+
+    function confirmTerminateApp(app){
+        if(connectionTask||closed)return;
+        appDialog.show({title:"Terminate "+app.title+"?",description:"All unsaved progress could be lost.",labels:["Cancel","Terminate"],actions:[function(){ignoreInputUntil=Date.now()+250;},function(){terminateGame(app);} ]});
+        heldDirection="";
+    }
+
+    function terminateGame(app){
+        if(connectionTask||closed)return;
+        connectionSignal={aborted:false};var signal=connectionSignal;
+        games.startLoading("Terminating "+app.title+"…");ignoreInputUntil=Date.now()+250;
+        connectionTask=Promise.resolve().then(function(){return terminateStreamApp(gameHost.address,app,signal);}).then(function(){
+            if(!closed&&!signal.aborted&&screen==="games")return fetchGames(window.MoonlightNative.create(),signal);
+        }).catch(function(error){if(!closed&&screen==="games")games.fail(error.message);report("MOONLIGHT_TERMINATE_ERROR: "+error.message);})
+            .finally(function(){connectionTask=null;connectionSignal=null;});
+    }
+
     function launchGame(app) {
         if (connectionTask || streamTask || closed) return;
         if (!stream || !window.MoonlightStreamClient) { games.fail("Streaming runtime unavailable. Resend the app without --no-streaming."); return; }
@@ -441,12 +464,13 @@
         streamHistory.reset();streamDiagnostics.messages.length=0;streamDiagnostics.stats=null;
         streamDiagnostics.localOnly=true;
         games.hide();screen="stream";hints.style.display="none";heldDirection="";
+        var exitError=null;
         try {
             streamTask=stream.show(gameHost.address,app,streamMode).then(function(result){
                 if(result&&result.stats)streamDiagnostics.stats=result.stats;
-                if(!closed && result && result.error)games.fail(result.error.message);
-            }).catch(function(error){if(!closed){screen="games";games.resume(error.message);hints.style.display="flex";}report("MOONLIGHT_STREAM_ERROR: "+error.message);})
-                .finally(function(){streamTask=null;});
+                if(!closed && result && result.error){exitError=result.error.message;games.fail(exitError);}
+            }).catch(function(error){exitError=error.message;if(!closed){screen="games";games.resume(error.message);hints.style.display="flex";}report("MOONLIGHT_STREAM_ERROR: "+error.message);})
+                .finally(function(){streamTask=null;if(!closed&&screen==="games")refreshGames(exitError);});
         } catch(error) {screen="games";games.resume(error.message);hints.style.display="flex";}
     }
 
@@ -502,6 +526,7 @@
     }
 
     async function fetchGames(options, signal) {
+        options.signal=signal;
         options.onArtworkCacheError=function(error){report("MOONLIGHT_ARTWORK_CACHE_ERROR: "+error.message);};
         games.startLoading();
         report("MOONLIGHT_APPLIST_LOADING");
@@ -510,18 +535,20 @@
         var address=gameHost.address,port=gameHost.httpsPort;
         games.setApps(result.apps,function(app,artworkSignal){
             return window.MoonlightApps.create(Object.assign({},options,{signal:artworkSignal})).loadArtwork(address,app.id,port);
-        },result.host);
+        },result.host,result.runningAppId);
         report("MOONLIGHT_APPLIST_LOADED: " + result.apps.length);
     }
 
-    function refreshGames() {
+    function refreshGames(message) {
         if (connectionTask || closed || screen !== "games") return;
         connectionSignal = {aborted:false};
         var signal = connectionSignal;
         try {
             var options = window.MoonlightNative.create();
             options.signal = signal;
-            connectionTask = fetchGames(options, signal).catch(function (error) {
+            connectionTask = fetchGames(options, signal).then(function(){
+                if(message&&!closed&&!signal.aborted&&screen==="games")games.fail(message);
+            }).catch(function (error) {
                 if (!closed && screen === "games") games.fail(error.message);
                 report("MOONLIGHT_APPLIST_ERROR: " + error.message);
             }).finally(function () {connectionTask=null;connectionSignal=null;});
@@ -585,6 +612,7 @@
 
     function action(name, inputStatus, source, x, y) {
         if (closed) return;
+        if(appDialog.isOpen()){appDialog.action(name,Number(inputStatus),x,y);return;}
         if (screen === "stream") { stream.action(name,Number(inputStatus),x,y);return; }
         if (name === "keyboard-escape") name = "cancel";
         var phase = Number(inputStatus);
@@ -664,6 +692,7 @@
             consume(event);
             return;
         }
+        if(appDialog.key(event,true)){consume(event);return;}
         if (screen === "stream") { stream.key(event,true);consume(event);return; }
         if (nativeEditor) {
             if (event.key === "Escape") action("cancel", event.repeat ? 3 : 0, "keyboard");
@@ -719,6 +748,7 @@
         if (connectionSignal) connectionSignal.aborted = true;
         endEdit();
         if (frame !== null) cancelAnimationFrame(frame);
+        appDialog.destroy();
         var artworkDone=games.destroy();
         hosts.destroy();
         settings.destroy();

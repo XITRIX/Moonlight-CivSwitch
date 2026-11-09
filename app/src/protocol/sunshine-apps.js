@@ -91,6 +91,22 @@
             return {id:id,title:title,hdrSupported:field(app,"IsHdrSupported",false)==="1"};
         });
     }
+    function responseRoot(xml, endpoint) {
+        var root=parseRoot(xml,true);
+        if(root.attributes.status_code!=="200")throw new Error("Sunshine "+endpoint+" returned "+(root.attributes.status_code||"unknown")+": "+(root.attributes.status_message||"Request rejected"));
+        return root;
+    }
+    function field(root,name) {
+        var nodes=root.children.filter(function(node){return node.name===name;});
+        if(nodes.length!==1||nodes[0].children.length)throw new Error("Invalid Sunshine field: "+name);
+        return nodes[0].text.trim();
+    }
+    function runningApp(xml) {
+        var root=responseRoot(xml,"/serverinfo"),current=field(root,"currentgame"),state=field(root,"state");
+        if(field(root,"PairStatus")!=="1")throw new Error("Sunshine no longer recognizes this pairing.");
+        if(!/^\d+$/.test(current)||Number(current)>0xffffffff)throw new Error("Invalid Sunshine current application.");
+        return state.indexOf("_SERVER_BUSY")>=0?Number(current):0;
+    }
     function create(options) {
         function checkCanceled() { if (options.signal && options.signal.aborted) throw new Error("Application-list request canceled."); }
         async function credentials(input, httpsPort) {
@@ -103,7 +119,7 @@
             if (!Number.isInteger(port) || port < 1 || port > 65535) throw new Error("Invalid Sunshine HTTPS port.");
             checkCanceled();return {address:address,identity:identity,host:host,port:port};
         }
-        async function request(input, httpsPort, endpoint, binary, prepared) {
+        async function request(input, httpsPort, endpoint, binary, prepared, timeoutMs) {
             var c=prepared||await credentials(input,httpsPort),address=c.address,identity=c.identity,host=c.host,port=c.port;
             var random = options.randomBytes(16), values = [];
             if (!random || random.length !== 16) throw new Error("Native secure random generator returned no request ID.");
@@ -118,7 +134,7 @@
             checkCanceled();
             var response = await options.requestHttps({host:address.host,port:port,
                 path:endpoint+(endpoint.indexOf("?")<0?"?":"&")+"uniqueid="+encodeURIComponent(identity.uniqueId)+"&uuid="+uuid,
-                identity:identity,pinnedCertificatePem:host.certificatePem,timeoutMs:15000,signal:options.signal,
+                identity:identity,pinnedCertificatePem:host.certificatePem,timeoutMs:timeoutMs||15000,signal:options.signal,
                 responseType:binary?"binary":"text",maxResponseBytes:binary?2097152:131072});
             checkCanceled();
             return {body:response,hostname:host.hostname || address.host,host:address.key};
@@ -141,7 +157,32 @@
         return {
             listApps:async function (input, httpsPort) {
                 var result = await request(input,httpsPort,"/applist",false);
-                return {apps:parseList(result.body),hostname:result.hostname,host:result.host};
+                var apps=parseList(result.body);
+                var info=await request(input,httpsPort,"/serverinfo",false);
+                return {apps:apps,runningAppId:runningApp(info.body),hostname:result.hostname,host:result.host};
+            },
+            terminateApp:async function(input, httpsPort, expectedAppId) {
+                // Recheck before /cancel: it terminates the host's current app,
+                // so a stale library must never kill a different application.
+                if(!Number.isInteger(expectedAppId)||expectedAppId<1||expectedAppId>0xffffffff)throw new Error("Invalid application ID.");
+                var info=await request(input,httpsPort,"/serverinfo",false),current=runningApp(info.body);
+                if(!current)return;
+                if(current!==expectedAppId)throw new Error("The running application changed. Refresh the games list before terminating it.");
+                var result=await request(input,httpsPort,"/cancel",false),root=responseRoot(result.body,"/cancel");
+                if(field(root,"cancel")!=="1")throw new Error("Sunshine did not terminate the application.");
+                // /cancel acknowledges the request before process cleanup can
+                // finish. Keep the library busy until /serverinfo confirms it.
+                var deadline=Date.now()+15000;
+                for(var attempt=0;attempt<60;attempt++){
+                    checkCanceled();
+                    var remaining=deadline-Date.now();
+                    if(remaining<=0)break;
+                    info=await request(input,httpsPort,"/serverinfo",false,null,remaining);
+                    if(runningApp(info.body)!==expectedAppId)return;
+                    await new Promise(function(resolve){setTimeout(resolve,250);});
+                }
+                checkCanceled();
+                throw new Error("The application is still running on the PC. Refresh to check again.");
             },
             loadArtwork:async function (input, appId, httpsPort) {
                 if (!Number.isInteger(appId) || appId < 1 || appId > 0xffffffff) throw new Error("Invalid application ID.");

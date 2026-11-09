@@ -18,6 +18,7 @@ APP_SCRIPTS = (
     "src/protocol/sunshine-apps.js",
     "src/ui/game-artwork.js",
     "src/ui/hosts-screen.js",
+    "src/ui/app-dialog.js",
     "src/ui/games-screen.js",
     "src/ui/settings-screen.js",
     "src/streaming/native-io.js",
