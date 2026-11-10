@@ -31,7 +31,8 @@ resumes it. A different running app is reported without terminating it. The host
 must grant this paired client permission to launch apps and receive input.
 Press − and + together, or press Escape on a keyboard, to open stream options.
 The left drawer uses CivHomebrew's options style and the connected host's name
-as its title. **More → Show keyboard** opens controller keyboard mode, while
+as its title. **More → Mouse by Gamepad** opens the controller mouse overlay,
+**More → Show keyboard** opens controller keyboard mode, while
 **More → Touchscreen mode** offers Trackpad / Touchpad choices. Mode changes
 apply immediately and are saved for future streams; a failed save leaves the
 active mode unchanged. **Logout** opens the existing alert: choose **Disconnect**
@@ -333,6 +334,49 @@ and stream shutdown discard pending presses and release held mouse buttons and
 cancel direct contacts. Held fingers require neutral before remote input resumes.
 The local dialog's touch controls remain usable.
 
+## Mouse by Gamepad
+
+The first item in More ports the behavior and formulas from Moonlight-Switch's
+[`StreamingInputOverlay`](https://github.com/XITRIX/Moonlight-Switch/blob/a75fee223914f36ec26b29739d95331307960fa3/app/src/streaming_input_overlay.cpp).
+It consumes controller input locally while streaming video/audio continues:
+
+- Left stick moves the remote cursor; L slows movement, R speeds it up. The
+  reference uses speeds 5/15/25 and a per-axis threshold of 2 before applying
+  the configured 0.5–2× multiplier. The existing controller adapter's dead zone
+  still applies. Movement is normalized to elapsed time at the reference 60 Hz
+  rate, retaining fractional pixels, so display/polling rates do not multiply
+  speed. Each sample integrates at most 50 ms after a stall.
+- ZR holds left click and ZL holds right click independently, including drags
+  and simultaneous holds. Button swap reverses the mapping.
+- Right-stick vertical movement sends wheel notches. Its 0.2 dead zone and
+  `550 - abs(axis) * 500` ms timing match the reference. Each eligible sample
+  sends one 120-unit wheel notch without replaying missed intervals. Invert
+  scroll reverses direction.
+- Minus toggles hints. X pauses mouse input and opens the controller keyboard;
+  B from the keyboard returns to mouse mode with the previous hint visibility.
+  Y opens mouse options; D-pad adjusts speed, button swap and scroll inversion,
+  and B saves. Invalid settings or failed writes leave the options open.
+- B exits mouse mode; a touch outside the hint panel dismisses it locally.
+  Minus+plus opens the stream drawer. While the keyboard is shown, its existing
+  controller shortcuts and footer take over.
+
+Stream settings add an optional `mouse` object with speed 0–100 (default 34,
+mapped to 1.01×), `swapButtons` and `invertScroll` (both default false). Older
+settings migrate to these defaults; all settings screens preserve the object.
+Mouse options apply immediately after saving and survive future streams.
+
+The new model uses the existing cooperative C pointer queue and reset API;
+it adds no native executable or host-side dependency. Entering/exiting modes,
+opening the keyboard/options/drawer, losing focus or a controller, and stopping
+the stream discard pending pointer input and release held mouse buttons. Fresh
+mouse input waits for neutral buttons, triggers and sticks. Queue rejection
+resets input and requires neutral before retrying. Touch pointer forwarding is
+paused while the overlay owns input. The existing exit watchdog also services
+mouse input without counting a second frame's movement.
+
+Host unit tests and browser tests cover the behavior; console input feel still
+needs a device test.
+
 ## Streaming virtual keyboard
 
 The third simultaneous contact opens the English keyboard as soon as it lands
@@ -395,7 +439,9 @@ npm run test:runtime
 ```
 
 The browser suite covers card launch, key forwarding, the host-titled Escape/−+
-drawer, nested More/Logout navigation, touch and polled-controller keyboard
+drawer, nested More/Logout navigation, polled-controller mouse movement,
+simultaneous drags/scrolling, speed/swap/inversion preferences and save errors,
+mouse/keyboard transitions, mouse focus/disconnect/outside cleanup, touch and polled-controller keyboard
 opening, live touchscreen switching and save errors, Disconnect versus Terminate,
 B dismissal, input isolation with stalled animation callbacks, running-app sorting and disabled cards,
 top-right termination with cancellation/error handling, and returning to the grid. Protocol tests cover launch/resume, keys, pinned TLS,

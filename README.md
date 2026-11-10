@@ -9,6 +9,13 @@ Sunshine pairing, a game library, controller input, video and stereo audio.
 physical cartridge, version **1.0.0**, with CivSwitch already set up. Compatibility
 with other Switch models has not been established.
 
+## Performance
+
+- Use Boost mode to get true 1080p (it will disable your touchscreen capabilities)
+- **1080p, 60 FPS, 50 Mbps:** stable, smooth gameplay.
+- **1080p, 60 FPS, 80 Mbps:** almost playable, but occasional
+  stutters can make gameplay unpleasant.
+
 ## Screenshots
 
 | Pairing | Game library |
@@ -16,8 +23,18 @@ with other Switch models has not been established.
 | [![Pair a PC with Moonlight](docs/images/pairing.jpg)](docs/images/pairing.jpg) | [![Browse the Moonlight game library](docs/images/games.jpg)](docs/images/games.jpg) |
 | **Stream settings** | **Streaming controls** |
 | [![Moonlight resolution, frame rate and bitrate settings](docs/images/settings.jpg)](docs/images/settings.jpg) | [![Moonlight disconnect and terminate controls during a stream](docs/images/streaming.jpg)](docs/images/streaming.jpg) |
+| **Virtual keyboard** | **Touchscreen mode** |
+| [![Moonlight virtual keyboard during a stream](docs/images/virtual-keyboard.jpg)](docs/images/virtual-keyboard.jpg) | [![Moonlight touchscreen mode menu](docs/images/touchscreen-mode.jpg)](docs/images/touchscreen-mode.jpg) |
 
 *Captured on Switch 2. Click a screenshot to enlarge.*
+
+## Supported features
+
+- H.264 hardware decoding
+- Touchscreen: trackpad and direct touch modes (without Boost mode)
+- Virtual keyboard
+- Mouse control from gamepad
+- Gamepad rumble
 
 ## Installation
 
@@ -60,7 +77,7 @@ Choose **Pair new host**, enter your PC’s IP address, and approve the displaye
 PIN in Sunshine. Select the paired PC, then choose a game or Desktop to stream.
 
 - **D-pad / A:** navigate and select. **B:** go back or close Moonlight from Hosts.
-- **− and + together:** open the left-side menu, titled with the connected host's name. **More** contains **Show keyboard** and **Touchscreen mode**. **Logout** opens **Disconnect** / **Terminate**: Disconnect keeps the PC app running; Terminate also closes it. **B** goes back through the menu and returns to streaming.
+- **− and + together:** open the left-side menu, titled with the connected host's name. **More** contains **Mouse by Gamepad**, **Show keyboard** and **Touchscreen mode**. **Logout** opens **Disconnect** / **Terminate**: Disconnect keeps the PC app running; Terminate also closes it. **B** goes back through the menu and returns to streaming.
 - A running PC app appears first in the library; other cards are dimmed and disabled until it stops. Use **Terminate app** at the top right to close it.
 - **Settings:** adjust resolution, frame rate, bitrate and frame pacing.
   Defaults are **720p, 60 FPS, 20 Mbps**.
@@ -102,6 +119,13 @@ choice for future streams; touchscreen changes in Settings apply to the next
 stream. Rumble updates are combined and limited to
 30 per second after video/audio processing; zero strength bypasses the rate
 limit. The performance overlay reports rumble call timing.
+
+**−/+ → More → Mouse by Gamepad** enables the Moonlight-Switch mouse controls:
+left stick moves, **L/R** slows/speeds up, **ZR/ZL** holds left/right click for
+clicks and dragging, and the right stick scrolls. **−** hides/shows hints,
+**X** opens the keyboard, **Y** opens speed/button-swap/scroll-direction options,
+and **B** goes back. B from the keyboard returns to mouse mode. B from mouse
+options saves them. Menu entry, focus loss and disconnect release held input.
 
 ## Build from source
 

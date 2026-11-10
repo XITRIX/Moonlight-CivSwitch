@@ -29,6 +29,7 @@
   }
   function definitions(){
    if(page==="more")return [
+    {id:"mouse",label:"Mouse by Gamepad",description:"Move, click, drag and scroll with the controller."},
     {id:"keyboard",label:"Show keyboard",description:"Use the controller to type and hold keyboard shortcuts."},
     {id:"touchscreen",label:"Touchscreen mode",value:mode==="trackpad"?"Trackpad":"Touchpad",description:"Choose how the touchscreen controls this stream."}
    ];
@@ -37,7 +38,7 @@
     {id:"touchpad",label:"Touchpad",description:"Send each finger directly to Sunshine. Requires host touch support."}
    ];
    return [
-    {id:"more",label:"More",value:">",description:"Keyboard and touchscreen controls."},
+    {id:"more",label:"More",value:">",description:"Mouse, keyboard and touchscreen controls."},
     {id:"logout",label:"Logout",description:"Disconnect from the host or terminate the running app."}
    ];
   }
@@ -63,12 +64,13 @@
   function back(){
    if(!page)return;
    if(page==="main"){hide();return;}
-   selected=page==="touchscreen"?1:0;page=page==="touchscreen"?"more":"main";resetActions();draw();
+   selected=page==="touchscreen"?2:0;page=page==="touchscreen"?"more":"main";resetActions();draw();
   }
   function activate(){
    if(!page)return;var id=items[selected].id;
    if(id==="more"||id==="touchscreen"){page=id;selected=id==="touchscreen"&&mode==="touchpad"?1:0;resetActions();draw();return;}
    if(id==="keyboard"){hide();options.onKeyboard();return;}
+   if(id==="mouse"){hide();options.onMouse();return;}
    if(id==="logout"){hide();options.onLogout();return;}
    try{options.onTouchMode(id);mode=id;draw();}catch(error){description.textContent="Could not save touchscreen mode.\n\n"+error.message;}
   }

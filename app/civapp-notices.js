@@ -1,6 +1,6 @@
 /* Third-party notices for the CivSwitch Moonlight .civapp.
-Sources: app/vendor/forge-NOTICE.md, app/assets/moonlight-switch-NOTICE.md,
-third_party/sources.lock.json, and dist/runtime/manifest.json.
+Sources: app/vendor/forge-NOTICE.md, third_party/sources.lock.json,
+and dist/runtime/manifest.json.
 
 ===== app/vendor/forge-LICENSE =====
 You may use the Forge project under the terms of either the BSD License or the

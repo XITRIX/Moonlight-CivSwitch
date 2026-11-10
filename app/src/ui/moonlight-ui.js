@@ -164,6 +164,11 @@
     var stream = window.MoonlightStreamScreen ? window.MoonlightStreamScreen.create({parent:root,
         log:recordStreamMessage,
         onTerminate:terminateStreamApp,
+        onMouseSettings:function(value){
+            var mode=window.MoonlightSettings.validate(Object.assign({},streamMode,{mouse:value}));
+            if(settingsTransport&&settingsTransport.saveStreamSettings)settingsTransport.saveStreamSettings(mode);
+            streamMode=mode;
+        },
         onTouchMode:function(touchMode){
             var mode=window.MoonlightSettings.validate(Object.assign({},streamMode,{touchMode:touchMode}));
             if(settingsTransport&&settingsTransport.saveStreamSettings)settingsTransport.saveStreamSettings(mode);

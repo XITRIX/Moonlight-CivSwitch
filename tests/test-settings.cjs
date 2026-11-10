@@ -8,8 +8,8 @@ const settings=context.MoonlightSettings,plain=v=>JSON.parse(JSON.stringify(v));
 test('stream settings survive a new store and reject unsupported stream modes',()=>{
  let file=null,commits=0;
  const adapter={read:()=>file,write:text=>file=text,commit:()=>commits++};
- const store=settings.create(adapter),mode={width:960,height:540,fps:60,bitrate:8000,showStats:true,videoPacing:"smooth",rumble:true,touchMode:"trackpad"};
- assert.deepEqual(plain(store.load()),{width:1280,height:720,fps:60,bitrate:20000,showStats:false,videoPacing:"smooth",rumble:true,touchMode:"trackpad"});
+ const store=settings.create(adapter),mode={width:960,height:540,fps:60,bitrate:8000,showStats:true,videoPacing:"smooth",rumble:true,touchMode:"trackpad",mouse:{speed:34,swapButtons:false,invertScroll:false}};
+ assert.deepEqual(plain(store.load()),{width:1280,height:720,fps:60,bitrate:20000,showStats:false,videoPacing:"smooth",rumble:true,touchMode:"trackpad",mouse:{speed:34,swapButtons:false,invertScroll:false}});
  file=JSON.stringify({version:1,mode:{width:960,height:540,fps:60,bitrate:8000}});assert.equal(store.load().rumble,true,'older settings enable rumble by default');
  store.save(mode);assert.equal(commits,1);assert.deepEqual(plain(settings.create(adapter).load()),mode);
  store.save({...mode,touchMode:'touchpad'});assert.equal(settings.create(adapter).load().touchMode,'touchpad');
@@ -26,4 +26,11 @@ test('save failures are reported so the settings screen can remain open',()=>{
   assert.throws(()=>store.save(settings.defaults()),/disk full|commit failed|verified/);
  }
  const mode=settings.defaults();mode.fps=30;assert.equal(settings.defaults().fps,60);
+});
+test('mouse preferences are migrated, validated, detached, and retained through other stream settings',()=>{
+ const mode=settings.defaults();assert.deepEqual(plain(mode.mouse),{speed:34,swapButtons:false,invertScroll:false});
+ assert.deepEqual(plain(settings.validate({...mode,mouse:undefined}).mouse),plain(mode.mouse));
+ for(const mouse of [null,{speed:-1,swapButtons:false,invertScroll:false},{speed:101,swapButtons:false,invertScroll:false},{speed:34.5,swapButtons:false,invertScroll:false},{speed:34,swapButtons:1,invertScroll:false},{speed:34,swapButtons:false,invertScroll:'yes'}])assert.throws(()=>settings.validate({...mode,mouse}),/mouse settings/);
+ const custom={speed:100,swapButtons:true,invertScroll:true},value=settings.validate({...mode,mouse:custom});custom.speed=0;assert.equal(value.mouse.speed,100);
+ assert.deepEqual(plain(settings.validate({...value,touchMode:'touchpad'}).mouse),{speed:100,swapButtons:true,invertScroll:true});
 });
