@@ -74,30 +74,67 @@ test('video releases held outputs on acquisition, metadata and presentation erro
  assert.equal(acquired,32);assert.equal(presented,31);assert.equal(skipped,31);assert.equal(new Set(released).size,32);
 });
 
-function audioEnvironment(){
- const memory=Buffer.alloc(1048576),owned=new Set(),active=[],released=[],infos=new Map(),appended=[],calls=[];
- let cursor=4096,decodeCount=0,samples=240,playing=false;
- function alloc(n){const p=BigInt(cursor);cursor+=n+16;assert(cursor<memory.length);owned.add(p);return p;}
+function audioEnvironment(options={}){
+ const memory=Buffer.alloc(1048576),owned=new Set(),regions=new Map(),active=[],released=[],infos=new Map(),appended=[],calls=[],copies=[],decodes=[];
+ let cursor=4096,decodeCount=0,samples=240,playing=false,time=0;
+ function alloc(n){const p=BigInt(cursor);cursor+=n+16;assert(cursor<memory.length);owned.add(p);regions.set(p,n);return p;}
  function write(p,v,n){for(let i=0;i<n;i++)memory[Number(p)+i]=Number((v>>BigInt(i*8))&255n);}
  function sdk(name,args){
   calls.push(name);
   if(name==='nncodecLibopus_opus_decoder_get_size')return 64n;
-  if(name==='nncodecLibopus_opus_decode'){decodeCount++;memory.fill(decodeCount,Number(args[3]),Number(args[3])+samples*4);return BigInt(samples);}
+  if(name==='nncodecLibopus_opus_decode'){
+   const output=args[3];assert([...regions].some(([p,n])=>output>=p&&output+BigInt(args[4]*4)<=p+BigInt(n)),'maximum decode fits its allocation');
+   for(const node of active){const info=infos.get(node),previous=appended.findLast(item=>item.node===node);assert.deepEqual(memory.subarray(Number(info.data),Number(info.data)+Number(info.bytes)),previous.pcm,'active driver PCM was not overwritten');}
+   decodeCount++;decodes.push(output);if(samples>=0&&samples<=5760)memory.fill(decodeCount,Number(output),Number(output)+samples*4);return BigInt(samples);
+  }
   if(name.includes('GetReleasedAudioOutBuffer'))return released.shift()||0n;
   if(name.includes('StopAudioOut')){playing=false;return 0n;}
   if(name.includes('FlushAudioOutBuffers')){assert(!playing,'flush only after stop');released.push(...active.splice(0));return 1n;}
-  if(name.includes('StartAudioOut')){playing=true;return 0n;}
+  if(name.includes('StartAudioOut')){assert.equal(active.length,2,'both native buffers are primed before start');if(options.failStart)return 1n;playing=true;return 0n;}
   if(name.includes('CloseAudioOut')){active.length=released.length=0;return 0n;}
   if(name.includes('SetAudioOutBufferInfo')){assert(!active.includes(args[0])&&!released.includes(args[0]),'driver must release a node before reuse');infos.set(args[0],{data:args[1],bytes:args[3]});return 0n;}
-  if(name.includes('AppendAudioOutBuffer')){assert(playing);assert(!active.includes(args[1]));active.push(args[1]);const info=infos.get(args[1]);appended.push({bytes:info.bytes,first:memory[Number(info.data)]});return 1n;}
+  if(name.includes('AppendAudioOutBuffer')){assert(!active.includes(args[1]));active.push(args[1]);const info=infos.get(args[1]);appended.push({node:args[1],bytes:info.bytes,first:memory[Number(info.data)],pcm:Buffer.from(memory.subarray(Number(info.data),Number(info.data)+Number(info.bytes)))});return 1n;}
   return 0n;
  }
- const scope={malloc:alloc,free:p=>assert(owned.delete(p)),write32:(p,v)=>write(p,v,4),write16:(p,v)=>write(p,v,2),write64:(p,v)=>write(p,v,8),memcpy_addr:'memcpy',call_rop:(fn,to,from,n)=>{assert.equal(fn,'memcpy');memory.copy(memory,Number(to),Number(from),Number(from+n));return to;}};
+ const scope={MoonlightTelemetry:{now:()=>time},malloc:alloc,free:p=>assert(owned.delete(p)),write32:(p,v)=>write(p,v,4),write16:(p,v)=>write(p,v,2),write64:(p,v)=>write(p,v,8),memcpy_addr:'memcpy',call_rop:(fn,to,from,n)=>{assert.equal(fn,'memcpy');copies.push({to,from,n});memory.copy(memory,Number(to),Number(from),Number(from+n));return to;}};
  scope.window=scope;vm.createContext(scope);vm.runInContext(source,scope);
  const media=scope.MoonlightStreamMedia.create({invoke:sdk,toNative(){}},{_ml_png_release(){}});
  media.audioSetup(48000,2,1,1,240);
- return {media,owned,active,appended,calls,decodeCount:()=>decodeCount,frame:()=>media.audioFrame(0,5,new Uint8Array(5)),setSamples:n=>samples=n,release:()=>released.push(...active.splice(0))};
+ return {media,owned,active,appended,calls,copies,decodes,decodeCount:()=>decodeCount,frame:()=>media.audioFrame(0,5,new Uint8Array(5)),setSamples:n=>samples=n,setTime:n=>time=n,release:()=>released.push(...active.splice(0)),duplicateRelease:()=>released.push(active[0],active[0])};
 }
+test('Opus decodes directly into staging and preserves exact PCM across packet boundaries',()=>{
+ const e=audioEnvironment();for(let i=0;i<4;i++)e.frame();
+ assert.equal(e.copies.length,1,'only the completed AudioOut chunk is copied');
+ assert.deepEqual(e.decodes.map(p=>Number(p-e.decodes[0])),[0,960,1920,2880]);
+ assert.deepEqual(e.appended[0].pcm,Buffer.concat([1,2,3,4].map(n=>Buffer.alloc(960,n))));
+ // Retain 5 ms, then decode the largest legal packet after that prefix.
+ e.frame();e.setSamples(5760);e.frame();
+ assert.deepEqual(e.appended[1].pcm,Buffer.concat([Buffer.alloc(960,5),Buffer.alloc(2880,6)]));
+ assert(e.media.stats().audioBufferedMsUpperBound<80);e.media.close();assert.equal(e.owned.size,0);
+});
+test('audio starts once after 40 ms of prefill and closes safely before or after start',()=>{
+ for(const packets of [0,4,8]){
+  const e=audioEnvironment();for(let i=0;i<packets;i++)e.frame();
+  assert.equal(e.calls.filter(n=>n.includes('StartAudioOut')).length,packets===8?1:0);
+  assert.equal(e.media.stats().audioPrimed,packets===8);assert.equal(e.media.stats().audioPrefillMs,40);
+  assert.equal(e.media.stats().audioEmptyEpisodes,0);e.media.close();assert.equal(e.owned.size,0);
+ }
+ const failed=audioEnvironment({failStart:true});for(let i=0;i<7;i++)failed.frame();
+ assert.throws(()=>failed.frame(),/AudioOut start failed/);failed.media.close();assert.equal(failed.owned.size,0);
+});
+test('sampled audio starvation counts episodes once and resumes without restarting playback',()=>{
+ const e=audioEnvironment();for(let i=0;i<8;i++)e.frame();
+ e.setTime(100);e.release();e.media.drainAudio();e.setTime(107);e.media.drainAudio();
+ assert.equal(e.media.stats().audioEmptyEpisodes,1);assert.equal(e.media.stats().audioEmptyMs,7);
+ e.setTime(112);for(let i=0;i<4;i++)e.frame();assert.equal(e.media.stats().audioEmptyMs,12);
+ assert.equal(e.calls.filter(n=>n.includes('StartAudioOut')).length,1);
+ e.setTime(120);e.release();e.media.drainAudio();assert.equal(e.media.stats().audioEmptyEpisodes,2);
+ e.media.close();assert.equal(e.owned.size,0);
+});
+test('invalid decoder results and duplicate driver releases fail before reusing PCM',()=>{
+ for(const samples of [-1,5761]){const e=audioEnvironment();e.setSamples(samples);assert.throws(()=>e.frame(),/Opus/);e.media.close();assert.equal(e.owned.size,0);}
+ const e=audioEnvironment();for(let i=0;i<8;i++)e.frame();e.duplicateRelease();assert.throws(()=>e.media.drainAudio(),/unowned buffer/);e.media.close();
+});
 test('audio batches for frame-paced service and keeps only the newest waiting chunk at the limit',()=>{
  const e=audioEnvironment();e.frame();assert.equal(e.appended.length,0);assert.equal(e.media.stats().audioBufferedMsUpperBound,5);
  for(let i=0;i<11;i++)e.frame();assert.equal(e.active.length,2);assert.equal(e.media.stats().audioBufferedMsUpperBound,60);assert(e.appended.every(v=>v.bytes===3840));

@@ -39,7 +39,9 @@
     presentAgeMs:mean("presentAgeMs","presentAgeSamples"),videoPacerPending:s.videoPacerPending||0,
     frameIntervalMs:interval,frameJitterMs:interval===null?null:Math.sqrt(Math.max(0,interval2-interval*interval)),
     loopHz:seconds?delta("iterations")/seconds:null,pumpAvgMs:mean("pumpMs","iterations"),drainAvgMs:mean("drainMs","iterations"),
+    serviceHz:seconds?delta("serviceIterations")/seconds:null,servicePumpAvgMs:mean("servicePumpMs","serviceIterations"),serviceDrainAvgMs:mean("serviceDrainMs","serviceIterations"),
     decoderPending:s.decoderPending||0,videoSuperseded:s.videoSuperseded||0,audioBufferedMsUpperBound:s.audioBufferedMsUpperBound||0,audioQueueLimitMs:s.audioQueueLimitMs||0,audioCatchups:s.audioCatchups||0,audioDiscardedMs:s.audioDiscardedMs||0,audioDropped:s.audioDropped||0,
+    audioPrimed:!!s.audioPrimed,audioPrefillMs:s.audioPrefillMs||0,audioEmptyEpisodes:s.audioEmptyEpisodes||0,audioEmptyMs:s.audioEmptyMs||0,
     videoFrameGaps:protocol?protocol[20]:null,decoderRejected:protocol?protocol[21]:null,audioRecovered:protocol?protocol[18]:null,audioFecFailed:protocol?protocol[19]:null,
     rumbleAvgMs:rumbleUpdates?Math.max(0,(rumble.totalMs||0)-(oldRumble.totalMs||0))/rumbleUpdates:null,rumbleMaxMs:rumble.maxMs||0,
     directReceivedBytes:net.directReceivedBytes||0};
@@ -54,9 +56,9 @@
   function copy(value){return value?Object.assign({},value):null;}
   return {samples:samples,reset:function(){samples.length=0;},record:function(stats){
    var net=stats.network||{};
-   samples.push({time:Date.now(),mode:copy(stats.mode),telemetry:copy(stats.telemetry),fec:copy(stats.fec),input:copy(stats.input),rumble:copy(stats.rumble),packetPool:copy(stats.packetPool),referenceRecovery:!!stats.referenceRecovery,
+   samples.push({time:Date.now(),mode:copy(stats.mode),telemetry:copy(stats.telemetry),clock:copy(stats.clock),fec:copy(stats.fec),input:copy(stats.input),rumble:copy(stats.rumble),packetPool:copy(stats.packetPool),referenceRecovery:!!stats.referenceRecovery,
     network:{receivedBytes:net.receivedBytes||0,sentBytes:net.sentBytes||0,directVideoPackets:net.directVideoPackets||0,batchCopiedBytes:net.batchCopiedBytes||0,receiveWouldBlock:net.receiveWouldBlock||0},
-    videoExpired:stats.videoExpired||0,videoBacklogDrops:stats.videoBacklogDrops||0,maxPumpMs:stats.maxPumpMs||0,maxDrainMs:stats.maxDrainMs||0});
+    videoExpired:stats.videoExpired||0,videoBacklogDrops:stats.videoBacklogDrops||0,maxPumpMs:stats.maxPumpMs||0,maxDrainMs:stats.maxDrainMs||0,maxServiceMs:stats.maxServiceMs||0});
    if(samples.length>600)samples.shift();
   }};
  }
@@ -71,8 +73,10 @@
    "GPU submit "+f(t.gpuTransferMs)+" ms · Decoder → texture "+f(t.presentAgeMs)+" ms",
    "Texture interval "+f(t.frameIntervalMs)+" ± "+f(t.frameJitterMs)+" ms",
    "Loop "+f(t.loopHz)+" Hz · Pump "+f(t.pumpAvgMs)+" ms · Drain "+f(t.drainAvgMs)+" ms",
+   "Between frames "+f(t.serviceHz)+" Hz · Pump "+f(t.servicePumpAvgMs)+" ms · Audio "+f(t.serviceDrainAvgMs)+" ms",
    "Rumble "+f(t.rumbleAvgMs)+" ms avg · "+f(t.rumbleMaxMs)+" ms max",
    "Decoder "+f(t.decoderPending,0)+" frames · Audio ≤ "+f(t.audioBufferedMsUpperBound,0)+" ms",
+   "Audio queue empty (observed) "+f(t.audioEmptyEpisodes,0)+" × / "+f(t.audioEmptyMs,0)+" ms",
    "Video gaps "+f(t.videoFrameGaps,0)+" · Stale skipped "+f(t.videoSuperseded,0)+" · Rejects "+f(t.decoderRejected,0),
    "Audio FEC "+f(t.audioRecovered,0)+" recovered / "+f(t.audioFecFailed,0)+" blocks failed · Skipped "+f(t.audioDiscardedMs,0)+" ms",
    "Texture timing excludes display scanout. − +: Exit"].join("\n");

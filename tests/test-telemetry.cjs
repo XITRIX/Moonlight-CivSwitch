@@ -50,3 +50,14 @@ test('rumble timing uses interval call counts and survives a detached history sn
  assert.match(telemetry.format({mode:{},telemetry:t}),/Rumble 0.5 ms avg · 0.8 ms max/);
  time=2000;assert.equal(meter.sample(s,null).rumbleAvgMs,null);
 });
+
+test('service timings and sampled audio starvation survive interval metrics and detached history',()=>{
+ let time=0;const meter=telemetry.create(()=>time),s={network:{},clock:{serviceWakes:0},serviceIterations:0,servicePumpMs:0,serviceDrainMs:0};meter.sample(s,null);
+ time=1000;Object.assign(s,{serviceIterations:10,servicePumpMs:15,serviceDrainMs:2,maxServiceMs:3,audioPrimed:true,audioPrefillMs:40,audioEmptyEpisodes:2,audioEmptyMs:12});s.clock.serviceWakes=10;
+ s.telemetry=meter.sample(s,null);assert.equal(s.telemetry.serviceHz,10);assert.equal(s.telemetry.servicePumpAvgMs,1.5);assert.equal(s.telemetry.serviceDrainAvgMs,.2);
+ assert.equal(s.telemetry.audioPrimed,true);assert.equal(s.telemetry.audioPrefillMs,40);assert.equal(s.telemetry.audioEmptyEpisodes,2);assert.equal(s.telemetry.audioEmptyMs,12);
+ const h=telemetry.createHistory();h.record(s);s.clock.serviceWakes=99;s.telemetry.audioEmptyMs=999;
+ assert.equal(h.samples[0].clock.serviceWakes,10);assert.equal(h.samples[0].telemetry.audioEmptyMs,12);assert.equal(h.samples[0].maxServiceMs,3);
+ assert.match(telemetry.format({mode:{},telemetry:h.samples[0].telemetry}),/Audio queue empty \(observed\) 2 × \/ 12 ms/);
+ time=2000;assert.equal(meter.sample(s,null).servicePumpAvgMs,null);
+});

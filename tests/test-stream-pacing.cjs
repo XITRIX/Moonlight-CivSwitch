@@ -1,6 +1,6 @@
 const test=require('node:test'),assert=require('node:assert/strict'),fs=require('node:fs'),vm=require('node:vm');
 
-async function runTick(failVideo=false,failClose=false,videoPacing="smooth",mode={width:1280,height:720,fps:60,bitrate:3000},emptyFirst=false,failPoolClose=false,cancelPreparation=false){
+async function runTick(failVideo=false,failClose=false,videoPacing="smooth",mode={width:1280,height:720,fps:60,bitrate:3000},emptyFirst=false,failPoolClose=false,cancelPreparation=false,betweenFrames=null){
  let time=0,state=0,tasks=0,client,closed=0,interrupted=false,ioClosed=false,mediaOptions,videoCalls=0;
  let ioOptions;
  const pairCalls=[],poolCalls=[],batchCalls=[],referenceCalls=[],order=[],heap=new Uint8Array(1024);
@@ -12,16 +12,46 @@ async function runTick(failVideo=false,failClose=false,videoPacing="smooth",mode
   _ml_packet_pool_configure:enabled=>{assert.equal(tasks,0);poolCalls.push(enabled);return !enabled&&failPoolClose?-1:0;},
   _ml_session_start:()=>{state=2;tasks=1;return 0;},_ml_session_state:()=>state,_ml_runtime_tasks:()=>tasks,_ml_session_video_frames:()=>1,
   _ml_session_stop:()=>{assert(interrupted);state=4;},
-  _ml_runtime_pump:budget=>{if(state===4){state=0;tasks=0;}else{order.push('pump:'+budget);time+=budget;}},_ml_session_gamepad:()=>0};
+  _ml_runtime_pump:budget=>{assert(budget>0);if(state===4){state=0;tasks=0;}else{order.push('pump:'+budget);time+=betweenFrames==='overrun'&&budget===2?20:budget;if(betweenFrames==='stop'&&budget===2)client.stop();}},_ml_session_gamepad:()=>0};
  const scope={setTimeout,clearTimeout,Date,performance,Uint8Array,window:null,__moonlightStreamFactory:async()=>core,
   MoonlightTelemetry:{now:()=>time,create:()=>({sample:()=>({})}),readCore:()=>null},
   MoonlightNative:{create:()=>({})},MoonlightStreamIO:{create:(transport,options)=>(ioOptions=options,{stats:{},interrupt:()=>{interrupted=true;},close:()=>{assert.equal(tasks,0);ioClosed=true;}})},
-  MoonlightStreamMedia:{create:(io,runtime,options)=>(mediaOptions=options,{drainVideo:()=>{videoCalls++;order.push('video');time+=4;if(failVideo&&(!emptyFirst||videoCalls>1))throw Error('copy failed');return !(emptyFirst&&videoCalls===1);},finishVideo:()=>{order.push('finish');},drainAudio:()=>{order.push('audio');time+=1;},stats:()=>({}),close:()=>{assert.equal(tasks,0);closed++;if(failClose)throw Error('GPU pending');}})},
+  MoonlightStreamMedia:{create:(io,runtime,options)=>(mediaOptions=options,{drainVideo:()=>{videoCalls++;order.push('video');time+=4;if(failVideo&&(!emptyFirst||videoCalls>1))throw Error('copy failed');return !(emptyFirst&&videoCalls===1);},finishVideo:()=>{order.push('finish');},drainAudio:()=>{order.push('audio');time+=1;if(betweenFrames==='audioError')throw Error('audio service failed');},stats:()=>({}),close:()=>{assert.equal(tasks,0);closed++;if(failClose)throw Error('GPU pending');}})},
   MoonlightSessionProtocol:{create:()=>({launch:async()=>({host:'host',version:'7',url:'rtsp://host',key:new Uint8Array(16),keyId:1,codecSupport:1})})}};
+ const timers=new Map(),frames=new Map();let next=0;
+ if(betweenFrames){
+  scope.performance={now:()=>time};scope.setTimeout=(fn,delay)=>{const id=++next;if(delay===0)queueMicrotask(fn);else timers.set(id,{fn,delay});return id;};scope.clearTimeout=id=>timers.delete(id);
+  scope.cancelAnimationFrame=id=>frames.delete(id);scope.requestAnimationFrame=fn=>{
+   const id=++next;frames.set(id,fn);queueMicrotask(()=>{
+    if(betweenFrames!=='earlyFrame'){time+=4;const service=[...timers].find(([,t])=>t.delay===4);if(service){timers.delete(service[0]);service[1].fn();}}
+    if(frames.has(id))frames.get(id)();
+   });return id;
+  };
+ }
  scope.window=scope;vm.createContext(scope);vm.runInContext(fs.readFileSync('app/src/streaming/stream-client.js','utf8'),scope);
  client=scope.MoonlightStreamClient.create({host:'host',app:{id:1},mode:{...mode,videoPacing},onStats:()=>client.stop()});
- const result=await client.start();assert.equal(tasks,0);assert.equal(closed,cancelPreparation?0:1);return {order,result,ioClosed,mediaOptions,poolCalls,pairCalls,batchCalls,referenceCalls,ioOptions,unfinished:scope.__moonlightStreamUnfinished};
+ const result=await client.start();assert.equal(tasks,0);assert.equal(closed,cancelPreparation?0:1);assert.equal(timers.size,0);assert.equal(frames.size,0);return {order,result,ioClosed,mediaOptions,poolCalls,pairCalls,batchCalls,referenceCalls,ioOptions,unfinished:scope.__moonlightStreamUnfinished};
 }
+
+test('between-frame service moves work within the existing budget and never presents video',async()=>{
+ const r=await runTick(false,false,'smooth',undefined,false,false,false,'service');
+ assert.equal(r.result.error,null);assert.deepEqual(r.order,['pump:2','audio','video','pump:4','finish','pump:3','finish','audio']);
+ assert.equal(r.result.stats.serviceIterations,1);assert.equal(r.result.stats.servicePumpMs,2);assert.equal(r.result.stats.serviceDrainMs,1);
+ assert.equal(r.result.stats.pumpMs+r.result.stats.servicePumpMs+r.result.stats.serviceDrainMs,10);
+ const early=await runTick(false,false,'smooth',undefined,false,false,false,'earlyFrame');assert.equal(early.result.stats.serviceIterations,0);assert.equal(early.result.stats.pumpMs,10);
+});
+test('service overruns consume the next pump allowance instead of adding another full budget',async()=>{
+ const r=await runTick(false,false,'smooth',undefined,false,false,false,'overrun');
+ assert.equal(r.result.error,null);assert.deepEqual(r.order,['pump:2','audio','video','finish','finish','audio']);
+ assert.equal(r.result.stats.pumpMs,0);assert.equal(r.result.stats.servicePumpMs,20);assert.equal(r.result.stats.maxServiceMs,21);
+});
+test('stop and audio failure during between-frame service cancel display work and clean up ownership',async()=>{
+ for(const mode of ['stop','audioError']){
+  const r=await runTick(false,false,'smooth',undefined,false,false,false,mode);
+  assert.deepEqual(r.order,['pump:2','audio']);assert.equal(r.ioClosed,true);
+  if(mode==='audioError')assert.match(r.result.error.message,/audio service failed/);else assert.equal(r.result.error,null);
+ }
+});
 
 test('presentation runs once per tick and GPU wait stays outside the core budget measurements',async()=>{
  const {order,result}=await runTick();assert.equal(result.error,null);

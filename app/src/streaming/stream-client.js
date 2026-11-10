@@ -2,20 +2,27 @@
 (function(global){
  "use strict";
  function createClock(){
-  var pending=null,stats={frameWakes:0,timerWakes:0,forcedWakes:0,waitMs:0,maxWaitMs:0};
+  var pending=null,stats={frameWakes:0,timerWakes:0,forcedWakes:0,serviceWakes:0,waitMs:0,maxWaitMs:0};
   function now(){return global.performance&&global.performance.now?global.performance.now():Date.now();}
-  function wait(){
+  function wait(service){
    if(pending)return pending.promise;
-   var resolve,promise=new Promise(function(done){resolve=done;}),entry={promise:promise,frame:null,timer:null,begin:now()};pending=entry;
-   entry.finish=function(reason){
+   var resolve,reject,promise=new Promise(function(done,fail){resolve=done;reject=fail;}),entry={promise:promise,frame:null,timer:null,serviceTimer:null,begin:now()};pending=entry;
+   entry.finish=function(reason,error){
     if(pending!==entry)return;pending=null;
     if(entry.frame!==null)global.cancelAnimationFrame(entry.frame);if(entry.timer!==null)clearTimeout(entry.timer);
-    var elapsed=now()-entry.begin;stats.waitMs+=elapsed;stats.maxWaitMs=Math.max(stats.maxWaitMs,elapsed);stats[reason+"Wakes"]++;resolve();
+    if(entry.serviceTimer!==null)clearTimeout(entry.serviceTimer);
+    var elapsed=now()-entry.begin;stats.waitMs+=elapsed;stats.maxWaitMs=Math.max(stats.maxWaitMs,elapsed);stats[reason+"Wakes"]++;if(error)reject(error);else resolve();
    };
    var framed=typeof global.requestAnimationFrame==="function";
    // A hidden page may stop animation callbacks; keep startup/stop progressing.
    entry.timer=setTimeout(function(){entry.finish("timer");},framed?50:2);
    if(framed)entry.frame=global.requestAnimationFrame(function(){entry.finish("frame");});
+   // One bounded receive/audio turn can use otherwise idle time. Keep the same
+   // pending display callback; this timer never presents video or rearms itself.
+   if(framed&&service)entry.serviceTimer=setTimeout(function(){
+    entry.serviceTimer=null;if(pending!==entry)return;stats.serviceWakes++;
+    try{service();}catch(error){entry.finish("forced",error);}
+   },4);
    return promise;
   }
   return {wait:wait,wake:function(){if(pending)pending.finish("forced");},stats:stats};
@@ -59,6 +66,17 @@
   // At 40 Mbps, an earlier output check leaves more GPU overlap time.
   var completionBudgetMs=pumpBudgetMs===12&&mode.bitrate<40000?6:4;
   var telemetry=global.MoonlightTelemetry.create(),clock=createClock(),pumpMs=0,drainMs=0,iterations=0,maxPumpMs=0,maxDrainMs=0;
+  var serviceIterations=0,servicePumpMs=0,serviceDrainMs=0,maxServiceMs=0,waitBudgetMs=0;
+  function serviceBetweenFrames(){
+   if(stopRequested||failure||core._ml_session_state()!==2)return;
+   var begin=global.MoonlightTelemetry.now();core._ml_runtime_pump(2);var pumped=global.MoonlightTelemetry.now();media.drainAudio();var drained=global.MoonlightTelemetry.now();
+   serviceIterations++;servicePumpMs+=pumped-begin;serviceDrainMs+=drained-pumped;maxServiceMs=Math.max(maxServiceMs,drained-begin);
+   // Charge at least the requested slice, including any observed native-call
+   // overrun, against the following display tick. Never create extra CPU budget.
+   waitBudgetMs=Math.max(2,drained-begin);
+   if(failure)throw failure;
+   if(core._ml_session_state()===3)throw Error("Core connection failed: "+core._ml_session_error());
+  }
   var rumble=createRumbleOutput(mode.rumble!==false&&typeof options.onRumble==="function"?options.onRumble:null,global.MoonlightTelemetry.now);
   var inputStats={gamepadQueued:0,gamepadRejected:0};
   function collect(active){
@@ -68,6 +86,7 @@
    snapshot.packetPool=global.MoonlightTelemetry.readPacketPool?global.MoonlightTelemetry.readPacketPool(core):null;
    snapshot.input=Object.assign({},inputStats);
    snapshot.rumble=Object.assign({},rumble.stats);
+   Object.assign(snapshot,{serviceIterations:serviceIterations,servicePumpMs:servicePumpMs,serviceDrainMs:serviceDrainMs,maxServiceMs:maxServiceMs});
    snapshot.telemetry=telemetry.sample(snapshot,active?global.MoonlightTelemetry.readCore(core):null);return snapshot;
   }
   function status(text){if(options.onStatus)options.onStatus(text);}
@@ -125,14 +144,15 @@
     }finally{session.key.fill(0);for(var p of pointers)core._free(p);}
     startedAt=Date.now();var lastStats=0;
     while(!stopRequested){
-     await clock.wait();if(stopRequested)break;
+     waitBudgetMs=0;await clock.wait(cpu?null:serviceBetweenFrames);if(stopRequested)break;
      // Queue video early and service the core while its GPU copy completes.
      // A nonblocking fence check publishes once; pending work keeps its slot.
      // At 40 Mbps, an empty early drain gets one retry after the first pump. Final fence
      // queries may use up to 3 ms of remaining frame headroom.
+     var frameBudgetMs=Math.max(0,pumpBudgetMs-waitBudgetMs),firstBudgetMs=Math.min(completionBudgetMs,frameBudgetMs);
      var begin=global.MoonlightTelemetry.now(),videoOccupied=media.drainVideo();var early=global.MoonlightTelemetry.now();
-     core._ml_runtime_pump(completionBudgetMs);var pumpedEarly=global.MoonlightTelemetry.now();media.finishVideo();if(!videoOccupied&&mode.bitrate>=40000)media.drainVideo();var finishedEarly=global.MoonlightTelemetry.now();
-     core._ml_runtime_pump(pumpBudgetMs-completionBudgetMs);var pumped=global.MoonlightTelemetry.now();media.finishVideo(Math.min(begin+pumpBudgetMs+2,global.MoonlightTelemetry.now()+3));media.drainAudio();var drained=global.MoonlightTelemetry.now();
+     if(firstBudgetMs>0)core._ml_runtime_pump(firstBudgetMs);var pumpedEarly=global.MoonlightTelemetry.now();media.finishVideo();if(!videoOccupied&&mode.bitrate>=40000)media.drainVideo();var finishedEarly=global.MoonlightTelemetry.now();
+     if(frameBudgetMs>firstBudgetMs)core._ml_runtime_pump(frameBudgetMs-firstBudgetMs);var pumped=global.MoonlightTelemetry.now();media.finishVideo(Math.min(begin+frameBudgetMs+2,global.MoonlightTelemetry.now()+3));media.drainAudio();var drained=global.MoonlightTelemetry.now();
      var pumpElapsed=pumpedEarly-early+pumped-finishedEarly,drainElapsed=early-begin+finishedEarly-pumpedEarly+drained-pumped;
      pumpMs+=pumpElapsed;drainMs+=drainElapsed;maxPumpMs=Math.max(maxPumpMs,pumpElapsed);maxDrainMs=Math.max(maxDrainMs,drainElapsed);iterations++;
      rumble.flush();

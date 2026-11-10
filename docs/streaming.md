@@ -98,7 +98,10 @@ execution time. The copy/present counter excludes overlapped GPU execution; fenc
 poll CPU cost is tracked separately.
 
 Audio uses fixed 20 ms PCM chunks, two native buffers (40 ms), and one replaceable
-software chunk (20 ms). The completed-PCM budget is 60 ms; partial staging adds
+software chunk (20 ms). AudioOut starts once both native buffers are queued, giving
+a one-time 40 ms prefill. Opus decodes directly after the retained partial chunk
+in native staging, removing the former intermediate PCM allocation and copy.
+The completed-PCM budget is 60 ms; partial staging adds
 less than 20 ms (normally at most 15 ms for Sunshine's 5 ms packets). Pending audio
 is drained between cooperative pumps as native capacity becomes available. When
 there is room, pending samples are preserved in order. On sustained backpressure,
@@ -108,6 +111,11 @@ decoded so dropping PCM does not corrupt decoder state. Long decoded packets are
 split into the same bounded chunks. The overlay reports deliberately skipped
 audio duration, separate from network FEC failures. This trades stale audio for
 bounded buffering when the scheduler or network falls behind.
+
+The overlay and RAM history record observed queue-empty episodes and time until
+the next successful append. They exclude prefill and do not restart playback.
+These are sampled starvation indicators, not exact DSP underrun durations or
+played-sample measurements; a queue can empty between observations.
 
 Loss indicators are video frame-number gaps, native decoder rejections, audio
 packets recovered by FEC, failed audio recovery blocks, and local audio-buffer
@@ -146,8 +154,16 @@ messages (at most 512 characters each). This avoids blocking the JS/input loop i
 the loader's TCP logger during Wi-Fi trouble. The overlay still updates once a
 second. Diagnostics are not automatically flushed to the network on exit.
 
-The stream loop runs on animation callbacks, with a 50 ms watchdog when rendering
-callbacks stop. Each iteration first tries video, then runs two cooperative C
+The stream loop presents on animation callbacks, with a 50 ms watchdog when rendering
+callbacks stop. While awaiting a callback, GPU modes schedule at most one service
+turn after 4 ms: up to 2 ms of cooperative packet/input/audio work, followed by
+pending AudioOut delivery. It never publishes video or reschedules itself. Its
+requested budget or observed total cost, whichever is larger, is deducted from
+the following frame's pump allowance; an overrun can consume that allowance
+completely. The display callback remains pending, and frame/stop/error cancels
+the service timer. CPU diagnostic renderers keep their original scheduling.
+Separate service counters and timings are retained in the overlay/RAM history.
+Each display iteration first tries video, then runs two cooperative C
 pumps (budgets detailed below). A fence check between them releases completed
 video promptly. At 40 Mbps or higher, if the early drain did not submit or publish video, one mid-frame
 decoder check can use output that became ready during the first pump. A retained
