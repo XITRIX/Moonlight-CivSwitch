@@ -29,6 +29,7 @@ APP_SCRIPTS = (
     "src/streaming/sunshine-session.js",
     "src/streaming/stream-client.js",
     "src/streaming/controller-input.js",
+    "src/streaming/touch-input.js",
     "src/ui/stream-screen.js",
     "src/ui/moonlight-ui.js",
 )

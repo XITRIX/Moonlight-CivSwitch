@@ -1,6 +1,7 @@
 #include "Limelight-internal.h"
 #include "runtime.h"
 #include <stdarg.h>
+#include <math.h>
 
 extern void ml_log(const char* text);
 extern void ml_event(int event,int a,int b);
@@ -35,6 +36,41 @@ static void input_task(void* ignored);
 static int input_pending,input_buttons,input_lt,input_rt,input_lx,input_ly,input_rx,input_ry;
 static struct { short code;char action,modifiers; } keys[64];
 static unsigned int keys_read,keys_write;
+enum { POINTER_MOVE=1, POINTER_BUTTON, POINTER_TOUCH, POINTER_QUEUE=256 };
+typedef struct { int kind,action;uint32_t id;int dx,dy;float x,y; } PointerInput;
+static PointerInput pointer_queue[POINTER_QUEUE];
+static unsigned pointer_read,pointer_write;
+static int pointer_reset,mouse_buttons,touch_dirty;
+static void release_pointer(void) {
+    int buttons=mouse_buttons,dirty=touch_dirty;mouse_buttons=touch_dirty=0;
+    if(buttons&1)LiSendMouseButtonEvent(BUTTON_ACTION_RELEASE,BUTTON_LEFT);
+    if(buttons&2)LiSendMouseButtonEvent(BUTTON_ACTION_RELEASE,BUTTON_RIGHT);
+    if(dirty)LiSendTouchEvent(LI_TOUCH_EVENT_CANCEL_ALL,0,0,0,0,0,0,LI_ROT_UNKNOWN);
+}
+static int queue_pointer(PointerInput event) {
+    if(state!=2)return -1;
+    if(pointer_reset)return -2;
+    if(pointer_write!=pointer_read){
+        PointerInput* last=&pointer_queue[(pointer_write-1)%POINTER_QUEUE];
+        if(event.kind==POINTER_MOVE&&last->kind==POINTER_MOVE&&
+           last->dx+event.dx>=-32768&&last->dx+event.dx<=32767&&last->dy+event.dy>=-32768&&last->dy+event.dy<=32767){last->dx+=event.dx;last->dy+=event.dy;ml_runtime_wake_input();return 0;}
+        if(event.kind==POINTER_TOUCH&&event.action==LI_TOUCH_EVENT_MOVE&&last->kind==POINTER_TOUCH&&last->action==event.action&&last->id==event.id){*last=event;ml_runtime_wake_input();return 0;}
+    }
+    if(pointer_write-pointer_read>=POINTER_QUEUE)return -2;
+    pointer_queue[pointer_write++%POINTER_QUEUE]=event;ml_runtime_wake_input();return 0;
+}
+static void dispatch_pointer(void) {
+    if(pointer_reset){pointer_reset=0;release_pointer();}
+    for(unsigned count=0;state==2&&count<32&&pointer_read!=pointer_write;count++){
+        PointerInput e=pointer_queue[pointer_read++%POINTER_QUEUE];int result;
+        if(e.kind==POINTER_MOVE)LiSendMouseMoveEvent(e.dx,e.dy);
+        else if(e.kind==POINTER_BUTTON){
+            result=LiSendMouseButtonEvent(e.action?BUTTON_ACTION_PRESS:BUTTON_ACTION_RELEASE,e.id);
+            if(!result){int bit=e.id==BUTTON_LEFT?1:2;if(e.action)mouse_buttons|=bit;else mouse_buttons&=~bit;}
+        }else {result=LiSendTouchEvent(e.action,e.id,e.x,e.y,0,0,0,LI_ROT_UNKNOWN);if(!result&&e.action==LI_TOUCH_EVENT_DOWN)touch_dirty=1;}
+        ml_runtime_checkpoint();if(pointer_reset)break;
+    }
+}
 
 static void logger(const char* format,...) { char text[1024];va_list args;va_start(args,format);vsnprintf(text,sizeof(text),format,args);va_end(args);ml_log(text); }
 static void stage_start(int stage) { ml_event(1,stage,0); }
@@ -101,6 +137,7 @@ int ml_session_start(const char* host,const char* app_version,const char* rtsp_u
     config.supportedVideoFormats=VIDEO_FORMAT_H264;config.encryptionFlags=0;config.clientRefreshRateX100=fps*100;
     memcpy(config.remoteInputAesKey,key,16);config.remoteInputAesIv[0]=key_id>>24;config.remoteInputAesIv[1]=key_id>>16;config.remoteInputAesIv[2]=key_id>>8;config.remoteInputAesIv[3]=key_id;
     state=1;error_code=video_frames=audio_frames=0;input_pending=0;keys_read=keys_write=0;
+    pointer_read=pointer_write=0;pointer_reset=mouse_buttons=touch_dirty=0;
     frame_samples=receive_ms=receive_max_ms=queue_ms=queue_max_ms=host_samples=host_ms=host_max_ms=0;
     frame_gaps=decoder_rejected=0;have_last_frame=false;
     int result=ml_spawn_task(start_task,NULL);if(result)state=3;return result;
@@ -110,6 +147,7 @@ static void stop_task(void* ignored) {
     // Only releases may pass during the short shutdown grace; pending presses
     // are discarded. The JS socket adapter bounds the time available to send.
     LiSendMultiControllerEvent(0,1,0,0,0,0,0,0,0);
+    pointer_read=pointer_write;pointer_reset=0;release_pointer();
     while(keys_read!=keys_write){typeof(keys[0]) key=keys[keys_read++%64];if(key.action==KEY_ACTION_UP)LiSendKeyboardEvent(key.code,key.action,key.modifiers);}
     input_pending=0;LiStopConnection();state=0;free(video_bytes);video_bytes=NULL;video_capacity=0;ml_event(7,0,0);
 }
@@ -151,6 +189,25 @@ int ml_session_key(int code,int down,int modifiers) {
     if(state!=2)return -1;if(code<0||code>255||modifiers<0||modifiers>31)return -3;if(keys_write-keys_read>=64)return -2;
     keys[keys_write++%64]=(typeof(keys[0])){code,down?KEY_ACTION_DOWN:KEY_ACTION_UP,modifiers};ml_runtime_wake_input();return 0;
 }
+int ml_session_mouse_move(int dx,int dy) {
+    if(dx<-32768||dx>32767||dy<-32768||dy>32767)return -3;
+    return queue_pointer((PointerInput){.kind=POINTER_MOVE,.dx=dx,.dy=dy});
+}
+int ml_session_mouse_button(int button,int down) {
+    if((button!=BUTTON_LEFT&&button!=BUTTON_RIGHT)||(down!=0&&down!=1))return -3;
+    return queue_pointer((PointerInput){.kind=POINTER_BUTTON,.id=button,.action=down});
+}
+int ml_session_touch_supported(void) { return state==2&&(LiGetHostFeatureFlags()&LI_FF_PEN_TOUCH_EVENTS)!=0; }
+int ml_session_touch(int action,uint32_t id,float x,float y) {
+    if(state!=2)return -1;
+    if(!ml_session_touch_supported())return LI_ERR_UNSUPPORTED;
+    if((action!=LI_TOUCH_EVENT_DOWN&&action!=LI_TOUCH_EVENT_UP&&action!=LI_TOUCH_EVENT_MOVE)||!isfinite(x)||!isfinite(y)||x<0||x>1||y<0||y>1)return -3;
+    return queue_pointer((PointerInput){.kind=POINTER_TOUCH,.action=action,.id=id,.x=x,.y=y});
+}
+int ml_session_pointer_reset(void) {
+    if(state!=2)return -1;
+    pointer_read=pointer_write;pointer_reset=1;ml_runtime_wake_input();return 0;
+}
 static void input_task(void* ignored) {
     (void)ignored;
     // Our input adapter exposes the Xbox layout, with no guide or extra buttons.
@@ -162,6 +219,7 @@ static void input_task(void* ignored) {
     while(state==2){
         if(input_pending){input_pending=0;LiSendMultiControllerEvent(0,1,input_buttons,input_lt,input_rt,input_lx,input_ly,input_rx,input_ry);}
         while(keys_read!=keys_write){typeof(keys[0]) key=keys[keys_read++%64];LiSendKeyboardEvent(key.code,key.action,key.modifiers);}
+        dispatch_pointer();
         PltSleepMs(4);
     }
 }

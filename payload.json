@@ -36,6 +36,7 @@
     "app/src/streaming/sunshine-session.js",
     "app/src/streaming/stream-client.js",
     "app/src/streaming/controller-input.js",
+    "app/src/streaming/touch-input.js",
     "app/src/ui/stream-screen.js",
     "app/src/ui/moonlight-ui.js"
   ],

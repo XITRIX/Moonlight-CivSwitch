@@ -23,4 +23,4 @@ library.ml_rumble(0,65535,32768);library.ml_rumble(0,0,0);
 assert.deepEqual(events,[[0,65535,32768],[0,0,0]]);
 sandbox.Module.moonlightPlatform.rumble=()=>{throw Error('controller disconnected');};
 assert.doesNotThrow(()=>library.ml_rumble(0,65535,65535));
-console.log('Compiled session rumble listener, controller capability announcement and JS import exception boundary passed.');
+console.log('Compiled session input passed: rumble, pointer order/coalescing, touch support/bounds, full-queue cancellation and shutdown releases; JS import exception boundary passed.');

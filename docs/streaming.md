@@ -271,12 +271,48 @@ packet cannot satisfy a measured sample. Sparse samples are used for the final
   local and held dismissal buttons must be released before remote input resumes. Native game actions
   remain a partial fallback when full controller state is unavailable. Keyboard keys
   use Moonlight's Win32 key events. C APIs that may take locks run in a cooperative
-  task, with bounded queues and coalesced controller state. Rumble, gyro, touch,
-  mouse input, additional controllers and on-screen keyboard streaming are absent.
+  task, with bounded queues and coalesced controller state. Touchscreen modes
+  supply relative mouse input or Sunshine multi-touch as described below. Gyro,
+  additional controllers and on-screen keyboard streaming are absent.
 - Teardown interrupts startup or stops an active core, pumps until tasks finish,
   and then releases decoder/audio objects, sockets and owned memory. If cleanup
   times out, referenced memory is retained and further streams require restarting
   Civ VII. Existing game-owned resources are never freed.
+
+## Touchscreen input
+
+Settings retain `touchMode` as `trackpad` (default for older settings) or `touchpad`.
+Trackpad mode sends relative mouse movement, one-finger left taps, two-finger
+right taps, and double-tap dragging. A second single-finger contact within 300 ms
+and 24 reference pixels presses left immediately; lifting releases it. Taps must
+finish within 250 ms and stay within 12 reference pixels. Movement uses the
+stream's pixel dimensions, retaining fractional deltas. Extra fingers suppress
+taps and terminate a drag. No two-finger scrolling is implemented.
+
+Touchpad mode sends `LiSendTouchEvent` down/move/up events with stable pointer IDs
+and coordinates normalized to the fitted video rectangle. Contacts starting in
+letterbox bars are ignored until lifted; active contacts clamp at picture edges.
+Pressure/contact area are reported as unknown. The core checks Sunshine's
+`LI_FF_PEN_TOUCH_EVENTS`; unsupported hosts show a notice without changing modes
+or silently substituting mouse events. Sunshine's host OS/app must also support
+touch injection. This uses touchscreen events, not gamepad touchpad events.
+
+The Switch source borrows the initialized game HID session and calls the exported
+Result-returning `nn::hid::detail::GetTouchScreenState<16>` getter. The 656-byte
+SDK state uses a 16-byte header and up to sixteen 40-byte contacts, with owned
+guarded storage. The layout follows [libnx HID structures](https://github.com/switchbrew/libnx/blob/master/nx/include/switch/services/hid.h);
+the exported symbol is recorded in `investigation/evidence/streaming-input-exports.txt`.
+DOM TouchEvents provide the browser fallback; native and DOM samples never mix.
+The getter/layout and end-to-end host injection still need console qualification.
+
+All remote pointer calls execute on the cooperative C input task, rather than
+calling locking upstream APIs from JS callbacks. A 256-event ring preserves
+button/contact transitions, coalescing only adjacent compatible movement. At most
+32 pointer events dispatch in one task turn, with cooperative deadline checks.
+Queue rejection cancels the gesture. Focus loss, touch cancellation, dialog entry
+and stream shutdown discard pending presses and release held mouse buttons and
+cancel direct contacts. Held fingers require neutral before remote input resumes.
+The local dialog's touch controls remain usable.
 
 ## Validation
 

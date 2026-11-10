@@ -7,6 +7,8 @@
   var image=element("img",panel,{display:"none",position:"absolute",left:"0",top:"0",width:"100%",height:"100%",objectFit:"contain"});image.alt="Remote stream";
   var liveImage=element("div",panel,{display:"none",position:"absolute",left:"0",top:"0",width:"100%",height:"100%",backgroundSize:"contain",backgroundPosition:"center",backgroundRepeat:"no-repeat"});liveImage.setAttribute("aria-label","Remote stream");liveImage.id="moonlight-stream-native-image";
   var message=element("div",panel,{position:"relative",zIndex:"1",fontSize:"22px",color:"#b7c6dd",padding:"20px",textAlign:"center",backgroundColor:"#0c1220"});message.setAttribute("role","status");
+  panel.style.touchAction="none";
+  var touchNotice=element("div",panel,{display:"none",position:"absolute",bottom:"20px",left:"20px",right:"20px",zIndex:"2",padding:"12px",fontSize:"18px",color:"#fff",backgroundColor:"#131d2e",pointerEvents:"none"});touchNotice.id="moonlight-touch-status";touchNotice.setAttribute("role","status");
   var overlay=element("div",panel,{display:"none",position:"absolute",left:"14px",top:"14px",zIndex:"2",maxWidth:"90vw",padding:"12px 16px",borderRadius:"8px",backgroundColor:"rgba(12,18,32,0.88)",color:"#e4efff",fontFamily:"Arial, sans-serif",fontSize:"16px",lineHeight:"1.4",whiteSpace:"pre-wrap",pointerEvents:"none"});overlay.id="moonlight-performance-overlay";overlay.setAttribute("aria-label","Streaming performance");
   var overlayEnabled=false,exitTimer=null,terminateRequested=false,terminateSignal=null,chordHeld=false,inputGate=false,localButtons=0,localIgnoreUntil=0,currentApp=null;
   var dialog=global.MoonlightAppDialog.create({parent:panel,id:"moonlight-stream-exit",onCancel:resumeInput});
@@ -30,12 +32,31 @@
   }
   function cancelExitCheck(){if(exitTimer!==null)clearTimeout(exitTimer);exitTimer=null;}
   function checkExit(){exitTimer=null;if(!visible||stopping)return;poll(true);if(visible&&!stopping)exitTimer=setTimeout(checkExit,50);}
-  var client=null,lifetime=null,loading=false,lastImage="",imageStarted=0,visible=false,stopping=false,hasImage=false,nativeInput=null,fullInput=false,lastPad="",nativeButtons=0,nativeAxes=[0,0],pressedKeys=new Set(),suspended=false;
+  var client=null,lifetime=null,loading=false,lastImage="",imageStarted=0,visible=false,stopping=false,hasImage=false,nativeInput=null,fullInput=false,lastPad="",nativeButtons=0,nativeAxes=[0,0],pressedKeys=new Set(),suspended=false,touchInput=null,nativeTouch=null;
+  function touchError(text){touchNotice.textContent=text;touchNotice.style.display="block";}
+  function touchAllowed(){return visible&&!!client&&!stopping&&!suspended&&!dialog.isOpen()&&Date.now()>=localIgnoreUntil;}
+  function pollTouch(){
+   if(!touchInput||!nativeTouch)return;
+   try{
+    var rect=panel.getBoundingClientRect(),points=nativeTouch.poll().map(function(p){return {id:p.id,x:rect.left+p.x*rect.width,y:rect.top+p.y*rect.height};});
+    touchInput.update(points,touchAllowed());
+   }catch(error){touchInput.cancel();nativeTouch.close();nativeTouch=null;touchError("Touchscreen unavailable: "+error.message);}
+  }
+  function domTouch(event){
+   if(!visible||!touchInput)return;
+   var points=[];for(var i=0;i<event.touches.length;i++){var p=event.touches[i];points.push({id:p.identifier,x:p.clientX,y:p.clientY});}
+   if(dialog.isOpen()){if(!nativeTouch)touchInput.update(points,false);return;}
+   event.preventDefault();event.stopPropagation();if(nativeTouch)return;
+   if(event.type==="touchcancel"){touchInput.cancel();return;}
+   touchInput.update(points,touchAllowed());
+  }
+  for(var touchEvent of ["touchstart","touchmove","touchend","touchcancel"])panel.addEventListener(touchEvent,domTouch,false);
   function send(state){
    if(!client||stopping)return;var signature=state.join(",");if(signature===lastPad)return;
    var result=client.gamepad.apply(client,state);if(typeof result!=="number"||result>=0)lastPad=signature;
   }
   function release(){
+   if(touchInput)touchInput.cancel();
    if(nativeInput&&nativeInput.stopRumble)nativeInput.stopRumble();
    if(client){client.gamepad(0,0,0,0,0,0,0);for(var code of pressedKeys)client.key(code,false,0);}
    pressedKeys.clear();lastPad="";nativeButtons=0;nativeAxes=[0,0];
@@ -56,6 +77,7 @@
   }
   function poll(exitOnly){
    if(!visible||!client||stopping)return;
+   try{
    var input=null;
    if(nativeInput){
     try{input=nativeInput.poll();}catch(error){options.log("Controller input failed: "+error.message);nativeInput.close();nativeInput=null;release();}
@@ -67,6 +89,7 @@
     if(localInput(input))return;
     if(exitOnly||suspended)return;fullInput=true;send(input.state);
    }else if(!exitOnly&&!suspended&&fullInput){release();fullInput=false;}
+   }finally{if(!exitOnly)pollTouch();}
   }
   function key(event,down){
    if(!visible)return false;
@@ -83,6 +106,7 @@
    if(lifetime)return lifetime;
    mode=global.MoonlightSettings.validate(mode);overlayEnabled=mode.showStats;overlay.style.display="none";overlay.textContent="Waiting for stream statistics…";
    currentApp=app;terminateRequested=false;terminateSignal={aborted:false};chordHeld=false;inputGate=false;localButtons=0;localIgnoreUntil=0;dialog.hide();
+   touchNotice.style.display="none";touchNotice.textContent="";
    visible=true;stopping=false;loading=false;hasImage=false;lastImage="";lastPad="";nativeButtons=0;nativeAxes=[0,0];fullInput=false;suspended=false;pressedKeys.clear();image.style.display="none";liveImage.style.display="none";panel.style.display="flex";status("Starting "+app.title+"… · Press − and + together for stream options");
    if(global.MoonlightControllerInput)try{nativeInput=global.MoonlightControllerInput.createNative({onRumbleError:function(error){options.log("Controller rumble unavailable: "+error.message);}});}catch(error){options.log("Native controller unavailable: "+error.message);}
    client=global.MoonlightStreamClient.create({host:host,app:app,mode:global.MoonlightSettings.validate(mode),onRumble:mode.rumble&&nativeInput&&nativeInput.rumbleSupported?function(controller,low,high){
@@ -92,12 +116,19 @@
     if(url.indexOf("live:/")===0){loading=false;image.style.display="none";liveImage.style.backgroundImage='url("'+url+'")';liveImage.style.display="block";showImage();}
     else{liveImage.style.display="none";loading=true;imageStarted=Date.now();image.src=url;}
    },canPresent:function(){return !loading||Date.now()-imageStarted>1000;},log:options.log,onStats:function(stats){if(overlayEnabled){overlay.textContent=global.MoonlightTelemetry.format(stats);overlay.style.display="block";}if(options.onStats)options.onStats(stats);},onError:function(error){options.log("Error: "+error.message);}});
+   if(global.MoonlightTouchInput){
+    try{nativeTouch=global.MoonlightTouchInput.createNative();}catch(error){nativeTouch=null;touchError("Native touchscreen unavailable: "+error.message);}
+    touchInput=global.MoonlightTouchInput.create({mode:mode.touchMode,width:mode.width,height:mode.height,bounds:function(){return panel.getBoundingClientRect();},startBlocked:!!nativeTouch,
+     mouseMove:function(dx,dy){return client&&client.mouseMove?client.mouseMove(dx,dy):-1;},mouseButton:function(button,down){return client&&client.mouseButton?client.mouseButton(button,down):-1;},
+     touch:function(action,id,x,y){return client&&client.touch?client.touch(action,id,x,y):-1;},reset:function(){if(client&&client.resetPointer)client.resetPointer();},onError:touchError});
+   }
    cancelExitCheck();exitTimer=setTimeout(checkExit,50);
    lifetime=client.start().then(async function(result){
     if(terminateRequested&&!terminateSignal.aborted){status("Terminating "+app.title+"…");await options.onTerminate(host,app,terminateSignal);}
     return result;
    }).finally(function(){
     cancelExitCheck();
+    if(touchInput){touchInput.close();touchInput=null;}if(nativeTouch){nativeTouch.close();nativeTouch=null;}
     dialog.hide();visible=false;if(nativeInput){nativeInput.close();nativeInput=null;}pressedKeys.clear();client=null;lifetime=null;overlay.style.display="none";overlay.textContent="";panel.style.display="none";image.removeAttribute("src");liveImage.style.backgroundImage="none";options.onBack();
    });
    return lifetime;

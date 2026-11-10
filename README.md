@@ -73,6 +73,18 @@ opening the stream options. Joy-Con and Pro Controller vibration use both HD
 rumble frequency bands; trigger rumble is not supported.
 
 **Settings → Gamepad rumble** turns controller vibration on or off.
+
+**Settings → Touchscreen** selects either:
+
+- **Trackpad** (default): slide one finger to move the mouse. Tap with one finger
+  for left click or two fingers for right click. Quickly tap again and keep your
+  finger down on the second tap to hold the left button and drag; lifting releases it.
+- **Touchpad (direct touch)**: each finger is sent as a separate touch contact at
+  its position in the streamed picture. Requires a Sunshine host with direct
+  touch support; an unsupported host shows a notice. Host OS and app support
+  determine how those contacts behave.
+
+Touch input pauses while the stream options are open or the app loses focus.
 Changes apply to the next stream. Rumble updates are combined and limited to
 30 per second after video/audio processing; zero strength bypasses the rate
 limit. The performance overlay reports rumble call timing.

@@ -185,7 +185,12 @@
    return {error:failure,stats:latestStats};
   }
   function start(){if(!done){if(global.__moonlightStreamUnfinished)throw Error("Restart Civ VII to clear the previous stream");done=run();}return done;}
-  return {start:start,stop:stop,gamepad:function(buttons,lt,rt,lx,ly,rx,ry){var result=core&&core._ml_session_state()===2?core._ml_session_gamepad(buttons,lt,rt,lx,ly,rx,ry):-1;if(result===0)inputStats.gamepadQueued++;else inputStats.gamepadRejected++;return result;},key:function(code,down,modifiers){if(core&&core._ml_session_state()===2)return core._ml_session_key(code,down?1:0,modifiers||0);return -1;},stats:function(){return latestStats;}};
+  return {start:start,stop:stop,gamepad:function(buttons,lt,rt,lx,ly,rx,ry){var result=core&&core._ml_session_state()===2?core._ml_session_gamepad(buttons,lt,rt,lx,ly,rx,ry):-1;if(result===0)inputStats.gamepadQueued++;else inputStats.gamepadRejected++;return result;},key:function(code,down,modifiers){if(core&&core._ml_session_state()===2)return core._ml_session_key(code,down?1:0,modifiers||0);return -1;},
+   mouseMove:function(dx,dy){return core&&!stopRequested&&core._ml_session_state()===2?core._ml_session_mouse_move(dx,dy):-1;},
+   mouseButton:function(button,down){return core&&!stopRequested&&core._ml_session_state()===2?core._ml_session_mouse_button(button,down?1:0):-1;},
+   touch:function(action,id,x,y){return core&&!stopRequested&&core._ml_session_state()===2?core._ml_session_touch(action,id,x,y):-1;},
+   resetPointer:function(){return core&&core._ml_session_state()===2?core._ml_session_pointer_reset():-1;},
+   stats:function(){return latestStats;}};
  }
  global.MoonlightStreamClient={create:create,createClock:createClock,createRumbleOutput:createRumbleOutput};
 })(window);
