@@ -36,7 +36,7 @@ static void input_task(void* ignored);
 static int input_pending,input_buttons,input_lt,input_rt,input_lx,input_ly,input_rx,input_ry;
 static struct { short code;char action,modifiers; } keys[64];
 static unsigned int keys_read,keys_write;
-enum { POINTER_MOVE=1, POINTER_BUTTON, POINTER_TOUCH, POINTER_QUEUE=256 };
+enum { POINTER_MOVE=1, POINTER_BUTTON, POINTER_TOUCH, POINTER_SCROLL, POINTER_QUEUE=256 };
 typedef struct { int kind,action;uint32_t id;int dx,dy;float x,y; } PointerInput;
 static PointerInput pointer_queue[POINTER_QUEUE];
 static unsigned pointer_read,pointer_write;
@@ -55,6 +55,8 @@ static int queue_pointer(PointerInput event) {
         if(event.kind==POINTER_MOVE&&last->kind==POINTER_MOVE&&
            last->dx+event.dx>=-32768&&last->dx+event.dx<=32767&&last->dy+event.dy>=-32768&&last->dy+event.dy<=32767){last->dx+=event.dx;last->dy+=event.dy;ml_runtime_wake_input();return 0;}
         if(event.kind==POINTER_TOUCH&&event.action==LI_TOUCH_EVENT_MOVE&&last->kind==POINTER_TOUCH&&last->action==event.action&&last->id==event.id){*last=event;ml_runtime_wake_input();return 0;}
+        if(event.kind==POINTER_SCROLL&&last->kind==POINTER_SCROLL&&last->dx*event.dx>=0&&last->dy*event.dy>=0&&
+           last->dx+event.dx>=-32768&&last->dx+event.dx<=32767&&last->dy+event.dy>=-32768&&last->dy+event.dy<=32767){last->dx+=event.dx;last->dy+=event.dy;ml_runtime_wake_input();return 0;}
     }
     if(pointer_write-pointer_read>=POINTER_QUEUE)return -2;
     pointer_queue[pointer_write++%POINTER_QUEUE]=event;ml_runtime_wake_input();return 0;
@@ -64,6 +66,7 @@ static void dispatch_pointer(void) {
     for(unsigned count=0;state==2&&count<32&&pointer_read!=pointer_write;count++){
         PointerInput e=pointer_queue[pointer_read++%POINTER_QUEUE];int result;
         if(e.kind==POINTER_MOVE)LiSendMouseMoveEvent(e.dx,e.dy);
+        else if(e.kind==POINTER_SCROLL){if(e.dy)LiSendHighResScrollEvent(e.dy);if(e.dx)LiSendHighResHScrollEvent(e.dx);}
         else if(e.kind==POINTER_BUTTON){
             result=LiSendMouseButtonEvent(e.action?BUTTON_ACTION_PRESS:BUTTON_ACTION_RELEASE,e.id);
             if(!result){int bit=e.id==BUTTON_LEFT?1:2;if(e.action)mouse_buttons|=bit;else mouse_buttons&=~bit;}
@@ -196,6 +199,10 @@ int ml_session_mouse_move(int dx,int dy) {
 int ml_session_mouse_button(int button,int down) {
     if((button!=BUTTON_LEFT&&button!=BUTTON_RIGHT)||(down!=0&&down!=1))return -3;
     return queue_pointer((PointerInput){.kind=POINTER_BUTTON,.id=button,.action=down});
+}
+int ml_session_mouse_scroll(int horizontal,int vertical) {
+    if(horizontal<-32768||horizontal>32767||vertical<-32768||vertical>32767)return -3;
+    return queue_pointer((PointerInput){.kind=POINTER_SCROLL,.dx=horizontal,.dy=vertical});
 }
 int ml_session_touch_supported(void) { return state==2&&(LiGetHostFeatureFlags()&LI_FF_PEN_TOUCH_EVENTS)!=0; }
 int ml_session_touch(int action,uint32_t id,float x,float y) {

@@ -77,8 +77,10 @@ rumble frequency bands; trigger rumble is not supported.
 **Settings → Touchscreen** selects either:
 
 - **Trackpad** (default): slide one finger to move the mouse. Tap with one finger
-  for left click or two fingers for right click. Quickly tap again and keep your
-  finger down on the second tap to hold the left button and drag; lifting releases it.
+  for left click or two fingers for right click. Swipe with two fingers to scroll
+  vertically or horizontally; the page follows your fingers. Quickly tap again
+  and keep your finger down on the second tap to hold the left button and drag;
+  lifting releases it.
 - **Touchpad (direct touch)**: each finger is sent as a separate touch contact at
   its position in the streamed picture. Requires a Sunshine host with direct
   touch support; an unsupported host shows a notice. Host OS and app support

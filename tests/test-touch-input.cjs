@@ -4,7 +4,7 @@ function load(scope={}){scope.window=scope;vm.createContext(scope);vm.runInConte
 function environment(mode='trackpad',extra={}){
  let time=0,result=0;const events=[],errors=[];
  const api=load(),input=api.create({mode,width:1280,height:720,bounds:()=>({left:0,top:0,width:1280,height:720}),startBlocked:false,now:()=>time,
-  mouseMove:(...a)=>{events.push(['move',...a]);return result;},mouseButton:(...a)=>{events.push(['button',...a]);return result;},touch:(...a)=>{events.push(['touch',...a]);return result;},reset:()=>events.push(['reset']),onError:e=>errors.push(e),...extra});
+  mouseMove:(...a)=>{events.push(['move',...a]);return result;},mouseButton:(...a)=>{events.push(['button',...a]);return result;},mouseScroll:(...a)=>{events.push(['scroll',...a]);return result;},touch:(...a)=>{events.push(['touch',...a]);return result;},reset:()=>events.push(['reset']),onError:e=>errors.push(e),...extra});
  return {input,events,errors,buttons:()=>events.filter(e=>e[0]==='button'),update:(t,points,enabled=true)=>{time=t;input.update(points,enabled);},result:n=>result=n};
 }
 const p=(id,x=100,y=100)=>({id,x,y});
@@ -28,6 +28,42 @@ test('quick second tap holds left through dragging and releases on lift or cance
  const cancelled=environment();cancelled.update(0,[p(1)]);cancelled.update(30,[]);cancelled.update(100,[p(2)]);cancelled.input.cancel();
  assert.deepEqual(cancelled.events.at(-1),['reset']);const n=cancelled.events.length;cancelled.update(120,[p(2,150)]);assert.equal(cancelled.events.length,n);
  cancelled.update(130,[]);cancelled.update(160,[p(3)]);cancelled.update(200,[]);assert.deepEqual(cancelled.buttons().slice(-2),[['button',1,true],['button',1,false]]);
+});
+test('two-finger swipes scroll naturally in both axes without mouse motion or a right click',()=>{
+ const e=environment();e.update(0,[p(1,100,200),p(2,200,200)]);
+ e.update(10,[p(1,100,195),p(2,200,195)]);assert.equal(e.events.length,0,'small tap jitter does not scroll');
+ e.update(20,[p(2,200,160),p(1,100,160)]); // order changes are not ID changes
+ e.update(30,[p(1,140,160),p(2,240,160)]);
+ e.update(40,[p(1,140,200),p(2,240,200)]);e.update(50,[]);
+ assert.deepEqual(e.events,[['scroll',0,-120],['scroll',-120,0],['scroll',0,120]]);
+});
+test('scrolling retains fractional wheel deltas and scales to the screen rather than stream resolution',()=>{
+ const e=environment('trackpad',{width:640,height:360,bounds:()=>({left:0,top:0,width:2560,height:1440})});
+ e.update(0,[p(1,200,400),p(2,400,400)]);e.update(10,[p(1,200,480),p(2,400,480)]);
+ for(let i=1;i<=4;i++)e.update(10+i,[p(1,200,480+i*.25),p(2,400,480+i*.25)]);
+ assert.deepEqual(e.events,[['scroll',0,120],['scroll',0,1]]);
+});
+test('contact arrival, lifting, replacement and a third finger never introduce scroll jumps or clicks',()=>{
+ const e=environment();e.update(0,[p(1)]);e.update(10,[p(1),p(2,600,100)]);assert.equal(e.events.length,0);
+ e.update(20,[p(1,100,140),p(2,600,140)]);assert.deepEqual(e.events,[['scroll',0,120]]);
+ e.update(30,[p(1,100,400)]);e.update(40,[p(1,100,400),p(3,1000,600)]);assert.equal(e.events.length,1);
+ e.update(50,[p(1,100,440),p(3,1000,640)]);assert.deepEqual(e.events.at(-1),['scroll',0,120]);
+ e.update(60,[p(1),p(3),p(4)]);e.update(70,[p(1,100,400),p(3,100,400)]);e.update(80,[]);
+ assert.equal(e.events.length,2,'third finger suppresses input until all contacts lift');
+ const replacement=environment();replacement.update(0,[p(1),p(2)]);replacement.update(10,[p(1),p(3,600)]);
+ assert.equal(replacement.events.length,0,'replacing an ID rebases without moving');
+ const pinch=environment();pinch.update(0,[p(1,100),p(2,200)]);pinch.update(10,[p(1,50),p(2,250)]);pinch.update(20,[]);
+ assert.equal(pinch.events.length,0,'opposite finger motion does not become a swipe or tap');
+});
+test('cancellation discards scroll remainders and queue failure gates the gesture until all fingers lift',()=>{
+ for(const reject of [false,true]){
+  const e=environment();e.update(0,[p(1),p(2)]);if(reject)e.result(-2);
+  e.update(10,[p(1,100,140),p(2,100,140)]);if(!reject)e.input.cancel();
+  assert.deepEqual(e.events.at(-1),['reset']);const count=e.events.length;
+  e.update(20,[p(1,100,200),p(2,100,200)]);assert.equal(e.events.length,count);
+  e.result(0);e.update(30,[]);e.update(40,[p(3),p(4)]);e.update(50,[]);
+  assert.deepEqual(e.buttons(),[['button',3,true],['button',3,false]]);
+ }
 });
 test('slow or distant second taps do not start a hold and adding a finger ends a drag',()=>{
  for(const [time,x] of [[400,100],[100,400]]){const e=environment();e.update(0,[p(1)]);e.update(30,[]);e.update(time,[p(2,x)]);assert.equal(e.buttons().length,2);}

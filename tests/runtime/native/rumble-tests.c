@@ -42,6 +42,8 @@ int LiSendMultiControllerEvent(short controller,short mask,int buttons,unsigned 
 int LiSendKeyboardEvent(short key,char action,char modifiers) { return 0; }
 uint32_t LiGetHostFeatureFlags(void) { return host_features; }
 int LiSendMouseMoveEvent(short x,short y) { delivered[delivered_count++]=(PointerInput){.kind=POINTER_MOVE,.dx=x,.dy=y};return 0; }
+int LiSendHighResScrollEvent(short y) { delivered[delivered_count++]=(PointerInput){.kind=POINTER_SCROLL,.dy=y};return 0; }
+int LiSendHighResHScrollEvent(short x) { delivered[delivered_count++]=(PointerInput){.kind=POINTER_SCROLL,.dx=x};return 0; }
 int LiSendMouseButtonEvent(char action,int button) { delivered[delivered_count++]=(PointerInput){.kind=POINTER_BUTTON,.action=action,.id=button};return 0; }
 int LiSendTouchEvent(uint8_t action,uint32_t id,float x,float y,float pressure,float major,float minor,uint16_t rotation) {
     assert(pressure==0&&major==0&&minor==0&&rotation==LI_ROT_UNKNOWN);
@@ -50,6 +52,8 @@ int LiSendTouchEvent(uint8_t action,uint32_t id,float x,float y,float pressure,f
 void LiStopConnection(void) {}
 static void pointer_tests(void) {
     assert(ml_session_mouse_move(1,2)==-1);state=2;
+    state=0;assert(ml_session_mouse_scroll(0,120)==-1);state=2;
+    assert(ml_session_mouse_scroll(32768,0)==-3&&ml_session_mouse_scroll(0,-32769)==-3);
     assert(ml_session_mouse_move(32768,0)==-3&&ml_session_mouse_button(2,1)==-3);
     assert(ml_session_touch(1,7,NAN,0)==-3&&ml_session_touch(1,7,0,1.1f)==-3);
     host_features=0;assert(!ml_session_touch_supported()&&ml_session_touch(1,7,0,0)==LI_ERR_UNSUPPORTED);host_features=1;
@@ -61,13 +65,19 @@ static void pointer_tests(void) {
     assert(delivered[0].dx==6&&delivered[0].dy==2);
     assert(delivered[1].action==BUTTON_ACTION_PRESS&&delivered[2].dx==5&&delivered[3].action==BUTTON_ACTION_RELEASE);
     assert(delivered[4].action==1&&delivered[4].id==7&&delivered[5].x==.4f&&delivered[6].action==2);
+    assert(ml_session_mouse_scroll(0,20)==0&&ml_session_mouse_scroll(0,100)==0);
+    assert(ml_session_mouse_scroll(0,-120)==0&&ml_session_mouse_scroll(45,0)==0);
+    assert(delivered_count==7);dispatch_pointer();assert(delivered_count==10);
+    assert(delivered[7].kind==POINTER_SCROLL&&delivered[7].dy==120&&delivered[8].dy==-120&&delivered[9].dx==45);
+    assert(ml_session_mouse_scroll(32767,0)==0&&ml_session_mouse_scroll(1,0)==0);dispatch_pointer();
+    assert(delivered_count==12&&delivered[10].dx==32767&&delivered[11].dx==1);
     assert(ml_session_mouse_button(BUTTON_LEFT,1)==0);dispatch_pointer();assert(mouse_buttons==1);
     for(unsigned i=0;i<POINTER_QUEUE;i++)assert(ml_session_mouse_button(BUTTON_RIGHT,i%2)==0);
     assert(ml_session_mouse_button(BUTTON_LEFT,0)==-2);
-    unsigned before=delivered_count;assert(ml_session_pointer_reset()==0&&ml_session_mouse_move(1,0)==-2);dispatch_pointer();
+    unsigned before=delivered_count;assert(ml_session_pointer_reset()==0&&ml_session_mouse_move(1,0)==-2&&ml_session_mouse_scroll(0,120)==-2);dispatch_pointer();
     assert(delivered_count==before+2&&delivered[before].action==BUTTON_ACTION_RELEASE&&delivered[before+1].action==LI_TOUCH_EVENT_CANCEL_ALL);
     assert(ml_session_mouse_button(BUTTON_RIGHT,1)==0&&ml_session_touch(1,12,1,0)==0);dispatch_pointer();
-    assert(ml_session_mouse_button(BUTTON_LEFT,1)==0);before=delivered_count;stop_task(NULL);
+    assert(ml_session_mouse_scroll(0,120)==0&&ml_session_mouse_button(BUTTON_LEFT,1)==0);before=delivered_count;stop_task(NULL);
     assert(state==0&&delivered_count==before+2&&delivered[before].id==BUTTON_RIGHT&&delivered[before+1].action==LI_TOUCH_EVENT_CANCEL_ALL);
 }
 

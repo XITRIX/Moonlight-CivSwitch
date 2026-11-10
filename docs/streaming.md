@@ -283,11 +283,20 @@ packet cannot satisfy a measured sample. Sparse samples are used for the final
 
 Settings retain `touchMode` as `trackpad` (default for older settings) or `touchpad`.
 Trackpad mode sends relative mouse movement, one-finger left taps, two-finger
-right taps, and double-tap dragging. A second single-finger contact within 300 ms
-and 24 reference pixels presses left immediately; lifting releases it. Taps must
+right taps, two-finger scrolling, and double-tap dragging. A second single-finger
+contact within 300 ms and 24 reference pixels presses left immediately; lifting
+releases it. Taps must
 finish within 250 ms and stay within 12 reference pixels. Movement uses the
-stream's pixel dimensions, retaining fractional deltas. Extra fingers suppress
-taps and terminate a drag. No two-finger scrolling is implemented.
+stream's pixel dimensions, retaining fractional deltas. Adding a second finger
+terminates a drag; three or more fingers suppress input until all contacts lift.
+
+Two-finger scrolling uses the centroid of stable contact IDs, starting after
+12 reference pixels of movement. It sends high-resolution vertical and horizontal
+wheel events with natural direction (the page follows the fingers), at 120 wheel
+units per 40 pixels on a 1280×720 reference screen. Fractional deltas accumulate;
+finger arrival/lift/replacement rebases the centroid so it cannot jump. A scrolling
+gesture never clicks or moves the cursor. Lifting both fingers, cancellation or
+focus loss clears its fractional remainder. No inertia is added.
 
 Touchpad mode sends `LiSendTouchEvent` down/move/up events with stable pointer IDs
 and coordinates normalized to the fitted video rectangle. Contacts starting in
@@ -307,8 +316,10 @@ The getter/layout and end-to-end host injection still need console qualification
 
 All remote pointer calls execute on the cooperative C input task, rather than
 calling locking upstream APIs from JS callbacks. A 256-event ring preserves
-button/contact transitions, coalescing only adjacent compatible movement. At most
-32 pointer events dispatch in one task turn, with cooperative deadline checks.
+button/contact transitions, coalescing only adjacent compatible movement and
+same-direction wheel deltas within signed 16-bit bounds. Wheel reversals remain
+ordered. At most 32 pointer events dispatch in one task turn, with cooperative
+deadline checks.
 Queue rejection cancels the gesture. Focus loss, touch cancellation, dialog entry
 and stream shutdown discard pending presses and release held mouse buttons and
 cancel direct contacts. Held fingers require neutral before remote input resumes.

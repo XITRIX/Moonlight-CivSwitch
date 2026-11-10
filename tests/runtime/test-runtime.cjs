@@ -7,7 +7,8 @@ const preview={Uint8Array,Uint32Array,Int32Array,Number,DataView,btoa:s=>Buffer.
 const make=require(path.join(root,'dist/runtime/moonlight-stream.js'));
 (async()=>{
  const core=await make({moonlightPlatform:{randomFill:randomFillSync}});
- for(const name of ['mouse_move','mouse_button','touch','touch_supported','pointer_reset'])assert.equal(typeof core['_ml_session_'+name],'function','touch input export: '+name);
+ for(const name of ['mouse_move','mouse_button','mouse_scroll','touch','touch_supported','pointer_reset'])assert.equal(typeof core['_ml_session_'+name],'function','touch input export: '+name);
+ assert.equal(core._ml_session_mouse_scroll(0,120),-1);assert.equal(core._ml_session_mouse_scroll(32768,0),-3);
  assert.equal(core._ml_session_touch_supported(),0);assert.equal(core._ml_session_mouse_move(1,2),-1);assert.equal(core._ml_session_touch(1,42,.5,.5),-1);assert.equal(core._ml_session_pointer_reset(),-1);
  const generated=fs.readFileSync(path.join(root,'dist/runtime/moonlight-stream.js'),'utf8');
  const loadBody=generated.match(/function moonlight_load_i32\(p\)\{[^}]+\}/)[0];

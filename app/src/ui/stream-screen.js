@@ -120,6 +120,7 @@
     try{nativeTouch=global.MoonlightTouchInput.createNative();}catch(error){nativeTouch=null;touchError("Native touchscreen unavailable: "+error.message);}
     touchInput=global.MoonlightTouchInput.create({mode:mode.touchMode,width:mode.width,height:mode.height,bounds:function(){return panel.getBoundingClientRect();},startBlocked:!!nativeTouch,
      mouseMove:function(dx,dy){return client&&client.mouseMove?client.mouseMove(dx,dy):-1;},mouseButton:function(button,down){return client&&client.mouseButton?client.mouseButton(button,down):-1;},
+     mouseScroll:function(horizontal,vertical){return client&&client.mouseScroll?client.mouseScroll(horizontal,vertical):-1;},
      touch:function(action,id,x,y){return client&&client.touch?client.touch(action,id,x,y):-1;},reset:function(){if(client&&client.resetPointer)client.resetPointer();},onError:touchError});
    }
    cancelExitCheck();exitTimer=setTimeout(checkExit,50);

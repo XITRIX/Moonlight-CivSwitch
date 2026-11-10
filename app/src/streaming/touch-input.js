@@ -53,6 +53,22 @@
       if(Math.hypot((contact[1].x-origin.x)*1280/bounds.width,(contact[1].y-origin.y)*720/bounds.height)>12)group.moved=true;
      }
      if(group.max>1&&drag){if(!button(1,false))return;drag=false;group.moved=true;}
+     if(group.max===2&&next.size===2){
+      var fingers=Array.from(next.values()),cx=(fingers[0].x+fingers[1].x)/2,cy=(fingers[0].y+fingers[1].y)/2,scroll=group.scroll;
+      // Rebase when either contact changes; arrival/lift must never move the centroid.
+      if(!scroll||!next.has(scroll.ids[0])||!next.has(scroll.ids[1])){
+       scroll=group.scroll={ids:[fingers[0].id,fingers[1].id],x:cx,y:cy,lastX:cx,lastY:cy,rx:0,ry:0};
+      }
+      var sx=1280/bounds.width,sy=720/bounds.height;
+      if(!group.scrolling&&Math.hypot((cx-scroll.x)*sx,(cy-scroll.y)*sy)>12){group.scrolling=true;group.moved=true;}
+      if(group.scrolling){
+       // Natural scrolling: 40 reference pixels = one 120-unit wheel notch.
+       scroll.rx-=(cx-scroll.lastX)*sx*3;scroll.ry+=(cy-scroll.lastY)*sy*3;
+       scroll.lastX=cx;scroll.lastY=cy;
+       var horizontal=Math.max(-32768,Math.min(32767,Math.trunc(scroll.rx))),vertical=Math.max(-32768,Math.min(32767,Math.trunc(scroll.ry)));
+       if(horizontal||vertical){if(!send("mouseScroll",[horizontal||0,vertical||0]))return;scroll.rx-=horizontal;scroll.ry-=vertical;}
+      }
+     }else group.scroll=null;
      if(group.max===1&&next.size===1&&previous.has(group.primary)&&next.has(group.primary)){
       var before=previous.get(group.primary),after=next.get(group.primary);
       rx+=(after.x-before.x)*options.width/area.width;ry+=(after.y-before.y)*options.height/area.height;
