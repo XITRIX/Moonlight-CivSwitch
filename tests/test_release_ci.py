@@ -68,6 +68,44 @@ class ReleaseTests(unittest.TestCase):
             with patch.object(release, 'api', side_effect=[{'id': 5}, None, {'ref': 'existing'}]), self.assertRaisesRegex(ValueError, 'already exists'):
                 release.prepare('1.3.0', 'test/app', 'a'*40, 'moonlight', Path(temporary)/'duplicate')
 
+    def test_moonlight_cli_derives_plan_tag_outputs_and_package_version_from_manifest(self):
+        with tempfile.TemporaryDirectory() as temporary:
+            root = Path(temporary)
+            manifest = {'id': 'moonlight-civswitch', 'name': 'Moonlight', 'author': 'Test', 'release': '0.1.2',
+                        'scripts': ['app.js'], 'icon': None}
+            (root/'payload.json').write_text(json.dumps(manifest))
+            (root/'app.js').write_text('(async function(){return 42;})();')
+            before = (root/'payload.json').read_bytes()
+            directory, output = root/'release', root/'outputs.txt'
+            def api(path, missing=False):
+                return {'id': 5} if path == 'repos/test/app' else None
+            with patch.object(release, 'ROOT', root), patch.object(release, 'api', side_effect=api), \
+                    patch.dict('os.environ', {'GITHUB_OUTPUT': str(output)}), contextlib.redirect_stdout(io.StringIO()):
+                release.main(['prepare', '--kind', 'moonlight', '--repository', 'test/app',
+                              '--target', 'a'*40, '--directory', str(directory)])
+                plan = json.loads((directory/'plan.json').read_text())
+                files = release.build_moonlight(plan)
+            self.assertEqual(plan['version'], '0.1.2')
+            self.assertEqual(plan['tag'], 'v0.1.2')
+            self.assertEqual(output.read_text(), 'version=0.1.2\ntag=v0.1.2\n')
+            self.assertEqual(json.loads(files[0].read_text())['metadata']['release'], '0.1.2')
+            self.assertEqual((root/'payload.json').read_bytes(), before)
+
+    def test_manifest_version_is_validated_before_github_and_homebrew_still_needs_explicit_version(self):
+        with tempfile.TemporaryDirectory() as temporary, patch.object(release, 'api') as api:
+            root = Path(temporary)
+            with patch.object(release, 'ROOT', root):
+                for value in [None, 12, '0.1', '0.1.2-rc.1', '$(env)']:
+                    (root/'payload.json').write_text(json.dumps({'release': value}))
+                    with self.assertRaises(ValueError):
+                        release.prepare(None, 'test/app', 'a'*40, 'moonlight', root/'release')
+                (root/'payload.json').write_text('{}')
+                with self.assertRaises(KeyError):
+                    release.prepare(None, 'test/app', 'a'*40, 'moonlight', root/'release')
+                with self.assertRaisesRegex(ValueError, '--version is required'):
+                    release.prepare(None, 'test/app', 'a'*40, 'civhomebrew', root/'release')
+            api.assert_not_called()
+
     def test_api_only_treats_404_as_missing_and_prepare_does_not_hide_repository_errors(self):
         for code in [404, 403, 500]:
             error = subprocess.CalledProcessError(1, ['gh'], stderr='failed (HTTP '+str(code)+')')

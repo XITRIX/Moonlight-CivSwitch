@@ -54,6 +54,10 @@ def unused(repository, tag):
 
 
 def prepare(value, repository, target, kind, directory):
+    if value is None:
+        if kind != 'moonlight':
+            raise ValueError('--version is required for CivHomebrew releases')
+        value = read_json(ROOT/'payload.json', 65536)['release']
     value = version(value)
     if not re.fullmatch(r'[A-Za-z0-9][A-Za-z0-9-]{0,38}/[A-Za-z0-9_.-]{1,100}', repository) or not re.fullmatch(r'[0-9a-f]{40}', target):
         raise ValueError('Invalid repository or exact target commit')
@@ -198,7 +202,7 @@ def main(argv=None):
     parser = argparse.ArgumentParser(description=__doc__)
     sub = parser.add_subparsers(dest='command', required=True)
     p = sub.add_parser('prepare')
-    p.add_argument('--version', required=True)
+    p.add_argument('--version', help='Defaults to payload.json release for Moonlight')
     p.add_argument('--repository', required=True)
     p.add_argument('--target', required=True)
     p.add_argument('--kind', required=True, choices=['civhomebrew', 'moonlight'])

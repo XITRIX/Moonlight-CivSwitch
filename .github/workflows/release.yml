@@ -1,13 +1,7 @@
 name: Release Moonlight
-run-name: Release Moonlight ${{ inputs.version }}
 
 on:
   workflow_dispatch:
-    inputs:
-      version:
-        description: 'New stable version, for example 1.3.0 (optional v prefix)'
-        required: true
-        type: string
 
 permissions:
   contents: write
@@ -37,10 +31,9 @@ jobs:
         id: plan
         env:
           GH_TOKEN: ${{ github.token }}
-          INPUT_VERSION: ${{ inputs.version }}
         run: >-
           python3 -B tools/release_ci.py prepare
-          --kind moonlight --version "$INPUT_VERSION"
+          --kind moonlight
           --repository "$GITHUB_REPOSITORY" --target "$GITHUB_SHA"
       - name: Native build dependencies
         run: |

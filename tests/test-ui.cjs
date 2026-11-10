@@ -5,6 +5,7 @@ const os=require('node:os');
 const path=require('node:path');
 const {pathToFileURL}=require('node:url');
 const {spawn}=require('node:child_process');
+const chromeCleanup=require('./helpers/chrome-cleanup.cjs');
 const sleep=ms=>new Promise(r=>setTimeout(r,ms));
 (async()=>{
  const profile=fs.mkdtempSync(path.join(os.tmpdir(),'moonlight-ui-test-'));
@@ -12,6 +13,7 @@ const sleep=ms=>new Promise(r=>setTimeout(r,ms));
   '--headless','--disable-gpu','--disable-extensions','--no-first-run','--no-default-browser-check',
   '--remote-debugging-port=0','--user-data-dir='+profile,'about:blank'
  ],{stdio:['ignore','ignore','pipe']});
+ const cleanup=chromeCleanup(chrome);
  let socket,spawnError,stderr='';chrome.on('error',e=>spawnError=e);chrome.stderr.on('data',s=>stderr=(stderr+s).slice(-2000));
  try{
   let port;
@@ -503,11 +505,8 @@ const sleep=ms=>new Promise(r=>setTimeout(r,ms));
   await evaluate('window.__moonlightSimpleUI.close();true');
   assert.equal(await evaluate('__imeSubscriptions.length'),0,'closing removes every owned input/IME subscription');
   assert.equal(await evaluate('!!document.querySelector("fxs-textbox")'),false);
-  console.log('UI tests passed: Hosts/Pair navigation, pairing failure/cancellation, multiple saved hosts and reload, host deletion/cancellation/errors, direct game selection, saved stream settings, save errors, settings-to-stream mode forwarding, overlay on/off and cleanup, PNG covers and lazy pages, download/decode fallback and cancellation, 720p/1080p grid, four-way input, paging, horizontal footer, safe titles, list errors/retry, reconnect, Disconnect/Terminate popup with B dismissal and stalled RAF, running-app sorting/disabled cards, termination confirmation and errors, close.');
  }finally{
-  if(socket)socket.close();
-  chrome.kill('SIGTERM');for(let i=0;i<100&&chrome.exitCode===null;i++)await sleep(30);
-  if(chrome.exitCode===null){chrome.kill('SIGKILL');await sleep(100);}
-  fs.rmSync(profile,{recursive:true,force:true});
+  await cleanup(socket,profile);
  }
+ console.log('UI tests passed: Hosts/Pair navigation, pairing failure/cancellation, multiple saved hosts and reload, host deletion/cancellation/errors, direct game selection, saved stream settings, save errors, settings-to-stream mode forwarding, overlay on/off and cleanup, PNG covers and lazy pages, download/decode fallback and cancellation, 720p/1080p grid, four-way input, paging, horizontal footer, safe titles, list errors/retry, reconnect, Disconnect/Terminate popup with B dismissal and stalled RAF, running-app sorting/disabled cards, termination confirmation and errors, close.');
 })().catch(error=>{console.error(error);process.exitCode=1;});

@@ -2,7 +2,7 @@
   "id": "moonlight-civswitch",
   "name": "Moonlight",
   "author": "XITRIX",
-  "release": "0.1.0",
+  "release": "0.1.2",
   "description": "Experimental Sunshine/Moonlight streaming client for CivSwitch.",
   "api": 1,
   "extensions": {

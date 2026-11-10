@@ -7,6 +7,7 @@ const fs=require('node:fs');
 const os=require('node:os');
 const path=require('node:path');
 const {spawn}=require('node:child_process');
+const chromeCleanup=require('./helpers/chrome-cleanup.cjs');
 const pause=ms=>new Promise(resolve=>setTimeout(resolve,ms));
 (async()=>{
  const pkg=JSON.parse(fs.readFileSync(process.argv[2], 'utf8'));
@@ -28,6 +29,7 @@ const pause=ms=>new Promise(resolve=>setTimeout(resolve,ms));
   '--headless','--disable-gpu','--disable-extensions','--no-first-run','--no-default-browser-check',
   '--remote-debugging-port=0','--user-data-dir='+profile,'about:blank'
  ],{stdio:['ignore','ignore','pipe']});
+ const cleanup=chromeCleanup(chrome);
  let socket,spawnError,stderr='';chrome.on('error',e=>spawnError=e);chrome.stderr.on('data',s=>stderr=(stderr+s).slice(-2000));
  try{
   let port;
@@ -63,10 +65,8 @@ const pause=ms=>new Promise(resolve=>setTimeout(resolve,ms));
   assert.equal(result.scripts,manifest.scripts.length);assert.equal(result.factory,'function');assert.equal(result.staleUpload,false);
   assert.equal(result.pending,true);assert.equal(result.hosts,'flex');
   assert.equal(await evaluate('(async()=>{window.__moonlightSimpleUI.close();await __lifetime;return __done;})()'),true);
-  console.log('Moonlight package smoke passed: bundled scripts matching sources, decoded 256×256 icon, runtime factory, visible Hosts UI, pending lifetime and clean close.');
  }finally{
-  if(socket)socket.close();chrome.kill('SIGTERM');
-  await Promise.race([new Promise(r=>chrome.once('exit',r)),pause(3000)]);
-  fs.rmSync(profile,{recursive:true,force:true,maxRetries:3,retryDelay:100});
+  await cleanup(socket,profile);
  }
+ console.log('Moonlight package smoke passed: bundled scripts matching sources, decoded 256×256 icon, runtime factory, visible Hosts UI, pending lifetime and clean close.');
 })().catch(error=>{console.error(error);process.exitCode=1;});

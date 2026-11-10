@@ -108,8 +108,8 @@ bundled files and their order; rebuild the package after changing the app.
 The single-file Python packager can also be copied into other repositories;
 see [reuse and CI examples](tools/README.md).
 
-The manual **Release Moonlight** GitHub Actions workflow accepts a version,
-builds/tests the app and publishes an update-ready `moonlight.civapp` release.
+The manual **Release Moonlight** GitHub Actions workflow reads the version from
+`payload.json`, builds/tests the app and publishes an update-ready `moonlight.civapp` release.
 See [release workflow](docs/releases.md).
 
 ### Development checks

@@ -2,13 +2,15 @@
 
 Push `.github/workflows/release.yml` to the repository's default branch, then
 open **Actions → Release Moonlight → Run workflow**. Select the source branch and
-enter a stable version such as `1.3.0` or `v1.3.0`. The job creates tag `v1.3.0`
+run the workflow. The version comes from `release` in that commit's `payload.json`;
+set it to the next stable version before running. For `"release": "0.1.2"`,
+the job creates tag `v0.1.2`
 at the exact selected commit and publishes the completed release as Latest.
 Only manual dispatch triggers publishing. The built-in `GITHUB_TOKEN` needs
 `contents: write`; no additional release secret or Switch connection is required.
 
 The workflow bootstraps the pinned Emscripten 3.1.74 and upstream dependencies,
-builds the runtime, and creates a fresh package using the input version. It sets
+builds the runtime, and creates a fresh package using the manifest version. It sets
 `extensions.updates` to the workflow repository's public GitHub latest-release
 URL and selects `moonlight.civapp`, including when run from a fork. These are
 read-only CI overrides: `payload.json` is not rewritten or committed.
