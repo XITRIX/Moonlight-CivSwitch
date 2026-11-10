@@ -4,6 +4,7 @@
 
 extern void ml_log(const char* text);
 extern void ml_event(int event,int a,int b);
+extern void ml_rumble(int controller,int low,int high);
 extern int ml_video_setup(int format,int width,int height,int fps);
 extern int ml_video_frame(const void* bytes,int length,int kind,double pts,const void* sps,int sps_length,const void* pps,int pps_length);
 extern int ml_audio_setup(int rate,int channels,int streams,int coupled,int samples);
@@ -20,6 +21,11 @@ static double frame_gaps,decoder_rejected;
 static uint32_t last_frame;
 static bool have_last_frame;
 static int reference_recovery;
+static int rumble_enabled;
+int ml_session_set_rumble(int enabled) {
+    if(ml_runtime_tasks()||(enabled!=0&&enabled!=1))return -1;
+    rumble_enabled=enabled;return 0;
+}
 int ml_session_reference_recovery(void) {return isReferenceFrameInvalidationEnabled();}
 int ml_session_set_reference_recovery(int enabled) {
     if(ml_runtime_tasks()||(enabled!=0&&enabled!=1))return -1;
@@ -36,6 +42,7 @@ static void stage_complete(int stage) { ml_event(2,stage,0); }
 static void stage_failed(int stage,int code) { error_code=code;ml_event(3,stage,code); }
 static void connected(void) { state=2;logger("Reference recovery negotiated: %d\n",isReferenceFrameInvalidationEnabled());ml_spawn_input_task(input_task,NULL);ml_event(4,0,0); }
 static void terminated(int code) { if(state==4)return;error_code=code;state=3;ml_event(5,code,0); }
+static void rumble(unsigned short controller,unsigned short low,unsigned short high) { ml_rumble(controller,low,high); }
 static int video_setup(int format,int width,int height,int fps,void* context,int flags) { (void)context;(void)flags;return ml_video_setup(format,width,height,fps); }
 static int video_submit(PDECODE_UNIT unit) {
     ml_runtime_checkpoint();
@@ -74,6 +81,7 @@ static void start_task(void* ignored) {
     LiInitializeConnectionCallbacks(&listener);LiInitializeVideoCallbacks(&video);LiInitializeAudioCallbacks(&audio);
     listener.stageStarting=stage_start;listener.stageComplete=stage_complete;listener.stageFailed=stage_failed;
     listener.connectionStarted=connected;listener.connectionTerminated=terminated;listener.logMessage=logger;
+    if(rumble_enabled)listener.rumble=rumble;
     video.setup=video_setup;video.submitDecodeUnit=video_submit;video.capabilities=CAPABILITY_DIRECT_SUBMIT;
     if(reference_recovery)video.capabilities|=CAPABILITY_REFERENCE_FRAME_INVALIDATION_AVC;
     audio.init=audio_setup;audio.decodeAndPlaySample=audio_submit;audio.capabilities=CAPABILITY_DIRECT_SUBMIT;
@@ -144,7 +152,13 @@ int ml_session_key(int code,int down,int modifiers) {
     keys[keys_write++%64]=(typeof(keys[0])){code,down?KEY_ACTION_DOWN:KEY_ACTION_UP,modifiers};ml_runtime_wake_input();return 0;
 }
 static void input_task(void* ignored) {
-    (void)ignored;LiSendMultiControllerEvent(0,1,0,0,0,0,0,0,0);
+    (void)ignored;
+    // Our input adapter exposes the Xbox layout, with no guide or extra buttons.
+    // Upstream falls back to an empty multi-controller event for older hosts.
+    LiSendControllerArrivalEvent(0,1,LI_CTYPE_XBOX,
+        A_FLAG|B_FLAG|X_FLAG|Y_FLAG|UP_FLAG|DOWN_FLAG|LEFT_FLAG|RIGHT_FLAG|
+        LB_FLAG|RB_FLAG|PLAY_FLAG|BACK_FLAG|LS_CLK_FLAG|RS_CLK_FLAG,
+        LI_CCAP_ANALOG_TRIGGERS|(rumble_enabled?LI_CCAP_RUMBLE:0));
     while(state==2){
         if(input_pending){input_pending=0;LiSendMultiControllerEvent(0,1,input_buttons,input_lt,input_rt,input_lx,input_ly,input_rx,input_ry);}
         while(keys_read!=keys_write){typeof(keys[0]) key=keys[keys_read++%64];LiSendKeyboardEvent(key.code,key.action,key.modifiers);}

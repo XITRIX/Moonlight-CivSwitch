@@ -1,0 +1,3 @@
+Executing payload...
+VIBRATION_PULSE_DONE: two 200ms bands at quarter strength; native calls succeeded and motors stopped
+Executed successfully

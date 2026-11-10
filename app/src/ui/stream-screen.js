@@ -36,6 +36,7 @@
    var result=client.gamepad.apply(client,state);if(typeof result!=="number"||result>=0)lastPad=signature;
   }
   function release(){
+   if(nativeInput&&nativeInput.stopRumble)nativeInput.stopRumble();
    if(client){client.gamepad(0,0,0,0,0,0,0);for(var code of pressedKeys)client.key(code,false,0);}
    pressedKeys.clear();lastPad="";nativeButtons=0;nativeAxes=[0,0];
   }
@@ -83,8 +84,10 @@
    mode=global.MoonlightSettings.validate(mode);overlayEnabled=mode.showStats;overlay.style.display="none";overlay.textContent="Waiting for stream statistics…";
    currentApp=app;terminateRequested=false;terminateSignal={aborted:false};chordHeld=false;inputGate=false;localButtons=0;localIgnoreUntil=0;dialog.hide();
    visible=true;stopping=false;loading=false;hasImage=false;lastImage="";lastPad="";nativeButtons=0;nativeAxes=[0,0];fullInput=false;suspended=false;pressedKeys.clear();image.style.display="none";liveImage.style.display="none";panel.style.display="flex";status("Starting "+app.title+"… · Press − and + together for stream options");
-   if(global.MoonlightControllerInput)try{nativeInput=global.MoonlightControllerInput.createNative();}catch(error){options.log("Native controller unavailable: "+error.message);}
-   client=global.MoonlightStreamClient.create({host:host,app:app,mode:global.MoonlightSettings.validate(mode),onStatus:status,onImage:function(url){
+   if(global.MoonlightControllerInput)try{nativeInput=global.MoonlightControllerInput.createNative({onRumbleError:function(error){options.log("Controller rumble unavailable: "+error.message);}});}catch(error){options.log("Native controller unavailable: "+error.message);}
+   client=global.MoonlightStreamClient.create({host:host,app:app,mode:global.MoonlightSettings.validate(mode),onRumble:mode.rumble&&nativeInput&&nativeInput.rumbleSupported?function(controller,low,high){
+    if(visible&&!stopping&&!suspended&&!dialog.isOpen()&&!inputGate&&nativeInput)nativeInput.rumble(controller,low,high);
+   }:undefined,onStatus:status,onImage:function(url){
     if(url===lastImage)return;lastImage=url;
     if(url.indexOf("live:/")===0){loading=false;image.style.display="none";liveImage.style.backgroundImage='url("'+url+'")';liveImage.style.display="block";showImage();}
     else{liveImage.style.display="none";loading=true;imageStarted=Date.now();image.src=url;}

@@ -3,20 +3,20 @@
  "use strict";
  function create(options){
   function element(tag,parent,style,text){var n=document.createElement(tag);Object.assign(n.style,style);if(text!==undefined)n.textContent=text;parent.appendChild(n);return n;}
-  var panel=element("div",options.parent,{display:"none",flexDirection:"column",width:"600px",maxWidth:"88vw",padding:"32px",border:"1px solid #29354b",borderRadius:"18px",backgroundColor:"#131d2e",boxSizing:"border-box"});panel.id="moonlight-settings-screen";
+  var panel=element("div",options.parent,{display:"none",flexDirection:"column",width:"600px",maxWidth:"88vw",padding:"24px",border:"1px solid #29354b",borderRadius:"18px",backgroundColor:"#131d2e",boxSizing:"border-box"});panel.id="moonlight-settings-screen";
   element("div",panel,{fontSize:"17px",color:"#94b6e2",marginBottom:"6px"},"Moonlight");
-  element("h2",panel,{fontSize:"36px",lineHeight:"1.2",margin:"0 0 22px",color:"#f4f7ff"},"Settings");
-  var definitions=[{id:"resolution",label:"Resolution",values:global.MoonlightSettings.resolutions},{id:"fps",label:"Frame rate",values:global.MoonlightSettings.frameRates},{id:"bitrate",label:"Bitrate",values:global.MoonlightSettings.bitrates},{id:"showStats",label:"Performance overlay",values:[false,true]},{id:"videoPacing",label:"Frame pacing",values:["smooth","latency"]}];
+  element("h2",panel,{fontSize:"36px",lineHeight:"1.2",margin:"0 0 16px",color:"#f4f7ff"},"Settings");
+  var definitions=[{id:"resolution",label:"Resolution",values:global.MoonlightSettings.resolutions},{id:"fps",label:"Frame rate",values:global.MoonlightSettings.frameRates},{id:"bitrate",label:"Bitrate",values:global.MoonlightSettings.bitrates},{id:"showStats",label:"Performance overlay",values:[false,true]},{id:"videoPacing",label:"Frame pacing",values:["smooth","latency"]},{id:"rumble",label:"Gamepad rumble",values:[false,true]}];
   var rows=[],selected=0,mode=null,bitrateMenu=null,bitrateButtons=[],bitrateOpen=false,bitrateSelected=0;
-  var style={display:"flex",alignItems:"center",justifyContent:"space-between",width:"100%",height:"58px",marginBottom:"14px",padding:"0 16px",border:"2px solid #35435b",borderRadius:"9px",backgroundColor:"#0c1423",color:"#f4f7ff",fontFamily:"Arial, sans-serif",fontSize:"22px",outline:"none",boxSizing:"border-box"};
+  var style={display:"flex",alignItems:"center",justifyContent:"space-between",width:"100%",height:"46px",marginBottom:"8px",padding:"0 16px",border:"2px solid #35435b",borderRadius:"9px",backgroundColor:"#0c1423",color:"#f4f7ff",fontFamily:"Arial, sans-serif",fontSize:"22px",outline:"none",boxSizing:"border-box"};
   definitions.forEach(function(def,index){
-   var parent=def.id==="bitrate"?element("div",panel,{position:"relative",marginBottom:"14px"}):panel;
+   var parent=def.id==="bitrate"?element("div",panel,{position:"relative",marginBottom:"8px"}):panel;
    var button=element("button",parent,Object.assign({},style,def.id==="bitrate"?{marginBottom:"0"}:{}));button.id="moonlight-settings-"+def.id;button.type="button";button.tabIndex=-1;
    element("span",button,{},def.label);var value=element("span",button,{color:"#b7d7ff"});
    button.addEventListener("click",function(){if(bitrateOpen)closeBitrate();selected=index;activate();});rows.push({node:button,value:value,definition:def});
    if(def.id==="bitrate"){
     button.setAttribute("aria-haspopup","listbox");button.setAttribute("aria-expanded","false");button.setAttribute("aria-controls","moonlight-bitrate-options");
-    bitrateMenu=element("div",parent,{display:"none",position:"absolute",left:"0",right:"0",top:"64px",padding:"12px",border:"2px solid #94c6ff",borderRadius:"9px",backgroundColor:"#131d2e",boxShadow:"0 8px 24px #000",boxSizing:"border-box",zIndex:"2"});
+    bitrateMenu=element("div",parent,{display:"none",position:"absolute",left:"0",right:"0",top:"52px",padding:"12px",border:"2px solid #94c6ff",borderRadius:"9px",backgroundColor:"#131d2e",boxShadow:"0 8px 24px #000",boxSizing:"border-box",zIndex:"2"});
     bitrateMenu.id="moonlight-bitrate-options";bitrateMenu.setAttribute("role","listbox");bitrateMenu.setAttribute("aria-label","Bitrate");
     var line;
     def.values.forEach(function(bitrate,i){
@@ -31,8 +31,8 @@
   var back=element("button",panel,Object.assign({},style,{marginBottom:"0",justifyContent:"center",backgroundColor:"#284c83"}),"Back");back.id="moonlight-settings-back";back.type="button";back.tabIndex=-1;back.addEventListener("click",leave);
   function index(row){return row.definition.values.findIndex(function(v){return row.definition.id==="resolution"?v.width===mode.width&&v.height===mode.height:v===mode[row.definition.id];});}
   function paint(){
-   message.textContent=bitrateOpen?"D-pad: Choose bitrate. A: Apply. B: Cancel.":selected===2?"A: Open bitrate choices. Left/right: Adjust. Changes apply to the next stream.":selected<rows.length&&rows[selected].definition.id==="videoPacing"?"Smooth steadies 60 FPS motion with up to one frame of buffering. Low latency favors response time." : "Changes apply to the next stream and are saved when you go back.";
-   rows.forEach(function(row,i){var id=row.definition.id;row.value.textContent=id==="resolution"?mode.width+" × "+mode.height:id==="fps"?mode.fps+" FPS":id==="showStats"?(mode.showStats?"On":"Off"):id==="videoPacing"?(mode.videoPacing==="smooth"?"Smooth":"Low latency"):mode.bitrate/1000+" Mbps";row.node.setAttribute("aria-label",row.definition.label+": "+row.value.textContent);row.node.setAttribute("data-value",id==="resolution"?mode.width+"x"+mode.height:String(mode[id]));});
+   message.textContent=bitrateOpen?"D-pad: Choose bitrate. A: Apply. B: Cancel.":selected===2?"A: Open bitrate choices. Left/right: Adjust. Changes apply to the next stream.":selected<rows.length&&rows[selected].definition.id==="videoPacing"?"Smooth steadies 60 FPS motion with up to one frame of buffering. Low latency favors response time." : selected<rows.length&&rows[selected].definition.id==="rumble"?"Enable controller vibration during streaming. Changes apply to the next stream.":"Changes apply to the next stream and are saved when you go back.";
+   rows.forEach(function(row,i){var id=row.definition.id;row.value.textContent=id==="resolution"?mode.width+" × "+mode.height:id==="fps"?mode.fps+" FPS":(id==="showStats"||id==="rumble")?(mode[id]?"On":"Off"):id==="videoPacing"?(mode.videoPacing==="smooth"?"Smooth":"Low latency"):mode.bitrate/1000+" Mbps";row.node.setAttribute("aria-label",row.definition.label+": "+row.value.textContent);row.node.setAttribute("data-value",id==="resolution"?mode.width+"x"+mode.height:String(mode[id]));});
    rows.map(function(r){return r.node;}).concat([back]).forEach(function(n,i){var active=i===selected;n.style.borderColor=active?"#94c6ff":"#35435b";n.style.backgroundColor=active?"#284c83":"#0c1423";n.setAttribute("data-selected",active?"true":"false");});
    bitrateButtons.forEach(function(button,i){var active=i===bitrateSelected;button.style.borderColor=active?"#94c6ff":"#35435b";button.style.backgroundColor=active?"#284c83":"#0c1423";button.setAttribute("data-selected",active?"true":"false");button.setAttribute("aria-selected",global.MoonlightSettings.bitrates[i]===mode.bitrate?"true":"false");});
    bitrateMenu.setAttribute("aria-activedescendant",bitrateButtons[bitrateSelected].id);

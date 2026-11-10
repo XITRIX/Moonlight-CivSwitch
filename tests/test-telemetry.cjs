@@ -42,3 +42,11 @@ test('core snapshots are bounded/versioned and overlay distinguishes unavailable
  assert.match(telemetry.format({mode:{},telemetry:{textureFps:59.9}}),/Texture 59.9 FPS/);
  assert.match(telemetry.format({mode:{}}),/excludes display scanout/);
 });
+test('rumble timing uses interval call counts and survives a detached history snapshot',()=>{
+ let time=0;const meter=telemetry.create(()=>time),s={network:{receivedBytes:0},rumble:{updates:2,totalMs:1,maxMs:.75}};
+ meter.sample(s,null);time=1000;s.rumble={updates:5,totalMs:2.5,maxMs:.8};
+ const t=meter.sample(s,null);assert.equal(t.rumbleAvgMs,.5);assert.equal(t.rumbleMaxMs,.8);
+ const history=telemetry.createHistory();history.record(s);s.rumble.maxMs=99;assert.equal(history.samples[0].rumble.maxMs,.8);
+ assert.match(telemetry.format({mode:{},telemetry:t}),/Rumble 0.5 ms avg · 0.8 ms max/);
+ time=2000;assert.equal(meter.sample(s,null).rumbleAvgMs,null);
+});

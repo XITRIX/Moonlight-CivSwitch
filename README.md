@@ -67,6 +67,16 @@ PIN in Sunshine. Select the paired PC, then choose a game or Desktop to stream.
 
 Pairing and settings are saved between sessions.
 
+Gamepad rumble from the PC is sent to the active Switch controller. It follows
+the console's vibration setting and stops on disconnect, focus loss, or when
+opening the stream options. Joy-Con and Pro Controller vibration use both HD
+rumble frequency bands; trigger rumble is not supported.
+
+**Settings → Gamepad rumble** turns controller vibration on or off.
+Changes apply to the next stream. Rumble updates are combined and limited to
+30 per second after video/audio processing; zero strength bypasses the rate
+limit. The performance overlay reports rumble call timing.
+
 ## Build from source
 
 Install **Git, Python 3.10+, Node.js 22+ with npm, CMake, and a C/C++ build toolchain**

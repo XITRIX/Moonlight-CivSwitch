@@ -1,0 +1,3 @@
+Executing payload...
+VIBRATION_TIMING_DONE: {"initializationMs":1.1733119999989867,"changed":{"count":60,"meanMs":0.2519685333439459,"p50Ms":0.2453439999371767,"p95Ms":0.30377599969506264,"maxMs":0.4362880000844598},"unchanged":{"count":60,"meanMs":0.018666666637485226,"p50Ms":0.018175999633967876,"p95Ms":0.02310399990528822,"maxMs":0.03187200054526329},"streamRunning":false}
+Executed successfully

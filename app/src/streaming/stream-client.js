@@ -27,6 +27,25 @@
   var source=upload.parts.join("");if(source.length!==upload.length)throw Error("Incomplete streaming runtime");
   global.__moonlightStreamFactory=new Function(source+"\nreturn MoonlightStreamCore;")();global.__moonlightStreamFactoryDigest=upload.sha256;delete global.__moonlightStreamModuleUpload;return global.__moonlightStreamFactory;
  }
+ function createRumbleOutput(output,now){
+  var pending=false,low=0,high=0,nextUpdate=0,stopped=false,failed=false;
+  var stats={events:0,coalesced:0,updates:0,totalMs:0,maxMs:0,errors:0};
+  function send(low,high){
+   var begin=now();
+   try{output(0,low,high);}catch(error){stats.errors++;failed=true;}
+   var elapsed=Math.max(0,now()-begin);stats.totalMs+=elapsed;stats.maxMs=Math.max(stats.maxMs,elapsed);stats.updates++;
+  }
+  return {stats:stats,queue:function(controller,newLow,newHigh){
+   if(stopped||failed||!output||controller!==0)return;
+   stats.events++;if(pending)stats.coalesced++;
+   low=newLow;high=newHigh;pending=true;
+  },flush:function(){
+   if(stopped||failed||!pending)return;
+   // Zero strength must not wait behind the update-rate cap.
+   if((low||high)&&now()<nextUpdate)return;
+   pending=false;send(low,high);nextUpdate=now()+1000/30;
+  },stop:function(){if(stopped)return;pending=false;stopped=true;if(output)send(0,0);}};
+ }
  function create(options){
   var signal={aborted:false},stopRequested=false,core,io,media,failure=null,done=null,startedAt=0,connectedAt=0,latestStats=null;
   var cpu=options.renderer==="png"||options.renderer==="native-texture";
@@ -40,6 +59,7 @@
   // At 40 Mbps, an earlier output check leaves more GPU overlap time.
   var completionBudgetMs=pumpBudgetMs===12&&mode.bitrate<40000?6:4;
   var telemetry=global.MoonlightTelemetry.create(),clock=createClock(),pumpMs=0,drainMs=0,iterations=0,maxPumpMs=0,maxDrainMs=0;
+  var rumble=createRumbleOutput(mode.rumble!==false&&typeof options.onRumble==="function"?options.onRumble:null,global.MoonlightTelemetry.now);
   var inputStats={gamepadQueued:0,gamepadRejected:0};
   function collect(active){
    var snapshot=Object.assign({state:core._ml_session_state(),tasks:core._ml_runtime_tasks(),mode:Object.assign({},mode),pumpBudgetMs:pumpBudgetMs,network:Object.assign({},io.stats),clock:Object.assign({},clock.stats),budgetYields:core._ml_runtime_budget_yields?core._ml_runtime_budget_yields():null,pumpMs:pumpMs,drainMs:drainMs,iterations:iterations,maxPumpMs:maxPumpMs,maxDrainMs:maxDrainMs},media.stats());
@@ -47,6 +67,7 @@
    snapshot.referenceRecovery=core._ml_session_reference_recovery?!!core._ml_session_reference_recovery():false;
    snapshot.packetPool=global.MoonlightTelemetry.readPacketPool?global.MoonlightTelemetry.readPacketPool(core):null;
    snapshot.input=Object.assign({},inputStats);
+   snapshot.rumble=Object.assign({},rumble.stats);
    snapshot.telemetry=telemetry.sample(snapshot,active?global.MoonlightTelemetry.readCore(core):null);return snapshot;
   }
   function status(text){if(options.onStatus)options.onStatus(text);}
@@ -71,6 +92,9 @@
      if(event===5&&!stopRequested)failure=failure||Error("Stream terminated: "+a);
     }};
     core=await make({moonlightPlatform:platform});
+    // C callbacks only retain the latest levels; native HID calls run after media.
+    platform.rumble=function(controller,low,high){if(!stopRequested)rumble.queue(controller,low,high);};
+    if(core._ml_session_set_rumble&&core._ml_session_set_rumble(mode.rumble!==false&&typeof options.onRumble==="function"?1:0)!==0)throw Error("Cannot prepare controller rumble");
     // Reuse packet-sized allocations at high packet rates.
     // Configure before any C tasks can borrow buffers; release after they stop.
     if(highPacketRate&&core._ml_packet_pool_configure&&core._ml_packet_pool_configure(1)!==0)throw Error("Cannot prepare packet buffer pool");
@@ -111,6 +135,7 @@
      core._ml_runtime_pump(pumpBudgetMs-completionBudgetMs);var pumped=global.MoonlightTelemetry.now();media.finishVideo(Math.min(begin+pumpBudgetMs+2,global.MoonlightTelemetry.now()+3));media.drainAudio();var drained=global.MoonlightTelemetry.now();
      var pumpElapsed=pumpedEarly-early+pumped-finishedEarly,drainElapsed=early-begin+finishedEarly-pumpedEarly+drained-pumped;
      pumpMs+=pumpElapsed;drainMs+=drainElapsed;maxPumpMs=Math.max(maxPumpMs,pumpElapsed);maxDrainMs=Math.max(maxDrainMs,drainElapsed);iterations++;
+     rumble.flush();
      if(failure)throw failure;
      if(core._ml_session_state()===3)throw Error("Core connection failed: "+core._ml_session_error());
      if(!connectedAt&&Date.now()-startedAt>25000)throw Error("Stream connection timed out");
@@ -121,6 +146,8 @@
     if(failure)throw failure;
    }catch(error){if(!signal.aborted||failure){failure=failure||error;if(options.onError)options.onError(failure);}}
    finally{
+    stopRequested=true;
+    rumble.stop();
     if(core){
      interrupt();
      status("Stopping stream…");var deadline=Date.now()+15000;
@@ -140,5 +167,5 @@
   function start(){if(!done){if(global.__moonlightStreamUnfinished)throw Error("Restart Civ VII to clear the previous stream");done=run();}return done;}
   return {start:start,stop:stop,gamepad:function(buttons,lt,rt,lx,ly,rx,ry){var result=core&&core._ml_session_state()===2?core._ml_session_gamepad(buttons,lt,rt,lx,ly,rx,ry):-1;if(result===0)inputStats.gamepadQueued++;else inputStats.gamepadRejected++;return result;},key:function(code,down,modifiers){if(core&&core._ml_session_state()===2)return core._ml_session_key(code,down?1:0,modifiers||0);return -1;},stats:function(){return latestStats;}};
  }
- global.MoonlightStreamClient={create:create,createClock:createClock};
+ global.MoonlightStreamClient={create:create,createClock:createClock,createRumbleOutput:createRumbleOutput};
 })(window);
