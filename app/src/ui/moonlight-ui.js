@@ -164,6 +164,11 @@
     var stream = window.MoonlightStreamScreen ? window.MoonlightStreamScreen.create({parent:root,
         log:recordStreamMessage,
         onTerminate:terminateStreamApp,
+        onTouchMode:function(touchMode){
+            var mode=window.MoonlightSettings.validate(Object.assign({},streamMode,{touchMode:touchMode}));
+            if(settingsTransport&&settingsTransport.saveStreamSettings)settingsTransport.saveStreamSettings(mode);
+            streamMode=mode;
+        },
         onStats:function(stats){streamDiagnostics.stats=stats;streamHistory.record(stats);},
         onBack:function(){if(!closed){screen="games";games.resume("Stream stopped. Checking the running application…");hints.style.display="flex";ignoreInputUntil=Date.now()+250;paintFocus();}}
     }) : null;
@@ -481,7 +486,7 @@
         games.hide();screen="stream";hints.style.display="none";heldDirection="";
         var exitError=null;
         try {
-            streamTask=stream.show(gameHost.address,app,streamMode).then(function(result){
+            streamTask=stream.show(gameHost.address,app,streamMode,gameHost.hostname).then(function(result){
                 if(result&&result.stats)streamDiagnostics.stats=result.stats;
                 if(!closed && result && result.error){exitError=result.error.message;games.fail(exitError);}
             }).catch(function(error){exitError=error.message;if(!closed){screen="games";games.resume(error.message);hints.style.display="flex";}report("MOONLIGHT_STREAM_ERROR: "+error.message);})

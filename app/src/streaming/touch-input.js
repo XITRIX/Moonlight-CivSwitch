@@ -90,7 +90,7 @@
    }
    previous=next;
   }
-  return {update:update,cancel:cancel,close:function(){cancel();closed=true;}};
+  return {update:update,cancel:cancel,setMode:function(mode){if(mode!=="trackpad"&&mode!=="touchpad")throw Error("Invalid touchscreen mode");cancel();options.mode=mode;failed=false;},close:function(){cancel();closed=true;}};
  }
  function createNative(){
   if(typeof call_rop!=="function"||typeof malloc!=="function"||!global.MoonlightNative||!global.MoonlightNative.available)return null;

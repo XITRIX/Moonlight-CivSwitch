@@ -15,6 +15,8 @@
  ];
  var byId=new Map(),byCode=new Map();
  rows.forEach(function(row){row.forEach(function(k){byId.set(k.id,k);byCode.set(k.code,k);});});
+ // Nintendo labels; the shared input adapter already maps native/browser pads.
+ var shortcuts=[{mask:0x4000,id:"Backspace"},{mask:0x8000,id:"Space"},{mask:0x100,id:"ArrowLeft"},{mask:0x200,id:"ArrowRight"}];
  function describe(code){return byCode.get(code)||{id:"Code"+code,code:code,modifier:({16:1,17:2,18:4})[code]||0,extended:false};}
  function createKeys(options){
   var owners=new Map(),sent=new Map(),listeners=new Set(),caps=false;
@@ -42,27 +44,47 @@
    pressed:function(code){return sent.has(code);},caps:function(){return caps;},subscribe:function(fn){listeners.add(fn);return function(){listeners.delete(fn);};}};
  }
  function create(options){
-  var keys=options.keys,mode=null,armed=false,gamepadArmed=false,lastButtons=0,nextRepeat=0,selected={row:2,index:1},latched=new Set(),held=null,buttons=[],destroyed=false,geometry=null;
+  var keys=options.keys,mode=null,armed=false,gamepadArmed=false,lastButtons=0,nextRepeat=0,selected={row:2,index:1},latched=new Set(),held=null,shortcutButtons=0,buttons=[],destroyed=false,geometry=null;
   var clock=options.now||function(){return Date.now();};
+  var shortcutState=shortcuts.map(function(s){return {mask:s.mask,id:s.id,active:false,until:0,next:0};});
+  function resetShortcuts(){shortcutButtons=0;for(var s of shortcutState){s.active=false;s.until=s.next=0;}}
   function element(tag,parent,style,text){var n=document.createElement(tag);Object.assign(n.style,style);if(text!==undefined)n.textContent=text;parent.appendChild(n);return n;}
   var layer=element("div",options.parent,{position:"absolute",left:"0",top:"0",right:"0",bottom:"0",zIndex:"5",display:"none",alignItems:"flex-end",justifyContent:"center",backgroundColor:"rgba(0,0,0,0.15)",touchAction:"none",userSelect:"none"});layer.id="moonlight-stream-keyboard";layer.setAttribute("role","dialog");layer.setAttribute("aria-label","English virtual keyboard");
   var panel=element("div",layer,{width:"100%",boxSizing:"border-box",backgroundColor:"rgba(20,29,43,0.97)",borderTop:"1px solid #61718a",fontFamily:"BodyFont, Arial, sans-serif",fontWeight:"400"});panel.id="moonlight-stream-keyboard-panel";
+  var keyArea=element("div",panel,{boxSizing:"border-box"});
   rows.forEach(function(row,r){
-   var line=element("div",panel,{display:"flex",justifyContent:"center"});var total=row.reduce(function(n,k){return n+k.width;},0);
+   var line=element("div",keyArea,{display:"flex",justifyContent:"center"});var total=row.reduce(function(n,k){return n+k.width;},0);
    row.forEach(function(k,i){
     var node=element("div",line,{display:"flex",alignItems:"center",justifyContent:"center",boxSizing:"border-box",border:"2px solid #46566e",borderRadius:"6px",color:"#fff",fontFamily:"BodyFont, Arial, sans-serif",fontWeight:"400",flexShrink:"0"});
     node.id="moonlight-key-"+k.id;node.setAttribute("role","button");node.setAttribute("tabindex","-1");node.setAttribute("aria-label",k.label);node.setAttribute("data-key",k.id);
     buttons.push({node:node,key:k,row:r,index:i,total:total});
    });
   });
+  var hintBar=element("div",panel,{display:"none",alignItems:"center",justifyContent:"flex-end",boxSizing:"border-box",backgroundColor:"#1b1e21",borderTop:"1px solid #61718a",color:"#f5f5f5"});hintBar.id="moonlight-keyboard-hints";hintBar.setAttribute("role","group");hintBar.setAttribute("aria-label","Controller shortcuts");
+  var hints=[];
+  function hint(id,button,label,shape){
+   var group=element("div",hintBar,{display:"flex",alignItems:"center",flexShrink:"0",whiteSpace:"nowrap"});group.id="moonlight-keyboard-hint-"+id;
+   var badge=element("div",group,{position:"relative",display:"flex",alignItems:"center",justifyContent:"center",boxSizing:"border-box",border:shape==="dpad"?"0":"1px solid #f5f5f5",borderRadius:shape==="shoulder"||shape==="combo"?"5px":"50%",fontFamily:"BodyFont, Arial, sans-serif",fontWeight:"400"},shape==="dpad"?undefined:button);badge.setAttribute("aria-hidden","true");
+   var bars=shape==="dpad"?[element("div",badge,{position:"absolute",backgroundColor:"#f5f5f5"}),element("div",badge,{position:"absolute",backgroundColor:"#f5f5f5"})]:[];
+   var text=element("span",group,{fontFamily:"BodyFont, Arial, sans-serif",fontWeight:"400"},label);
+   var item={group:group,badge:badge,text:text,bars:bars,shape:shape,button:button};hints.push(item);group.setAttribute("aria-label",button+": "+label);return item;
+  }
+  hint("move","D-pad","Move","dpad");hint("left","L","Left","shoulder");hint("right","R","Right","shoulder");hint("backspace","Y","Backspace");hint("space","X","Space");hint("menu","-/+","Menu","combo");hint("close","B","Close");
+  var acceptHint=hint("accept","A","Hold key");
   function resize(){
    if(!mode)return;geometry=null;
    var bounds=options.parent.getBoundingClientRect(),scale=Math.min(bounds.width/1280,bounds.height/720),unit=(bounds.width-32*scale-15*6*scale)/15;
-   panel.style.padding=12*scale+"px "+16*scale+"px";
+   keyArea.style.padding=12*scale+"px "+16*scale+"px "+(mode==="gamepad"?6:12)*scale+"px";
    for(var b of buttons){b.node.style.width=(b.key.width*unit+(b.key.width-1)*6*scale)+"px";b.node.style.height=(b.row===0?38:48)*scale+"px";b.node.style.margin="0 "+3*scale+"px "+6*scale+"px";b.node.style.fontSize=(b.key.label.length>4?16:20)*scale+"px";}
+   hintBar.style.minHeight=56*scale+"px";hintBar.style.padding=10*scale+"px "+24*scale+"px";
+   for(var h of hints){h.group.style.marginLeft=22*scale+"px";h.group.style.fontSize=18*scale+"px";h.badge.style.width=(h.shape==="combo"?44:h.shape==="shoulder"?30:24)*scale+"px";h.badge.style.height=24*scale+"px";h.badge.style.marginRight=8*scale+"px";h.badge.style.fontSize=17*scale+"px";
+    if(h.bars.length){Object.assign(h.bars[0].style,{left:8*scale+"px",top:0,width:8*scale+"px",height:24*scale+"px"});Object.assign(h.bars[1].style,{left:0,top:8*scale+"px",width:24*scale+"px",height:8*scale+"px"});}
+   }
   }
   function paint(){
    var shifted=!!(keys.modifiers()&1);
+   var focusKey=rows[selected.row][selected.index],acceptLabel=focusKey.modifier?(latched.has(focusKey.id)?"Unlock modifier":"Lock modifier"):"Hold key";
+   acceptHint.text.textContent=acceptLabel;acceptHint.group.setAttribute("aria-label","A: "+acceptLabel);
    for(var b of buttons){
     var active=b.key.code===20?keys.caps():keys.pressed(b.key.code),focus=mode==="gamepad"&&b.row===selected.row&&b.index===selected.index;
     var upper=shifted;if(/^Key[A-Z]$/.test(b.key.id))upper=shifted!==keys.caps();
@@ -72,14 +94,15 @@
    }
   }
   var unsubscribe=keys.subscribe(paint);
-  function syncGamepad(){var list=Array.from(latched,function(id){return byId.get(id);});if(held)list.push(byId.get(held));return keys.set("keyboard-gamepad",list);}
+  function syncGamepad(){var list=Array.from(latched,function(id){return byId.get(id);});if(held)list.push(byId.get(held));for(var shortcut of shortcuts)if(shortcutButtons&shortcut.mask)list.push(byId.get(shortcut.id));return keys.set("keyboard-gamepad",list);}
   function close(){
-   if(!mode)return;var closedMode=mode;mode=null;layer.style.display="none";layer.removeAttribute("data-mode");armed=gamepadArmed=false;lastButtons=0;latched.clear();held=null;
+   if(!mode)return;var closedMode=mode;mode=null;layer.style.display="none";layer.removeAttribute("data-mode");armed=gamepadArmed=false;lastButtons=0;resetShortcuts();latched.clear();held=null;
    keys.clear("keyboard-touch");keys.clear("keyboard-gamepad");paint();if(options.onClose)options.onClose(closedMode);
   }
   function open(openMode){
    if(destroyed||mode)return false;if(openMode!=="touch"&&openMode!=="gamepad")throw Error("Invalid keyboard opening mode");
    mode=openMode;armed=gamepadArmed=false;lastButtons=0;selected={row:2,index:1};layer.style.display="flex";layer.setAttribute("data-mode",mode);
+   hintBar.style.display=mode==="gamepad"?"flex":"none";
    resize();paint();return true;
   }
   function updateTouches(points,enabled){
@@ -92,10 +115,10 @@
     if(p.x<bounds.left||p.x>=bounds.right||p.y<bounds.top||p.y>=bounds.bottom){close();return;}
     for(var b of geometry.buttons){var r=b.rect;if(p.x>=r.left&&p.x<r.right&&p.y>=r.top&&p.y<r.bottom){list.push(b.key);break;}}
    }
-   if(!keys.set("keyboard-touch",list)){armed=false;latched.clear();held=null;}
+   if(!keys.set("keyboard-touch",list)){armed=gamepadArmed=false;latched.clear();held=null;resetShortcuts();paint();}
   }
   function move(direction){
-   if(held){held=null;syncGamepad();}
+   held=null;
    var row=rows[selected.row];
    if(direction==="left"||direction==="right")selected.index=Math.max(0,Math.min(row.length-1,selected.index+(direction==="left"?-1:1)));
    else{
@@ -109,17 +132,27 @@
    if(mode!=="gamepad")return false;
    if(!gamepadArmed){if(!buttons)gamepadArmed=true;lastButtons=buttons;return true;}
    if((buttons&0x1000)&&!(lastButtons&0x1000)){close();return true;}
-   var now=clock(),direction=[[1,"up"],[2,"down"],[4,"left"],[8,"right"]].find(function(d){return buttons&d[0];});
+   var now=clock();shortcutButtons=0;
+   // Repeat the reference's short key clicks while held. Timers advance only
+   // with controller samples, never replaying missed clicks after a stall.
+   for(var s of shortcutState){
+    if(!(buttons&s.mask)){s.active=false;s.until=s.next=0;}
+    else if(!(lastButtons&s.mask)){s.active=true;s.until=now+100;s.next=now+350;}
+    else if(s.active&&now>=s.until)s.active=false;
+    else if(!s.active&&now>=s.next){s.active=true;s.until=now+100;s.next=now+150;}
+    if(s.active)shortcutButtons|=s.mask;
+   }
+   var direction=[[1,"up"],[2,"down"],[4,"left"],[8,"right"]].find(function(d){return buttons&d[0];});
    if(direction&&(!(lastButtons&direction[0])||now>=nextRepeat)){move(direction[1]);nextRepeat=now+(!(lastButtons&direction[0])?350:100);}
    if((buttons&0x2000)&&!(lastButtons&0x2000)){
     var k=rows[selected.row][selected.index];if(k.modifier){if(latched.has(k.id))latched.delete(k.id);else latched.add(k.id);}else held=k.id;
-    if(!syncGamepad()){latched.clear();held=null;gamepadArmed=false;}
-   }else if(!(buttons&0x2000)&&(lastButtons&0x2000)){held=null;syncGamepad();}
+   }else if(!(buttons&0x2000)&&(lastButtons&0x2000))held=null;
+   if(!syncGamepad()){latched.clear();held=null;resetShortcuts();gamepadArmed=false;paint();}
    lastButtons=buttons;return true;
   }
   function action(name,phase){
    if(mode!=="gamepad")return false;
-   var flag={"nav-up":1,"nav-down":2,"nav-left":4,"nav-right":8,accept:0x2000,cancel:0x1000}[name];
+   var flag={"nav-up":1,"nav-down":2,"nav-left":4,"nav-right":8,accept:0x2000,cancel:0x1000,backspace:0x4000,space:0x8000,"cursor-left":0x100,"cursor-right":0x200}[name];
    // Action-only input has no neutral snapshots. A fresh press can arm it;
    // an inherited repeat must wait for release before it can type.
    if(flag&&!gamepadArmed){if(phase===0)gamepadArmed=true;else{if(phase!==3)controller(0);return true;}}

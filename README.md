@@ -60,7 +60,7 @@ Choose **Pair new host**, enter your PC’s IP address, and approve the displaye
 PIN in Sunshine. Select the paired PC, then choose a game or Desktop to stream.
 
 - **D-pad / A:** navigate and select. **B:** go back or close Moonlight from Hosts.
-- **− and + together:** open stream options. **Disconnect** returns to the library and keeps the PC app running; **Terminate** also closes the PC app. **B** dismisses the popup and resumes streaming.
+- **− and + together:** open the left-side menu, titled with the connected host's name. **More** contains **Show keyboard** and **Touchscreen mode**. **Logout** opens **Disconnect** / **Terminate**: Disconnect keeps the PC app running; Terminate also closes it. **B** goes back through the menu and returns to streaming.
 - A running PC app appears first in the library; other cards are dimmed and disabled until it stops. Use **Terminate app** at the top right to close it.
 - **Settings:** adjust resolution, frame rate, bitrate and frame pacing.
   Defaults are **720p, 60 FPS, 20 Mbps**.
@@ -89,11 +89,17 @@ rumble frequency bands; trigger rumble is not supported.
 Place three fingers on the stream to open the full English virtual keyboard in
 either touchscreen mode. Lift the opening fingers, then hold any combination of
 keys, including modifiers. Touch outside the keyboard to close it. A keyboard
-opened by touch leaves the gamepad controlling the stream. A separate controller
-keyboard mode is prepared internally; its opening shortcut will be added later.
+opened by touch leaves the gamepad controlling the stream. **−/+ → More → Show
+keyboard** opens the controller mode: D-pad moves, A holds a key or toggles a
+modifier for combinations, **Y** sends Backspace, **X** sends Space, **L/R** send
+left/right arrow keys, and **B** closes. Hold a shortcut to repeat it. Switch-style
+button hints appear at the bottom in controller mode. Release the opening A
+before typing.
 
 Touch input pauses while the stream options are open or the app loses focus.
-Changes apply to the next stream. Rumble updates are combined and limited to
+**More → Touchscreen mode** changes the active stream immediately and saves the
+choice for future streams; touchscreen changes in Settings apply to the next
+stream. Rumble updates are combined and limited to
 30 per second after video/audio processing; zero strength bypasses the rate
 limit. The performance overlay reports rumble call timing.
 

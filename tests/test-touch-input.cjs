@@ -8,6 +8,15 @@ function environment(mode='trackpad',extra={}){
  return {input,events,errors,buttons:()=>events.filter(e=>e[0]==='button'),update:(t,points,enabled=true)=>{time=t;input.update(points,enabled);},result:n=>result=n};
 }
 const p=(id,x=100,y=100)=>({id,x,y});
+test('live mode changes cancel held input and wait for neutral before the new mode sends contacts',()=>{
+ const e=environment();e.update(0,[p(1)]);e.update(30,[]);e.update(100,[p(2)]);
+ assert.deepEqual(e.buttons().at(-1),['button',1,true]);e.input.setMode('touchpad');assert.deepEqual(e.events.at(-1),['reset']);
+ const before=e.events.length;e.update(110,[p(2,130)]);assert.equal(e.events.length,before);
+ e.update(120,[]);e.update(130,[p(3)]);assert.deepEqual(e.events.at(-1).slice(0,3),['touch',1,3]);
+ e.input.setMode('trackpad');assert.deepEqual(e.events.at(-1),['reset']);e.update(140,[]);e.update(150,[p(4)]);e.update(170,[]);
+ assert.deepEqual(e.buttons().slice(-2),[['button',1,true],['button',1,false]]);
+ assert.throws(()=>e.input.setMode('invalid'),/Invalid touchscreen mode/);
+});
 test('third contact opens the keyboard once on landing in either pointer mode and cancels remote contacts',()=>{
  for(const mode of ['trackpad','touchpad']){
   let opens=0;const e=environment(mode,{onKeyboard:()=>opens++});

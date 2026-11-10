@@ -30,8 +30,14 @@ Connect, then select a game card to launch it. Selecting an already running app
 resumes it. A different running app is reported without terminating it. The host
 must grant this paired client permission to launch apps and receive input.
 Press − and + together, or press Escape on a keyboard, to open stream options.
-Choose **Disconnect** to leave the PC app running, or **Terminate** to disconnect
-and close it. B dismisses the popup and returns to the stream. Outside the popup, B is sent
+The left drawer uses CivHomebrew's options style and the connected host's name
+as its title. **More → Show keyboard** opens controller keyboard mode, while
+**More → Touchscreen mode** offers Trackpad / Touchpad choices. Mode changes
+apply immediately and are saved for future streams; a failed save leaves the
+active mode unchanged. **Logout** opens the existing alert: choose **Disconnect**
+to leave the PC app running, or **Terminate** to disconnect and close it. B in
+the alert returns to Logout; B in submenus goes back one level, and B at the
+drawer root returns to the stream. Outside local controls, B is sent
 to the remote game. Video fills the viewport and preserves its aspect ratio;
 status is visible during startup/stopping and hidden during playback. On return,
 the Games screen refreshes the running-app state while reusing cached covers.
@@ -267,7 +273,8 @@ packet cannot satisfy a measured sample. Sparse samples are used for the final
   disconnects and releases input on focus loss. Nintendo B/A/Y/X match the physical
   Xbox A/B/X/Y positions; native up-positive stick Y is preserved. Browser standard
   gamepads provide the same layout, with Y inverted from their down-positive axes.
-  The combined −/+ state opens a local Disconnect/Terminate popup. Popup input stays
+  The combined −/+ state opens the local stream drawer; Logout opens the
+  Disconnect/Terminate popup. Drawer and popup input stays
   local and held dismissal buttons must be released before remote input resumes. Native game actions
   remain a partial fallback when full controller state is unavailable. Keyboard keys
   use Moonlight's Win32 key events. C APIs that may take locks run in a cooperative
@@ -347,11 +354,28 @@ Labels reflect local Shift/Caps state; the host's active keyboard layout and
 initial Caps state still determine the resulting characters.
 
 Touch opening does not capture gamepad navigation or buttons; they continue to
-the streamed app. `stream.openKeyboard("gamepad")` provides the separate future
-opening mode, with no user-facing opening binding yet. In that mode the D-pad
+the streamed app. **−/+ → More → Show keyboard** calls
+`stream.openKeyboard("gamepad")` for use without a touchscreen. In that mode the D-pad
 navigates every key, A holds ordinary keys and toggles modifier latches for
 combinations, and B closes. The opening button must return to neutral first.
 Touch-opened keyboards have no controller selection and ignore those commands.
+
+Controller mode also maps Nintendo **Y → Backspace**, **X → Space** and
+**L/R → left/right arrow keys**, based on the reference's
+[keyboard shortcut actions](https://github.com/XITRIX/Moonlight-Switch/blob/master/app/src/streaming_input_overlay.cpp).
+These shortcuts preserve modifier combinations and share ownership with focused,
+physical and touch keys. Holding a shortcut targets 100 ms clicks
+with a 350 ms initial repeat delay and subsequent 150 ms intervals. Controller
+samples advance repeats without replaying a backlog after stalls; releasing or
+dismissing cancels active clicks. A queue failure clears shortcut state and waits
+for all buttons to return to neutral.
+
+The controller keyboard footer uses a Switch-style bar with D-pad, shoulder and
+face-button badges: Move, Left, Right, Backspace, Space, −/+ Menu, B Close and
+A Hold key. On a modifier, A changes to Lock modifier / Unlock modifier. The bar
+is hidden for touch opening, where those controller actions continue to the host.
+It uses regular body fonts and final-size pixels at 720p/1080p, with no new image
+assets or runtime dependencies.
 
 Key transitions use the bounded C input queue. A native held-key ledger supports
 resetting input without losing releases when the queue is full: reset discards
@@ -370,8 +394,10 @@ npm run test:ui
 npm run test:runtime
 ```
 
-The browser suite covers card launch, key forwarding, the Escape/−+ popup,
-Disconnect versus Terminate, B dismissal, running-app sorting and disabled cards,
+The browser suite covers card launch, key forwarding, the host-titled Escape/−+
+drawer, nested More/Logout navigation, touch and polled-controller keyboard
+opening, live touchscreen switching and save errors, Disconnect versus Terminate,
+B dismissal, input isolation with stalled animation callbacks, running-app sorting and disabled cards,
 top-right termination with cancellation/error handling, and returning to the grid. Protocol tests cover launch/resume, keys, pinned TLS,
 permissions, cancellation and host-bound RTSP URLs. The generated-runtime tests
 exercise upstream algorithms, cooperative scheduling and PNG pixels/CRCs/bounds.
