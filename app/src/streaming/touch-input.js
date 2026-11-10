@@ -27,6 +27,9 @@
    for(var p of points){if(next.size>=16||!Number.isInteger(p.id)||p.id<0||p.id>0xffffffff||!Number.isFinite(p.x)||!Number.isFinite(p.y)||next.has(p.id)){cancel();return;}next.set(p.id,p);}
    var bounds=options.bounds();if(!bounds||bounds.width<=0||bounds.height<=0){cancel();return;}
    var area=videoRect(bounds,options.width,options.height);
+   // The upstream gesture opens as the third finger lands. Its contacts must
+   // finish locally, including cancellation of any already forwarded contacts.
+   if(next.size>=3&&options.onKeyboard){cancel();blocked=true;options.onKeyboard();return;}
    if(options.mode==="touchpad"){
     for(var entry of direct){if(!next.has(entry[0])){var old=entry[1];if(!send("touch",[2,entry[0],old.x,old.y]))return;direct.delete(entry[0]);}}
     for(var pair of next){

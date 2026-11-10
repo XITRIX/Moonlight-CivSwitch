@@ -36,6 +36,27 @@ static void input_task(void* ignored);
 static int input_pending,input_buttons,input_lt,input_rt,input_lx,input_ly,input_rx,input_ry;
 static struct { short code;char action,modifiers; } keys[64];
 static unsigned int keys_read,keys_write;
+static unsigned char keys_down[256];
+static int keys_reset;
+static int modifier_key(int code) {return code==16||code==17||code==18||code==91||code==92||(code>=160&&code<=165);}
+static int release_keys(void) {
+    int pending=0;
+    for(int pass=0;pass<2;pass++)for(int code=0;code<256;code++)if(keys_down[code]&&modifier_key(code)==pass){
+        int modifiers=keys_down[code]&MODIFIER_EXTENDED;
+        if(!LiSendKeyboardEvent(code,KEY_ACTION_UP,modifiers))keys_down[code]=0;
+        else pending=1;
+    }
+    return pending;
+}
+static void dispatch_keys(void) {
+    if(keys_reset){keys_reset=release_keys();if(keys_reset)return;}
+    for(unsigned count=0;state==2&&count<64&&keys_read!=keys_write;count++){
+        typeof(keys[0]) key=keys[keys_read++%64];
+        int result=LiSendKeyboardEvent(key.code,key.action,key.modifiers);
+        if(!result)keys_down[key.code]=key.action==KEY_ACTION_DOWN?1|(key.modifiers&MODIFIER_EXTENDED):0;
+        ml_runtime_checkpoint();if(keys_reset)break;
+    }
+}
 enum { POINTER_MOVE=1, POINTER_BUTTON, POINTER_TOUCH, POINTER_SCROLL, POINTER_QUEUE=256 };
 typedef struct { int kind,action;uint32_t id;int dx,dy;float x,y; } PointerInput;
 static PointerInput pointer_queue[POINTER_QUEUE];
@@ -139,7 +160,7 @@ int ml_session_start(const char* host,const char* app_version,const char* rtsp_u
     config.packetSize=1392;config.streamingRemotely=STREAM_CFG_AUTO;config.audioConfiguration=AUDIO_CONFIGURATION_STEREO;
     config.supportedVideoFormats=VIDEO_FORMAT_H264;config.encryptionFlags=0;config.clientRefreshRateX100=fps*100;
     memcpy(config.remoteInputAesKey,key,16);config.remoteInputAesIv[0]=key_id>>24;config.remoteInputAesIv[1]=key_id>>16;config.remoteInputAesIv[2]=key_id>>8;config.remoteInputAesIv[3]=key_id;
-    state=1;error_code=video_frames=audio_frames=0;input_pending=0;keys_read=keys_write=0;
+    state=1;error_code=video_frames=audio_frames=0;input_pending=0;keys_read=keys_write=0;keys_reset=0;memset(keys_down,0,sizeof(keys_down));
     pointer_read=pointer_write=0;pointer_reset=mouse_buttons=touch_dirty=0;
     frame_samples=receive_ms=receive_max_ms=queue_ms=queue_max_ms=host_samples=host_ms=host_max_ms=0;
     frame_gaps=decoder_rejected=0;have_last_frame=false;
@@ -151,7 +172,7 @@ static void stop_task(void* ignored) {
     // are discarded. The JS socket adapter bounds the time available to send.
     LiSendMultiControllerEvent(0,1,0,0,0,0,0,0,0);
     pointer_read=pointer_write;pointer_reset=0;release_pointer();
-    while(keys_read!=keys_write){typeof(keys[0]) key=keys[keys_read++%64];if(key.action==KEY_ACTION_UP)LiSendKeyboardEvent(key.code,key.action,key.modifiers);}
+    keys_read=keys_write;keys_reset=0;release_keys();
     input_pending=0;LiStopConnection();state=0;free(video_bytes);video_bytes=NULL;video_capacity=0;ml_event(7,0,0);
 }
 void ml_session_stop(void) {
@@ -189,8 +210,12 @@ int ml_session_gamepad(int buttons,int lt,int rt,int lx,int ly,int rx,int ry) {
     input_buttons=buttons;input_lt=lt;input_rt=rt;input_lx=lx;input_ly=ly;input_rx=rx;input_ry=ry;input_pending=1;ml_runtime_wake_input();return 0;
 }
 int ml_session_key(int code,int down,int modifiers) {
-    if(state!=2)return -1;if(code<0||code>255||modifiers<0||modifiers>31)return -3;if(keys_write-keys_read>=64)return -2;
+    if(state!=2)return -1;if(code<0||code>255||modifiers<0||modifiers>31)return -3;if(keys_reset||keys_write-keys_read>=64)return -2;
     keys[keys_write++%64]=(typeof(keys[0])){code,down?KEY_ACTION_DOWN:KEY_ACTION_UP,modifiers};ml_runtime_wake_input();return 0;
+}
+int ml_session_keys_reset(void) {
+    if(state!=2)return -1;
+    keys_read=keys_write;keys_reset=1;ml_runtime_wake_input();return 0;
 }
 int ml_session_mouse_move(int dx,int dy) {
     if(dx<-32768||dx>32767||dy<-32768||dy>32767)return -3;
@@ -225,7 +250,7 @@ static void input_task(void* ignored) {
         LI_CCAP_ANALOG_TRIGGERS|(rumble_enabled?LI_CCAP_RUMBLE:0));
     while(state==2){
         if(input_pending){input_pending=0;LiSendMultiControllerEvent(0,1,input_buttons,input_lt,input_rt,input_lx,input_ly,input_rx,input_ry);}
-        while(keys_read!=keys_write){typeof(keys[0]) key=keys[keys_read++%64];LiSendKeyboardEvent(key.code,key.action,key.modifiers);}
+        dispatch_keys();
         dispatch_pointer();
         PltSleepMs(4);
     }

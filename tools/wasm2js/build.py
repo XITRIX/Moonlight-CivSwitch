@@ -55,7 +55,7 @@ stream_exports=[name for name in exports if name!='_ml_probe_threads']+[
     '_ml_session_state','_ml_session_error','_ml_session_video_frames','_ml_session_audio_frames',
     '_ml_scheduler_test_start','_ml_scheduler_test_result','_ml_input_priority_test_start','_ml_input_priority_test_result','_ml_input_wake_test_start','_ml_input_wake_test_result','_ml_interrupt_test_start','_ml_interrupt_test_result','_ml_network_test_start','_ml_network_test_result',
     '_ml_png_nv12','_ml_png_release','_ml_session_gamepad','_ml_session_key','_ml_session_metrics','_ml_fec_metrics','_ml_fec_prepare_pair','_ml_test_fec_vectors','_ml_test_fec_large','_ml_fec_budget_test_start','_ml_fec_budget_test_result','_ml_fec_kernel_benchmark','_ml_test_rtp_timestamp','_ml_packet_pool_configure','_ml_packet_pool_metrics','_ml_test_packet_pool','_ml_test_video_queue','_ml_video_queue_benchmark','_ml_packet_pool_benchmark']
-stream_exports += ['_ml_session_mouse_move','_ml_session_mouse_button','_ml_session_mouse_scroll','_ml_session_touch','_ml_session_touch_supported','_ml_session_pointer_reset']
+stream_exports += ['_ml_session_mouse_move','_ml_session_mouse_button','_ml_session_mouse_scroll','_ml_session_touch','_ml_session_touch_supported','_ml_session_pointer_reset','_ml_session_keys_reset']
 (build / 'stream-exports.json').write_text(json.dumps(stream_exports))
 subprocess.run([str(sdk / 'upstream/emscripten/emcmake'), 'cmake', '-S', str(here), '-B', str(build),
                 '-DCMAKE_BUILD_TYPE=Release', '-DCMAKE_POLICY_VERSION_MINIMUM=3.5'], env=env, check=True)

@@ -86,6 +86,12 @@ rumble frequency bands; trigger rumble is not supported.
   touch support; an unsupported host shows a notice. Host OS and app support
   determine how those contacts behave.
 
+Place three fingers on the stream to open the full English virtual keyboard in
+either touchscreen mode. Lift the opening fingers, then hold any combination of
+keys, including modifiers. Touch outside the keyboard to close it. A keyboard
+opened by touch leaves the gamepad controlling the stream. A separate controller
+keyboard mode is prepared internally; its opening shortcut will be added later.
+
 Touch input pauses while the stream options are open or the app loses focus.
 Changes apply to the next stream. Rumble updates are combined and limited to
 30 per second after video/audio processing; zero strength bypasses the rate

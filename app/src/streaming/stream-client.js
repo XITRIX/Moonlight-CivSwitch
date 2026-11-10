@@ -191,6 +191,7 @@
    mouseScroll:function(horizontal,vertical){return core&&!stopRequested&&core._ml_session_state()===2?core._ml_session_mouse_scroll(horizontal,vertical):-1;},
    touch:function(action,id,x,y){return core&&!stopRequested&&core._ml_session_state()===2?core._ml_session_touch(action,id,x,y):-1;},
    resetPointer:function(){return core&&core._ml_session_state()===2?core._ml_session_pointer_reset():-1;},
+   resetKeys:function(){return core&&core._ml_session_state()===2?core._ml_session_keys_reset():-1;},
    stats:function(){return latestStats;}};
  }
  global.MoonlightStreamClient={create:create,createClock:createClock,createRumbleOutput:createRumbleOutput};

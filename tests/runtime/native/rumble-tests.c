@@ -10,6 +10,9 @@ static uint16_t arrival_capabilities;
 static uint32_t host_features=LI_FF_PEN_TOUCH_EVENTS;
 static PointerInput delivered[1024];
 static unsigned delivered_count;
+static struct {short code;char action,modifiers;} delivered_keys[1024];
+static unsigned delivered_key_count;
+static int key_result;
 
 int ml_runtime_tasks(void) { return task_count; }
 void ml_runtime_checkpoint(void) {}
@@ -39,7 +42,7 @@ int LiSendControllerArrivalEvent(uint8_t controller,uint16_t mask,uint8_t type,u
 int LiSendMultiControllerEvent(short controller,short mask,int buttons,unsigned char lt,unsigned char rt,short lx,short ly,short rx,short ry) {
     controller_events++;return 0;
 }
-int LiSendKeyboardEvent(short key,char action,char modifiers) { return 0; }
+int LiSendKeyboardEvent(short key,char action,char modifiers) { delivered_keys[delivered_key_count++]=(typeof(delivered_keys[0])){key,action,modifiers};return key_result; }
 uint32_t LiGetHostFeatureFlags(void) { return host_features; }
 int LiSendMouseMoveEvent(short x,short y) { delivered[delivered_count++]=(PointerInput){.kind=POINTER_MOVE,.dx=x,.dy=y};return 0; }
 int LiSendHighResScrollEvent(short y) { delivered[delivered_count++]=(PointerInput){.kind=POINTER_SCROLL,.dy=y};return 0; }
@@ -80,6 +83,27 @@ static void pointer_tests(void) {
     assert(ml_session_mouse_scroll(0,120)==0&&ml_session_mouse_button(BUTTON_LEFT,1)==0);before=delivered_count;stop_task(NULL);
     assert(state==0&&delivered_count==before+2&&delivered[before].id==BUTTON_RIGHT&&delivered[before+1].action==LI_TOUCH_EVENT_CANCEL_ALL);
 }
+static void keyboard_tests(void) {
+    assert(ml_session_keys_reset()==-1);state=2;
+    assert(ml_session_key(256,1,0)==-3&&ml_session_key(65,1,32)==-3);
+    assert(ml_session_key(162,1,2)==0&&ml_session_key(67,1,2)==0&&ml_session_key(165,1,20)==0);
+    assert(!delivered_key_count);dispatch_keys();assert(delivered_key_count==3&&keys_down[162]&&keys_down[67]&&keys_down[165]);
+    for(unsigned i=0;i<64;i++)assert(ml_session_key(88,i%2,0)==0);
+    assert(ml_session_key(67,0,0)==-2);assert(ml_session_keys_reset()==0&&ml_session_key(65,1,0)==-2);
+    dispatch_keys();assert(delivered_key_count==6);
+    assert(delivered_keys[3].code==67&&delivered_keys[3].action==KEY_ACTION_UP);
+    assert(delivered_keys[5].code==165&&delivered_keys[5].modifiers==MODIFIER_EXTENDED);
+    assert(!keys_down[162]&&!keys_down[67]&&!keys_down[165]);
+    key_result=-2;assert(ml_session_key(65,1,0)==0);dispatch_keys();assert(!keys_down[65]);
+    key_result=0;assert(ml_session_key(65,1,0)==0);dispatch_keys();assert(keys_down[65]);
+    key_result=-2;assert(ml_session_key(65,0,0)==0);dispatch_keys();assert(keys_down[65]);
+    assert(ml_session_keys_reset()==0);dispatch_keys();assert(keys_down[65]&&keys_reset);
+    assert(ml_session_key(66,1,0)==-2); /* Failed releases retry before new presses. */
+    key_result=0;dispatch_keys();assert(!keys_down[65]&&!keys_reset);
+    assert(ml_session_key(160,1,1)==0&&ml_session_key(86,1,1)==0);dispatch_keys();
+    unsigned before=delivered_key_count;assert(ml_session_key(88,1,0)==0);stop_task(NULL);
+    assert(state==0&&delivered_key_count==before+2&&delivered_keys[before].code==86&&delivered_keys[before+1].code==160);
+}
 
 int main(void) {
     /* Existing callers provide no rumble configuration. */
@@ -100,5 +124,6 @@ int main(void) {
     assert(arrival_buttons==0xf3ff&&arrival_capabilities==(LI_CCAP_ANALOG_TRIGGERS|LI_CCAP_RUMBLE));
     assert(ml_session_set_rumble(0)==0);start_task(NULL);assert(captured_listener.rumble==NULL);
     pointer_tests();
+    keyboard_tests();
     return 0;
 }

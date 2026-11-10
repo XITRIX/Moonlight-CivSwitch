@@ -272,8 +272,9 @@ packet cannot satisfy a measured sample. Sparse samples are used for the final
   remain a partial fallback when full controller state is unavailable. Keyboard keys
   use Moonlight's Win32 key events. C APIs that may take locks run in a cooperative
   task, with bounded queues and coalesced controller state. Touchscreen modes
-  supply relative mouse input or Sunshine multi-touch as described below. Gyro,
-  additional controllers and on-screen keyboard streaming are absent.
+  supply relative mouse input or Sunshine multi-touch as described below. An
+  English virtual keyboard sends the same Win32 key events. Gyro and additional
+  controllers are absent.
 - Teardown interrupts startup or stops an active core, pumps until tasks finish,
   and then releases decoder/audio objects, sockets and owned memory. If cleanup
   times out, referenced memory is retained and further streams require restarting
@@ -288,7 +289,7 @@ contact within 300 ms and 24 reference pixels presses left immediately; lifting
 releases it. Taps must
 finish within 250 ms and stay within 12 reference pixels. Movement uses the
 stream's pixel dimensions, retaining fractional deltas. Adding a second finger
-terminates a drag; three or more fingers suppress input until all contacts lift.
+terminates a drag; the third finger cancels pointer input and opens the keyboard.
 
 Two-finger scrolling uses the centroid of stable contact IDs, starting after
 12 reference pixels of movement. It sends high-resolution vertical and horizontal
@@ -324,6 +325,42 @@ Queue rejection cancels the gesture. Focus loss, touch cancellation, dialog entr
 and stream shutdown discard pending presses and release held mouse buttons and
 cancel direct contacts. Held fingers require neutral before remote input resumes.
 The local dialog's touch controls remain usable.
+
+## Streaming virtual keyboard
+
+The third simultaneous contact opens the English keyboard as soon as it lands
+in either touchscreen mode, following Moonlight-Switch's
+[three-finger recognizer](https://github.com/XITRIX/Moonlight-Switch/blob/a75fee223914f36ec26b29739d95331307960fa3/app/src/gestures/fingers_gesture_recognizer.cpp).
+All opening fingers must lift before keys can be pressed. Touch outside the panel
+closes it and consumes that contact until all fingers lift. The keyboard uses the
+reference's [full six-row layout](https://github.com/XITRIX/Moonlight-Switch/blob/a75fee223914f36ec26b29739d95331307960fa3/app/src/keyboards/full_layout.cpp):
+English QWERTY, function keys, number row, punctuation, left/right modifiers,
+Space and arrow keys. No alternate language, compact layout or numpad mode is
+included.
+
+Each contact holds its current key until it slides away or lifts. Several keys
+can remain down together; simultaneous snapshots press modifiers before ordinary
+keys and release ordinary keys before modifiers. Duplicate contacts on a key and
+physical keyboard events share ownership, so one owner cannot release another's
+held key. Caps Lock is a toggle; touch modifiers are held rather than latched.
+Labels reflect local Shift/Caps state; the host's active keyboard layout and
+initial Caps state still determine the resulting characters.
+
+Touch opening does not capture gamepad navigation or buttons; they continue to
+the streamed app. `stream.openKeyboard("gamepad")` provides the separate future
+opening mode, with no user-facing opening binding yet. In that mode the D-pad
+navigates every key, A holds ordinary keys and toggles modifier latches for
+combinations, and B closes. The opening button must return to neutral first.
+Touch-opened keyboards have no controller selection and ignore those commands.
+
+Key transitions use the bounded C input queue. A native held-key ledger supports
+resetting input without losing releases when the queue is full: reset discards
+pending presses and releases keys already dispatched. Focus loss, touch
+cancellation, stream options, shutdown and keyboard dismissal clear the relevant
+owners. Native calls that may lock remain on the cooperative input task. The
+generated runtime includes `ml_session_keys_reset`; it must be rebuilt together
+with the adapter. Browser interaction and host-native queue tests do not establish
+console touchscreen behavior or host handling of secure key combinations.
 
 ## Validation
 

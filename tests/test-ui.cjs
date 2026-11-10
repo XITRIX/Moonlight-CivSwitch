@@ -295,7 +295,7 @@ const sleep=ms=>new Promise(r=>setTimeout(r,ms));
   await evaluate('window.__mode="success"');await key('Enter');
   await until('document.getElementById("moonlight-games-screen").style.display==="flex"&&document.querySelectorAll("#moonlight-game-list button").length===8');
   // A card launches a stream; Escape opens the local two-button dialog.
-  await evaluate(`window.__streamEvents=[];window.MoonlightStreamClient.create=options=>{window.__streamOptions=options;let finish;const done=new Promise(r=>finish=r);return {start:()=>{window.__streamEvents.push(['start',options.app.id]);options.onStatus('Test stream connected');return done;},stop:()=>{window.__streamEvents.push(['stop']);finish({error:null});return done;},gamepad:(...args)=>window.__streamEvents.push(['pad',...args]),key:(...args)=>window.__streamEvents.push(['key',...args]),mouseMove:(...args)=>{window.__streamEvents.push(['mouseMove',...args]);return 0;},mouseScroll:(...args)=>{window.__streamEvents.push(['mouseScroll',...args]);return 0;},mouseButton:(...args)=>{window.__streamEvents.push(['mouseButton',...args]);return 0;},touch:(...args)=>{window.__streamEvents.push(['touch',...args]);return window.__touchFailure||0;},resetPointer:()=>{window.__streamEvents.push(['resetPointer']);return 0;}};}`);
+  await evaluate(`window.__streamEvents=[];window.MoonlightStreamClient.create=options=>{window.__streamOptions=options;let finish;const done=new Promise(r=>finish=r);return {start:()=>{window.__streamEvents.push(['start',options.app.id]);options.onStatus('Test stream connected');return done;},stop:()=>{window.__streamEvents.push(['stop']);finish({error:null});return done;},gamepad:(...args)=>window.__streamEvents.push(['pad',...args]),key:(...args)=>{window.__streamEvents.push(['key',...args]);return 0;},resetKeys:()=>{window.__streamEvents.push(['resetKeys']);return 0;},mouseMove:(...args)=>{window.__streamEvents.push(['mouseMove',...args]);return 0;},mouseScroll:(...args)=>{window.__streamEvents.push(['mouseScroll',...args]);return 0;},mouseButton:(...args)=>{window.__streamEvents.push(['mouseButton',...args]);return 0;},touch:(...args)=>{window.__streamEvents.push(['touch',...args]);return window.__touchFailure||0;},resetPointer:()=>{window.__streamEvents.push(['resetPointer']);return 0;}};}`);
   await evaluate('window.__nativeCreate=window.MoonlightControllerInput.createNative;window.__rumbles=[];window.MoonlightControllerInput.createNative=()=>({poll:()=>null,rumbleSupported:true,rumble:(...args)=>window.__rumbles.push(args),stopRumble:()=>window.__rumbles.push([0,0,0]),close:()=>window.__rumbles.push(["close"])});true');
   await key('Enter');await until('document.getElementById("moonlight-stream-screen").style.display==="flex"');
   await evaluate(`window.__touchDOM=(type,points)=>{const e=new Event(type,{bubbles:true,cancelable:true});Object.defineProperty(e,'touches',{value:points.map(p=>({identifier:p[0],clientX:p[1],clientY:p[2]}))});document.getElementById('moonlight-stream-screen').dispatchEvent(e);};
@@ -313,6 +313,40 @@ const sleep=ms=>new Promise(r=>setTimeout(r,ms));
   await evaluate(`__touchDOM('touchstart',[[6,500,300],[7,600,300]]);__touchDOM('touchmove',[[7,600,300-40*innerHeight/720],[6,500,300-40*innerHeight/720]]);__touchDOM('touchend',[]);true`);
   assert.deepEqual(await evaluate('__streamEvents.filter(e=>e[0]==="mouseScroll").map(e=>e.slice(1))'),[[0,-120]],'two-finger swipe routes high-resolution scrolling');
   assert.equal(await evaluate('__streamEvents.filter(e=>e[0]==="mouseButton").length'),7,'scrolling never clicks');
+  // The third contact opens locally immediately, then all opener contacts must lift.
+  await evaluate(`window.__keyPoint=id=>{const r=document.getElementById('moonlight-key-'+id).getBoundingClientRect();return [r.x+r.width/2,r.y+r.height/2];};
+   window.__keyTouches=points=>__touchDOM('touchmove',points.map(([id,key])=>[id,...__keyPoint(key)]));
+   window.__openKeys=()=>{__touchDOM('touchstart',[[90,100,100],[91,200,100],[92,300,100]]);};
+   window.__keyStart=__streamEvents.length;__openKeys();true`);
+  assert.equal(await evaluate('document.getElementById("moonlight-stream-keyboard").dataset.mode'),'touch');
+  await evaluate('__keyTouches([[90,"KeyA"]]);true');
+  assert.equal(await evaluate('__streamEvents.slice(__keyStart).filter(e=>e[0]==="key").length'),0,'opening fingers cannot type');
+  await evaluate('__touchDOM("touchend",[]);__keyTouches([[1,"KeyC"],[2,"ShiftLeft"],[3,"ControlLeft"]]);true');
+  assert.deepEqual(await evaluate('__streamEvents.slice(__keyStart).filter(e=>e[0]==="key").map(e=>e.slice(1))'),[[160,true,0],[162,true,1],[67,true,3]],'modifiers precede the letter even in an unordered multi-touch snapshot');
+  assert.equal(await evaluate('document.getElementById("moonlight-key-KeyC").getAttribute("aria-pressed")'),'true');
+  await evaluate('__keyTouches([[2,"ShiftLeft"],[3,"ControlLeft"]]);__touchDOM("touchend",[]);true');
+  assert.deepEqual(await evaluate('__streamEvents.filter(e=>e[0]==="key").slice(-3).map(e=>e.slice(1))'),[[67,false,3],[160,false,3],[162,false,2]]);
+  await evaluate('__keyTouches([[4,"KeyA"],[5,"KeyA"]]);__keyTouches([[5,"KeyA"]]);__touchDOM("touchend",[]);true');
+  assert.deepEqual(await evaluate('__streamEvents.filter(e=>e[0]==="key").slice(-2).map(e=>e.slice(1,3))'),[[65,true],[65,false]],'two fingers on one key share its lifetime');
+  assert.equal(await evaluate('document.querySelectorAll("#moonlight-stream-keyboard [data-selected=true]").length'),0,'touch opening has no gamepad selection');
+  // Check geometry at both console resolutions and keep a reviewable preview.
+  for(const [width,height] of [[1280,720],[1920,1080]]){
+   await call('Emulation.setDeviceMetricsOverride',{width,height,deviceScaleFactor:1,mobile:false});await sleep(60);
+   assert.equal(await evaluate('Array.from(document.querySelectorAll("#moonlight-stream-keyboard [data-key]")).every(n=>{const r=n.getBoundingClientRect();return r.left>=0&&r.right<=innerWidth&&r.top>=0&&r.bottom<=innerHeight;})'),true,'every key fits '+width+'x'+height);
+  }
+  const keyboardPng=await call('Page.captureScreenshot',{format:'png'});
+  fs.writeFileSync(path.join(os.tmpdir(),'moonlight-keyboard-preview.png'),Buffer.from(keyboardPng.data,'base64'));
+  await evaluate('window.__mouseBeforeKeys=__streamEvents.filter(e=>e[0]==="mouseButton").length;__keyTouches([[6,"AltRight"],[7,"Delete"]]);__touchDOM("touchstart",[[6,...__keyPoint("AltRight")],[7,...__keyPoint("Delete")],[8,10,10]]);true');
+  assert.equal(await evaluate('document.getElementById("moonlight-stream-keyboard").style.display'),'none','outside contact dismisses');
+  assert.deepEqual(await evaluate('__streamEvents.filter(e=>e[0]==="key").slice(-2).map(e=>e.slice(1))'),[[46,false,20],[165,false,20]]);
+  await evaluate('__touchDOM("touchend",[]);true');
+  assert.equal(await evaluate('__streamEvents.filter(e=>e[0]==="mouseButton").length'),await evaluate('__mouseBeforeKeys'),'dismissal never clicks the PC');
+  await evaluate('__openKeys();__touchDOM("touchend",[]);__keyTouches([[9,"KeyV"]]);window.dispatchEvent(new Event("blur"));true');
+  assert.equal(await evaluate('document.getElementById("moonlight-stream-keyboard").style.display'),'none','focus loss dismisses and resets held keys');
+  assert.equal(await evaluate('__streamEvents.some(e=>e[0]==="resetKeys")'),true);
+  await evaluate('window.dispatchEvent(new Event("focus"));__touchDOM("touchend",[]);__openKeys();__touchDOM("touchend",[]);__keyTouches([[10,"KeyW"]]);__touchDOM("touchcancel",[]);true');
+  assert.equal(await evaluate('document.getElementById("moonlight-stream-keyboard").style.display'),'none','touch cancellation dismisses');
+  assert.deepEqual(await evaluate('__streamEvents.filter(e=>e[0]==="key").slice(-2).map(e=>e.slice(1,3))'),[[87,true],[87,false]]);
   assert.deepEqual(await evaluate('window.__streamOptions.mode'),{width:960,height:540,fps:60,bitrate:8000,showStats:true,videoPacing:"smooth",rumble:true,touchMode:"trackpad"});
   await evaluate('window.__streamOptions.onImage("live:/moonlight-experiment/1");window.__streamOptions.onImage("live:/moonlight-experiment/1");true');
   assert.equal(await evaluate('document.getElementById("moonlight-stream-native-image").style.display'),'block');
@@ -366,11 +400,14 @@ const sleep=ms=>new Promise(r=>setTimeout(r,ms));
   assert.match(await evaluate('document.getElementById("moonlight-touch-status").textContent'),/does not support direct touch/);
   await evaluate('window.__touchFailure=0;true');
 
+  await evaluate('__openKeys();__touchDOM("touchend",[]);window.__keysBeforePad=__streamEvents.filter(e=>e[0]==="key").length;true');
   await gameAction('cancel');await sleep(1300);
   assert.equal(await evaluate('document.getElementById("moonlight-stream-screen").style.display'),'flex','B must remain a game button');
   assert.equal(await evaluate('window.__streamEvents.some(e=>e[0]==="pad"&&(e[1]&0x1000))'),true);
   await evaluate('window.__pad={mapping:"standard",connected:true,buttons:Array.from({length:17},()=>({pressed:false,value:0})),axes:[1,-1,-1,1]};window.__pad.buttons[4].pressed=true;window.__pad.buttons[6].value=1;true');
   await until('window.__streamEvents.some(e=>e[0]==="pad"&&e[1]===0x100&&e[2]===255&&e[4]===32767&&e[5]===32767&&e[6]===-32767&&e[7]===-32767)');
+  assert.equal(await evaluate('document.getElementById("moonlight-stream-keyboard").dataset.mode'),'touch','gamepad B does not dismiss a touch-opened keyboard');
+  assert.equal(await evaluate('__streamEvents.filter(e=>e[0]==="key").length'),await evaluate('__keysBeforePad'),'gamepad does not type into touch-opened keyboard');
   await evaluate('window.dispatchEvent(new Event("blur"));true');
   assert.deepEqual(await evaluate('window.__streamEvents.filter(e=>e[0]==="pad").at(-1)'),['pad',0,0,0,0,0,0,0]);
   await evaluate('window.dispatchEvent(new Event("focus"));window.__pad.connected=false;true');
@@ -536,8 +573,30 @@ const sleep=ms=>new Promise(r=>setTimeout(r,ms));
   await evaluate('window.__moonlightSimpleUI.close();true');
   assert.equal(await evaluate('__imeSubscriptions.length'),0,'closing removes every owned input/IME subscription');
   assert.equal(await evaluate('!!document.querySelector("fxs-textbox")'),false);
+  // The separate controller opening API is usable without adding an opener binding.
+  await evaluate(`window.__keyboardEvents=[];window.__keyboardTime=0;
+   window.__keyboardParent=document.createElement('div');Object.assign(__keyboardParent.style,{position:'fixed',inset:'0',background:'#000'});document.body.appendChild(__keyboardParent);
+   window.__keyboardModel=MoonlightStreamKeyboard.createKeys({key:(...e)=>{__keyboardEvents.push(e);return 0;},reset:()=>{}});
+   window.__keyboard=MoonlightStreamKeyboard.create({parent:__keyboardParent,keys:__keyboardModel,now:()=>__keyboardTime});
+   window.__padKey=b=>{__keyboard.controller(b);__keyboard.controller(0);};
+   __keyboard.open('gamepad');__keyboard.controller(0x2000);__keyboard.controller(0);true`);
+  assert.equal(await evaluate('__keyboardEvents.length'),0,'opener A must release first');
+  await evaluate('__keyboard.controller(0x2000);true');
+  assert.deepEqual(await evaluate('__keyboardEvents'),[[81,true,0]],'A holds Q');
+  await evaluate('__keyboard.controller(0);__padKey(2);__padKey(2);__padKey(2);__padKey(4);__padKey(4);__padKey(0x2000);true');
+  assert.equal(await evaluate('__keyboardModel.modifiers()'),2,'modifier stays latched after A release');
+  await evaluate('__padKey(1);__padKey(8);__padKey(8);__padKey(8);__padKey(0x2000);true');
+  assert.deepEqual(await evaluate('__keyboardEvents.slice(-2)'),[[67,true,2],[67,false,2]],'D-pad reaches C while Ctrl is latched');
+  await evaluate('__padKey(0x1000);true');
+  assert.equal(await evaluate('__keyboard.isOpen()'),false);
+  assert.deepEqual(await evaluate('__keyboardEvents.at(-1)'),[162,false,2],'B releases latched Ctrl');
+  await evaluate('__keyboard.open("gamepad");__keyboard.action("accept",3);true');
+  assert.equal(await evaluate('__keyboardModel.pressed(81)'),false,'inherited action repeat cannot type');
+  await evaluate('__keyboard.action("accept",1);__keyboard.action("accept",0);__keyboard.action("accept",1);true');
+  assert.deepEqual(await evaluate('__keyboardEvents.slice(-2)'),[[81,true,0],[81,false,0]],'action-only fallback can press and release');
+  await evaluate('__keyboard.destroy();__keyboardParent.remove();true');
  }finally{
   await cleanup(socket,profile);
  }
- console.log('UI tests passed: Hosts/Pair navigation, pairing failure/cancellation, multiple saved hosts and reload, host deletion/cancellation/errors, direct game selection, saved stream settings, save errors, settings-to-stream mode forwarding, touchscreen mode selection, trackpad clicks/dragging/scrolling, direct multi-touch/unsupported host, touch-only dialog resume, overlay on/off and cleanup, PNG covers and lazy pages, download/decode fallback and cancellation, 720p/1080p grid, four-way input, paging, horizontal footer, safe titles, list errors/retry, reconnect, Disconnect/Terminate popup with B dismissal and stalled RAF, running-app sorting/disabled cards, termination confirmation and errors, close.');
+ console.log('UI tests passed: Hosts/Pair navigation, pairing failure/cancellation, multiple saved hosts and reload, host deletion/cancellation/errors, direct game selection, saved stream settings, save errors, settings-to-stream mode forwarding, touchscreen mode selection, trackpad clicks/dragging/scrolling, three-finger English keyboard, key combinations, outside dismissal, touch/gamepad isolation, separate controller keyboard navigation, direct multi-touch/unsupported host, touch-only dialog resume, overlay on/off and cleanup, PNG covers and lazy pages, download/decode fallback and cancellation, 720p/1080p grid, four-way input, paging, horizontal footer, safe titles, list errors/retry, reconnect, Disconnect/Terminate popup with B dismissal and stalled RAF, running-app sorting/disabled cards, termination confirmation and errors, close.');
 })().catch(error=>{console.error(error);process.exitCode=1;});

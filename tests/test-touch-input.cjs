@@ -8,6 +8,15 @@ function environment(mode='trackpad',extra={}){
  return {input,events,errors,buttons:()=>events.filter(e=>e[0]==='button'),update:(t,points,enabled=true)=>{time=t;input.update(points,enabled);},result:n=>result=n};
 }
 const p=(id,x=100,y=100)=>({id,x,y});
+test('third contact opens the keyboard once on landing in either pointer mode and cancels remote contacts',()=>{
+ for(const mode of ['trackpad','touchpad']){
+  let opens=0;const e=environment(mode,{onKeyboard:()=>opens++});
+  e.update(0,[p(1)]);e.update(10,[p(1),p(2),p(3)]);assert.equal(opens,1);assert.deepEqual(e.events.at(-1),['reset']);
+  const count=e.events.length;e.update(20,[p(1),p(2),p(3),p(4)]);e.update(30,[p(1)]);assert.equal(opens,1);assert.equal(e.events.length,count);
+  e.update(40,[]);e.update(50,[p(1),p(2),p(3)]);assert.equal(opens,2);
+ }
+ const disabled=environment('trackpad',{onKeyboard:()=>assert.fail('suspended touch cannot open keyboard')});disabled.update(0,[p(1),p(2),p(3)],false);
+});
 test('single tap clicks left, movement is relative, and subpixel motion accumulates',()=>{
  const e=environment();e.update(0,[p(1)]);e.update(80,[]);assert.deepEqual(e.buttons(),[['button',1,true],['button',1,false]]);
  const move=environment();move.update(0,[p(2)]);move.update(20,[p(2,140,80)]);move.update(40,[]);
