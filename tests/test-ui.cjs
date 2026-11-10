@@ -44,7 +44,7 @@ const sleep=ms=>new Promise(r=>setTimeout(r,ms));
    window.__cover=id=>{const canvas=document.createElement('canvas');canvas.width=240;canvas.height=320;const ctx=canvas.getContext('2d');ctx.fillStyle=['#284c83','#28545b','#534878'][id%3];ctx.fillRect(0,0,240,320);ctx.fillStyle='#f4f7ff';ctx.textAlign='center';ctx.font='bold 22px Arial';ctx.fillText('TEST COVER',120,144);ctx.font='16px Arial';ctx.fillText('Application '+id,120,178);return atob(canvas.toDataURL('image/png').split(',')[1]);};
    window.__idOffset=0;window.__xml=()=>'<root status_code="200">'+window.__apps.map((title,i)=>'<App><AppTitle>'+title.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;')+'</AppTitle><ID>'+(i+1+window.__idOffset)+'</ID></App>').join('')+'</root>';
    window.MoonlightNative.available=true;
-   window.MoonlightNative.create=()=>({listHosts:()=>{if(window.__failHostsLoad)throw Error("Unreadable pairing data");return window.__hosts;},loadStreamSettings:()=>window.__savedMode||window.MoonlightSettings.defaults(),saveStreamSettings:mode=>{if(window.__failSettingsSave)throw Error("disk full");window.__savedMode=JSON.parse(JSON.stringify(mode));},loadIdentity:()=>({uniqueId:'0123456789abcdef'}),loadHost:()=>({uniqueId:'0123456789abcdef',hostname:'Gaming PC',httpsPort:47984,certificatePem:'pinned'}),randomBytes:n=>new Uint8Array(n),requestHttps:async request=>{window.__calls++;if(request.path.startsWith('/serverinfo?'))return '<root status_code="200"><PairStatus>1</PairStatus><currentgame>'+(window.__running||0)+'</currentgame><state>SUNSHINE_SERVER_'+(window.__running?'BUSY':'FREE')+'</state></root>';if(request.path.startsWith('/cancel?')){window.__quitCalls=(window.__quitCalls||0)+1;if(window.__quitError)throw Error('Termination denied');if(!window.__delayQuit)window.__running=0;return '<root status_code="200"><cancel>1</cancel></root>';}if(request.path.startsWith('/appasset?')){const id=Number(new URL('https://host'+request.path).searchParams.get('appid'));window.__artCalls.push(id);window.__artSignal=request.signal;if(window.__artMode==='pending')return new Promise(r=>window.__artFinish=()=>r(window.__cover(id)));if(window.__artMode==='error')throw Error('Artwork missing');if(window.__artMode==='corrupt')return window.__cover(id).slice(0,33);return window.__cover(id);}window.__lastAppRequest={host:request.host,port:request.port};window.__signal=request.signal;if(window.__mode==='error')throw Error('Host offline');if(window.__mode==='pending')return new Promise(r=>window.__finish=r);return window.__mode==='empty'?'<root status_code="200"/>':window.__xml();}});
+   window.MoonlightNative.create=()=>({listHosts:()=>{if(window.__failHostsLoad)throw Error("Unreadable pairing data");return window.__hosts;},removeHost:address=>{if(window.__failHostDelete)throw Error("disk full");window.__hosts=window.__hosts.filter(h=>h.address!==address);},loadStreamSettings:()=>window.__savedMode||window.MoonlightSettings.defaults(),saveStreamSettings:mode=>{if(window.__failSettingsSave)throw Error("disk full");window.__savedMode=JSON.parse(JSON.stringify(mode));},loadIdentity:()=>({uniqueId:'0123456789abcdef'}),loadHost:()=>({uniqueId:'0123456789abcdef',hostname:'Gaming PC',httpsPort:47984,certificatePem:'pinned'}),randomBytes:n=>new Uint8Array(n),requestHttps:async request=>{window.__calls++;if(request.path.startsWith('/serverinfo?'))return '<root status_code="200"><PairStatus>1</PairStatus><currentgame>'+(window.__running||0)+'</currentgame><state>SUNSHINE_SERVER_'+(window.__running?'BUSY':'FREE')+'</state></root>';if(request.path.startsWith('/cancel?')){window.__quitCalls=(window.__quitCalls||0)+1;if(window.__quitError)throw Error('Termination denied');if(!window.__delayQuit)window.__running=0;return '<root status_code="200"><cancel>1</cancel></root>';}if(request.path.startsWith('/appasset?')){const id=Number(new URL('https://host'+request.path).searchParams.get('appid'));window.__artCalls.push(id);window.__artSignal=request.signal;if(window.__artMode==='pending')return new Promise(r=>window.__artFinish=()=>r(window.__cover(id)));if(window.__artMode==='error')throw Error('Artwork missing');if(window.__artMode==='corrupt')return window.__cover(id).slice(0,33);return window.__cover(id);}window.__lastAppRequest={host:request.host,port:request.port};window.__signal=request.signal;if(window.__mode==='error')throw Error('Host offline');if(window.__mode==='pending')return new Promise(r=>window.__finish=r);return window.__mode==='empty'?'<root status_code="200"/>':window.__xml();}});
    window.MoonlightPairing.create=options=>({checkAndPair:async address=>{
     window.__pairCalls++;window.__pairSignal=options.signal;
     if(window.__pairMode==='error')throw Error('Incorrect PIN');
@@ -418,6 +418,30 @@ const sleep=ms=>new Promise(r=>setTimeout(r,ms));
   assert.equal(await evaluate('window.__pairCalls'),5);
   await key('Escape');await sleep(250);
   assert.equal(await evaluate('document.querySelector("#moonlight-host-list [data-selected=true]").getAttribute("data-host-address")'),'192.168.1.5:48000');
+  // Host deletion: controller activation without click(), cancel, failure, retry and reload.
+  await evaluate('HTMLElement.prototype.click=undefined');
+  await gameAction('nav-right');
+  assert.equal(await evaluate('document.querySelector("#moonlight-host-list [data-selected=true]").getAttribute("data-delete-host")'),'192.168.1.5:48000');
+  await gameAction('accept');
+  assert.equal(await evaluate('document.getElementById("moonlight-terminate-app-title").textContent'),'Delete Second PC?');
+  await sleep(160);await gameAction('cancel');await sleep(250);
+  assert.equal(await evaluate('window.__hosts.length'),2);
+  await gameAction('accept');await sleep(160);await gameAction('accept');await sleep(250);
+  assert.equal(await evaluate('window.__hosts.length'),2,'Cancel is selected by default');
+  await evaluate('window.__failHostDelete=true');
+  await gameAction('accept');await sleep(160);await gameAction('nav-right');await gameAction('accept');await sleep(250);
+  assert.match(await evaluate('document.getElementById("moonlight-hosts-status").textContent'),/Could not delete host: disk full/);
+  assert.equal(await evaluate('window.__hosts.length'),2);
+  await evaluate('window.__failHostDelete=false');
+  await gameAction('nav-right');await gameAction('accept');await sleep(160);await gameAction('nav-right');await gameAction('accept');await sleep(250);
+  assert.deepEqual(await evaluate('window.__hosts.map(h=>h.address)'),['192.168.1.4:47989']);
+  await evaluate('window.__moonlightSimpleUI.close();true');
+  await evaluate('void eval('+JSON.stringify(fs.readFileSync(path.join(__dirname,'../app/src/ui/moonlight-ui.js'),'utf8'))+');true');
+  assert.equal(await evaluate('document.querySelectorAll("#moonlight-host-list [data-host-address]").length'),1);
+  await gameAction('nav-right');await gameAction('accept');await sleep(160);await gameAction('nav-right');await gameAction('accept');await sleep(250);
+  assert.equal(await evaluate('window.__hosts.length'),0);
+  assert.equal(await evaluate('document.getElementById("moonlight-pair-new-host").getAttribute("data-selected")'),'true');
+  await evaluate('HTMLElement.prototype.click=window.__browserClick');
   await key('Escape');assert.equal(await evaluate('!!document.getElementById("moonlight-simple-ui")'),false);
   // Mock the shipped textbox's Element-mode completion: stale input contents
   // must be replaced by GenericData, with callback cleanup after it returns.
@@ -463,7 +487,7 @@ const sleep=ms=>new Promise(r=>setTimeout(r,ms));
   await evaluate('window.__moonlightSimpleUI.close();true');
   assert.equal(await evaluate('__imeSubscriptions.length'),0,'closing removes every owned input/IME subscription');
   assert.equal(await evaluate('!!document.querySelector("fxs-textbox")'),false);
-  console.log('UI tests passed: Hosts/Pair navigation, pairing failure/cancellation, multiple saved hosts and reload, direct game selection, saved stream settings, save errors, settings-to-stream mode forwarding, overlay on/off and cleanup, PNG covers and lazy pages, download/decode fallback and cancellation, 720p/1080p grid, four-way input, paging, horizontal footer, safe titles, list errors/retry, reconnect, Disconnect/Terminate popup with B dismissal and stalled RAF, running-app sorting/disabled cards, termination confirmation and errors, close.');
+  console.log('UI tests passed: Hosts/Pair navigation, pairing failure/cancellation, multiple saved hosts and reload, host deletion/cancellation/errors, direct game selection, saved stream settings, save errors, settings-to-stream mode forwarding, overlay on/off and cleanup, PNG covers and lazy pages, download/decode fallback and cancellation, 720p/1080p grid, four-way input, paging, horizontal footer, safe titles, list errors/retry, reconnect, Disconnect/Terminate popup with B dismissal and stalled RAF, running-app sorting/disabled cards, termination confirmation and errors, close.');
  }finally{
   if(socket)socket.close();
   chrome.kill('SIGTERM');for(let i=0;i<100&&chrome.exitCode===null;i++)await sleep(30);

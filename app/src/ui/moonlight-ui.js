@@ -134,7 +134,7 @@
         textAlign: "center", maxWidth: "94vw"
     }, "D-pad up/down: Move    A: Edit / Select    B: Back");
     var controls = [host, pair, pairBack];
-    var hosts = window.MoonlightHosts.create({parent:root,onHost:openHost,onPair:openPair,onSettings:openSettings});
+    var hosts = window.MoonlightHosts.create({parent:root,onHost:openHost,onPair:openPair,onSettings:openSettings,onDelete:confirmDeleteHost});
     var streamMode=window.MoonlightSettings.defaults(),settingsLoaded=false,settingsReturn="hosts",settingsTransport=null;
     function loadSettings(){
         if(settingsLoaded)return;settingsLoaded=true;
@@ -447,6 +447,21 @@
         heldDirection="";
     }
 
+    function confirmDeleteHost(value){
+        if(connectionTask||closed||screen!=="hosts")return;
+        appDialog.show({title:"Delete "+value.hostname+"?",description:"Remove the saved pairing for "+value.address+". You can pair this host again later.",labels:["Cancel","Delete"],actions:[function(){ignoreInputUntil=Date.now()+250;},function(){
+            try{
+                window.MoonlightNative.create().removeHost(value.address);
+                showHosts(null,"Deleted "+value.hostname+".");
+            }catch(error){
+                showHosts(value.address,"Could not delete host: "+error.message);
+                report("MOONLIGHT_HOST_DELETE_ERROR: "+error.message);
+            }
+            ignoreInputUntil=Date.now()+250;
+        }]});
+        heldDirection="";
+    }
+
     function terminateGame(app){
         if(connectionTask||closed)return;
         connectionSignal={aborted:false};var signal=connectionSignal;
@@ -699,7 +714,7 @@
             return;
         }
         var name = { ArrowUp: "nav-up", ArrowDown: "nav-down", Enter: "accept", Escape: "cancel" }[event.key];
-        if ((screen === "games"||screen==="settings") && (event.key === "ArrowLeft" || event.key === "ArrowRight")) name=event.key==="ArrowLeft"?"nav-left":"nav-right";
+        if ((screen === "games"||screen==="hosts"||screen==="settings") && (event.key === "ArrowLeft" || event.key === "ArrowRight")) name=event.key==="ArrowLeft"?"nav-left":"nav-right";
         if (event.key === "Tab") {
             if (screen === "games") games.step(event.shiftKey ? -1 : 1);
             else if(screen==="hosts")hosts.step(event.shiftKey?-1:1);

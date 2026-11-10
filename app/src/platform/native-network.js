@@ -327,6 +327,7 @@
             loadHost: store.loadHost,
             listHosts: store.listHosts,
             saveHost: store.saveHost,
+            removeHost: store.removeHost,
             clearExperimentData: store.clear,
             storageRoot: store.root
         };

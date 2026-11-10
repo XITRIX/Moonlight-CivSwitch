@@ -40,6 +40,24 @@ assert.deepEqual(JSON.parse(JSON.stringify(listed)),[
 listed[0].hostname='Changed';assert.equal(m.store.loadHost('192.168.1.4:47989').hostname,'Gaming PC');
 m.store.saveHost('192.168.1.4:47989',{hostname:'Renamed PC',httpsPort:47984,uniqueId:'saved-client',certificatePem:'new-pin'});
 assert.equal(m.store.listHosts().length,2);assert.equal(m.store.listHosts()[0].hostname,'Renamed PC');
+// Removing one host survives reload and retains other hosts and the client identity.
+m.store.removeHost('192.168.1.4:47989');
+let reloaded=Store.create(m.adapter);
+assert.equal(reloaded.loadHost('192.168.1.4:47989'),null);
+assert.equal(reloaded.loadHost('192.168.1.5:48000').certificatePem,'pin-two');
+assert.equal(reloaded.loadIdentity().privateKeyPem,'private');
+assert.equal(reloaded.listHosts().length,1);
+// Failed deletion writes leave the in-memory pairing intact and can be retried.
+for(const failure of ['write','corrupt','commit']) {
+ const previous=state(4);const failed=memory({[slots[0]]:previous});
+ failed.controls[failure]=true;
+ assert.throws(()=>failed.store.removeHost('192.168.1.4:47989'));
+ assert.equal(failed.store.loadHost('192.168.1.4:47989').certificatePem,'public-fixture');
+ assert.equal(failed.files.get(slots[0]),previous);
+ failed.controls[failure]=false;
+ failed.store.removeHost('192.168.1.4:47989');
+ assert.equal(Store.create(failed.adapter).loadHost('192.168.1.4:47989'),null);
+}
 // Unreadable data must not silently replace the existing identity.
 m=memory({[slots[0]]:'null'});assert.throws(()=>m.store.loadIdentity(),/unreadable/);assert.throws(()=>m.store.listHosts(),/unreadable/);assert.equal(m.files.get(slots[0]),'null');assert(!m.events.some(e=>e[0]==='write'));
 // Failed writes/readback/commit retain the earlier slot and in-memory identity.

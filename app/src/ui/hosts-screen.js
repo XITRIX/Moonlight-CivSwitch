@@ -32,7 +32,7 @@
         var status = element("div", panel, {minHeight:"24px",marginTop:"18px",fontSize:"16px",lineHeight:"1.5",color:"#b7c6dd",flexShrink:"0"});
         status.id = "moonlight-hosts-status";
         status.setAttribute("role", "status");
-        var controls = [], pairedHosts = [], selected = 1;
+        var controls = [], actions = [], rows = [], selected = 1;
         function paint() {
             controls.forEach(function (control, index) {
                 var active = selected === index;
@@ -41,6 +41,7 @@
                 control.setAttribute("data-selected", active ? "true" : "false");
             });
             var node = controls[selected];
+            if (node && node.parentNode.parentNode === list) node = node.parentNode;
             if (node && node.parentNode === list) {
                 if (node.offsetTop < list.scrollTop) list.scrollTop = node.offsetTop;
                 else if (node.offsetTop + node.offsetHeight > list.scrollTop + list.clientHeight)
@@ -49,9 +50,7 @@
         }
         function activate() {
             // Controller activation must not depend on synthesized DOM clicks.
-            if (selected === 0) options.onSettings();
-            else if (selected <= pairedHosts.length) options.onHost(pairedHosts[selected - 1]);
-            else options.onPair();
+            if (actions[selected]) actions[selected]();
         }
         settings.addEventListener("click", function () { selected = 0; paint(); options.onSettings(); });
         return {
@@ -59,10 +58,12 @@
                 list.textContent = "";
                 list.style.position = "relative";
                 controls = [settings];
-                pairedHosts = hosts;
+                actions = [options.onSettings];
+                rows = [[0]];
                 selected = 1;
                 hosts.forEach(function (host) {
-                    var button = element("button", list, Object.assign({}, buttonStyle, {flexDirection:"column",alignItems:"flex-start",marginBottom:"12px",textAlign:"left"}));
+                    var row = element("div", list, {display:"flex",alignItems:"stretch",marginBottom:"12px",flexShrink:"0"});
+                    var button = element("button", row, Object.assign({}, buttonStyle, {flexDirection:"column",alignItems:"flex-start",flex:"1",minWidth:"0",width:"auto",textAlign:"left"}));
                     button.type = "button";
                     button.tabIndex = -1;
                     button.setAttribute("data-host-address", host.address);
@@ -73,6 +74,17 @@
                     if (host.address === address) selected = index;
                     button.addEventListener("click", function () { selected = index; paint(); options.onHost(host); });
                     controls.push(button);
+                    actions.push(function () { options.onHost(host); });
+                    var remove = element("button", row, Object.assign({}, buttonStyle, {width:"auto",marginLeft:"12px",color:"#ffb6b6"}), "Delete");
+                    remove.type = "button";
+                    remove.tabIndex = -1;
+                    remove.setAttribute("data-delete-host", host.address);
+                    remove.setAttribute("aria-label", "Delete " + host.hostname + ", " + host.address);
+                    function deleteHost() { options.onDelete(host); }
+                    remove.addEventListener("click", function () { selected = index + 1; paint(); deleteHost(); });
+                    controls.push(remove);
+                    actions.push(deleteHost);
+                    rows.push([index, index + 1]);
                 });
                 var pair = element("button", list, buttonStyle, "Pair new host");
                 pair.id = "moonlight-pair-new-host";
@@ -80,6 +92,8 @@
                 pair.tabIndex = -1;
                 pair.addEventListener("click", options.onPair);
                 controls.push(pair);
+                actions.push(options.onPair);
+                rows.push([controls.length - 1]);
                 status.textContent = message || (hosts.length ? "Choose a host to open its games." : "No paired hosts yet. Choose Pair new host to get started.");
                 panel.style.display = "flex";
                 paint();
@@ -87,7 +101,14 @@
             hide: function () { panel.style.display = "none"; },
             resume: function () { panel.style.display = "flex"; paint(); },
             move: function (direction) {
-                if (direction === "up" || direction === "down") selected = Math.max(0, Math.min(controls.length - 1, selected + (direction === "up" ? -1 : 1)));
+                var rowIndex = rows.findIndex(function (row) { return row.indexOf(selected) >= 0; });
+                var column = rows[rowIndex].indexOf(selected);
+                if (direction === "up" || direction === "down") {
+                    rowIndex = Math.max(0, Math.min(rows.length - 1, rowIndex + (direction === "up" ? -1 : 1)));
+                    selected = rows[rowIndex][Math.min(column, rows[rowIndex].length - 1)];
+                } else if (direction === "left" || direction === "right") {
+                    selected = rows[rowIndex][direction === "left" ? 0 : rows[rowIndex].length - 1];
+                }
                 paint();
             },
             step: function (delta) { selected = (selected + delta + controls.length) % controls.length; paint(); },

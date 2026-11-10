@@ -60,6 +60,11 @@
                 var old=load(), hosts=Object.assign({},old.hosts);hosts[host]=value;
                 cached=write({generation:old.generation,identity:old.identity,hosts:hosts});
             },
+            removeHost: function (host) {
+                var old=load(), hosts=Object.assign({},old.hosts);
+                delete hosts[host];
+                cached=write({generation:old.generation,identity:old.identity,hosts:hosts});
+            },
             clear: function () {
                 // Check removal before committing so any failure remains visible and retryable.
                 fs.removeDirectory(root);
