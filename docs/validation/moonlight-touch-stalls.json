@@ -1,12 +1,17 @@
 {
-  "date": "2026-11-12",
+  "date": "2026-11-12\u201313",
   "platform": "Switch 2 / Civ VII 1.0.0 / SDK 1.3.5 / resident 0.4.3-sdk.9",
   "target": "1080p120 H.264 / 40 Mbps / Smooth / overlay enabled",
   "measurement": "Fresh video submissions, not physical scanout. Sequential live Virtual Display runs with changing content. First two phases were NOT gated against physical touch; user confirmed touching during them. Later comparisons gate remote forwarding while HID/DOM events remain active; injected motion fills absent physical contact. Physical contact counts include startup polls; per-stage profiling covers measurement only. These are not replay-identical A/B runs.",
   "changes": [
     "Opt-in RAM scheduler/socket/media/touch profiling; requested/granted receive buffers and stage maxima.",
     "High-refresh stereo negotiates 10 ms Opus packets through a pinned SDP build-copy adaptation; original RTSP audio quality preset, 20 ms native chunks, 40 ms prefill and bounded queue remain.",
-    "Pinned crypto build-copy adaptation retains keyed Mbed TLS GCM state for AES-128/12-byte nonce/16-byte tag; original replay policy and unsupported/CBC PSA fallbacks remain; cache destroyed/zeroized with each original context."
+    "Pinned crypto build-copy adaptation retains keyed Mbed TLS GCM state for AES-128/12-byte nonce/16-byte tag; original replay policy and unsupported/CBC PSA fallbacks remain; cache destroyed/zeroized with each original context.",
+    "Persistent priority-cycle position prevents starvation across short cooperative slices; dispatch/send/audio remain first each cycle.",
+    "Retained large-table cached GCM, direct block-cipher dispatch and volatile zeroization with independent authentication/cleanup checks.",
+    "Synchronous borrowed compressed Opus input removes one native copy per packet.",
+    "Exact-signature/version/first-value guarded reads of owned movie Buffer metadata; unsupported ABI falls back to exports.",
+    "Removed unsuccessful 24 ms deadline loop and restored two presentation opportunities with consistent protocol work allowance."
   ],
   "validation": {
     "nodeTests": 174,
@@ -18,7 +23,9 @@
     "packageSmoke": true,
     "upstreamCheckoutsUnchanged": true,
     "inPlaceAead": true,
-    "schedulerStarvationRegression": true
+    "schedulerStarvationRegression": true,
+    "nativeBufferFallbackAndMismatchTests": true,
+    "exactVolatileWipe": true
   },
   "installedPackageSha256": "1d75804ee38c17742f4b92a359fe4b4c663605c0009187b469ef26224e620c50",
   "runs": [
@@ -5459,6 +5466,427 @@
         "reason": "getter output invalid"
       },
       "humanQualification": "User confirmed higher untouched FPS around 110 and reduced but still unpleasant touch/controller stalls. Per-second counters: idle 106.74 FPS (138.13 s), touch-active 89.25 FPS (20.34 s), controller-active 71.97 FPS (22.32 s). Input categories are sampled, not isolated replay-identical phases."
+    },
+    {
+      "run": "moonlight-touch-stable-input",
+      "packageSha256": "1d75804ee38c17742f4b92a359fe4b4c663605c0009187b469ef26224e620c50",
+      "probeSha256": "4a12bde7eb05eb0522b10813e7b72a387d030735d3c245354326f96c2baeb95f",
+      "config": {
+        "codec": "h264",
+        "width": 1920,
+        "height": 1080,
+        "bitrate": 40000,
+        "fps": 120,
+        "pacing": "smooth",
+        "durationMs": 120000,
+        "warmupMs": 5000,
+        "showStats": true,
+        "simulateTouch": false,
+        "terminateDesktop": false,
+        "profile": true,
+        "touchPattern": "continuous",
+        "appId": 382300562
+      },
+      "complete": true,
+      "error": null,
+      "summary": {
+        "seconds": 119.494,
+        "decodedFps": 115.92213835004269,
+        "presentedFps": 91.41881600749828,
+        "receivedMbps": 32.80141905032889,
+        "frameIntervalMs": 10.939001772244618,
+        "frameJitterMs": 4.598395071673888,
+        "maxIntervalMs": 72.93801600113511,
+        "p50IntervalMs": 10.080447999760509,
+        "p95IntervalMs": 16.208736000582576,
+        "p99IntervalMs": 24.117823999375105,
+        "stallsOver25Ms": 100,
+        "stallsOver50Ms": 15,
+        "stallsOver100Ms": 0,
+        "stallsOverOneAndHalfFrames": 4941,
+        "videoSuperseded": 2928,
+        "videoExpired": 1,
+        "videoBacklogDrops": 2927,
+        "decoderRejected": 117,
+        "videoFrameGaps": 488,
+        "audioEmptyEpisodes": 374,
+        "audioEmptyMs": 2219.536096004769,
+        "audioDiscardedMs": 640,
+        "pumpAvgMs": 12.374731280264696,
+        "drainAvgMs": 6.29280575236024,
+        "decoderPending": 2,
+        "copyPresentMs": 1.599092235808482,
+        "presentationTimings": {
+          "acquire": 1804.53852805309,
+          "submit": 3492.006751835346,
+          "present": 3664.3030080124736,
+          "wait": 3469.652000054717
+        },
+        "uiSnapshots": 0,
+        "uiFrames": 0,
+        "simulatedTouchSamples": 0
+      },
+      "phases": {},
+      "mouseForwardingGated": false,
+      "inputUpdates": {
+        "gamepadQueued": 1880,
+        "gamepadRejected": 0
+      },
+      "physicalContacts": 2482,
+      "physicalContactsByPhase": {
+        "physical": 2482
+      },
+      "suppressedPhysicalSamples": 0,
+      "injectedContacts": 0,
+      "suppressedMouseButtons": null,
+      "profile": {
+        "physical:touch-bounds": {
+          "calls": 11462,
+          "totalMs": 179.00214364379644,
+          "maxMs": 0.034303998574614525,
+          "over20Ms": 0
+        },
+        "physical:hid-touch": {
+          "calls": 5731,
+          "totalMs": 713.0136960558593,
+          "maxMs": 1.1861439999192953,
+          "over20Ms": 0
+        },
+        "physical:mouse-enqueue": {
+          "calls": 2276,
+          "totalMs": 134.73833611421287,
+          "maxMs": 0.678719999268651,
+          "over20Ms": 0
+        },
+        "physical:touch-route": {
+          "calls": 5731,
+          "totalMs": 534.546208254993,
+          "maxMs": 1.1703680008649826,
+          "over20Ms": 0
+        },
+        "physical:display-videoBuffer": {
+          "calls": 10971,
+          "totalMs": 3902.4912959858775,
+          "maxMs": 12.564224001020193,
+          "over20Ms": 0
+        },
+        "physical:display-publish": {
+          "calls": 10971,
+          "totalMs": 10548.897503882647,
+          "maxMs": 14.691487999632955,
+          "over20Ms": 0
+        },
+        "physical:drainVideo": {
+          "calls": 11462,
+          "totalMs": 33234.54079994373,
+          "maxMs": 20.23984000273049,
+          "over20Ms": 1
+        },
+        "physical:socket-4": {
+          "calls": 4378,
+          "totalMs": 1325.30009605363,
+          "maxMs": 11.276864001527429,
+          "over20Ms": 0
+        },
+        "physical:socket-5": {
+          "calls": 40973,
+          "totalMs": 9413.847680155188,
+          "maxMs": 12.788959998637438,
+          "over20Ms": 0
+        },
+        "physical:audioFrame": {
+          "calls": 12008,
+          "totalMs": 8206.211167896166,
+          "maxMs": 13.11459199897945,
+          "over20Ms": 0
+        },
+        "physical:pump": {
+          "calls": 11462,
+          "totalMs": 70698.89059205167,
+          "maxMs": 20.345855999737978,
+          "over20Ms": 2
+        },
+        "physical:finishVideo": {
+          "calls": 11462,
+          "totalMs": 89.28492793627083,
+          "maxMs": 0.30236800014972687,
+          "over20Ms": 0
+        },
+        "physical:socket-11": {
+          "calls": 17108,
+          "totalMs": 2985.637855945155,
+          "maxMs": 9.02678400091827,
+          "over20Ms": 0
+        },
+        "physical:receive-video-batch": {
+          "calls": 23341,
+          "totalMs": 9652.647519854829,
+          "maxMs": 10.459296001121402,
+          "over20Ms": 0
+        },
+        "physical:videoFrame": {
+          "calls": 14025,
+          "totalMs": 8541.95097598061,
+          "maxMs": 12.995583998039365,
+          "over20Ms": 0
+        },
+        "physical:drainAudio": {
+          "calls": 5731,
+          "totalMs": 2343.8461119588464,
+          "maxMs": 12.90073600038886,
+          "over20Ms": 0
+        },
+        "physical:controller-enqueue": {
+          "calls": 1880,
+          "totalMs": 98.92655998840928,
+          "maxMs": 0.3800639994442463,
+          "over20Ms": 0
+        }
+      },
+      "taskProfile": {
+        "Other": {
+          "calls": 0,
+          "totalMs": 0,
+          "maxMs": 0,
+          "over20Ms": 0,
+          "over100Ms": 0
+        },
+        "InputDispatch": {
+          "calls": 10636,
+          "totalMs": 1204.4337920956314,
+          "maxMs": 10.780895998701453,
+          "over20Ms": 0,
+          "over100Ms": 0
+        },
+        "InputSend": {
+          "calls": 2346,
+          "totalMs": 4617.7427840884775,
+          "maxMs": 14.016607999801636,
+          "over20Ms": 0,
+          "over100Ms": 0
+        },
+        "AudioRecv": {
+          "calls": 10850,
+          "totalMs": 16536.53340801969,
+          "maxMs": 15.992160001769662,
+          "over20Ms": 0,
+          "over100Ms": 0
+        },
+        "AudioDec": {
+          "calls": 0,
+          "totalMs": 0,
+          "maxMs": 0,
+          "over20Ms": 0,
+          "over100Ms": 0
+        },
+        "VideoRecv": {
+          "calls": 10270,
+          "totalMs": 33372.190015995875,
+          "maxMs": 16.875199999660254,
+          "over20Ms": 0,
+          "over100Ms": 0
+        },
+        "VideoDec": {
+          "calls": 0,
+          "totalMs": 0,
+          "maxMs": 0,
+          "over20Ms": 0,
+          "over100Ms": 0
+        },
+        "ControlRecv": {
+          "calls": 10994,
+          "totalMs": 9376.477632032707,
+          "maxMs": 13.438848000019789,
+          "over20Ms": 0,
+          "over100Ms": 0
+        },
+        "LossStats": {
+          "calls": 2190,
+          "totalMs": 1481.158367946744,
+          "maxMs": 10.153664000332355,
+          "over20Ms": 0,
+          "over100Ms": 0
+        },
+        "ReqIdrFrame": {
+          "calls": 150,
+          "totalMs": 189.9352639745921,
+          "maxMs": 2.570143999531865,
+          "over20Ms": 0,
+          "over100Ms": 0
+        },
+        "CtrlAsyncCb": {
+          "calls": 0,
+          "totalMs": 0,
+          "maxMs": 0,
+          "over20Ms": 0,
+          "over100Ms": 0
+        },
+        "InvRefFrames": {
+          "calls": 30,
+          "totalMs": 54.328800002112985,
+          "maxMs": 3.222944000735879,
+          "over20Ms": 0,
+          "over100Ms": 0
+        },
+        "Ping": {
+          "calls": 4205,
+          "totalMs": 642.0911040399224,
+          "maxMs": 8.278207998722792,
+          "over20Ms": 0,
+          "over100Ms": 0
+        }
+      },
+      "slowCalls": [
+        {
+          "time": 1794524458871,
+          "phase": "physical",
+          "name": "pump",
+          "ms": 20.283455999568105,
+          "touchCount": 1
+        },
+        {
+          "time": 1794524461039,
+          "phase": "physical",
+          "name": "drainVideo",
+          "ms": 20.23984000273049,
+          "touchCount": 1
+        },
+        {
+          "time": 1794524508539,
+          "phase": "physical",
+          "name": "pump",
+          "ms": 20.345855999737978,
+          "touchCount": 1
+        }
+      ],
+      "cryptoBenchmark": {
+        "messages": 100,
+        "referenceMs": 245.81148800067604,
+        "cachedMs": 52.43603200092912
+      },
+      "receiveBuffers": [
+        {
+          "fd": 3,
+          "requested": 262144,
+          "result": 0,
+          "actual": 262144,
+          "getResult": 0
+        },
+        {
+          "fd": 4,
+          "requested": 1851392,
+          "result": 0,
+          "actual": 1851392,
+          "getResult": 0
+        }
+      ],
+      "audioPacketDurationMs": 10,
+      "overlay": {
+        "method": "native-badge",
+        "visible": 1,
+        "width": 672,
+        "height": 88,
+        "counters": {
+          "updates": 2398,
+          "bytes": 567232512
+        },
+        "background": 3693090828,
+        "textPixel": 4294963172
+      },
+      "motion": {
+        "samples": 118,
+        "broadChanges": 112
+      },
+      "clock": {
+        "start": {
+          "frameWakes": 343,
+          "timerWakes": 0,
+          "forcedWakes": 0,
+          "serviceWakes": 0,
+          "waitMs": 1300.4648320488632,
+          "maxWaitMs": 17.99971199966967
+        },
+        "end": {
+          "frameWakes": 6045,
+          "timerWakes": 0,
+          "forcedWakes": 0,
+          "serviceWakes": 0,
+          "waitMs": 13648.685023982078,
+          "maxWaitMs": 17.99971199966967
+        }
+      },
+      "fec": {
+        "start": {
+          "calls": 0,
+          "totalWallMs": 0,
+          "maxWallMs": 0,
+          "failed": 0,
+          "shardBytes": 0,
+          "budgetYields": 0
+        },
+        "end": {
+          "calls": 0,
+          "totalWallMs": 0,
+          "maxWallMs": 0,
+          "failed": 0,
+          "shardBytes": 0,
+          "budgetYields": 0
+        }
+      },
+      "cleanup": {
+        "tasks": 0,
+        "sameOwner": true,
+        "resident": "launcher",
+        "ftp": true
+      },
+      "refreshDuring": {
+        "flags": "2",
+        "result": 0,
+        "reason": "getter output invalid"
+      },
+      "refreshAfter": {
+        "flags": "1",
+        "result": 0,
+        "reason": "getter output invalid"
+      },
+      "humanQualification": "User confirmed lower FPS with no noticeable bad stalls during touch/controller input. Measured 91.42 FPS, maximum 72.94 ms and zero gaps above 100 ms in 119.49 s. Audio counters still show underruns; audible quality is recorded separately.",
+      "audioQualification": "Audible quality not yet confirmed; video/input smoothness was confirmed by user."
     }
-  ]
+  ],
+  "selectedRun": "moonlight-touch-stable-input",
+  "selectionReason": "User explicitly preferred stable input over higher idle FPS, then confirmed no noticeable bad stalls in the final run.",
+  "savedProfile": {
+    "before": {
+      "width": 1920,
+      "height": 1080,
+      "fps": 120,
+      "bitrate": 50000,
+      "showStats": true,
+      "videoPacing": "smooth",
+      "rumble": true,
+      "touchMode": "trackpad",
+      "mouse": {
+        "speed": 34,
+        "swapButtons": false,
+        "invertScroll": false
+      },
+      "codec": "h264"
+    },
+    "after": {
+      "width": 1920,
+      "height": 1080,
+      "fps": 120,
+      "bitrate": 40000,
+      "showStats": true,
+      "videoPacing": "smooth",
+      "rumble": true,
+      "touchMode": "trackpad",
+      "mouse": {
+        "speed": 34,
+        "swapButtons": false,
+        "invertScroll": false
+      },
+      "codec": "h264"
+    }
+  }
 }

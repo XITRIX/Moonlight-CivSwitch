@@ -14,7 +14,7 @@
     "nativeUi": {
       "api": 1,
       "library": "civapps-native-ui",
-      "version": "1.3.5",
+      "version": "1.3.6",
       "minVersion": "1.3.5"
     },
     "execution": {
@@ -54,6 +54,7 @@
     "app/src/streaming/native-video.js",
     "app/src/streaming/native-media.js",
     "app/src/streaming/sunshine-session.js",
+    "app/src/streaming/adaptive-bitrate.js",
     "app/src/streaming/stream-client.js",
     "app/src/streaming/controller-input.js",
     "app/src/streaming/touch-input.js",

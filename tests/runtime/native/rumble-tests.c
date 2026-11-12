@@ -12,14 +12,14 @@ static PointerInput delivered[1024];
 static unsigned delivered_count;
 static struct {short code;char action,modifiers;} delivered_keys[1024];
 static unsigned delivered_key_count;
-static int key_result;
+static int key_result,last_event,last_event_value;
 
 int ml_runtime_tasks(void) { return task_count; }
 void ml_runtime_checkpoint(void) {}
 void ml_runtime_wake_input(void) {}
 int ml_spawn_input_task(ML_TASK_ENTRY entry,void* context) { return 0; }
 void ml_log(const char* text) {}
-void ml_event(int event,int a,int b) {}
+void ml_event(int event,int a,int b) { last_event=event;last_event_value=a; }
 void ml_rumble(int controller,int low,int high) { received_rumble[0]=controller;received_rumble[1]=low;received_rumble[2]=high; }
 bool isReferenceFrameInvalidationEnabled(void) { return false; }
 uint64_t PltGetMicroseconds(void) { return 0; }
@@ -108,6 +108,7 @@ static void keyboard_tests(void) {
 int main(void) {
     /* Existing callers provide no rumble configuration. */
     start_task(NULL);assert(captured_listener.rumble==NULL);
+    assert(captured_listener.connectionStatusUpdate);captured_listener.connectionStatusUpdate(CONN_STATUS_POOR);assert(last_event==7&&last_event_value==CONN_STATUS_POOR);captured_listener.connectionStatusUpdate(CONN_STATUS_OKAY);assert(last_event_value==CONN_STATUS_OKAY);
     state=2;input_task(NULL);
     assert(arrival_count==1&&controller_events==0);
     assert(arrival_buttons==0xf3ff&&arrival_capabilities==LI_CCAP_ANALOG_TRIGGERS);

@@ -106,6 +106,7 @@ static void stage_start(int stage) { ml_event(1,stage,0); }
 static void stage_complete(int stage) { ml_event(2,stage,0); }
 static void stage_failed(int stage,int code) { error_code=code;ml_event(3,stage,code); }
 static void connected(void) { state=2;logger("Reference recovery negotiated: %d\n",isReferenceFrameInvalidationEnabled());ml_spawn_input_task(input_task,NULL);ml_event(4,0,0); }
+static void connection_status(int value) { ml_event(7,value,0); }
 static void terminated(int code) { if(state==4)return;error_code=code;state=3;ml_event(5,code,0); }
 static void rumble(unsigned short controller,unsigned short low,unsigned short high) { ml_rumble(controller,low,high); }
 static int video_setup(int format,int width,int height,int fps,void* context,int flags) { (void)context;(void)flags;return ml_video_setup(format,width,height,fps); }
@@ -145,7 +146,7 @@ static void start_task(void* ignored) {
     CONNECTION_LISTENER_CALLBACKS listener;DECODER_RENDERER_CALLBACKS video;AUDIO_RENDERER_CALLBACKS audio;
     LiInitializeConnectionCallbacks(&listener);LiInitializeVideoCallbacks(&video);LiInitializeAudioCallbacks(&audio);
     listener.stageStarting=stage_start;listener.stageComplete=stage_complete;listener.stageFailed=stage_failed;
-    listener.connectionStarted=connected;listener.connectionTerminated=terminated;listener.logMessage=logger;
+    listener.connectionStatusUpdate=connection_status;listener.connectionStarted=connected;listener.connectionTerminated=terminated;listener.logMessage=logger;
     if(rumble_enabled)listener.rumble=rumble;
     video.setup=video_setup;video.submitDecodeUnit=video_submit;video.capabilities=CAPABILITY_DIRECT_SUBMIT;
     if(reference_recovery&&requested_video_format==VIDEO_FORMAT_H264)video.capabilities|=CAPABILITY_REFERENCE_FRAME_INVALIDATION_AVC;

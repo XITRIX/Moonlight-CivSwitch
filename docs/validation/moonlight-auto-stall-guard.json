@@ -1,0 +1,102 @@
+{
+  "date": "2026-11-13",
+  "status": "deployed-current",
+  "packageSha256": "94dc87f3a389b271461aa7d4bbe9240634c4da0a823010ceb320cd346564b06d",
+  "verifiedScripts": 42,
+  "rendererSdk": "1.3.6",
+  "coreSdk": "1.3.5",
+  "behavior": "Auto starts at 50000 kbps, never climbs, and reduces only for >250 ms video gaps, three >100 ms gaps in ten seconds, or two seconds without video. Audio queue-empty, jitter, packet loss, RTT and rejected-input counters alone do not reduce bitrate.",
+  "validation": {
+    "appTests": 190,
+    "packageSmoke": true,
+    "settingsBrowser": true,
+    "recordedFalsePositiveReplay": true,
+    "cleanupCancellationAndQuarantine": true
+  },
+  "console": {
+    "complete": true,
+    "error": null,
+    "config": {
+      "codec": "h264",
+      "width": 1920,
+      "height": 1080,
+      "bitrate": "auto",
+      "fps": 120,
+      "pacing": "smooth",
+      "durationMs": 120000,
+      "warmupMs": 5000,
+      "showStats": true,
+      "simulateTouch": false,
+      "terminateDesktop": false,
+      "profile": false,
+      "touchPattern": "continuous",
+      "recordTouch": true
+    },
+    "summary": {
+      "seconds": 119.346,
+      "decodedFps": 119.09909004072193,
+      "presentedFps": 96.83609002396393,
+      "receivedMbps": 41.08287996246208,
+      "frameIntervalMs": 10.326736463788174,
+      "frameJitterMs": 3.72687603113465,
+      "maxIntervalMs": 78.80259199999273,
+      "p50IntervalMs": 8.92057599988766,
+      "p95IntervalMs": 14.593183999881148,
+      "p99IntervalMs": 17.874975999817252,
+      "stallsOver25Ms": 24,
+      "stallsOver50Ms": 9,
+      "stallsOver100Ms": 0,
+      "stallsOverOneAndHalfFrames": 4745,
+      "videoSuperseded": 2657,
+      "videoExpired": 0,
+      "videoBacklogDrops": 2657,
+      "decoderRejected": 0,
+      "videoFrameGaps": 99,
+      "audioEmptyEpisodes": 1139,
+      "audioEmptyMs": 2135.7419520088006,
+      "audioDiscardedMs": 40,
+      "pumpAvgMs": 12.122978233066089,
+      "drainAvgMs": 6.318509262864781,
+      "decoderPending": 3,
+      "copyPresentMs": 1.576457621875026,
+      "presentationTimings": {
+        "acquire": 1948.4493759986944,
+        "submit": 3655.0320639684796,
+        "present": 3920.1802560121287,
+        "wait": 3503.3118080431595
+      },
+      "uiSnapshots": 0,
+      "uiFrames": 0,
+      "simulatedTouchSamples": 0
+    },
+    "effectiveRatesKbps": [
+      50000
+    ],
+    "reconnects": [],
+    "physicalTouchPolls": 0,
+    "controllerUpdates": 0,
+    "inputRejects": 0,
+    "finalAdaptation": {
+      "mode": "auto",
+      "automaticKbps": 50000,
+      "reconnects": 0,
+      "lastDecision": null,
+      "decisions": [],
+      "currentKbps": 50000,
+      "ceilingKbps": 50000,
+      "upwardProbing": false
+    },
+    "cleanup": {
+      "tasks": 0,
+      "sameOwner": true,
+      "refreshDuring": "2",
+      "refreshAfter": "1",
+      "resident": "launcher"
+    }
+  },
+  "limitations": [
+    "This repeat recorded no physical touch/controller activity. User had confirmed smooth original 50 Mbps playback in the preceding false-positive run.",
+    "No forced reduction in this corrected console sample; actual reduction/reconnect lifecycle occurred in the preceding run and policy triggers are host-tested.",
+    "Rendered submissions are distinct from optical scanout. Audio quality remains unconfirmed."
+  ]
+}

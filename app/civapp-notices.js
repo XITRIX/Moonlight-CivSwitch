@@ -2399,6 +2399,7 @@ SOFTWARE.
 Source: https://gitlab.com/Azkali/moonlight-nx2
 Author/project: Azkali / Moonlight-nx2. User-provided snapshot, 2026-11-10.
 Original source hashes and file provenance: third_party/moonlight-nx2/SOURCE.json.
+Also includes session/bitrate.js and civ7/bitrate-adaptation.js, under the same license.
 The generated subset runs on the console; no PC service is included.
 The private native stack and module discovery are adapted from NS2-Doom, GPL-2.0-or-later.
 
@@ -3089,7 +3090,7 @@ Public License instead of this License.  But first, please read
 */
 
 /* CIV_NATIVE_UI_NOTICES
-civapps-native-ui 1.3.5
+civapps-native-ui 1.3.6
 GPL-3.0-or-later
 
 {

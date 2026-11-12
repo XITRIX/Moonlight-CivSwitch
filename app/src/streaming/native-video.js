@@ -33,7 +33,7 @@
   var display=await g.MoonlightNativeDisplay.prepare({width:Math.max(1920,mode.width),height:Math.max(1080,mode.height)},options.report);
   var c=display.context,refresh=null,av1=null,opening=null,first=null,active=null,queue=[],slots=[],closed=false;
   var submitted=0,decoded=0,presented=0,rejected=0,begin=Date.now(),decodeMs=0,maxDecodeMs=0;
-  var turnPresented=false,nextAt=null,lastPresented=null,intervalCount=0,intervalMs=0,intervalSquaredMs=0,maxIntervalMs=0,presentAgeMs=0,conversionMs=0,maxConversionMs=0;
+  var turnPresented=false,nextAt=null,lastPresented=null,intervalCount=0,intervalMs=0,intervalSquaredMs=0,maxIntervalMs=0,stallsOver50Ms=0,stallsOver100Ms=0,stallsOver250Ms=0,presentAgeMs=0,conversionMs=0,maxConversionMs=0;
   function now(){return g.MoonlightTelemetry?g.MoonlightTelemetry.now():Date.now();}
   function canPresent(){return !turnPresented&&(!options.canPresent||options.canPresent());}
   var base=g.MoonlightStreamMedia.create(io,core,Object.assign({},options,{renderer:"native-nv12",canPresent:canPresent,nativeCall:c.rawCall,
@@ -89,7 +89,7 @@
     if(allowed){
      g.MoonlightNativeDisplay.publish(target||av1.destination,mode.width,mode.height,av1.coded.width,av1.coded.height);presented++;turnPresented=true;
      var cost=now()-copyBegin;conversionMs+=cost;maxConversionMs=Math.max(maxConversionMs,cost);presentAgeMs+=now()-active.at;
-     if(lastPresented!==null){var delta=time-lastPresented;intervalCount++;intervalMs+=delta;intervalSquaredMs+=delta*delta;maxIntervalMs=Math.max(maxIntervalMs,delta);}lastPresented=time;
+     if(lastPresented!==null){var delta=time-lastPresented;intervalCount++;intervalMs+=delta;intervalSquaredMs+=delta*delta;maxIntervalMs=Math.max(maxIntervalMs,delta);if(delta>50)stallsOver50Ms++;if(delta>100)stallsOver100Ms++;if(delta>250)stallsOver250Ms++;}lastPresented=time;
      nextAt=nextAt===null||time-nextAt>=period?time+period:nextAt+period;
      if(options.onPresented)options.onPresented();
     }
@@ -105,7 +105,7 @@
     if(format!==0x1000||w!==mode.width||h!==mode.height)throw Error("Unexpected negotiated AV1 stream format");return 0;
    },videoFrame:videoFrame,prepareVideo:prepareVideo,drainVideo:function(){turnPresented=false;return drain();},finishVideo:function(){return mode.codec==="av1"?drain():base.finishVideo.apply(base,arguments);},
    audioSetup:base.audioSetup,audioFrame:base.audioFrame,drainAudio:base.drainAudio,
-   stats:function(){var result=base.stats();return Object.assign(result,{renderer:"native-vulkan",codec:mode.codec||"h264",displayWidth:display.size.width,displayHeight:display.size.height,presentationTimings:Object.assign({},display.present.timings)},mode.codec==="av1"?{submitted:submitted,decoded:decoded,presented:presented,decoderPending:submitted-decoded,decoderRejected:rejected,decodeSamples:decoded,decodeMs:decodeMs,maxDecodeMs:maxDecodeMs,queuedFrames:queue.length,conversionMs:conversionMs,maxConversionMs:maxConversionMs,presentAgeMs:presentAgeMs,presentAgeSamples:presented,intervalCount:intervalCount,intervalMs:intervalMs,intervalSquaredMs:intervalSquaredMs,maxIntervalMs:maxIntervalMs,streamMs:Date.now()-begin}:{});},
+   stats:function(){var result=base.stats();return Object.assign(result,{renderer:"native-vulkan",codec:mode.codec||"h264",displayWidth:display.size.width,displayHeight:display.size.height,presentationTimings:Object.assign({},display.present.timings)},mode.codec==="av1"?{submitted:submitted,decoded:decoded,presented:presented,decoderPending:submitted-decoded,decoderRejected:rejected,decodeSamples:decoded,decodeMs:decodeMs,maxDecodeMs:maxDecodeMs,queuedFrames:queue.length,conversionMs:conversionMs,maxConversionMs:maxConversionMs,presentAgeMs:presentAgeMs,presentAgeSamples:presented,intervalCount:intervalCount,intervalMs:intervalMs,intervalSquaredMs:intervalSquaredMs,maxIntervalMs:maxIntervalMs,stallsOver50Ms:stallsOver50Ms,stallsOver100Ms:stallsOver100Ms,stallsOver250Ms:stallsOver250Ms,streamMs:Date.now()-begin}:{});},
    close:async function(){
     if(closed)return;
     // Stop the service before releasing any compressed buffers or its keeper.

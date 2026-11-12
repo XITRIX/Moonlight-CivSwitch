@@ -37,6 +37,7 @@ APP_SCRIPTS = (
     "src/streaming/native-video.js",
     "src/streaming/native-media.js",
     "src/streaming/sunshine-session.js",
+    "src/streaming/adaptive-bitrate.js",
     "src/streaming/stream-client.js",
     "src/streaming/controller-input.js",
     "src/streaming/touch-input.js",

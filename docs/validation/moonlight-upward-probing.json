@@ -1,0 +1,92 @@
+{
+  "date": "2026-11-13",
+  "status": "rejected-and-removed-at-user-request",
+  "reason": "User disliked the planned reconnect interruptions and requested Auto start at 50 Mbps, downward only.",
+  "packageSha256": "594cd73592dfbb38525ef588a47fad121e7cc4fb990e8b0138565fe38878de28",
+  "complete": false,
+  "termination": "User manually disconnected before the 420-second measurement finished. Harness recorded Stream exited during measurement; this is not a successful full-run result.",
+  "reconnects": [
+    {
+      "epoch": 1,
+      "time": 1794527633414,
+      "decision": {
+        "direction": "up",
+        "reason": "clean-upward-probe",
+        "from": 28000,
+        "to": 33000,
+        "time": 249413.753728
+      },
+      "completedAt": 1794527640036
+    },
+    {
+      "epoch": 2,
+      "time": 1794527741710,
+      "decision": {
+        "direction": "up",
+        "reason": "clean-upward-probe",
+        "from": 33000,
+        "to": 38000,
+        "time": 357710.132288
+      },
+      "completedAt": 1794527748297
+    }
+  ],
+  "lastObservedMode": {
+    "width": 1920,
+    "height": 1080,
+    "fps": 120,
+    "bitrate": 38000,
+    "showStats": true,
+    "videoPacing": "smooth",
+    "rumble": true,
+    "touchMode": "trackpad",
+    "mouse": {
+      "speed": 34,
+      "swapButtons": false,
+      "invertScroll": false
+    },
+    "codec": "h264"
+  },
+  "launcher": {
+    "state": {
+      "version": 1,
+      "generation": 75,
+      "active": 0,
+      "previous": 1,
+      "pending": null,
+      "attempted": false,
+      "hashes": [
+        "a1238695",
+        "f09dde92"
+      ]
+    },
+    "core": {
+      "version": 1,
+      "generation": 51,
+      "active": 1,
+      "previous": 0,
+      "pending": null,
+      "attempted": false,
+      "hashes": [
+        "7d226f83",
+        "75767035"
+      ]
+    },
+    "checksum": "a1238695",
+    "bytes": 1558722,
+    "identity": "4c1f410be96da3ea12336396f506f311bcc950bb98f1cfc852867a3a318d7f0e",
+    "release": "0.4.3-nanovg.14",
+    "sdk": "1.3.6",
+    "coreSdk": "1.3.5",
+    "device": "124723167312",
+    "swapchain": "124719521408"
+  },
+  "launcherBackup": "build/moonlight-upward-probing/launcher/previous-launcher.civupdate",
+  "backupReadFailure": "Whole-source logger download exceeded the 120-second total transfer deadline. Existing PC backup matched device checksum/byte length; bounded reports verified staging and cold activation.",
+  "validation": {
+    "appTests": 188,
+    "packageSmoke": true,
+    "launcherComponentTests": 6,
+    "launcherBrowserHandoff": true
+  }
+}

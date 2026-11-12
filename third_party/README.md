@@ -39,3 +39,5 @@ Shared display/context/refresh helpers already come from CivHomebrew-SDK and are
 not copied here. Moonlight-specific decoder/protocol/presentation extensions stay
 in this app. The console package contains the generated runtime and notices, not
 this source directory. Do not vendor the upstream launcher or PC service here.
+
+The Moonlight-NX2 subset also pins `session/bitrate.js` and `civ7/bitrate-adaptation.js` from the same supplied archive. The existing classic-module bundle exposes their Auto defaults and reconnect-based policy. See `docs/dynamic-bitrate.md` for integration, telemetry mapping and qualification limits.

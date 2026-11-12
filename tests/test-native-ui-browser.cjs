@@ -90,7 +90,11 @@ const {open,sleep}=require('../tools/civapps-native-ui/chrome.cjs');
   await capture('stream-menu');
   const samples=await evaluate(`(()=>{var r=CivNanoVGSession.current.renderer,b=r.read(),pixel=(x,y)=>Array.from(b.slice((y*1920+x)*4,(y*1920+x)*4+4));return {outside:pixel(1900,500),inside:pixel(100,500)};})()`);
   assert(samples.outside[3]>0&&samples.outside[3]<255,'drawer backdrop preserves video alpha');assert(samples.inside[3]>0);
-  await evaluate(`document.getElementById('moonlight-stream-menu-more').click();document.getElementById('moonlight-stream-menu-keyboard').click();true`);await capture('stream-keyboard');
+  await evaluate(`document.getElementById('moonlight-stream-menu-more').click();window.__menuRange=document.createRange;document.createRange=undefined;CivNanoVGSession.current.active.ui.resetLayoutCache();true`);
+  await capture('stream-menu-more-no-range');
+  const menuLabels=await evaluate(`(()=>{var session=CivNanoVGSession.current;return Array.from(document.querySelectorAll('#moonlight-stream-menu-list button'),n=>{var label=n.firstElementChild,text=label.textContent,r=label.getBoundingClientRect(),scale=1920/innerWidth,commands=session.active.ui.scene.commands.filter(c=>c.kind==='text'&&c.id===(label.id||label.tagName)&&c.x>=r.left*scale-2&&c.baseline>=r.top*scale&&c.baseline<=r.bottom*scale+2);return {text,rows:commands.filter(c=>c.text===text).length};});})()`);
+  assert.equal(menuLabels.length,4);for(const label of menuLabels)assert.equal(label.rows,1,'stream menu retains full single-line label without Range: '+JSON.stringify(label));
+  await evaluate(`document.createRange=__menuRange;delete window.__menuRange;document.getElementById('moonlight-stream-menu-keyboard').click();true`);await capture('stream-keyboard');
   for(const [width,height] of [[1280,720],[1920,1080]]){
    await call('Emulation.setDeviceMetricsOverride',{width,height,deviceScaleFactor:1,mobile:false});await sleep(140);
    const keyboard=await evaluate(`(()=>{var panel=Array.from(document.querySelectorAll('#moonlight-stream-keyboard-panel')).find(n=>n.offsetWidth>0),p=panel.getBoundingClientRect(),k=panel.querySelector('[data-key=KeyQ]').getBoundingClientRect();return {left:p.left,right:p.right,bottom:p.bottom,keyHeight:k.height};})()`);

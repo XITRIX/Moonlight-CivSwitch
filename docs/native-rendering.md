@@ -334,3 +334,21 @@ terminate/navigation checks are retained in the
 [follow-up receipt](validation/moonlight-overlay-followup.json); passing these
 checks does not establish the original crash's cause. The receipt also retains
 rejected high-refresh scheduling experiments and per-case package hashes.
+
+## Shared fractional text advances, 2026-11-13
+
+Moonlight now pins SDK 1.3.6. NanoVG/Fontstash previously rounded proportional
+advances and kerning per glyph; accumulated width differences could move the
+last word of an intrinsic menu label onto a clipped second line. The shared
+SDK now stores full floating-point advances and uses them for both measurement
+and drawing. Its fallback wrapping and horizontal glyph clips share ellipsis's
+one-CSS-pixel edge tolerance. Existing script paths and order remain unchanged.
+
+Host checks compare bundled regular/bold font widths against Chrome and long
+runs in all three fonts against independent TTF metrics. The app's native-raster
+regression disables DOM Range and requires every More-menu label to remain
+complete on one line; `build/native-ui/stream-menu-more-no-range.png` records
+that host result. SDK and consumer host Vulkan checks cover the generated
+geometry/shader path. These are host checks; this release has not yet been
+visually qualified on Switch. Install the matching Launcher update and restart
+Civ VII to activate the resident renderer; a child app retains an older owner.

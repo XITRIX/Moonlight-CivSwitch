@@ -54,6 +54,7 @@
   },stop:function(){if(stopped)return;pending=false;stopped=true;if(output)send(0,0);}};
  }
  function create(options){
+  if(options.mode&&options.mode.bitrate==="auto")return global.MoonlightAdaptiveBitrate.create(options,create);
   var signal={aborted:false},stopRequested=false,core,io,media,failure=null,done=null,startedAt=0,connectedAt=0,latestStats=null;
   var cpu=options.renderer==="png"||options.renderer==="native-texture";
   var mode=options.mode||(cpu?{width:320,height:180,fps:15,bitrate:1000}:{width:1280,height:720,fps:60,bitrate:20000});
@@ -89,6 +90,7 @@
    if(core._ml_session_state()===3)throw Error("Core connection failed: "+core._ml_session_error());
   }
   var rumble=createRumbleOutput(mode.rumble!==false&&typeof options.onRumble==="function"?options.onRumble:null,global.MoonlightTelemetry.now);
+  var connectionPoor=false;
   var inputStats={gamepadQueued:0,gamepadRejected:0};
   function collect(active){
    var snapshot=Object.assign({state:core._ml_session_state(),tasks:core._ml_runtime_tasks(),mode:Object.assign({},mode),pumpBudgetMs:pumpBudgetMs,nativeFrameWorkBudgetMs:nativeFrameWorkBudgetMs,network:Object.assign({},io.stats),clock:Object.assign({},clock.stats),budgetYields:core._ml_runtime_budget_yields?core._ml_runtime_budget_yields():null,pumpMs:pumpMs,drainMs:drainMs,iterations:iterations,maxPumpMs:maxPumpMs,maxDrainMs:maxDrainMs},media.stats());
@@ -96,6 +98,7 @@
    snapshot.referenceRecovery=core._ml_session_reference_recovery?!!core._ml_session_reference_recovery():false;
    snapshot.packetPool=global.MoonlightTelemetry.readPacketPool?global.MoonlightTelemetry.readPacketPool(core):null;
    snapshot.input=Object.assign({},inputStats);
+   snapshot.connectionPoor=connectionPoor;
    snapshot.rumble=Object.assign({},rumble.stats);
    Object.assign(snapshot,{serviceIterations:serviceIterations,servicePumpMs:servicePumpMs,serviceDrainMs:serviceDrainMs,maxServiceMs:maxServiceMs});
    snapshot.telemetry=telemetry.sample(snapshot,active?global.MoonlightTelemetry.readCore(core):null);return snapshot;
@@ -113,6 +116,7 @@
     status("Preparing streaming runtime…");var make=factory(),transport=global.MoonlightNative.create();transport.signal=signal;
     io=global.MoonlightStreamIO.create(transport,{batchReceive:options.batchReceive,directVideoBatch:highPacketRate});
     var platform={io:io.io,receiveVideoBatch:io.receiveVideoBatch,randomFill:io.randomFill,log:report,event:function(event,a,b){
+     if(event===7){connectionPoor=a===1;return;}
      report("Event "+event+": "+a+", "+b);
      if(event===1)status("Connecting: "+stageName(a)+"…");
      // Native callbacks return -1 after recording their actual exception. Keep

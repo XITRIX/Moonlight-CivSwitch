@@ -1,4 +1,4 @@
-Moonlight-nx2 native decoder/display subset, from the user-provided archive.
+Moonlight-nx2 native decoder/display and automatic bitrate subset, from the user-provided archive.
 Source: https://gitlab.com/Azkali/moonlight-nx2
 The selected original sources, shaders, license and SHA-256 provenance are in
 `third_party/moonlight-nx2/`. `tools/build-native-runtime.py` verifies and

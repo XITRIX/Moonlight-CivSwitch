@@ -1,7 +1,7 @@
 {
   "source": "https://gitlab.com/Azkali/moonlight-nx2",
   "snapshot": "user-provided moonlight-nx2-main archive, reviewed 2026-11-10",
-  "purpose": "Decoder/display reference subset; no companion service is shipped or used",
+  "purpose": "Decoder/display and Auto bitrate reference subset; no companion service is shipped or used",
   "sha256": {
     "LICENSE": "d3403d44a052f4a6c29418dabee48cefcb1e54fbd62579bbc7533863eb2e4813",
     "src/streamer/civ7/renderer-pipelines.js": "1aa234258e160dc2177ac6ca97aa0563968d8221bdc6d5a9c24b7d1f0b3f661a",
@@ -19,11 +19,13 @@
     "src/streamer/session/av1-stream.js": "8206a8fe6d8bcbe2a18c46984744864f5a2693caab18826c2b5b62db77eb7e21",
     "src/streamer/civ7/operation-mode.js": "29a46eaf4a992d35c5e9fe693300506c6287dc00c568635e632a4ab1ee53edae",
     "src/streamer/civ7/sdk.js": "9c014185f52535fd20e03f5e796d44c5df56c5ca30adbd3d30b2ba845e8ba7ef",
-    "src/streamer/civ7/sdk-functions.json": "d26f2de1d8a6d83971a58c7aa9a5935f787392721409595aacfb432db044adb3"
+    "src/streamer/civ7/sdk-functions.json": "d26f2de1d8a6d83971a58c7aa9a5935f787392721409595aacfb432db044adb3",
+    "src/streamer/session/bitrate.js": "e213ac7cea972b4db7e3dbe6642287f751189330fb96800d4206728f1aae05d8",
+    "src/streamer/civ7/bitrate-adaptation.js": "0743bfba7fc59c2c8003b60522940c241a29e203f2a072762ba00f6b996cdfe0"
   },
   "sharedSDK": {
     "repository": "https://github.com/XITRIX/CivHomebrew-SDK.git",
-    "version": "1.3.5",
+    "version": "1.3.6",
     "sha256": {
       "src/streamer/civ7/display.js": "0299230e6a740efa75a6d836861fe0aae28904cb541b0f8d7397071808ad4c7c",
       "src/streamer/civ7/call-plan.js": "d7cd8cde1f857749ac2ec373ed56a7fbcb2adcec9f1ae0b7f97267e22ff989dd",
@@ -35,5 +37,14 @@
       "src/streamer/civ7/filesystem-functions.json": "86271fd773dbe780ebd4180ac7d18c604bba60b06177cfc703346946967fb0a4",
       "src/streamer/shared/ring.js": "62f3eddd217fa0756a205e5442963769221f23416843cd4b834b8e1f3634d063"
     }
+  },
+  "bitrateReview": {
+    "date": "2026-11-13",
+    "source": "same user-provided archive in Downloads/moonlight-nx2-main",
+    "files": [
+      "src/streamer/session/bitrate.js",
+      "src/streamer/civ7/bitrate-adaptation.js"
+    ],
+    "integration": "Auto-only adaptation across fully cleaned-up reconnects; numeric manual preferences retained"
   }
 }

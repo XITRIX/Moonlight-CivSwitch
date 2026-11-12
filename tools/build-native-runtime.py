@@ -13,6 +13,8 @@ ROOT = Path(__file__).resolve().parents[1]
 SOURCE = ROOT / 'third_party/moonlight-nx2'
 OUT = ROOT / 'app/vendor/moonlight-nx2-runtime.js'
 PUBLIC = {
+    'bitrate': 'src/streamer/session/bitrate.js',
+    'bitrateAdaptation': 'src/streamer/civ7/bitrate-adaptation.js',
     'display': 'src/streamer/civ7/display.js',
     'callPlan': 'src/streamer/civ7/call-plan.js',
     'pipelines': 'src/streamer/civ7/renderer-pipelines.js',

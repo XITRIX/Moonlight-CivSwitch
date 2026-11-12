@@ -88,6 +88,15 @@ const pause=ms=>new Promise(resolve=>setTimeout(resolve,ms));
   assert.equal(nativeSettings.saved.codec,'av1');assert.equal(nativeSettings.saved.renderer,undefined);
   assert.equal(nativeSettings.codec,'av1');assert.equal(nativeSettings.renderer,false);assert.equal(nativeSettings.highModes,true);
   assert.match(nativeSettings.notice,/Disconnect returns to Moonlight/i);
+  const autoSettings=await evaluate(`(()=>{
+   document.getElementById('moonlight-settings-bitrate').click();
+   document.getElementById('moonlight-bitrate-option-auto').click();
+   document.getElementById('moonlight-settings-back').click();
+   document.getElementById('moonlight-open-settings').click();
+   return {saved:__savedPackageMode.bitrate,value:document.getElementById('moonlight-settings-bitrate').getAttribute('data-value'),label:document.getElementById('moonlight-settings-bitrate-value').textContent};
+  })()`);
+  assert.equal(autoSettings.saved,'auto');assert.equal(autoSettings.value,'auto');assert.match(autoSettings.label,/Auto \(.*Mbps\)/);
+
   assert.equal(await evaluate('(async()=>{window.__moonlightSimpleUI.close();await __lifetime;return __done;})()'),true);
   // Start the real packaged UI under a Gameface resident with no native owner.
   const blocked=await evaluate(`(async()=>{

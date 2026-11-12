@@ -1,0 +1,107 @@
+{
+  "date": "2026-11-13",
+  "source": "third_party/moonlight-nx2/SOURCE.json",
+  "installedPackageSha256": "8d44fac812b968f5252c63c39d2ba8548e18dc3c00efdf6efe6241a05733a73a",
+  "verifiedScripts": 42,
+  "tests": {
+    "app": 182,
+    "compiledRuntime": true,
+    "settingsBrowser": true,
+    "packageAutoSaveReopen": true,
+    "reconnectCleanupAndCancellation": "host mocks, not console transitions"
+  },
+  "console": {
+    "complete": true,
+    "error": null,
+    "config": {
+      "codec": "h264",
+      "width": 1920,
+      "height": 1080,
+      "bitrate": "auto",
+      "fps": 120,
+      "pacing": "smooth",
+      "durationMs": 30000,
+      "warmupMs": 5000,
+      "showStats": true,
+      "simulateTouch": false,
+      "terminateDesktop": false,
+      "profile": false,
+      "touchPattern": "continuous"
+    },
+    "effectiveMode": {
+      "width": 1920,
+      "height": 1080,
+      "fps": 120,
+      "bitrate": 28000,
+      "showStats": true,
+      "videoPacing": "smooth",
+      "rumble": true,
+      "touchMode": "trackpad",
+      "mouse": {
+        "speed": 34,
+        "swapButtons": false,
+        "invertScroll": false
+      },
+      "codec": "h264"
+    },
+    "adaptation": {
+      "mode": "auto",
+      "automaticKbps": 28000,
+      "currentKbps": 28000,
+      "reconnects": 0,
+      "lastDecision": null
+    },
+    "summary": {
+      "seconds": 29.342,
+      "decodedFps": 119.96455592665804,
+      "presentedFps": 101.42457910162906,
+      "receivedMbps": 23.155227046554426,
+      "frameIntervalMs": 9.85982224731184,
+      "frameJitterMs": 2.8195350230067286,
+      "maxIntervalMs": 68.95590400000219,
+      "p50IntervalMs": 9.27200000002631,
+      "p95IntervalMs": 12.465919999987818,
+      "p99IntervalMs": 17.500608000002103,
+      "stallsOver25Ms": 9,
+      "stallsOver50Ms": 3,
+      "stallsOver100Ms": 0,
+      "stallsOverOneAndHalfFrames": 144,
+      "videoSuperseded": 544,
+      "videoExpired": 0,
+      "videoBacklogDrops": 544,
+      "decoderRejected": 0,
+      "videoFrameGaps": 0,
+      "audioEmptyEpisodes": 86,
+      "audioEmptyMs": 136.25033599988092,
+      "audioDiscardedMs": 20,
+      "pumpAvgMs": 11.254736883691171,
+      "drainAvgMs": 6.047046237816105,
+      "decoderPending": 2,
+      "copyPresentMs": 1.56345838709666,
+      "presentationTimings": {
+        "acquire": 498.85766400136345,
+        "submit": 941.6706559983577,
+        "present": 976.5246399985481,
+        "wait": 899.7399040005694
+      },
+      "uiSnapshots": 0,
+      "uiFrames": 0,
+      "simulatedTouchSamples": 0
+    },
+    "cleanup": {
+      "tasks": 0,
+      "sameOwner": true,
+      "refreshDuring": "2",
+      "refreshAfter": "1",
+      "resident": "launcher"
+    }
+  },
+  "limitations": [
+    "Short live workload, not replay-identical comparison or human input/audio qualification.",
+    "No natural adaptation reconnect in this sample; transition/cancellation/error behavior is host-tested.",
+    "Saved manual profile not changed; choose Auto in Settings to enable.",
+    "High-refresh rendering guard can defer adaptation at the currently observed rendering throughput."
+  ],
+  "status": "historical-NX2-capped-policy-superseded",
+  "supersededBy": "moonlight-auto-stall-guard.json"
+}

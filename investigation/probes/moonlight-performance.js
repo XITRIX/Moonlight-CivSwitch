@@ -25,11 +25,11 @@
   };profileRemovers.push(function(){object[key]=original;});
  }
  var nativeValue=null,nativeOriginal=null,nativeDescriptor=Object.getOwnPropertyDescriptor(g,'MoonlightNative'),clientValue=null,clientDescriptor=Object.getOwnPropertyDescriptor(g,'MoonlightStreamClient'),clientOriginal=null,live=null,controllerCreate=null,touchCreate=null,injectChord=false;
- var width=config.width||1920,height=config.height||1080,fps=config.fps||60,bitrate=config.bitrate||50000,warmup=Math.max(3000,Math.min(15000,config.warmupMs||5000)),duration=Math.max(10000,Math.min(180000,config.durationMs||60000));
+ var width=config.width||1920,height=config.height||1080,fps=config.fps||60,bitrate=config.bitrate||50000,warmup=Math.max(3000,Math.min(15000,config.warmupMs||5000)),duration=Math.max(10000,Math.min(900000,config.durationMs||60000));
  var codec=config.codec||'h264',pacing=config.pacing||'smooth';
  if(['h264','av1'].indexOf(codec)<0||['smooth','latency'].indexOf(pacing)<0)throw Error('Invalid codec/pacing');
  if(fps!==60&&fps!==120)throw Error('Invalid test frame rate');
- if(![[1920,1080],[2560,1440],[3840,2160]].some(function(s){return s[0]===width&&s[1]===height;})||bitrate<128||bitrate>80000||!Number.isInteger(bitrate)||width>1920&&codec!=='av1'||width>2560&&fps>60)throw Error('Invalid resolution/bitrate combination');
+ if(![[1920,1080],[2560,1440],[3840,2160]].some(function(s){return s[0]===width&&s[1]===height;})||bitrate!=='auto'&&(bitrate<128||bitrate>80000||!Number.isInteger(bitrate))||width>1920&&codec!=='av1'||width>2560&&fps>60)throw Error('Invalid resolution/bitrate combination');
  function delay(ms){return new Promise(function(resolve){setTimeout(resolve,ms);});}
  function identity(){var d=session.renderer.owner.display;return {device:String(d.device),swapchain:String(d.swapchain)};}
  r.identity=identity();
@@ -98,9 +98,10 @@
     var gestureCreate=g.MoonlightTouchInput.create;g.MoonlightTouchInput.create=function(){var gesture=gestureCreate.apply(this,arguments);instrument(gesture,'update','touch-route');return gesture;};profileRemovers.push(function(){g.MoonlightTouchInput.create=gestureCreate;});
     instrument(document.getElementById('moonlight-stream-screen'),'getBoundingClientRect','touch-bounds');
    }
-   var onStats=options.onStats,onError=options.onError,onPresented=options.onPresented,lastPresentedAt=null;
-   options.onPresented=function(){var at=g.MoonlightTelemetry.now();if(lastPresentedAt!==null)r.intervals.push({time:Date.now(),phase:phase(),ms:at-lastPresentedAt});lastPresentedAt=at;if(r.intervals.length>20000)r.intervals.shift();if(onPresented)onPresented();};
-   options.onStats=function(s){sampleMotion();r.latest=s;var ui=session.active&&session.active.ui;r.samples.push({time:Date.now(),phase:phase(),physicalTouchSamples:r.physicalTouchSamples,stats:s,ui:ui?Object.assign({},ui.stats):null});if(r.samples.length>200)r.samples.shift();var updateBegin=g.MoonlightTelemetry.now();if(onStats)onStats(s);r.statsUpdateCosts.push({time:Date.now(),ms:g.MoonlightTelemetry.now()-updateBegin});};
+   var onStats=options.onStats,onError=options.onError,onPresented=options.onPresented,onReconnect=options.onReconnect,lastPresentedAt=null,epoch=0;
+   r.reconnects=[];options.onReconnect=function(decision){epoch++;lastPresentedAt=null;r.reconnects.push({epoch:epoch,time:Date.now(),decision:decision,completedAt:null});if(onReconnect)onReconnect(decision);};
+   options.onPresented=function(){if(r.reconnects.length&&!r.reconnects[r.reconnects.length-1].completedAt)r.reconnects[r.reconnects.length-1].completedAt=Date.now();var at=g.MoonlightTelemetry.now();if(lastPresentedAt!==null)r.intervals.push({time:Date.now(),phase:phase(),epoch:epoch,ms:at-lastPresentedAt});lastPresentedAt=at;if(r.intervals.length>120000)r.intervals.shift();if(onPresented)onPresented();};
+   options.onStats=function(s){sampleMotion();r.latest=s;var ui=session.active&&session.active.ui;r.samples.push({time:Date.now(),phase:phase(),physicalTouchSamples:r.physicalTouchSamples,epoch:s.bitrateAdaptation?s.bitrateAdaptation.reconnects:0,stats:s,ui:ui?Object.assign({},ui.stats):null});if(r.samples.length>1000)r.samples.shift();var updateBegin=g.MoonlightTelemetry.now();if(onStats)onStats(s);r.statsUpdateCosts.push({time:Date.now(),ms:g.MoonlightTelemetry.now()-updateBegin});};
    options.onError=function(error){r.streamError=String(error.message||error);if(onError)onError(error);};
    live=clientOriginal(options);
    if(config.simulateTouch){var button=live.mouseButton;live.mouseButton=function(){if(r.stage==='measuring'){r.suppressedMouseButtons=(r.suppressedMouseButtons||0)+1;return 0;}return button.apply(this,arguments);};profileRemovers.push(function(){live.mouseButton=button;});}
@@ -130,7 +131,7 @@
    await wait('hosts',function(){return shown('moonlight-hosts-screen')&&core.getState().mode==='app';},60000);await delay(500);
    controllerCreate=g.MoonlightControllerInput.createNative;
    g.MoonlightControllerInput.createNative=function(){var adapter=controllerCreate.apply(this,arguments),poll=adapter.poll;adapter.poll=function(){var input=poll.apply(adapter,arguments);if(injectChord){input={state:input.state.slice(),exit:true};input.state[0]|=0x30;injectChord=false;}return input;};return adapter;};
-   if(config.simulateTouch||config.profile){
+   if(config.simulateTouch||config.profile||config.recordTouch){
     touchCreate=g.MoonlightTouchInput.createNative;
     g.MoonlightTouchInput.createNative=function(){var adapter=touchCreate.apply(this,arguments);instrument(adapter,'poll','hid-touch');var poll=adapter.poll,lastSource=null;adapter.poll=function(){
      var real=poll.apply(adapter,arguments);r.lastPhysicalTouchCount=real.length;if(real.length){r.physicalTouchSamples++;var counts=r.physicalTouchesByPhase||(r.physicalTouchesByPhase={}),name=phase();counts[name]=(counts[name]||0)+1;}
@@ -148,12 +149,18 @@
    await wait('first-frames',function(){if(r.streamError)throw Error(r.streamError);return r.latest&&r.latest.presented>=3;},30000);
    var graphics=g.MoonlightNativeDisplay.state(),refreshController=graphics&&graphics.refresh;
    if(refreshController)r.refreshDuring=await refreshController.read();
-   if(r.latest.mode.width!==width||r.latest.mode.height!==height||r.latest.mode.fps!==fps||r.latest.mode.bitrate!==bitrate||r.latest.codec!==codec)throw Error('Requested stream mode mismatch');
+   if(r.latest.mode.width!==width||r.latest.mode.height!==height||r.latest.mode.fps!==fps||r.latest.mode.bitrate!==(bitrate==='auto'?g.MoonlightSettings.resolveBitrate({width:width,height:height,fps:fps,bitrate:bitrate,codec:codec}):bitrate)||r.latest.codec!==codec)throw Error('Requested stream mode mismatch');
    r.stage='warmup';await delay(warmup);check();if(r.streamError)throw Error(r.streamError);
    r.measurementStart=r.samples[r.samples.length-1];measurementBegan=Date.now();if(profileCore&&profileCore._ml_runtime_profile_enable)profileCore._ml_runtime_profile_enable(1);r.stage='measuring';
    var end=Date.now()+duration;
    while(Date.now()<end){await delay(250);check();if(r.streamError)throw Error(r.streamError);if(!shown('moonlight-stream-screen'))throw Error('Stream exited during measurement');}
+   if(bitrate==='auto')await wait('adaptation-settled',function(){return (!r.reconnects.length||r.reconnects[r.reconnects.length-1].completedAt&&r.latest&&r.latest.bitrateAdaptation&&r.latest.bitrateAdaptation.reconnects===r.reconnects.length)&&g.MoonlightNativeDisplay.state();},45000);
    r.measurementEnd=r.samples[r.samples.length-1];r.summary=summary(r.measurementStart,r.measurementEnd);
+   if(bitrate==='auto'){
+    var groups={};for(var item of r.samples)if(item.time>=r.measurementStart.time&&item.time<=r.measurementEnd.time)(groups[item.epoch]||(groups[item.epoch]=[])).push(item);
+    r.sessionSummaries=Object.keys(groups).map(function(key){var rows=groups[key],first=rows[0],last=rows[rows.length-1];return {epoch:Number(key),bitrate:last.stats.mode.bitrate,firstTime:first.time,lastTime:last.time,summary:summary(first,last),firstStats:first.stats,lastStats:last.stats};});
+    if(r.reconnects.length)r.summary={kind:'separate Auto sessions',sessions:r.sessionSummaries.map(function(s){return {epoch:s.epoch,bitrate:s.bitrate,summary:s.summary};}),reconnects:r.reconnects};
+   }
    r.taskProfile=taskProfile();if(profileCore&&profileCore._ml_runtime_profile_enable)profileCore._ml_runtime_profile_enable(0);
    r.phaseSummaries={};for(var name of ['off-before','touch','off-after']){var samples=r.samples.filter(function(s){return s.phase===name&&s.time>=measurementBegan;});if(samples.length>1)r.phaseSummaries[name]=summary(samples[0],samples[samples.length-1]);}
    if(config.showStats){
@@ -161,7 +168,8 @@
     r.overlay={method:graphicsState.statistics?'native-badge':'dom',visible:Number(native.read32(at+BigInt(layout.BADGE.visible))),width:Number(native.read32(at+BigInt(layout.BADGE.width))),height:Number(native.read32(at+BigInt(layout.BADGE.height))),counters:graphicsState.statisticsCounters||null};
     if(graphicsState.statistics){r.overlay.background=Number(native.read32(at+BigInt(layout.BADGE_OFFSET)));r.overlay.textPixel=Number(native.read32(at+BigInt(layout.BADGE_OFFSET+(8*672+12)*4)));}
    }
-   if(r.measurementEnd.stats.presented<=r.measurementStart.stats.presented)throw Error('Video presentation stopped');
+   if(bitrate!=='auto'&&r.measurementEnd.stats.presented<=r.measurementStart.stats.presented)throw Error('Video presentation stopped');
+   if(bitrate==='auto'){var finalGraphics=g.MoonlightNativeDisplay.state();refreshController=finalGraphics&&finalGraphics.refresh||refreshController;}
    // Normal UI disconnect, followed by normal navigation back to Launcher.
    injectChord=true;
    await wait('stream-menu',function(){return shown('moonlight-stream-menu');},5000);

@@ -38,7 +38,7 @@ def install(args):
     before = device.rpc(args.host, 9027, {'op': 'list'})['entries']
     preflight = report(args.host, """var s=CivNanoVGSession.current;
 if(!s||s.renderer.owner.state!=='ready'||s.stats.errors.length)throw Error('Native owner unavailable');
-return {sdk:CivHomebrewSDK.version,device:String(s.renderer.owner.display.device),swapchain:String(s.renderer.owner.display.swapchain),core:await __civhomebrewBoot.system.status('core'),launcher:await __civhomebrewBoot.system.status('launcher')};""", 'MOONLIGHT_PERF_PREFLIGHT', args.output)
+return {sdk:CivAppsNativeUI.version,coreSdk:CivHomebrewSDK.version,device:String(s.renderer.owner.display.device),swapchain:String(s.renderer.owner.display.swapchain),core:await __civhomebrewBoot.system.status('core'),launcher:await __civhomebrewBoot.system.status('launcher')};""", 'MOONLIGHT_PERF_PREFLIGHT', args.output)
     if preflight['sdk'] != json.loads((ROOT / 'civapps-native-ui.lock.json').read_text())['version']:
         raise RuntimeError('Active SDK differs from the packaged dependency')
     installed = device.rpc(args.host, 9027, {'op': 'install', 'package': package})
@@ -69,7 +69,7 @@ def arm(args):
         raise RuntimeError('Install receipt does not match the current host/package')
     width, height = {'1080p': (1920, 1080), '1440p': (2560, 1440), '4k': (3840, 2160)}[args.resolution]
     config = dict(codec=args.codec, width=width, height=height, bitrate=args.bitrate, fps=args.fps, pacing=args.pacing, durationMs=args.duration * 1000, warmupMs=5000, showStats=args.show_stats, simulateTouch=args.simulate_touch, terminateDesktop=args.terminate_desktop)
-    config.update(profile=args.profile, touchPattern=args.touch_pattern)
+    config.update(profile=args.profile, touchPattern=args.touch_pattern, recordTouch=args.record_touch)
     if args.sunshine:
         config['sunshine'] = args.sunshine
     if args.app_id:
@@ -83,7 +83,7 @@ def arm(args):
 
 def extract(args):
     body = """var r=window.__moonlightPerformance;if(!r||!r.finished)throw Error('Performance test has not finished');
-var result=Object.assign({},r,{timeline:(r.samples||[]).map(function(sample){var s=sample.stats;return {time:sample.time,phase:sample.phase,physicalTouchSamples:sample.physicalTouchSamples,presented:s.presented,decoded:s.decoded,pumpMs:s.pumpMs,drainMs:s.drainMs,iterations:s.iterations,network:s.network,input:s.input,fec:s.fec};})});
+var result=Object.assign({},r,{timeline:(r.samples||[]).map(function(sample){var s=sample.stats;return {time:sample.time,phase:sample.phase,physicalTouchSamples:sample.physicalTouchSamples,epoch:sample.epoch,bitrate:s.mode&&s.mode.bitrate,adaptation:s.bitrateAdaptation,presented:s.presented,decoded:s.decoded,pumpMs:s.pumpMs,drainMs:s.drainMs,iterations:s.iterations,network:s.network,input:s.input,fec:s.fec};})});
 return JSON.parse(JSON.stringify(result,function(k,v){if(k==='done'||typeof v==='function'||COMPACT&&(k==='samples'||k==='intervals'))return undefined;return typeof v==='bigint'?v.toString():v;}));""".replace('COMPACT', 'true' if args.compact else 'false')
     result = report(args.host, body, 'MOONLIGHT_PERF_RESULT', args.output)
     (args.output / 'result.json').write_text(json.dumps(result, indent=2))
@@ -103,18 +103,19 @@ if __name__ == '__main__':
     parser.add_argument('--codec', choices=['h264', 'av1'], default='h264')
     parser.add_argument('--fps', type=int, choices=[60, 120], default=60)
     parser.add_argument('--resolution', choices=['1080p', '1440p', '4k'], default='1080p')
-    parser.add_argument('--bitrate', type=int, choices=[1000,2000,3000,5000,8000,10000,15000,20000,25000,30000,40000,50000,60000,70000,80000], default=50000, help='Requested kbit/s (default 50000)')
+    parser.add_argument('--bitrate', type=lambda value: 'auto' if value == 'auto' else int(value), choices=['auto',1000,2000,3000,5000,8000,10000,15000,20000,25000,30000,40000,50000,60000,70000,80000], default=50000, help='Requested kbit/s (default 50000)')
     parser.add_argument('--pacing', choices=['smooth', 'latency'], default='smooth')
     parser.add_argument('--duration', type=int, default=60)
     parser.add_argument('--show-stats', action='store_true')
     parser.add_argument('--terminate-desktop', action='store_true', help='Terminate only Desktop/Virtual Display, then stress library navigation')
     parser.add_argument('--simulate-touch', action='store_true', help='Add a moving native trackpad contact during measurement; never clicks')
+    parser.add_argument('--record-touch', action='store_true', help='Record physical touch activity without stage timing overhead')
     parser.add_argument('--profile', action='store_true', help='Collect bounded stage timings in RAM')
     parser.add_argument('--compact', action='store_true', help='Extract summaries/profiles without per-frame intervals or all stats samples')
     parser.add_argument('--touch-pattern', choices=['continuous', 'alternating'], default='continuous', help='Alternating gates remote mouse forwarding off/on/off while HID remains active')
     args = parser.parse_args()
-    if not 10 <= args.duration <= 180:
-        parser.error('--duration must be 10–180 seconds')
+    if not 10 <= args.duration <= 900:
+        parser.error('--duration must be 10–900 seconds')
     if args.resolution != '1080p' and args.codec != 'av1':
         parser.error('1440p/4K requires --codec av1')
     if args.resolution == '4k' and args.fps > 60:

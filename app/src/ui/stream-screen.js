@@ -219,7 +219,7 @@
    if(global.MoonlightControllerInput)try{nativeInput=global.MoonlightControllerInput.createNative({onRumbleError:function(error){options.log("Controller rumble unavailable: "+error.message);}});}catch(error){options.log("Native controller unavailable: "+error.message);}
    client=global.MoonlightStreamClient.create({host:host,app:app,mode:global.MoonlightSettings.validate(mode),onRumble:mode.rumble&&nativeInput&&nativeInput.rumbleSupported?function(controller,low,high){
     if(visible&&!stopping&&!suspended&&!dialog.isOpen()&&!menu.isOpen()&&!inputGate&&nativeInput)nativeInput.rumble(controller,low,high);
-   }:undefined,onStatus:status,onPresented:showImage,onImage:function(url){
+   }:undefined,canAdapt:function(){return visible&&!stopping&&!suspended&&!inputGate&&!localOverlay();},onReconnect:function(){release();resumeInput();},onStatus:status,onPresented:showImage,onImage:function(url){
     if(url===lastImage)return;lastImage=url;
     if(url.indexOf("live:/")===0){loading=false;image.style.display="none";liveImage.style.backgroundImage='url("'+url+'")';liveImage.style.display="block";showImage();}
     else{liveImage.style.display="none";loading=true;imageStarted=Date.now();image.src=url;}
