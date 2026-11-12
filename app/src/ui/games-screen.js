@@ -1,6 +1,8 @@
 /* Paged portrait-card library with controller navigation and stream launch. */
 (function (global) {
     "use strict";
+    // A small transparent PNG renders consistently in Gameface and the native UI.
+    var playIcon='data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACQAAAAwCAYAAAB5R9gVAAAA0UlEQVR42u2Zuw2AMAwFGYEeCYmN2JTRGAFMAQVE+Tr2FRSmPh2Q2M/DNC+b1Cg1EOp6HFK71EoCusvd1hvI3VYIyNVWDMjFVgrI3FYukJmtEiATWzVAXW3VAnWz1QqkbksDSNWWJpCKLW2gZlu9gKpt9QSqsmUBVGTLCijbljVQ0pYHUNSWJ1DQljfQxxYF6LH1A9FfGeqjxvz2qIMRc3WgLldM+4Fq0DAtLKrJx4xBqEERM0qjwgZMHIMKrDCRHir0xMTCqOAcs1pALV9Q66kTo2q8bNMn4C4AAAAASUVORK5CYII=';
     function create(options) {
         var apps = [], selected = 0, page = 0, loading = false, visible = false;
         var columns = 4, pageSize = 4, cardWidth = 240, cardHeight = 320, gap = 16;
@@ -30,11 +32,11 @@
         grid.setAttribute("aria-label","Host games and applications");
         var busy = element("div",library,{display:"none",position:"absolute",left:"0",right:"0",top:"0",bottom:"0",alignItems:"center",justifyContent:"center",zIndex:"2"});
         busy.id="moonlight-games-progress";
-        var busyBox=element("div",busy,{display:"flex",flexDirection:"column",alignItems:"center",padding:"24px 32px",border:"1px solid #35435b",borderRadius:"10px",backgroundColor:"#131d2e"});
-        var dots=element("div",busyBox,{display:"flex",marginBottom:"14px"});
+        var busyBox=element("div",busy,{display:"flex",flexDirection:"column",alignItems:"stretch",minWidth:"360px",maxWidth:"90%",boxSizing:"border-box",padding:"24px 32px",border:"1px solid #35435b",borderRadius:"10px",backgroundColor:"#131d2e"});
+        var dots=element("div",busyBox,{display:"flex",justifyContent:"center",marginBottom:"14px"});
         var indicators=[0,1,2].map(function(){return element("span",dots,{display:"block",width:"10px",height:"10px",margin:"0 4px",borderRadius:"5px",backgroundColor:"#35435b"});});
-        var busyText=element("div",busyBox,{fontSize:"22px",lineHeight:"28px",color:"#f4f7ff"});
-        element("div",busyBox,{fontSize:"16px",lineHeight:"24px",marginTop:"6px",color:"#b7c6dd"},"B to go back");
+        var busyText=element("div",busyBox,{display:"flex",alignItems:"center",justifyContent:"center",textAlign:"center",minHeight:"28px",whiteSpace:"nowrap",overflow:"hidden",textOverflow:"ellipsis",fontSize:"22px",lineHeight:"28px",color:"#f4f7ff"});
+        element("div",busyBox,{display:"flex",alignItems:"center",justifyContent:"center",textAlign:"center",minHeight:"24px",whiteSpace:"nowrap",fontSize:"16px",lineHeight:"24px",marginTop:"6px",color:"#b7c6dd"},"B to go back");
         function updateBusy(){
             if(busyTimer!==null){clearInterval(busyTimer);busyTimer=null;}
             var active=loading&&visible;
@@ -111,24 +113,33 @@
         function initials(title) {
             return title.trim().split(/\s+/).slice(0,2).map(function (word) {return Array.from(word)[0] || "";}).join("").toUpperCase();
         }
+        function nativeArtwork(value){
+            if(!global.CivNanoVGSession||!global.CivNanoVGSession.current||!global.CivNanoVGAssets||value.url.indexOf("data:image/png;base64,")!==0)return null;
+            // Keep large cover URLs out of DOM/scene cache keys, and avoid a
+            // second Gameface image decoder for pixels drawn only by native UI.
+            var catalog=global.__moonlightNativeArtwork||(global.__moonlightNativeArtwork=new Map()),source=catalog.get(value.url);
+            if(!source){source="moonlight-cover-"+catalog.size+".png";catalog.set(value.url,source);}
+            global.CivNanoVGAssets[source]=value.url.slice(22);return source;
+        }
         function displayArtwork(card,value) {
             if(card.image)return;
             var owner=artwork;
             var scale=Math.max((cardWidth-4)/value.width,(cardHeight-58)/value.height);
-            var image=value.image;
+            var image=value.image,source=nativeArtwork(value);
             if(!image) {
-                image=element("img",card.art,{
+                image=element(source?"canvas":"img",card.art,{
                     display:"block",position:"absolute",left:"50%",top:"50%",transform:"translate(-50%, -50%)",maxWidth:"none"
                 });
                 value.image=image;image.alt="";
-                image.addEventListener("load",function(){
+                if(source){image.setAttribute("data-civ-pixels",source);value.loaded=true;}
+                else image.addEventListener("load",function(){
                     value.loaded=true;
                     var target=image.moonlightCard;
                     if(!visible||owner!==artwork||cardNodes.indexOf(target)<0)return;
                     target.placeholder.style.visibility="hidden";
                     if(options.onArtworkDisplayed)options.onArtworkDisplayed(target.id);
                 });
-                image.addEventListener("error",function(){
+                if(!source)image.addEventListener("error",function(){
                     if(owner!==artwork)return;
                     var target=image.moonlightCard;
                     if(image.parentNode)image.parentNode.removeChild(image);
@@ -139,7 +150,7 @@
             card.image=image;image.moonlightCard=card;image.moonlightAppId=card.id;
             global.MoonlightLayout.style(image,{width:Math.ceil(value.width*scale)+"px",height:Math.ceil(value.height*scale)+"px"});
             if(value.loaded)card.placeholder.style.visibility="hidden";
-            else if(!image.getAttribute("src"))image.src=value.url;
+            else if(!source&&!image.getAttribute("src"))image.src=value.url;
         }
         function detachCards() {
             cardNodes.forEach(function(card){
@@ -187,8 +198,9 @@
                         });
                         if(app.id===runningAppId){
                             var badge=element("span",art,{display:"flex",alignItems:"center",position:"absolute",right:"8px",top:"8px",zIndex:"1",padding:"5px 10px",borderRadius:"6px",backgroundColor:"#00efcf",color:"#1b1e21",fontSize:"16px",fontWeight:"700",lineHeight:"20px"});
-                            // Draw the play indicator instead of relying on a glyph the game font may lack.
-                            element("span",badge,{display:"block",width:"0",height:"0",borderTop:"6px solid transparent",borderBottom:"6px solid transparent",borderLeft:"9px solid #1b1e21",marginRight:"7px",flexShrink:"0"});
+                            // The native snapshot supports only a different CSS-border triangle shape.
+                            var play=element("img",badge,{display:"block",width:"9px",height:"12px",marginRight:"7px",flexShrink:"0"});
+                            play.src=playIcon;play.alt="";play.setAttribute("aria-hidden","true");
                             element("span",badge,{display:"block",lineHeight:"20px"},"Running");
                         }
                         var placeholder=element("span",art,{},initials(app.title));

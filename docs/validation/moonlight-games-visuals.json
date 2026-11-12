@@ -1,0 +1,64 @@
+{
+  "complete": true,
+  "finished": true,
+  "error": null,
+  "identity": {
+    "device": "136968044624",
+    "swapchain": "136969932416"
+  },
+  "play": {
+    "source": "embedded PNG",
+    "rect": [
+      516.5938110351562,
+      408,
+      527.3938293457031,
+      422.40000915527344
+    ]
+  },
+  "viewport": [
+    1280,
+    720
+  ],
+  "textRangeAvailable": false,
+  "labels": [
+    {
+      "text": "Refreshing games\u2026",
+      "center": 959.9999542236328,
+      "expectedCenter": 959.9999771118164,
+      "vertical": 580.1999816894531,
+      "expectedVertical": 580.1999816894531
+    },
+    {
+      "text": "B to go back",
+      "center": 959.9999542236328,
+      "expectedCenter": 959.9999771118164,
+      "vertical": 619.6499633789062,
+      "expectedVertical": 619.6499633789062
+    }
+  ],
+  "errors": [],
+  "viewError": "",
+  "finalResident": {
+    "mode": "launcher",
+    "busy": false,
+    "app": null,
+    "launcher": true,
+    "ftp": true,
+    "closed": false,
+    "services": {
+      "rpc": true,
+      "raw": true,
+      "release": "0.4.3-sdk.9",
+      "bootIntegrated": true
+    }
+  },
+  "finalIdentity": {
+    "device": "136968044624",
+    "swapchain": "136969932416"
+  },
+  "date": "2026-11-12",
+  "device": "Switch 2",
+  "sdk": "1.3.5",
+  "packageSha256": "8c889a65fb18906f270469c95367aff94088042ea1bdee3de2f45d69c387d8a6",
+  "evidence": "Installed console geometry and embedded image command, with no DOM Range; separate Chrome native-raster screenshots at 720p/1080p show full centered text and a triangular play icon. No human visual confirmation of these final UI changes."
+}

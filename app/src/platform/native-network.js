@@ -6,9 +6,13 @@
         if (!window.MoonlightNative.available) throw new Error("Native networking requires the CivSwitch loader.");
         var bridge=window.CivHomebrewSDK.native.create({cache:window.__moonlightSdkExports});
         var resolve=bridge.resolveNativeSymbol;
+        // After streaming, reuse the retained driver's guarded stack for TLS
+        // and storage calls instead of returning to the small loader reserve.
+        var graphics=window.__moonlightNativeGraphics;
+        var nativeCall=graphics&&graphics.ready&&!graphics.failed&&!graphics.retired&&graphics.context&&graphics.context.rawCall;
         function call(name) {
-            var args = Array.prototype.slice.call(arguments, 1).map(BigInt);
-            return call_rop.apply(null, [resolve(name)].concat(args));
+            var args = Array.prototype.slice.call(arguments, 1).map(BigInt),pointer=resolve(name);
+            return nativeCall?nativeCall(BigInt(pointer),args):call_rop.apply(null, [pointer].concat(args));
         }
         function code(value) { return Number(value & 0x3fffffn); }
         function checked(name) {
@@ -48,7 +52,11 @@
             var deadline = Date.now() + (options.timeoutMs || 10000);
             active(options, deadline);
             function alloc(size) { var p = malloc(size); if (!p) throw new Error("Native allocation failed."); allocated.push(p); return p; }
-            function data(value, nul) { var bytes = binaryBytes(value), p = alloc(bytes.length + (nul ? 1 : 0)); write_buffer(p, bytes); return p; }
+            function data(value, nul) {
+                var bytes=binaryBytes(value);
+                if(nul){var terminated=new Uint8Array(bytes.length+1);terminated.set(bytes);bytes=terminated;}
+                var p=alloc(bytes.length);write_buffer(p,bytes);return p;
+            }
             try {
                 var address = alloc(16), buffer = alloc(8192), outputCount = alloc(8);
                 write_buffer(address, new Uint8Array([16, 2, options.port >> 8, options.port & 255].concat(octets, [0,0,0,0,0,0,0,0])));

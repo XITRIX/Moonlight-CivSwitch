@@ -9,12 +9,18 @@ test('stream clock uses frame callbacks, cancels the watchdog and can wake immed
  const hidden=clock.wait();time=66.7;timers.values().next().value();await hidden;assert.equal(clock.stats.timerWakes,1);assert.equal(frames.size,0);assert.equal(timers.size,0);
 });
 
-function environment(){
+function environment(options){
  let next=1,time=0;const frames=new Map(),timers=new Map();
  const scope={performance:{now:()=>time},setTimeout:(fn,delay)=>{const id=next++;timers.set(id,{fn,delay});return id;},clearTimeout:id=>timers.delete(id),requestAnimationFrame:fn=>{const id=next++;frames.set(id,fn);return id;},cancelAnimationFrame:id=>frames.delete(id)};
  scope.window=scope;vm.createContext(scope);vm.runInContext(fs.readFileSync('app/src/streaming/stream-client.js','utf8'),scope);
- return {clock:scope.MoonlightStreamClient.createClock(),frames,timers,advance:n=>time=n,fire:delay=>{const [id,t]=[...timers].find(([,t])=>t.delay===delay);timers.delete(id);t.fn();}};
+ return {clock:scope.MoonlightStreamClient.createClock(options),frames,timers,advance:n=>time=n,fire:delay=>{const [id,t]=[...timers].find(([,t])=>t.delay===delay);timers.delete(id);t.fn();}};
 }
+test('native 60 and 120 FPS use RAF instead of frame-quantized short timers',async()=>{
+ for(const fps of [60,120]){
+  const e=environment({nativeDisplay:true,fps});let services=0;
+  const promise=e.clock.wait(()=>services++);assert.equal(e.frames.size,1);e.fire(4);assert.equal(services,1);e.frames.values().next().value();await promise;
+ }
+});
 test('one service turn retains the display callback and watchdog without scheduling another turn',async()=>{
  const e=environment();let serviced=0,settled=false;const promise=e.clock.wait(()=>serviced++);promise.then(()=>settled=true);
  e.advance(4);e.fire(4);await Promise.resolve();assert.equal(serviced,1);assert.equal(settled,false);assert.equal(e.frames.size,1);assert.equal(e.timers.size,1);

@@ -111,7 +111,8 @@ software chunk (20 ms). AudioOut starts once both native buffers are queued, giv
 a one-time 40 ms prefill. Opus decodes directly after the retained partial chunk
 in native staging, removing the former intermediate PCM allocation and copy.
 The completed-PCM budget is 60 ms; partial staging adds
-less than 20 ms (normally at most 15 ms for Sunshine's 5 ms packets). Pending audio
+less than 20 ms (normally at most 15 ms for 5 ms packets, or 10 ms for
+high-refresh stereo's negotiated 10 ms packets). Pending audio
 is drained between cooperative pumps as native capacity becomes available. When
 there is room, pending samples are preserved in order. On sustained backpressure,
 only the stale software chunk is replaced; active AudioOut buffers are never
@@ -495,8 +496,9 @@ resumed bytes and task cleanup. Diagnostics remain under `investigation/`.
 80 Mbps is an experimental stress setting. See the
 [80 Mbps investigation](../investigation/evidence/quality-80mbps.md) for measured
 limits and the 50/60 Mbps comparisons. The application retains nonblocking
-32-packet native receives and the existing 12 ms budget for demanding 60 FPS
-streams.
+32-packet native receives. The legacy Gameface path retains its 12 ms budget
+for demanding 60 FPS streams; the timer-driven Vulkan path now uses shorter
+service slices, described in [the performance repair](native-rendering.md#streaming-performance-repair-2026-11-12).
 
 
 ### Rare gameplay stalls
@@ -504,7 +506,7 @@ streams.
 At 40–80 Mbps, the GPU renderer uses direct owned packet batches, packet reuse,
 paired FEC tables and negotiated H.264 reference-frame recovery. This avoids
 reserving the improved recovery path for the 80 Mbps setting; 40–70 Mbps
-retains its previous pump budget. See [Wreckfest evidence](../investigation/evidence/wreckfest-stalls.md).
+retains its previous recovery policy. See [Wreckfest evidence](../investigation/evidence/wreckfest-stalls.md).
 
 The UI retains up to ten minutes of one-second stream statistics and controller
 update counters in RAM, even with the overlay off. Stop the stream and close the
@@ -540,5 +542,6 @@ Moonlight uses the shared native UI/display service for its interface and
 H.264/AV1 output. 120 Hz control and source resolutions through 4K are available;
 the shared display stays 1920×1080. See [current rendering and app switching](native-rendering.md)
 for lifetime/ownership, and [earlier native video evidence](native-video-evidence.md)
-for the separately recorded console workloads. Host rendering and lifecycle
-checks do not establish a new console streaming performance result.
+for the separately recorded console workloads. The current
+[performance report](streaming-performance.md) records installed-console
+streaming measurements and their limits.

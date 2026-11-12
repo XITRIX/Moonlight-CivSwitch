@@ -1,13 +1,14 @@
 const test=require('node:test'),assert=require('node:assert/strict'),fs=require('node:fs'),vm=require('node:vm');
 function setup(failure){
  const scope={Uint8Array,Uint32Array,ArrayBuffer,DataView,setTimeout,clearTimeout,innerWidth:1280,innerHeight:720};scope.window=scope;vm.createContext(scope);
- for(const file of ['app/vendor/native-ui-runtime.js','app/src/streaming/native-buffer.js','app/vendor/moonlight-nx2-runtime.js','app/src/streaming/native-cleanup.js'])vm.runInContext(fs.readFileSync(file,'utf8'),scope,{filename:file});
- const modules=scope.MoonlightNativeModules,layout=modules.layout,words=new Map(),writes=[],allocated=[],presents=[];let next=0x10000;
+ for(const file of ['app/vendor/native-ui-runtime.js','app/src/streaming/native-buffer.js','app/vendor/moonlight-nx2-runtime.js','app/src/streaming/native-cleanup.js','app/src/streaming/native-context.js'])vm.runInContext(fs.readFileSync(file,'utf8'),scope,{filename:file});
+ const modules=scope.MoonlightNativeModules,layout=modules.layout,words=new Map(),writes=[],allocated=[],presents=[],events=[];let next=0x10000,inFlight=false,failFinish=false;
+ function writable(){assert.equal(inFlight,false,'GPU reads must complete before mapped storage changes');}
  const originalAllocate=async(bytes)=>{const p=next;next+=Math.ceil(bytes/4096)*4096;allocated.push(p);return p;};
  const context={rpc:{allocate:originalAllocate,request:async()=>({hash:modules.compatTable.module.hash})},resolve:()=>0x9000,
-  native:{write32:(pointer,value)=>words.set(Number(pointer),Number(value)),checkMemory(){}},write:(pointer,bytes)=>writes.push({pointer:Number(pointer),length:bytes.length}),
+  native:{write32:(pointer,value)=>{writable();words.set(Number(pointer),Number(value));},checkMemory(){}},write:(pointer,bytes)=>{writable();writes.push({pointer:Number(pointer),length:bytes.length});},
   call:()=>0n,release(){throw Error('prepare must retain owners');},close(){throw Error('prepare must retain the context');}};
- scope.MoonlightNativeContext={create:()=>context};
+ scope.MoonlightNativeContext.create=()=>context;
  modules.display={createDisplay:async rpc=>{
   const layer=await rpc.allocate(0x9000),objects=[{kind:'instance',name:'vulkan',handle:'10',destroy:{name:'vkDestroyInstance',args:['$handle',0]}}];
   if(failure==='display')throw Object.assign(Error('display setup failed'),{objects});
@@ -20,9 +21,9 @@ function setup(failure){
   if(failure==='renderer')throw Object.assign(Error('renderer setup failed'),{created});
   return {created,gpu:{privateStorage:{mapped:0x10000000,bytes:layout.STORAGE_BYTES},commands:[['21','22']],slots:{},video:{path:'texel-buffer'}},menu:{controls:{mapped:0x20000000,bytes:4096},resources:{device:'11',queue:'12',swapchain:'13',acquired:'23',semaphores:['24','25']}}};
  }};
- modules.presentation={createPresentation:()=>{const present=(slot,interactive)=>{presents.push({slot,interactive});return 0;};present.finish=()=>{};return present;}};
+ modules.presentation={createPresentation:(native,config)=>{assert.equal(config.deferWait,true);const present=(slot,interactive)=>{writable();presents.push({slot,interactive});events.push('submit');inFlight=true;return 0;};present.finish=()=>{if(failFinish)throw Error('fence failed');if(inFlight)events.push('complete');inFlight=false;};return present;}};
  vm.runInContext(fs.readFileSync('app/src/streaming/native-display.js','utf8'),scope);
- return {scope,api:scope.MoonlightNativeDisplay,context,originalAllocate,layout,words,writes,allocated,presents};
+ return {scope,api:scope.MoonlightNativeDisplay,context,originalAllocate,layout,words,writes,allocated,presents,events,inFlight:()=>inFlight,failFinish:()=>{failFinish=true;}};
 }
 const size={width:1920,height:1080};
 function rgba(){return {width:1920,height:1080,bytes:new Uint8Array(1920*1080*4)};}
@@ -91,4 +92,91 @@ test('stream presentation borrows the resident device/swapchain and reuses it ac
  const presentations=h.presents.length;assert.throws(()=>callback({...rgba,bytes:4}),/bounds/);assert.equal(h.presents.length,presentations);
  await h.api.retire();assert.equal(closes,1);assert.equal(state.ready,true);assert.equal(state.retired,undefined);assert.equal(h.words.get(state.storage+h.layout.BADGE.visible),0);
  assert.equal(await h.api.prepare({width:1280,height:720}),state);assert.equal(binds,2);await h.api.retire();assert.equal(closes,2);
+});
+
+test('deferred video overlaps CPU service and waits before direct decoder writes, UI updates and handoff',async()=>{
+ const h=setup(),state=await h.api.prepare(size),bytes=1920*1080*3/2,p=BigInt(state.storage+h.layout.FRAMES_OFFSET),copies=[];
+ h.scope.memcpy_addr=0x9000n;h.context.rawCall=(fn,args)=>{assert.equal(h.inFlight(),false);copies.push(args);};
+ h.api.publish(0x40000000n,1920,1080,1920,1080);assert.equal(h.inFlight(),true);assert.equal(copies.length,1);
+ // Network/Opus can run here; no queue wait happened at the end of publish.
+ assert.deepEqual(h.events,['submit']);
+ assert.equal(h.api.videoBuffer(bytes,4096),p);assert.equal(h.inFlight(),false);
+ h.api.publish(p,1920,1080,1920,1080);assert.equal(copies.length,1,'direct readback avoids a full NV12 copy');
+ h.api.setUiOverlay(rgba());h.api.clearUiOverlay();assert.equal(h.inFlight(),true);
+ h.scope.MoonlightNativeStreamMenu={render:()=>({width:1280,height:720,bytes:new Uint8Array(1280*720*3/2)})};
+ await h.api.retire();assert.equal(h.inFlight(),false,'close drains the final stopped notice');
+ // Explicit finish also covers the final notice and repeated close is harmless.
+ h.api.finish();assert.equal(h.inFlight(),false);
+});
+test('direct decode buffers reject invalid sizes and fall back on unsupported alignment',async()=>{
+ const h=setup(),state=await h.api.prepare(size),bytes=1920*1080*3/2;
+ assert.throws(()=>h.api.videoBuffer(h.layout.FRAME_BYTES+1,4096),/bounds/);
+ assert.throws(()=>h.api.videoBuffer(bytes,0),/bounds/);
+ assert.equal(h.api.videoBuffer(bytes,3),null);
+ state.overlayActive=true;assert.equal(h.api.videoBuffer(bytes,4096),null);
+});
+test('only the retained owned video mapping is reused, and retirement invalidates it',async()=>{
+ const h=setup(),state=await h.api.prepare(size),checks=[];
+ h.context.native.checkMemory=(...args)=>checks.push(args);
+ h.scope.memcpy_addr=0x9000n;h.context.rawCall=()=>{};
+ const p=h.api.videoBuffer(1920*1080*3/2,4096);
+ h.api.publish(p,1920,1080,1920,1080);h.api.videoBuffer(1920*1080*3/2,4096);
+ h.api.publish(p,1920,1080,1920,1080);assert.equal(checks.length,1);
+ h.api.publish(0x40000000n,1920,1080,1920,1080);assert.equal(checks.length,2);
+ h.api.publish(0x40000000n,1920,1080,1920,1080);assert.equal(checks.length,3);
+ h.api.videoBuffer(1920*1088*3/2,4096);assert.equal(checks.length,4);
+ h.scope.MoonlightNativeStreamMenu={render:()=>({width:1280,height:720,bytes:new Uint8Array(1280*720*3/2)})};
+ await h.api.retire();assert.equal(state.videoMemory,null);
+});
+test('failed completion prevents all later writes and quarantines the shared display',async()=>{
+ const h=setup(),state=await h.api.prepare(size);h.api.setUiOverlay(rgba());h.failFinish();const count=h.writes.length;
+ assert.throws(()=>h.api.videoBuffer(4096,4096),/fence failed/);assert.equal(state.failed,true);assert.equal(h.writes.length,count);
+ assert.equal(h.api.setUiOverlay(rgba()),false);await assert.rejects(h.api.retire(),/completion is uncertain/);
+});
+test('presentation calls retain per-call signatures and owned-stack execution without temporary reads',async()=>{
+ const h=setup(),signature=0x1122334455667788n,calls=[];
+ h.context.native.verified=new Set(['0x9000']);h.context.native.read64=()=>signature;
+ h.context.rpc.verifiedFunctions=new Map([['0x9000','8877665544332211']]);
+ h.context.rawCall=(fn,args)=>{calls.push({fn,args});return 0n;};
+ let call;
+ h.scope.MoonlightNativeModules.presentation.createPresentation=native=>{call=native.call;const present=()=>call(0x9000n);present.finish=()=>{};return present;};
+ const state=await h.api.prepare(size);
+ assert.equal(call(0x9000n,1n,2n),0n);assert.deepEqual(Array.from(calls[0].args),[1n,2n]);
+ assert.equal(calls[0].fn,0x9000n);assert.equal(state.failed,false);
+ h.context.native.read64=()=>signature^1n;assert.throws(()=>state.present(),/function changed/);assert.equal(calls.length,1);assert.equal(state.failed,true);
+});
+test('unverified entry points fail before presentation and a retained older presenter upgrades only after completion',async()=>{
+ const missing=setup();missing.context.native.verified=new Set();missing.context.native.read64=()=>0n;
+ missing.context.rpc.verifiedFunctions=new Map();missing.context.rawCall=()=>assert.fail('unverified native work');
+ await assert.rejects(missing.api.prepare(size),/Unverified streaming/);
+ const h=setup(),state=await h.api.prepare(size);h.api.setUiOverlay(rgba());state.presentationVersion=1;
+ assert.equal(h.inFlight(),true);assert.equal(await h.api.prepare(size),state);assert.equal(h.inFlight(),false);assert.equal(state.presentationVersion,2);
+});
+
+test('compact statistics share the fenced badge slot without an extra video acquire or full UI copy',async()=>{
+ const h=setup(),state=await h.api.prepare(size),l=h.layout,frame={width:672,height:88,bytes:new Uint8Array(672*88*4)};let visible=true;
+ h.api.publish(BigInt(state.storage+l.FRAMES_OFFSET),1920,1080,1920,1080);
+ const before=h.presents.length;
+ const queuedWrites=h.writes.length;assert.equal(h.api.setStatistics(frame,()=>visible),true);assert.equal(h.inFlight(),true,'stats never wait for the preceding video fence');assert.equal(h.writes.length,queuedWrites);
+ h.api.publish(BigInt(state.storage+l.FRAMES_OFFSET),1920,1080,1920,1080);
+ assert.equal(h.presents.length,before+1,'only the explicit next video presentation acquires an image');
+ assert.deepEqual(h.writes.at(-1),{pointer:state.storage+l.BADGE_OFFSET,length:frame.bytes.length});
+ assert.equal(h.words.get(state.storage+l.BADGE.width),672);assert.equal(h.words.get(state.storage+l.BADGE.height),88);
+ const uploads=h.writes.length;h.api.setStatistics(frame,()=>visible);assert.equal(h.writes.length,uploads);
+ visible=false;h.api.setStatistics(frame,()=>visible);h.api.publish(BigInt(state.storage+l.FRAMES_OFFSET),1920,1080,1920,1080);assert.equal(h.words.get(state.storage+l.BADGE.visible),0);
+ assert.throws(()=>h.api.setStatistics({...frame,width:1920},()=>true),/bounds/);
+ h.api.setStatistics(null);assert.equal(state.statistics,null);
+});
+
+test('compact statistics yield to a local menu and resume after its full UI scene closes',async()=>{
+ const h=setup();let surface,visible=true,copies=0;
+ const display={device:'11',queue:'12',swapchain:'13',size};
+ h.scope.CivNanoVGSession={current:{renderer:{owner:{context:h.context,display,displayStage:{display,objects:[]}},bindSurface(fn){surface=fn;return {close(){surface=null;}};}},active:{ui:{resetLayoutCache(){}}}}};
+ h.scope.memcpy_addr=0x9000n;h.context.rawCall=()=>{assert.equal(h.inFlight(),false);copies++;};
+ const state=await h.api.prepare(size),frame={width:672,height:88,bytes:new Uint8Array(672*88*4)},ui={pointer:0x30000000,bytes:1920*1080*4,width:1920,height:1080};
+ h.api.setStatistics(frame,()=>visible);surface(ui);assert.equal(copies,0);
+ visible=false;surface(ui);assert.equal(copies,1);assert.equal(state.statisticsDrawn,false);
+ visible=true;surface(ui);assert.equal(copies,1);assert.equal(state.statisticsDrawn,frame);
+ await h.api.retire();assert.equal(state.statistics,null);assert.equal(state.statisticsDrawn,false);
+ assert.equal(h.api.setStatistics(frame,()=>true),false,'a closed surface cannot overwrite Launcher pixels');
 });

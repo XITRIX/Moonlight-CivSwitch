@@ -57,6 +57,10 @@ const {open,sleep}=require('../tools/civapps-native-ui/chrome.cjs');
   await capture('games-buttons');
   const alignment=await evaluate(`['refresh','settings','back'].map(name=>{var n=document.querySelector('#moonlight-games-screen #moonlight-games-'+name),r=n.getBoundingClientRect(),c=CivNanoVGSession.current.active.ui.scene.commands.find(c=>c.kind==='text'&&c.id===n.id),m=CivNanoVGSession.current.geometry.metrics(c.size,c.font);return {name,expected:(r.top+r.bottom)*.75,actual:c.baseline-(m[0]+m[1])/2};})`);
   for(const row of alignment)assert(Math.abs(row.actual-row.expected)<1,JSON.stringify(row));
+  await evaluate(`__gamesFixture.setApps([{id:1,title:'Desktop'}],async()=>({url:'data:image/png;base64,'+CivNanoVGAssets['button-a.png'],width:38,height:38,bytes:1000}),'native-cover-fixture',0);true`);
+  await sleep(300);
+  const nativeCover=await evaluate(`(()=>{var n=document.querySelector('#moonlight-games-screen canvas[data-civ-pixels]'),source=n&&n.getAttribute('data-civ-pixels');return {source,images:document.querySelectorAll('#moonlight-games-screen #moonlight-game-list img').length,painted:CivNanoVGSession.current.active.ui.scene.commands.some(c=>c.kind==='image'&&c.source===source)};})()`);
+  assert(nativeCover.source&&nativeCover.source.length<64);assert.equal(nativeCover.images,0,'native covers do not enter the Gameface image decoder');assert.equal(nativeCover.painted,true);
   await evaluate(`__gamesFixture.setApps(Array.from({length:10},(_,i)=>({id:i+1,title:'Application '+(i+1)})),null,'fixture',0);__gamesFixture.move('right');true`);
   for(const [width,height,count] of [[1280,720,4],[1920,1080,4],[1920,1440,8]]){
    await call('Emulation.setDeviceMetricsOverride',{width,height,deviceScaleFactor:1,mobile:false});await sleep(160);
@@ -68,10 +72,21 @@ const {open,sleep}=require('../tools/civapps-native-ui/chrome.cjs');
   await call('Emulation.setDeviceMetricsOverride',{width:1280,height:720,deviceScaleFactor:1.5,mobile:false});await sleep(140);
   await evaluate(`(async()=>{await __gamesFixture.destroy();document.getElementById('moonlight-games-screen').remove();__originalGames.id='moonlight-games-screen';document.createRange=__textRange;CivNanoVGSession.current.active.ui.resetLayoutCache();})()`);
   // Exercise the real stream controls while video is represented by a transparent surface.
-  await evaluate(`window.__client=MoonlightStreamClient.create;MoonlightStreamClient.create=options=>({start:()=>new Promise(r=>{window.__stop=r;options.onPresented();}),stop:()=>__stop({stats:{}}),gamepad(){return 0;},key(){return 0;},resetPointer(){},resetKeys(){}});
+  await evaluate(`window.__client=MoonlightStreamClient.create;window.__touchNative=MoonlightTouchInput.createNative;window.__touchPoints=[];window.__mouseMoves=0;
+   MoonlightTouchInput.createNative=()=>({poll:()=>__touchPoints,close(){}});
+   MoonlightStreamClient.create=options=>({start:()=>new Promise(r=>{window.__stop=r;window.__videoPresented=options.onPresented;options.onPresented();}),stop:()=>__stop({stats:{}}),gamepad(){return 0;},key(){return 0;},mouseMove(){__mouseMoves++;return 0;},resetPointer(){},resetKeys(){}});
    document.getElementById('moonlight-pair-screen').style.display='none';document.getElementById('moonlight-simple-ui').style.backgroundColor='transparent';
    window.__screen=MoonlightStreamScreen.create({parent:document.getElementById('moonlight-simple-ui'),log(){},onBack(){}});window.__stream=__screen.show('host',{id:1,title:'Desktop'},MoonlightSettings.defaults(),'Gaming PC');
-   __screen.key({key:'Escape',repeat:false},true);true`);
+   true`);
+  await sleep(300);
+  await evaluate(`__screen.poll();window.__streamKey=document.getElementById('moonlight-simple-ui').__civNanoVGSceneKey();window.__streamSnapshots=CivNanoVGSession.current.active.ui.stats.snapshots;
+   Object.defineProperty(document.getElementById('moonlight-simple-ui'),'innerHTML',{configurable:true,get(){throw Error('Streaming serialized hidden application markup');}});
+   for(var i=0;i<120;i++){__touchPoints=[{id:1,x:.2+i*.001,y:.4}];__screen.poll();__screen.action('nav-move',0,0,0);__videoPresented();}
+   __touchPoints=[];__screen.poll();CivNanoVGPrototype.invalidate();true`);
+  await sleep(200);
+  const inputCache=await evaluate(`({moves:__mouseMoves,sameKey:__streamKey===document.getElementById('moonlight-simple-ui').__civNanoVGSceneKey(),snapshots:CivNanoVGSession.current.active.ui.stats.snapshots-__streamSnapshots,error:CivNanoVGSession.current.active.ui.stats.error})`);
+  assert(inputCache.moves>50,'touch movements still reach the remote pointer');assert.equal(inputCache.sameKey,true);assert.equal(inputCache.snapshots,0);assert.equal(inputCache.error,'');
+  await evaluate(`delete document.getElementById('moonlight-simple-ui').innerHTML;__screen.key({key:'Escape',repeat:false},true);true`);
   await capture('stream-menu');
   const samples=await evaluate(`(()=>{var r=CivNanoVGSession.current.renderer,b=r.read(),pixel=(x,y)=>Array.from(b.slice((y*1920+x)*4,(y*1920+x)*4+4));return {outside:pixel(1900,500),inside:pixel(100,500)};})()`);
   assert(samples.outside[3]>0&&samples.outside[3]<255,'drawer backdrop preserves video alpha');assert(samples.inside[3]>0);
@@ -82,7 +97,7 @@ const {open,sleep}=require('../tools/civapps-native-ui/chrome.cjs');
    assert.equal(keyboard.left,0);assert.equal(keyboard.right,width);assert.equal(keyboard.bottom,height);assert(Math.abs(keyboard.keyHeight-48*height/720)<1,'keyboard retains original key size');
   }
   await capture('stream-keyboard-full-width');
-  await evaluate('(async()=>{await __screen.destroy();MoonlightStreamClient.create=__client;await __moonlightSimpleUI.close();})()');
+  await evaluate('(async()=>{await __screen.destroy();MoonlightStreamClient.create=__client;MoonlightTouchInput.createNative=__touchNative;await __moonlightSimpleUI.close();})()');
   assert.equal(await evaluate('CivNanoVGSession.current.active'),null);assert.equal(await evaluate('!!CivNanoVGSession.current.renderer'),true);
   await evaluate('CivNanoVGSession.current.close()');
   console.log('Native UI browser passed: actual NanoVG Hosts/settings/input/menu/keyboard, transparent video surface and retained owner; images in '+dir);

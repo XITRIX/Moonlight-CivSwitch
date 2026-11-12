@@ -1,0 +1,43 @@
+{
+  "date": "2026-11-12",
+  "environment": "Switch 2 / Civ VII 1.0.0 / SDK 1.3.5 / resident 0.4.3-sdk.9",
+  "capture": "tests/fixtures/movie-buffer-accessors.json",
+  "accessorEvidence": "ev_c0f952971a621f01aed01544083a1bf1f82f59a00baceb8c9097e391f4478025",
+  "accessorElfSha256": "1333fc649c708c2bd9f1b700331dd6f52431067f258a54cb4886f752d34f0834",
+  "selectorElfSha256": "6fb06ea230b370ed2e62a59f32beaa934e48bbefcfd9ba59f34c5a028d2a1a93",
+  "observedVersion": "0x12030100",
+  "selector": "At movie+0x2b53070: unsigned read32(movie+0x413d0c8) < ((major<<24)|(minor<<16)|(patch<<8)); inspected assembly cset w0,lo.",
+  "inlineLayout": {
+    "minimumVersion": "0x03000000",
+    "data": "read64(buffer+0x28) + signExtend32(read32(buffer))",
+    "capacity": "read64(buffer+0x18)",
+    "size": "read32(buffer+4)"
+  },
+  "guards": [
+    "Exact complete Data/Size/Capacity instruction bytes and export offsets",
+    "Exact version selector instruction bytes and readable mapped ranges",
+    "Only app-owned 128-byte Buffer objects; no implementation-pointer traversal",
+    "Read version on every access; older layout uses exports",
+    "Compare first input-capacity/output-size metadata against native getters; permanently fall back on disagreement",
+    "Preserve existing native setters, acquisition/release, bounds, fences and cleanup"
+  ],
+  "console": {
+    "run": "moonlight-touch-buffer-accessors",
+    "packageSha256": "eabf00988e905831b9bcd608587bc5b5215d89bf7210a18564793964901c6700",
+    "getterComparisons": 2,
+    "fastReads": 37825,
+    "mismatches": 0,
+    "nativeExportReads": 2,
+    "copyPresentMs": 1.571651591971094,
+    "previousCopyPresentMs": 1.7805494194051523,
+    "completed": true,
+    "remainingTasks": 0,
+    "sameDisplayOwner": true,
+    "refreshRestored": true
+  },
+  "limitations": [
+    "Exact inspected build only; matching selected functions is not a complete binary fingerprint.",
+    "Sequential live workloads do not isolate all FPS differences.",
+    "User reported improved idle FPS, but continued unpleasant input stalls; not a 120 FPS or smooth-input qualification."
+  ]
+}

@@ -13,7 +13,7 @@
     if(entry.serviceTimer!==null)clearTimeout(entry.serviceTimer);
     var elapsed=now()-entry.begin;stats.waitMs+=elapsed;stats.maxWaitMs=Math.max(stats.maxWaitMs,elapsed);stats[reason+"Wakes"]++;if(error)reject(error);else resolve();
    };
-   var framed=!(options&&options.nativeDisplay)&&typeof global.requestAnimationFrame==="function";
+   var framed=typeof global.requestAnimationFrame==="function";
    // A hidden page may stop animation callbacks; keep startup/stop progressing.
    entry.timer=setTimeout(function(){entry.finish("timer");},framed?50:2);
    if(framed)entry.frame=global.requestAnimationFrame(function(){entry.finish("frame");});
@@ -64,10 +64,19 @@
   // this path for 80 Mbps left lower settings waiting for repeated IDRs.
   var highPacketRate=!cpu&&mode.bitrate>=40000;
   var pumpBudgetMs=highPacketRate&&mode.bitrate>=80000&&mode.fps===60?13.5:mode.fps===60&&(mode.width>1280||mode.height>720||mode.bitrate>=8000)?12:10;
-  if(nativeDisplay&&mode.fps>60)pumpBudgetMs=5;
+  // Gameface quantizes short timers to display ticks. At 60 FPS retain the
+  // established receive allowance; a 4 ms allowance starves high-rate video.
+  var nativeFrameWorkBudgetMs=nativeDisplay&&mode.fps===60&&mode.codec!=="av1"&&mode.bitrate<80000?13.5:null;
+  if(nativeFrameWorkBudgetMs!==null)pumpBudgetMs=nativeFrameWorkBudgetMs;
+  // Low-rate AV1 leaves room for its larger CPU readback. The 50 Mbps path
+  // needs the established receive allowance to avoid starving recovery.
+  if(nativeDisplay&&mode.fps===60&&mode.codec==="av1"&&mode.bitrate<80000)pumpBudgetMs=mode.bitrate<=20000?9:11;
+  // Raising the VI panel does not raise Gameface's JS timer cadence. Service
+  // the full packet rate and offer two native presentations per service turn.
+  if(nativeDisplay&&mode.fps>60)pumpBudgetMs=12;
   // At 40 Mbps, an earlier output check leaves more GPU overlap time.
   var completionBudgetMs=pumpBudgetMs===12&&mode.bitrate<40000?6:4;
-  var telemetry=global.MoonlightTelemetry.create(),clock=createClock({nativeDisplay:nativeDisplay}),pumpMs=0,drainMs=0,iterations=0,maxPumpMs=0,maxDrainMs=0;
+  var telemetry=global.MoonlightTelemetry.create(),clock=createClock({nativeDisplay:nativeDisplay,fps:mode.fps}),pumpMs=0,drainMs=0,iterations=0,maxPumpMs=0,maxDrainMs=0;
   var serviceIterations=0,servicePumpMs=0,serviceDrainMs=0,maxServiceMs=0,waitBudgetMs=0;
   function serviceBetweenFrames(){
    if(stopRequested||failure||core._ml_session_state()!==2)return;
@@ -82,7 +91,7 @@
   var rumble=createRumbleOutput(mode.rumble!==false&&typeof options.onRumble==="function"?options.onRumble:null,global.MoonlightTelemetry.now);
   var inputStats={gamepadQueued:0,gamepadRejected:0};
   function collect(active){
-   var snapshot=Object.assign({state:core._ml_session_state(),tasks:core._ml_runtime_tasks(),mode:Object.assign({},mode),pumpBudgetMs:pumpBudgetMs,network:Object.assign({},io.stats),clock:Object.assign({},clock.stats),budgetYields:core._ml_runtime_budget_yields?core._ml_runtime_budget_yields():null,pumpMs:pumpMs,drainMs:drainMs,iterations:iterations,maxPumpMs:maxPumpMs,maxDrainMs:maxDrainMs},media.stats());
+   var snapshot=Object.assign({state:core._ml_session_state(),tasks:core._ml_runtime_tasks(),mode:Object.assign({},mode),pumpBudgetMs:pumpBudgetMs,nativeFrameWorkBudgetMs:nativeFrameWorkBudgetMs,network:Object.assign({},io.stats),clock:Object.assign({},clock.stats),budgetYields:core._ml_runtime_budget_yields?core._ml_runtime_budget_yields():null,pumpMs:pumpMs,drainMs:drainMs,iterations:iterations,maxPumpMs:maxPumpMs,maxDrainMs:maxDrainMs},media.stats());
    snapshot.fec=global.MoonlightTelemetry.readFec?global.MoonlightTelemetry.readFec(core):null;
    snapshot.referenceRecovery=core._ml_session_reference_recovery?!!core._ml_session_reference_recovery():false;
    snapshot.packetPool=global.MoonlightTelemetry.readPacketPool?global.MoonlightTelemetry.readPacketPool(core):null;
@@ -153,12 +162,15 @@
      if(media.prepareVideo)await media.prepareVideo();
      // Queue video early and service the core while its GPU copy completes.
      // A nonblocking fence check publishes once; pending work keeps its slot.
-     // At 40 Mbps, an empty early drain gets one retry after the first pump. Final fence
+     // Native output and high-rate textures retry an empty early drain after the first pump. Final fence
      // queries may use up to 3 ms of remaining frame headroom.
      var frameBudgetMs=Math.max(0,pumpBudgetMs-waitBudgetMs),firstBudgetMs=Math.min(completionBudgetMs,frameBudgetMs);
-     var begin=global.MoonlightTelemetry.now(),videoOccupied=media.drainVideo();var early=global.MoonlightTelemetry.now();
-     if(firstBudgetMs>0)core._ml_runtime_pump(firstBudgetMs);var pumpedEarly=global.MoonlightTelemetry.now();media.finishVideo();if(!videoOccupied&&mode.bitrate>=40000)media.drainVideo();var finishedEarly=global.MoonlightTelemetry.now();
-     if(frameBudgetMs>firstBudgetMs)core._ml_runtime_pump(frameBudgetMs-firstBudgetMs);var pumped=global.MoonlightTelemetry.now();media.finishVideo(Math.min(begin+frameBudgetMs+2,global.MoonlightTelemetry.now()+3));media.drainAudio();var drained=global.MoonlightTelemetry.now();
+     var begin=global.MoonlightTelemetry.now(),nativeDeadline=nativeFrameWorkBudgetMs!==null?begin+frameBudgetMs:Infinity,videoOccupied=media.drainVideo();var early=global.MoonlightTelemetry.now();
+     if(Number.isFinite(nativeDeadline)){frameBudgetMs=Math.min(frameBudgetMs,Math.max(0,nativeDeadline-early));firstBudgetMs=Math.min(completionBudgetMs,frameBudgetMs);}
+     if(firstBudgetMs>0)core._ml_runtime_pump(firstBudgetMs);var pumpedEarly=global.MoonlightTelemetry.now();media.finishVideo();if(nativeDisplay&&mode.fps>60||!videoOccupied&&(nativeDisplay||mode.bitrate>=40000))media.drainVideo();var finishedEarly=global.MoonlightTelemetry.now();
+     var remainingBudgetMs=frameBudgetMs-firstBudgetMs;
+     if(Number.isFinite(nativeDeadline))remainingBudgetMs=Math.min(remainingBudgetMs,Math.max(0,nativeDeadline-global.MoonlightTelemetry.now()));
+     if(remainingBudgetMs>0)core._ml_runtime_pump(remainingBudgetMs);var pumped=global.MoonlightTelemetry.now();media.finishVideo(Math.min(begin+frameBudgetMs+2,global.MoonlightTelemetry.now()+3));media.drainAudio();var drained=global.MoonlightTelemetry.now();
      var pumpElapsed=pumpedEarly-early+pumped-finishedEarly,drainElapsed=early-begin+finishedEarly-pumpedEarly+drained-pumped;
      pumpMs+=pumpElapsed;drainMs+=drainElapsed;maxPumpMs=Math.max(maxPumpMs,pumpElapsed);maxDrainMs=Math.max(maxDrainMs,drainElapsed);iterations++;
      rumble.flush();

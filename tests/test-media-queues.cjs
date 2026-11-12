@@ -3,12 +3,56 @@ const source=fs.readFileSync('app/src/streaming/native-media.js','utf8');
 const scope={};scope.window=scope;vm.createContext(scope);vm.runInContext(source,scope);
 const drain=scope.MoonlightStreamMedia.drainLatest;
 const pipeline=scope.MoonlightStreamMedia.createGpuPipeline;
+function bufferReaderEnvironment(options={}){
+ const captured=require('./fixtures/movie-buffer-accessors.json'),base=0x100000000n,buffer=0x200000000n,words=new Map(),exports={},calls=[];
+ for(const slice of [...captured.slices.slice(0,3),captured.selector]){
+  const at=base+BigInt('0x'+slice.offset),bytes=Buffer.from(slice.hex,'hex');exports[slice.name]=at;
+  for(let i=0;i<bytes.length;i+=4)words.set(at+BigInt(i),BigInt(bytes.readUInt32LE(i)));
+ }
+ const version=base+0x413d0c8n;words.set(version,0x12030100n);
+ words.set(buffer,8n);words.set(buffer+4n,123n);words.set(buffer+0x18n,4096n);words.set(buffer+0x28n,0x300000000n);
+ if(options.mutated)words.set(base+0x2b4fbf0n+48n,0n);
+ if(options.old)words.set(version,0x02000000n);
+ const native={base,exports,readable:()=>!options.unreadable,
+  read32:p=>{assert(words.has(p),'only captured code or owned metadata may be read');return words.get(p);},
+  read64:p=>{assert(p>=buffer&&p<buffer+128n,'never follow a guessed implementation pointer');return words.get(p);},
+  call(name,args){calls.push(name);assert.equal(args[0],buffer);return name.includes('Data')?0x300000008n: name.includes('Capacity')?4096n:options.mismatch?124n:123n;}};
+ return {reader:scope.MoonlightStreamMedia.createBufferReader(native),words,buffer,version,calls};
+}
+test('verified inline movie metadata follows buffer changes without native calls each frame',()=>{
+ const e=bufferReaderEnvironment();
+ assert.deepEqual(JSON.parse(JSON.stringify(e.reader.read(e.buffer,true),(_,v)=>typeof v==='bigint'?String(v):v)),{data:'12884901896',length:4096});
+ assert.equal(e.reader.read(e.buffer,false).length,123);assert.equal(e.calls.length,4);
+ e.words.set(e.buffer,0xfffffffcn);e.words.set(e.buffer+4n,99n);e.words.set(e.buffer+0x28n,0x400000000n);
+ assert.equal(e.reader.read(e.buffer,false).data,0x3fffffffcn);assert.equal(e.reader.read(e.buffer,false).length,99);
+ assert.equal(e.calls.length,4);assert.equal(e.reader.stats.verified,2);
+ e.words.set(e.version,0x02000000n);assert.equal(e.reader.read(e.buffer,false).length,123);assert.equal(e.calls.length,6);
+});
+test('unknown movie signatures, unreadable code and old layouts use exported getters',()=>{
+ for(const options of [{mutated:true},{unreadable:true},{old:true}]){
+  const e=bufferReaderEnvironment(options);for(let i=0;i<2;i++)assert.equal(e.reader.read(e.buffer,false).length,123);
+  assert.equal(e.reader.stats.fast,0);assert.equal(e.calls.length,4);
+ }
+});
+test('movie metadata disagreement permanently disables the direct reader',()=>{
+ const e=bufferReaderEnvironment({mismatch:true});assert.equal(e.reader.read(e.buffer,false).length,124);
+ e.words.delete(e.buffer+0x28n);assert.equal(e.reader.read(e.buffer,false).length,124);
+ assert.equal(e.reader.stats.mismatch,1);assert.equal(e.reader.stats.fast,0);assert.equal(e.calls.length,4);
+});
 test('one spare video frame bridges empty/burst ticks without publishing twice',()=>{
  let time=0,frames=[],released=[],shown=[];const pacer=scope.MoonlightStreamMedia.createVideoPacer(()=>time,17);
  const options={acquire:()=>frames.shift(),decoded(){},release:f=>released.push(f.index),superseded(){},present:f=>shown.push(f.index)};
  function tick(t,ids){time=t;frames=ids.map(index=>({index,timestamp:index*17,submittedAt:t,displayable:true}));const count=shown.length;pacer.drain(options);assert(shown.length-count<=1);assert(pacer.pending()<=1);}
  tick(0,[1]);assert.deepEqual(shown,[]);tick(17,[2]);tick(34,[]);tick(51,[3,4]);tick(68,[5]);tick(85,[]);
  assert.deepEqual(shown,[1,2,3,4,5]);assert.deepEqual(released,[1,2,3,4,5]);pacer.close();
+});
+test('native pacing ages a spare from decoder availability and still discards old retained output',()=>{
+ let time=50,frames=[],shown=[],released=[];const pacer=scope.MoonlightStreamMedia.createVideoPacer(()=>time,1000/60,true);
+ const options={acquire:()=>frames.shift(),decoded(){},release:f=>released.push(f.index),superseded(){},present:f=>shown.push(f.index)};
+ function tick(t,ids=[]){time=t;frames=ids.map(index=>({index,timestamp:index*17,submittedAt:0,displayable:true}));pacer.drain(options);}
+ tick(50,[1]);assert.deepEqual(shown,[]);tick(67,[2]);tick(84);assert.deepEqual(shown,[1,2],'decoder delay must not discard newly available frames');
+ tick(100,[3,4]);assert.deepEqual(shown,[1,2,3]);tick(140);assert.deepEqual(shown,[1,2,3],'a retained output older than two periods is discarded');
+ pacer.close();assert.deepEqual(released.sort(),[1,2,3,4]);
 });
 test('bounded GPU finishing publishes/releases once when readiness arrives inside the deadline',()=>{
  let polls=0,time=0,shown=0,released=0;
@@ -83,6 +127,7 @@ function audioEnvironment(options={}){
   calls.push(name);
   if(name==='nncodecLibopus_opus_decoder_get_size')return 64n;
   if(name==='nncodecLibopus_opus_decode'){
+   if(options.borrow)assert.equal(args[1],0x80000000n,'Opus reads the borrowed compressed packet synchronously');
    const output=args[3];assert([...regions].some(([p,n])=>output>=p&&output+BigInt(args[4]*4)<=p+BigInt(n)),'maximum decode fits its allocation');
    for(const node of active){const info=infos.get(node),previous=appended.findLast(item=>item.node===node);assert.deepEqual(memory.subarray(Number(info.data),Number(info.data)+Number(info.bytes)),previous.pcm,'active driver PCM was not overwritten');}
    decodeCount++;decodes.push(output);if(samples>=0&&samples<=5760)memory.fill(decodeCount,Number(output),Number(output)+samples*4);return BigInt(samples);
@@ -98,10 +143,15 @@ function audioEnvironment(options={}){
  }
  const scope={MoonlightTelemetry:{now:()=>time},malloc:alloc,free:p=>assert(owned.delete(p)),write32:(p,v)=>write(p,v,4),write16:(p,v)=>write(p,v,2),write64:(p,v)=>write(p,v,8),memcpy_addr:'memcpy',call_rop:(fn,to,from,n)=>{assert.equal(fn,'memcpy');copies.push({to,from,n});memory.copy(memory,Number(to),Number(from),Number(from+n));return to;}};
  scope.window=scope;vm.createContext(scope);vm.runInContext(source,scope);
- const media=scope.MoonlightStreamMedia.create({invoke:sdk,toNative(){}},{_ml_png_release(){}});
- media.audioSetup(48000,2,1,1,240);
+ const media=scope.MoonlightStreamMedia.create({invoke:sdk,toNative(){assert(!options.borrow,'borrowed Opus input avoids a native copy');},nativePointer:options.borrow?function(heap,p,n){assert.equal(heap.length,5);assert.equal(p,0);assert.equal(n,5);return 0x80000000n;}:null},{_ml_png_release(){}});
+ media.audioSetup(48000,2,1,1,options.frameSamples||240);
  return {media,owned,active,appended,calls,copies,decodes,decodeCount:()=>decodeCount,frame:()=>media.audioFrame(0,5,new Uint8Array(5)),setSamples:n=>samples=n,setTime:n=>time=n,release:()=>released.push(...active.splice(0)),duplicateRelease:()=>released.push(active[0],active[0])};
 }
+test('Opus can borrow compressed core packets without changing PCM buffering',()=>{
+ const e=audioEnvironment({borrow:true});for(let i=0;i<8;i++)e.frame();
+ assert.equal(e.active.length,2);assert.equal(e.media.stats().audioPrimed,true);
+ assert.equal(e.media.stats().audioBufferedMsUpperBound,40);e.media.close();assert.equal(e.owned.size,0);
+});
 test('Opus decodes directly into staging and preserves exact PCM across packet boundaries',()=>{
  const e=audioEnvironment();for(let i=0;i<4;i++)e.frame();
  assert.equal(e.copies.length,1,'only the completed AudioOut chunk is copied');
@@ -111,6 +161,17 @@ test('Opus decodes directly into staging and preserves exact PCM across packet b
  e.frame();e.setSamples(5760);e.frame();
  assert.deepEqual(e.appended[1].pcm,Buffer.concat([Buffer.alloc(960,5),Buffer.alloc(2880,6)]));
  assert(e.media.stats().audioBufferedMsUpperBound<80);e.media.close();assert.equal(e.owned.size,0);
+});
+test('10 ms Opus packets retain exact stereo PCM and the existing 40 ms prefill',()=>{
+ const e=audioEnvironment({frameSamples:480});e.setSamples(480);
+ for(let i=0;i<4;i++)e.frame();
+ assert.equal(e.media.stats().audioPacketDurationMs,10);
+ assert.equal(e.media.stats().audioPrefillMs,40);assert.equal(e.media.stats().audioPrimed,true);
+ assert.equal(e.appended.length,2);
+ assert.deepEqual(e.appended[0].pcm,Buffer.concat([Buffer.alloc(1920,1),Buffer.alloc(1920,2)]));
+ assert.deepEqual(e.appended[1].pcm,Buffer.concat([Buffer.alloc(1920,3),Buffer.alloc(1920,4)]));
+ assert.equal(e.calls.filter(n=>n.includes('StartAudioOut')).length,1);
+ e.media.close();assert.equal(e.owned.size,0);
 });
 test('audio starts once after 40 ms of prefill and closes safely before or after start',()=>{
  for(const packets of [0,4,8]){

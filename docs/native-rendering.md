@@ -235,3 +235,102 @@ a time, verified all 47 scripts and the icon, and published manifest/catalog
 last. No recovery copies were made for this deployment. See
 [qualification report](validation/sdk-1.3.5.json). Host integration and installed
 readback are distinct from fresh gameplay/streaming qualification.
+
+## Streaming performance repair, 2026-11-12
+
+The Gameface-to-Vulkan review found several changes in the media hot path:
+
+* Every video/UI present previously called `vkQueueWaitIdle` before protocol work
+  resumed. Streaming now uses the existing per-slot submission fence and waits
+  before the next mapped pixel/control write. Packet reception, FEC and AudioOut
+  can overlap the preceding GPU submission. UI updates, refresh restoration and
+  surface handoff also drain it; failed completion quarantines the presenter.
+* Native H.264 and AV1 readback can write directly into the mapped NV12 slot.
+  Bounds, write permissions and alignment are checked before lending it, and
+  the preceding graphics fence completes first. H.264 requires zero Y offset;
+  unsupported layouts/alignment retain the staging/copy path. This removes one
+  3,110,400-byte copy per tightly packed 1080p frame (186.6 MB/s at 60 FPS).
+  Hardware decode/untile itself remains; this is not decoder-surface GPU sharing.
+* Device testing rejected small per-turn receive allowances: a requested
+  2 ms timer still waited roughly 11 ms even with the panel raised to 120 Hz.
+  Both requested frame rates now use RAF with bounded between-frame service.
+  For native H.264 60 FPS below 80 Mbps, a 13.5 ms work window charges video drain,
+  between-frame service and observed pump overruns before assigning remaining
+  protocol work. When video is idle, recovery can use more of the window.
+  AV1 60 FPS uses 9 ms at up to 20 Mbps and retains 11 ms above that; a
+  7.5 ms trial starved recovery during a full-minute 4K test and was rejected. The existing
+  80 Mbps allowance is retained. At 120 FPS, the full receive
+  allowance and a second presentation opportunity avoid assuming 120 JS turns/s.
+  Direct receive, packet reuse, FEC and reference recovery remain enabled.
+  Native output retries an empty early drain after the first pump at low
+  bitrates too, charging that work to the same H.264 frame deadline.
+* H.264 smooth mode now uses its bounded spare-frame pacer on native output.
+  Available native outputs expire after two 60 Hz service periods of retention, excluding
+  prior decoder time. RAF supplies the 60 Hz cadence. AV1 presents once per
+  explicit drain opportunity, including tail queries;
+  compressed reference frames are still decoded in order. Low latency bypasses
+  the cadence hold. A decode fence that remains pending across service turns
+  now has an overall five-second deadline.
+* Fixed presentation and AV1 service calls retain the SDK's per-call eight-byte
+  signature check using direct reads, avoiding temporary buffers, copies and
+  hexadecimal conversion. Their entry points remain whitelisted and range-checked
+  at setup, and execution retains the owned stack and canary checks.
+* Remote touch/controller/keyboard input no longer invalidates a local scene
+  unless a local overlay changes. A mutation/revision stream key avoids
+  serializing hidden library markup; normal menus, keyboard, errors, stats and
+  settling still update. Repeated native frame notices leave the DOM alone.
+* H.264 copy/present timing now includes `GetOutputBuffer` readback. AV1 supplies
+  interval/jitter, frame-age and copy/present counters; raw native stats retain
+  cumulative acquire/submit/present/fence timings. These remain submission-side
+  measurements, not physical scanout timestamps.
+
+This repair has host regression coverage for deferred ownership, direct/fallback
+readback selection, pacing, pending decode deadlines, 50 Mbps receive/recovery
+configuration and teardown. Subsequent installed Switch tests exercised moving
+1080p60/120 content at 50 Mbps with native touch motion, normal disconnect and
+repeated launches. See the [performance report](streaming-performance.md) for
+frame rates, interval percentiles, pauses, codec limits and cleanup evidence.
+
+## Games progress and running badge, 2026-11-12
+
+The Refreshing popup now gives native font advances enough width and centers
+both lines explicitly in flex rows. Long status titles use ellipsis. The running
+badge uses an embedded 266-byte transparent PNG: the SDK's limited CSS-border
+triangle handling had painted the original right-pointing triangle as a block.
+The icon is inside the existing Games script, so package paths/order are unchanged.
+
+Chrome native-raster captures at 720p and 1080p show complete centered text and
+the triangular icon. An installed Switch check with DOM Range unavailable
+verified both full labels centered within 0.001 native pixels, an image command
+for the icon, no renderer errors, unchanged display ownership and normal
+Launcher/FTP return. See the [console receipt](validation/moonlight-games-visuals.json).
+This is geometry/image-command evidence plus host pixels, not human confirmation
+of the final console image. Preview artifacts remain in `build/native-ui/`.
+
+## Native statistics and post-stream navigation follow-up
+
+The original performance qualification disabled the statistics overlay. Enabling
+the old 16-line overlay rebuilt text geometry and rasterized/copied the full
+1920×1080 UI every second. A subsequent 1080p120/40 Mbps Virtual Display test
+measured 76.23 presentations/s, p99 94.96 ms and 14 intervals over 100 ms in
+29.37 seconds, with 29 UI redraws.
+
+Streaming statistics now use a 672×88 RGBA badge in the existing fenced badge
+slot. It updates with the next video presentation and yields to the local
+drawer, keyboard, mouse and dialogs. Full telemetry remains in RAM. No stats DOM
+mutation, full UI raster or extra video acquire is needed per sample. Console
+checks retain the badge's enabled bit, dimensions, text/background pixel words
+and update counters, separately from UI redraw counts.
+
+Movie/audio native calls and transports created after streaming now borrow the
+resident graphics context's guarded private stack. TLS certificate, hostname and
+password buffers explicitly initialize their NUL terminator. Game-list scene
+keys use DOM revisions; native covers use short PNG asset keys on canvas nodes,
+avoiding large URLs in scene caches and redundant Gameface image decoding.
+
+The user reported a Civ VII crash after Terminate followed by library navigation.
+The original native crash trace is unavailable. Bounded baseline and guarded
+terminate/navigation checks are retained in the
+[follow-up receipt](validation/moonlight-overlay-followup.json); passing these
+checks does not establish the original crash's cause. The receipt also retains
+rejected high-refresh scheduling experiments and per-case package hashes.

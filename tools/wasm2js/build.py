@@ -11,6 +11,8 @@ from rtp_timestamp import specialize
 from unaligned_loads import specialize as specialize_loads
 from video_receive import specialize as specialize_video_receive, SOURCE_SHA256 as VIDEO_RECEIVE_SHA256
 from video_queue import specialize as specialize_video_queue, fixture as video_queue_fixture, SOURCE_SHA256 as VIDEO_QUEUE_SHA256
+from audio_duration import specialize as specialize_audio_duration, fixture as audio_duration_fixture
+from crypto_cache import specialize as specialize_crypto_cache
 
 here = Path(__file__).resolve().parent
 root = here.parents[1]
@@ -36,6 +38,10 @@ if hashlib.sha256(queue_source.encode()).hexdigest()!=VIDEO_QUEUE_SHA256:
 (build/'RtpVideoQueue.c').write_text(specialize_video_queue(queue_source))
 (build/'video-queue-fixture.h').write_text(video_queue_fixture(queue_source))
 (build/'VideoStream.c').write_text(specialize_video_receive((core/'src/VideoStream.c').read_text()))
+sdp_source=(core/'src/SdpGenerator.c').read_text()
+(build/'SdpGenerator.c').write_text(specialize_audio_duration(sdp_source))
+(build/'audio-duration-fixture.h').write_text(audio_duration_fixture(sdp_source))
+(build/'PlatformCrypto.c').write_text(specialize_crypto_cache((core/'src/PlatformCrypto.c').read_text()))
 env = os.environ.copy()
 env['EM_CONFIG'] = str(sdk / '.emscripten')
 env['EM_CACHE'] = str(build / 'emscripten-cache')
@@ -47,13 +53,14 @@ if not re.search(r'\b3\.1\.74\b', version.splitlines()[0]):
 header = (core / 'src/Limelight.h').read_text()
 public = sorted(set(re.findall(r'^\w[^;{}]*?\b(Li\w+)\s*\(', header, re.M)))
 exports = ['_malloc', '_free'] + ['_' + name for name in public] + [
-    '_ml_test_rtsp', '_ml_test_fec', '_ml_test_crypto', '_ml_test_unaligned', '_ml_compare_runtime', '_ml_probe_threads', '_ml_random_probe']
+    '_ml_test_rtsp', '_ml_test_fec', '_ml_test_crypto', '_ml_test_zeroize', '_ml_test_unaligned', '_ml_compare_runtime', '_ml_probe_threads', '_ml_random_probe']
 (build / 'exports.json').write_text(json.dumps(exports))
 stream_exports=[name for name in exports if name!='_ml_probe_threads']+[
     '_ml_video_batch_configure','_ml_video_batch_test_start','_ml_video_batch_test_result','_ml_session_set_reference_recovery','_ml_session_reference_recovery','_ml_session_set_rumble','_ml_session_set_video_format',
-    '_ml_runtime_pump','_ml_runtime_tasks','_ml_runtime_budget_yields','_ml_budget_test_start','_ml_budget_test_result','_ml_session_start','_ml_session_stop',
+    '_ml_runtime_pump','_ml_runtime_tasks','_ml_runtime_budget_yields','_ml_runtime_profile_enable','_ml_runtime_profile','_ml_test_audio_duration','_ml_crypto_cache_fixture','_ml_crypto_cache_benchmark','_ml_budget_test_start','_ml_budget_test_result','_ml_session_start','_ml_session_stop',
     '_ml_session_state','_ml_session_error','_ml_session_video_frames','_ml_session_audio_frames',
     '_ml_scheduler_test_start','_ml_scheduler_test_result','_ml_input_priority_test_start','_ml_input_priority_test_result','_ml_input_wake_test_start','_ml_input_wake_test_result','_ml_interrupt_test_start','_ml_interrupt_test_result','_ml_network_test_start','_ml_network_test_result',
+    '_ml_scheduler_fairness_test_start','_ml_scheduler_fairness_test_result',
     '_ml_png_nv12','_ml_png_release','_ml_session_gamepad','_ml_session_key','_ml_session_metrics','_ml_fec_metrics','_ml_fec_prepare_pair','_ml_test_fec_vectors','_ml_test_fec_large','_ml_fec_budget_test_start','_ml_fec_budget_test_result','_ml_fec_kernel_benchmark','_ml_test_rtp_timestamp','_ml_packet_pool_configure','_ml_packet_pool_metrics','_ml_test_packet_pool','_ml_test_video_queue','_ml_video_queue_benchmark','_ml_packet_pool_benchmark']
 stream_exports += ['_ml_session_mouse_move','_ml_session_mouse_button','_ml_session_mouse_scroll','_ml_session_touch','_ml_session_touch_supported','_ml_session_pointer_reset','_ml_session_keys_reset']
 (build / 'stream-exports.json').write_text(json.dumps(stream_exports))

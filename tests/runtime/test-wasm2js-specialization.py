@@ -7,6 +7,8 @@ from video_receive import specialize as receive_specialize, SOURCE_SHA256 as REC
 from rtp_timestamp import specialize
 from unaligned_loads import specialize as load_specialize
 from video_queue import specialize as queue_specialize, ANCHOR, REPLACEMENT
+from audio_duration import specialize as audio_specialize, fixture as audio_fixture
+from crypto_cache import specialize as crypto_specialize
 
 
 class SpecializationTests(unittest.TestCase):
@@ -68,6 +70,32 @@ class ReceiveSpecializationTests(unittest.TestCase):
         self.assertIn('encrypted ? encryptedBuffer : buffer',patched)
         with self.assertRaises(ValueError):receive_specialize(source+' ')
         with self.assertRaises(ValueError):receive_specialize(patched)
+
+
+class AudioDurationSpecializationTests(unittest.TestCase):
+    def test_pinned_duration_branch_and_fixture_fail_closed(self):
+        source=(Path(__file__).resolve().parents[2]/'third_party/moonlight-common-c/src/SdpGenerator.c').read_text()
+        patched=audio_specialize(source)
+        self.assertEqual(patched.count('audioChannelCount == 2 && StreamConfig.fps > 60'),1)
+        self.assertIn('CAPABILITY_SUPPORTS_ARBITRARY_AUDIO_DURATION',patched)
+        self.assertIn('HighQualitySurroundEnabled = true',audio_fixture(source))
+        with self.assertRaises(ValueError):audio_specialize(source+' ')
+        with self.assertRaises(ValueError):audio_specialize(patched)
+
+
+class CryptoCacheSpecializationTests(unittest.TestCase):
+    def test_cache_keeps_original_replay_and_cbc_code(self):
+        source=(Path(__file__).resolve().parents[2]/'third_party/moonlight-common-c/src/PlatformCrypto.c').read_text()
+        patched=crypto_specialize(source)
+        begin=source.index('static bool isReplayedMessage(')
+        end=source.index('bool PltDecryptMessage(',begin)
+        self.assertIn(source[begin:end],patched)
+        self.assertIn('releaseCachedGcm(ctx);\n    free(ctx);',patched)
+        self.assertEqual(patched.count('keyLength == 16 && ivLength == 12 && tagLength == 16'),2)
+        for part in source.split('else if (algorithm == ALGORITHM_AES_CBC) {')[1:]:
+            self.assertIn(part.split('\n    else {')[0],patched)
+        with self.assertRaises(ValueError):crypto_specialize(source+' ')
+        with self.assertRaises(ValueError):crypto_specialize(patched)
 
 
 if __name__=='__main__':unittest.main()

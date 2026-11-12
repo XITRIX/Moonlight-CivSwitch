@@ -1,0 +1,5464 @@
+{
+  "date": "2026-11-12",
+  "platform": "Switch 2 / Civ VII 1.0.0 / SDK 1.3.5 / resident 0.4.3-sdk.9",
+  "target": "1080p120 H.264 / 40 Mbps / Smooth / overlay enabled",
+  "measurement": "Fresh video submissions, not physical scanout. Sequential live Virtual Display runs with changing content. First two phases were NOT gated against physical touch; user confirmed touching during them. Later comparisons gate remote forwarding while HID/DOM events remain active; injected motion fills absent physical contact. Physical contact counts include startup polls; per-stage profiling covers measurement only. These are not replay-identical A/B runs.",
+  "changes": [
+    "Opt-in RAM scheduler/socket/media/touch profiling; requested/granted receive buffers and stage maxima.",
+    "High-refresh stereo negotiates 10 ms Opus packets through a pinned SDP build-copy adaptation; original RTSP audio quality preset, 20 ms native chunks, 40 ms prefill and bounded queue remain.",
+    "Pinned crypto build-copy adaptation retains keyed Mbed TLS GCM state for AES-128/12-byte nonce/16-byte tag; original replay policy and unsupported/CBC PSA fallbacks remain; cache destroyed/zeroized with each original context."
+  ],
+  "validation": {
+    "nodeTests": 174,
+    "compiledRuntime": true,
+    "independentAeadCases": 288,
+    "authenticatedMessages": 2304,
+    "tamperAndReplayChecks": true,
+    "sourceAdaptersFailClosed": true,
+    "packageSmoke": true,
+    "upstreamCheckoutsUnchanged": true,
+    "inPlaceAead": true,
+    "schedulerStarvationRegression": true
+  },
+  "installedPackageSha256": "1d75804ee38c17742f4b92a359fe4b4c663605c0009187b469ef26224e620c50",
+  "runs": [
+    {
+      "run": "moonlight-touch-profile-baseline",
+      "packageSha256": "383a24cc0788c9e49efa1e21370cf4bd2b583b81b0b6ce1931afe9ed38d3d990",
+      "probeSha256": null,
+      "config": {
+        "codec": "h264",
+        "width": 1920,
+        "height": 1080,
+        "bitrate": 40000,
+        "fps": 120,
+        "pacing": "smooth",
+        "durationMs": 90000,
+        "warmupMs": 5000,
+        "showStats": true,
+        "simulateTouch": true,
+        "terminateDesktop": false,
+        "profile": true,
+        "touchPattern": "alternating",
+        "appId": 382300562
+      },
+      "complete": true,
+      "error": null,
+      "summary": {
+        "seconds": 90.118,
+        "decodedFps": 84.10084555804612,
+        "presentedFps": 70.72948800461617,
+        "receivedMbps": 30.902009187953574,
+        "frameIntervalMs": 14.138390466269277,
+        "frameJitterMs": 27.79954462277349,
+        "maxIntervalMs": 859.5199679993093,
+        "p50IntervalMs": 13.173503999598324,
+        "p95IntervalMs": 18.54899200052023,
+        "p99IntervalMs": 71.77302399929613,
+        "stallsOver25Ms": 114,
+        "stallsOver50Ms": 70,
+        "stallsOver100Ms": 62,
+        "stallsOverOneAndHalfFrames": 3384,
+        "videoSuperseded": 1206,
+        "videoExpired": 0,
+        "videoBacklogDrops": 1206,
+        "decoderRejected": 0,
+        "videoFrameGaps": 3213,
+        "audioEmptyEpisodes": 305,
+        "audioEmptyMs": 773.7393919909373,
+        "audioDiscardedMs": 60,
+        "pumpAvgMs": 12.83377831456314,
+        "drainAvgMs": 5.336703646682335,
+        "decoderPending": 3,
+        "copyPresentMs": 1.9038188641446407,
+        "presentationTimings": {
+          "acquire": 1028.2717119958252,
+          "submit": 2020.07936004363,
+          "present": 2124.914687984623,
+          "wait": 2001.4888640809804
+        },
+        "uiSnapshots": 0,
+        "uiFrames": 0,
+        "simulatedTouchSamples": 8
+      },
+      "phases": {
+        "off-before": {
+          "seconds": 28.33,
+          "decodedFps": 86.51606071302507,
+          "presentedFps": 71.90257677373809,
+          "receivedMbps": 30.75858242146135,
+          "frameIntervalMs": 13.90804202258212,
+          "frameJitterMs": 26.039084392747032,
+          "maxIntervalMs": 539.9219519989565,
+          "p50IntervalMs": 13.12380800023675,
+          "p95IntervalMs": 18.534399999305606,
+          "p99IntervalMs": 42.99910399969667,
+          "stallsOver25Ms": 33,
+          "stallsOver50Ms": 21,
+          "stallsOver100Ms": 18,
+          "stallsOverOneAndHalfFrames": 1082,
+          "videoSuperseded": 414,
+          "videoExpired": 0,
+          "videoBacklogDrops": 414,
+          "decoderRejected": 0,
+          "videoFrameGaps": 923,
+          "audioEmptyEpisodes": 230,
+          "audioEmptyMs": 569.1384639954194,
+          "audioDiscardedMs": 20,
+          "pumpAvgMs": 12.781982465272499,
+          "drainAvgMs": 5.403799226942207,
+          "decoderPending": 2,
+          "copyPresentMs": 1.9053106332919252,
+          "presentationTimings": {
+            "acquire": 15994.178559850552,
+            "submit": 30736.315232011468,
+            "present": 32225.703391914183,
+            "wait": 42780.42531204644
+          },
+          "uiSnapshots": 0,
+          "uiFrames": 0,
+          "simulatedTouchSamples": 8
+        },
+        "touch": {
+          "seconds": 29.365,
+          "decodedFps": 76.21317895453772,
+          "presentedFps": 66.91639707134344,
+          "receivedMbps": 30.8882056870424,
+          "frameIntervalMs": 14.944173435114191,
+          "frameJitterMs": 33.73114171811939,
+          "maxIntervalMs": 859.5199679993093,
+          "p50IntervalMs": 13.255423999391496,
+          "p95IntervalMs": 18.75318400003016,
+          "p99IntervalMs": 143.65558400005102,
+          "stallsOver25Ms": 37,
+          "stallsOver50Ms": 26,
+          "stallsOver100Ms": 24,
+          "stallsOverOneAndHalfFrames": 1058,
+          "videoSuperseded": 273,
+          "videoExpired": 0,
+          "videoBacklogDrops": 273,
+          "decoderRejected": 0,
+          "videoFrameGaps": 1305,
+          "audioEmptyEpisodes": 15,
+          "audioEmptyMs": 41.91574399732053,
+          "audioDiscardedMs": 20,
+          "pumpAvgMs": 12.917894408754847,
+          "drainAvgMs": 4.991196959662065,
+          "decoderPending": 2,
+          "copyPresentMs": 1.8988236539554013,
+          "presentationTimings": {
+            "acquire": 16319.584415833117,
+            "submit": 31376.973312028662,
+            "present": 32905.160735917205,
+            "wait": 43416.27347208794
+          },
+          "uiSnapshots": 0,
+          "uiFrames": 0,
+          "simulatedTouchSamples": 8
+        },
+        "off-after": {
+          "seconds": 29.378,
+          "decodedFps": 87.00388045476207,
+          "presentedFps": 72.16284294369936,
+          "receivedMbps": 30.754116958268092,
+          "frameIntervalMs": 13.857606143396312,
+          "frameJitterMs": 24.537776120070014,
+          "maxIntervalMs": 419.3102719997987,
+          "p50IntervalMs": 13.187872000038624,
+          "p95IntervalMs": 18.395456000231206,
+          "p99IntervalMs": 42.35856000054628,
+          "stallsOver25Ms": 41,
+          "stallsOver50Ms": 22,
+          "stallsOver100Ms": 19,
+          "stallsOverOneAndHalfFrames": 1113,
+          "videoSuperseded": 437,
+          "videoExpired": 0,
+          "videoBacklogDrops": 437,
+          "decoderRejected": 0,
+          "videoFrameGaps": 941,
+          "audioEmptyEpisodes": 17,
+          "audioEmptyMs": 51.957344002090394,
+          "audioDiscardedMs": 20,
+          "pumpAvgMs": 12.79598018943532,
+          "drainAvgMs": 5.502230217247101,
+          "decoderPending": 3,
+          "copyPresentMs": 1.9068559094441984,
+          "presentationTimings": {
+            "acquire": 16677.653983852477,
+            "submit": 32076.820800032445,
+            "present": 33642.689759910034,
+            "wait": 44111.51462410811
+          },
+          "uiSnapshots": 0,
+          "uiFrames": 0,
+          "simulatedTouchSamples": 8
+        }
+      },
+      "mouseForwardingGated": false,
+      "inputUpdates": {
+        "gamepadQueued": 0,
+        "gamepadRejected": 0
+      },
+      "physicalContacts": 3957,
+      "physicalContactsByPhase": null,
+      "suppressedPhysicalSamples": 0,
+      "injectedContacts": 8,
+      "suppressedMouseButtons": null,
+      "profile": {
+        "off-before:touch-bounds": {
+          "calls": 2952,
+          "totalMs": 61.44892799295485,
+          "maxMs": 0.3387519996613264,
+          "over20Ms": 0
+        },
+        "off-before:hid-touch": {
+          "calls": 1476,
+          "totalMs": 203.55174400657415,
+          "maxMs": 0.8947199992835522,
+          "over20Ms": 0
+        },
+        "off-before:touch-route": {
+          "calls": 1476,
+          "totalMs": 204.88723198883235,
+          "maxMs": 0.8868159996345639,
+          "over20Ms": 0
+        },
+        "off-before:drainVideo": {
+          "calls": 2952,
+          "totalMs": 7495.231807969511,
+          "maxMs": 6.108512000180781,
+          "over20Ms": 0
+        },
+        "off-before:socket-5": {
+          "calls": 15354,
+          "totalMs": 2712.315551905893,
+          "maxMs": 4.434623999521136,
+          "over20Ms": 0
+        },
+        "off-before:pump": {
+          "calls": 2952,
+          "totalMs": 18819.605119983666,
+          "maxMs": 11.697119999676943,
+          "over20Ms": 0
+        },
+        "off-before:finishVideo": {
+          "calls": 2951,
+          "totalMs": 40.48447998613119,
+          "maxMs": 0.3302079997956753,
+          "over20Ms": 0
+        },
+        "off-before:socket-11": {
+          "calls": 2524,
+          "totalMs": 428.9983359891921,
+          "maxMs": 3.959040000103414,
+          "over20Ms": 0
+        },
+        "off-before:videoFrame": {
+          "calls": 2627,
+          "totalMs": 2098.1934080021456,
+          "maxMs": 5.338208000175655,
+          "over20Ms": 0
+        },
+        "off-before:drainAudio": {
+          "calls": 1475,
+          "totalMs": 419.91206398792565,
+          "maxMs": 1.4237120002508163,
+          "over20Ms": 0
+        },
+        "off-before:receive-video-batch": {
+          "calls": 2945,
+          "totalMs": 1356.1611840035766,
+          "maxMs": 1.4588159993290901,
+          "over20Ms": 0
+        },
+        "off-before:socket-4": {
+          "calls": 1675,
+          "totalMs": 481.472608005628,
+          "maxMs": 2.7851839996874332,
+          "over20Ms": 0
+        },
+        "off-before:mouse-enqueue": {
+          "calls": 983,
+          "totalMs": 65.46528000757098,
+          "maxMs": 0.537024000659585,
+          "over20Ms": 0
+        },
+        "touch:receive-video-batch": {
+          "calls": 2575,
+          "totalMs": 1243.7177600134164,
+          "maxMs": 4.705055999569595,
+          "over20Ms": 0
+        },
+        "touch:finishVideo": {
+          "calls": 2986,
+          "totalMs": 41.41468795761466,
+          "maxMs": 0.37667199969291687,
+          "over20Ms": 0
+        },
+        "touch:drainAudio": {
+          "calls": 1493,
+          "totalMs": 470.16745602339506,
+          "maxMs": 1.514560000039637,
+          "over20Ms": 0
+        },
+        "touch:touch-bounds": {
+          "calls": 2854,
+          "totalMs": 61.39865601249039,
+          "maxMs": 0.03852800000458956,
+          "over20Ms": 0
+        },
+        "touch:hid-touch": {
+          "calls": 1493,
+          "totalMs": 213.15584000572562,
+          "maxMs": 0.5210560001432896,
+          "over20Ms": 0
+        },
+        "touch:mouse-enqueue": {
+          "calls": 1359,
+          "totalMs": 90.11027197726071,
+          "maxMs": 0.11107200011610985,
+          "over20Ms": 0
+        },
+        "touch:touch-route": {
+          "calls": 1493,
+          "totalMs": 245.04201599396765,
+          "maxMs": 0.6683839997276664,
+          "over20Ms": 0
+        },
+        "touch:drainVideo": {
+          "calls": 2986,
+          "totalMs": 6885.454751973972,
+          "maxMs": 8.886879999190569,
+          "over20Ms": 0
+        },
+        "touch:socket-5": {
+          "calls": 15896,
+          "totalMs": 2776.7363519305363,
+          "maxMs": 1.373759999871254,
+          "over20Ms": 0
+        },
+        "touch:pump": {
+          "calls": 2985,
+          "totalMs": 19223.608607972972,
+          "maxMs": 18.38409600034356,
+          "over20Ms": 0
+        },
+        "touch:socket-4": {
+          "calls": 2064,
+          "totalMs": 597.7341759894043,
+          "maxMs": 2.8230720004066825,
+          "over20Ms": 0
+        },
+        "touch:videoFrame": {
+          "calls": 2310,
+          "totalMs": 1837.3454399975017,
+          "maxMs": 3.4250880014151335,
+          "over20Ms": 0
+        },
+        "touch:socket-11": {
+          "calls": 2407,
+          "totalMs": 400.43743997160345,
+          "maxMs": 2.12217599991709,
+          "over20Ms": 0
+        },
+        "off-after:socket-5": {
+          "calls": 15337,
+          "totalMs": 2715.9350720774382,
+          "maxMs": 4.9341759998351336,
+          "over20Ms": 0
+        },
+        "off-after:receive-video-batch": {
+          "calls": 3039,
+          "totalMs": 1395.674144034274,
+          "maxMs": 1.5711679998785257,
+          "over20Ms": 0
+        },
+        "off-after:videoFrame": {
+          "calls": 2642,
+          "totalMs": 2095.049920000136,
+          "maxMs": 2.4879680005833507,
+          "over20Ms": 0
+        },
+        "off-after:pump": {
+          "calls": 2937,
+          "totalMs": 18735.399552042596,
+          "maxMs": 13.851808000355959,
+          "over20Ms": 0
+        },
+        "off-after:finishVideo": {
+          "calls": 2937,
+          "totalMs": 40.0627839686349,
+          "maxMs": 0.032576000317931175,
+          "over20Ms": 0
+        },
+        "off-after:drainAudio": {
+          "calls": 1469,
+          "totalMs": 473.51977599132806,
+          "maxMs": 1.638336000032723,
+          "over20Ms": 0
+        },
+        "off-after:touch-bounds": {
+          "calls": 2452,
+          "totalMs": 55.071935990825295,
+          "maxMs": 0.03721600025892258,
+          "over20Ms": 0
+        },
+        "off-after:hid-touch": {
+          "calls": 1468,
+          "totalMs": 215.25564800202847,
+          "maxMs": 0.5339200003072619,
+          "over20Ms": 0
+        },
+        "off-after:touch-route": {
+          "calls": 1468,
+          "totalMs": 181.87808000203222,
+          "maxMs": 0.5967360008507967,
+          "over20Ms": 0
+        },
+        "off-after:drainVideo": {
+          "calls": 2936,
+          "totalMs": 7520.431072002277,
+          "maxMs": 9.329344000667334,
+          "over20Ms": 0
+        },
+        "off-after:socket-11": {
+          "calls": 2501,
+          "totalMs": 417.5621119365096,
+          "maxMs": 1.2305600000545382,
+          "over20Ms": 0
+        },
+        "off-after:socket-4": {
+          "calls": 1651,
+          "totalMs": 469.29823999106884,
+          "maxMs": 1.3117439998313785,
+          "over20Ms": 0
+        },
+        "off-after:mouse-enqueue": {
+          "calls": 977,
+          "totalMs": 64.98204799555242,
+          "maxMs": 0.12198399938642979,
+          "over20Ms": 0
+        }
+      },
+      "taskProfile": null,
+      "slowCalls": [],
+      "cryptoBenchmark": null,
+      "receiveBuffers": [],
+      "audioPacketDurationMs": 5,
+      "overlay": {
+        "method": "native-badge",
+        "visible": 1,
+        "width": 672,
+        "height": 88,
+        "counters": {
+          "updates": 868,
+          "bytes": 205320192
+        },
+        "background": 3693090828,
+        "textPixel": 4294963172
+      },
+      "motion": {
+        "samples": 89,
+        "broadChanges": 86
+      },
+      "clock": {
+        "start": {
+          "frameWakes": 334,
+          "timerWakes": 0,
+          "forcedWakes": 0,
+          "serviceWakes": 0,
+          "waitMs": 1264.1344640050083,
+          "maxWaitMs": 15.930431999266148
+        },
+        "end": {
+          "frameWakes": 4772,
+          "timerWakes": 0,
+          "forcedWakes": 0,
+          "serviceWakes": 0,
+          "waitMs": 10220.514304053038,
+          "maxWaitMs": 15.930431999266148
+        }
+      },
+      "fec": {
+        "start": {
+          "calls": 0,
+          "totalWallMs": 0,
+          "maxWallMs": 0,
+          "failed": 0,
+          "shardBytes": 0,
+          "budgetYields": 0
+        },
+        "end": {
+          "calls": 45,
+          "totalWallMs": 1498.946304003708,
+          "maxWallMs": 75.3023039996624,
+          "failed": 0,
+          "shardBytes": 1481216,
+          "budgetYields": 172
+        }
+      },
+      "cleanup": {
+        "tasks": 0,
+        "sameOwner": true,
+        "resident": "launcher",
+        "ftp": true
+      },
+      "refreshDuring": {
+        "flags": "2",
+        "result": 0,
+        "reason": "getter output invalid"
+      },
+      "refreshAfter": {
+        "flags": "1",
+        "result": 0,
+        "reason": "getter output invalid"
+      }
+    },
+    {
+      "run": "moonlight-touch-profile-tasks",
+      "packageSha256": "782a9d07bdc7ade66b8cc2bfe325f8f6ec39507f0ff75b40be90f8c3e3175a2c",
+      "probeSha256": null,
+      "config": {
+        "codec": "h264",
+        "width": 1920,
+        "height": 1080,
+        "bitrate": 40000,
+        "fps": 120,
+        "pacing": "smooth",
+        "durationMs": 90000,
+        "warmupMs": 5000,
+        "showStats": true,
+        "simulateTouch": true,
+        "terminateDesktop": false,
+        "profile": true,
+        "touchPattern": "alternating",
+        "appId": 382300562
+      },
+      "complete": true,
+      "error": null,
+      "summary": {
+        "seconds": 91.167,
+        "decodedFps": 96.77843956694856,
+        "presentedFps": 76.88088891813923,
+        "receivedMbps": 31.35580339377187,
+        "frameIntervalMs": 13.006984012555275,
+        "frameJitterMs": 23.074979516534405,
+        "maxIntervalMs": 662.9684799993411,
+        "p50IntervalMs": 12.995487999171019,
+        "p95IntervalMs": 17.661567999981344,
+        "p99IntervalMs": 30.564096000045538,
+        "stallsOver25Ms": 84,
+        "stallsOver50Ms": 44,
+        "stallsOver100Ms": 38,
+        "stallsOverOneAndHalfFrames": 3635,
+        "videoSuperseded": 1814,
+        "videoExpired": 0,
+        "videoBacklogDrops": 1814,
+        "decoderRejected": 0,
+        "videoFrameGaps": 2118,
+        "audioEmptyEpisodes": 175,
+        "audioEmptyMs": 437.62771198619157,
+        "audioDiscardedMs": 0,
+        "pumpAvgMs": 12.819708051390245,
+        "drainAvgMs": 6.128365394498282,
+        "decoderPending": 3,
+        "copyPresentMs": 1.9211655779718984,
+        "presentationTimings": {
+          "acquire": 1149.666655943729,
+          "submit": 2266.9843840375543,
+          "present": 2371.585056055337,
+          "wait": 2241.1802239725366
+        },
+        "uiSnapshots": 0,
+        "uiFrames": 0,
+        "simulatedTouchSamples": 1501
+      },
+      "phases": {
+        "off-before": {
+          "seconds": 29.423,
+          "decodedFps": 97.27084253815043,
+          "presentedFps": 76.60673622676138,
+          "receivedMbps": 31.137742854229685,
+          "frameIntervalMs": 13.053571677018873,
+          "frameJitterMs": 25.74810065634081,
+          "maxIntervalMs": 662.9684799993411,
+          "p50IntervalMs": 12.898111999034882,
+          "p95IntervalMs": 17.419072000309825,
+          "p99IntervalMs": 30.999135999940336,
+          "stallsOver25Ms": 30,
+          "stallsOver50Ms": 13,
+          "stallsOver100Ms": 11,
+          "stallsOverOneAndHalfFrames": 1166,
+          "videoSuperseded": 608,
+          "videoExpired": 0,
+          "videoBacklogDrops": 608,
+          "decoderRejected": 0,
+          "videoFrameGaps": 667,
+          "audioEmptyEpisodes": 115,
+          "audioEmptyMs": 272.72764799464494,
+          "audioDiscardedMs": 0,
+          "pumpAvgMs": 12.79888693106776,
+          "drainAvgMs": 5.862085670913254,
+          "decoderPending": 2,
+          "copyPresentMs": 1.9141890328536975,
+          "presentationTimings": {
+            "acquire": 17143.391295821988,
+            "submit": 32993.00076802725,
+            "present": 34604.976895953456,
+            "wait": 45747.170208075564
+          },
+          "uiSnapshots": 0,
+          "uiFrames": 0,
+          "simulatedTouchSamples": 1501
+        },
+        "touch": {
+          "seconds": 29.288,
+          "decodedFps": 72.69188746244195,
+          "presentedFps": 64.77055449330784,
+          "receivedMbps": 30.435216061185468,
+          "frameIntervalMs": 15.43908183447502,
+          "frameJitterMs": 33.51326546461498,
+          "maxIntervalMs": 520.68710400071,
+          "p50IntervalMs": 13.252832000143826,
+          "p95IntervalMs": 18.96835200022906,
+          "p99IntervalMs": 183.5843520006165,
+          "stallsOver25Ms": 43,
+          "stallsOver50Ms": 28,
+          "stallsOver100Ms": 26,
+          "stallsOverOneAndHalfFrames": 1033,
+          "videoSuperseded": 232,
+          "videoExpired": 0,
+          "videoBacklogDrops": 232,
+          "decoderRejected": 0,
+          "videoFrameGaps": 1356,
+          "audioEmptyEpisodes": 10,
+          "audioEmptyMs": 46.75212799664587,
+          "audioDiscardedMs": 0,
+          "pumpAvgMs": 12.908975879877246,
+          "drainAvgMs": 5.097754124234154,
+          "decoderPending": 1,
+          "copyPresentMs": 1.920736421716071,
+          "presentationTimings": {
+            "acquire": 17470.670719771297,
+            "submit": 33634.119296089724,
+            "present": 35276.26342394475,
+            "wait": 46375.08812807362
+          },
+          "uiSnapshots": 0,
+          "uiFrames": 0,
+          "simulatedTouchSamples": 1501
+        },
+        "off-after": {
+          "seconds": 29.416,
+          "decodedFps": 119.05085667663856,
+          "presentedFps": 88.65923307043785,
+          "receivedMbps": 32.27696654881697,
+          "frameIntervalMs": 11.278646269938523,
+          "frameJitterMs": 3.9473039258373235,
+          "maxIntervalMs": 70.23747200053185,
+          "p50IntervalMs": 12.698175999335945,
+          "p95IntervalMs": 15.415583999827504,
+          "p99IntervalMs": 18.941919999197125,
+          "stallsOver25Ms": 8,
+          "stallsOver50Ms": 2,
+          "stallsOver100Ms": 0,
+          "stallsOverOneAndHalfFrames": 1308,
+          "videoSuperseded": 894,
+          "videoExpired": 0,
+          "videoBacklogDrops": 894,
+          "decoderRejected": 0,
+          "videoFrameGaps": 26,
+          "audioEmptyEpisodes": 7,
+          "audioEmptyMs": 36.54627200122923,
+          "audioDiscardedMs": 0,
+          "pumpAvgMs": 12.746528553418619,
+          "drainAvgMs": 7.496578406004753,
+          "decoderPending": 3,
+          "copyPresentMs": 1.9267994846507301,
+          "presentationTimings": {
+            "acquire": 17911.117855798104,
+            "submit": 34502.23372806886,
+            "present": 36183.52883197919,
+            "wait": 47242.500704057995
+          },
+          "uiSnapshots": 0,
+          "uiFrames": 0,
+          "simulatedTouchSamples": 1501
+        }
+      },
+      "mouseForwardingGated": false,
+      "inputUpdates": {
+        "gamepadQueued": 0,
+        "gamepadRejected": 0
+      },
+      "physicalContacts": 580,
+      "physicalContactsByPhase": null,
+      "suppressedPhysicalSamples": 0,
+      "injectedContacts": 1501,
+      "suppressedMouseButtons": null,
+      "profile": {
+        "off-before:touch-bounds": {
+          "calls": 2896,
+          "totalMs": 65.73932800069451,
+          "maxMs": 0.33212800044566393,
+          "over20Ms": 0
+        },
+        "off-before:hid-touch": {
+          "calls": 1448,
+          "totalMs": 194.61155196093023,
+          "maxMs": 0.8036799998953938,
+          "over20Ms": 0
+        },
+        "off-before:touch-route": {
+          "calls": 1448,
+          "totalMs": 156.38380799349397,
+          "maxMs": 1.1179840005934238,
+          "over20Ms": 0
+        },
+        "off-before:drainVideo": {
+          "calls": 2895,
+          "totalMs": 7987.672319982201,
+          "maxMs": 9.074560000561178,
+          "over20Ms": 0
+        },
+        "off-before:socket-5": {
+          "calls": 14645,
+          "totalMs": 2631.9603840885684,
+          "maxMs": 7.310655999928713,
+          "over20Ms": 0
+        },
+        "off-before:socket-11": {
+          "calls": 2524,
+          "totalMs": 428.59199997317046,
+          "maxMs": 1.5959359994158149,
+          "over20Ms": 0
+        },
+        "off-before:pump": {
+          "calls": 2894,
+          "totalMs": 18470.327744005248,
+          "maxMs": 13.05372800026089,
+          "over20Ms": 0
+        },
+        "off-before:finishVideo": {
+          "calls": 2894,
+          "totalMs": 39.17299201339483,
+          "maxMs": 0.34201600030064583,
+          "over20Ms": 0
+        },
+        "off-before:receive-video-batch": {
+          "calls": 3370,
+          "totalMs": 1505.695039972663,
+          "maxMs": 4.926784000359476,
+          "over20Ms": 0
+        },
+        "off-before:videoFrame": {
+          "calls": 2931,
+          "totalMs": 2328.440511948429,
+          "maxMs": 7.187008000910282,
+          "over20Ms": 0
+        },
+        "off-before:drainAudio": {
+          "calls": 1447,
+          "totalMs": 414.4753920119256,
+          "maxMs": 1.5795200010761619,
+          "over20Ms": 0
+        },
+        "off-before:socket-4": {
+          "calls": 1203,
+          "totalMs": 336.1432640273124,
+          "maxMs": 1.3047040002420545,
+          "over20Ms": 0
+        },
+        "off-before:mouse-enqueue": {
+          "calls": 578,
+          "totalMs": 37.88307200744748,
+          "maxMs": 0.6261120000854135,
+          "over20Ms": 0
+        },
+        "touch:socket-5": {
+          "calls": 16279,
+          "totalMs": 2838.9595839604735,
+          "maxMs": 1.7336959997192025,
+          "over20Ms": 0
+        },
+        "touch:pump": {
+          "calls": 3004,
+          "totalMs": 19337.037823994644,
+          "maxMs": 16.336511999368668,
+          "over20Ms": 0
+        },
+        "touch:finishVideo": {
+          "calls": 3003,
+          "totalMs": 40.198400045745075,
+          "maxMs": 0.025887999683618546,
+          "over20Ms": 0
+        },
+        "touch:drainVideo": {
+          "calls": 3003,
+          "totalMs": 6687.700383991003,
+          "maxMs": 8.998143999837339,
+          "over20Ms": 0
+        },
+        "touch:receive-video-batch": {
+          "calls": 2489,
+          "totalMs": 1210.822271999903,
+          "maxMs": 7.609087999910116,
+          "over20Ms": 0
+        },
+        "touch:videoFrame": {
+          "calls": 2175,
+          "totalMs": 1746.9130879966542,
+          "maxMs": 7.931328000500798,
+          "over20Ms": 0
+        },
+        "touch:drainAudio": {
+          "calls": 1501,
+          "totalMs": 810.5911039896309,
+          "maxMs": 2.340768000110984,
+          "over20Ms": 0
+        },
+        "touch:touch-bounds": {
+          "calls": 3002,
+          "totalMs": 68.45091198105365,
+          "maxMs": 0.04076799936592579,
+          "over20Ms": 0
+        },
+        "touch:hid-touch": {
+          "calls": 1501,
+          "totalMs": 184.68969595618546,
+          "maxMs": 0.530464000068605,
+          "over20Ms": 0
+        },
+        "touch:touch-route": {
+          "calls": 1501,
+          "totalMs": 270.87728000152856,
+          "maxMs": 0.47542399913072586,
+          "over20Ms": 0
+        },
+        "touch:socket-11": {
+          "calls": 2455,
+          "totalMs": 414.91676797997206,
+          "maxMs": 6.962240000255406,
+          "over20Ms": 0
+        },
+        "touch:mouse-enqueue": {
+          "calls": 1443,
+          "totalMs": 95.17004801798612,
+          "maxMs": 0.3543360000476241,
+          "over20Ms": 0
+        },
+        "touch:socket-4": {
+          "calls": 2242,
+          "totalMs": 646.0599360391498,
+          "maxMs": 1.0892160004004836,
+          "over20Ms": 0
+        },
+        "off-after:finishVideo": {
+          "calls": 2733,
+          "totalMs": 37.25702399853617,
+          "maxMs": 0.36508799996227026,
+          "over20Ms": 0
+        },
+        "off-after:drainAudio": {
+          "calls": 1367,
+          "totalMs": 771.7824959643185,
+          "maxMs": 3.7634880002588034,
+          "over20Ms": 0
+        },
+        "off-after:touch-bounds": {
+          "calls": 2732,
+          "totalMs": 63.48281598184258,
+          "maxMs": 0.38118400052189827,
+          "over20Ms": 0
+        },
+        "off-after:hid-touch": {
+          "calls": 1366,
+          "totalMs": 174.64342400990427,
+          "maxMs": 1.4033280005678535,
+          "over20Ms": 0
+        },
+        "off-after:touch-route": {
+          "calls": 1366,
+          "totalMs": 81.74041602388024,
+          "maxMs": 0.3791360007598996,
+          "over20Ms": 0
+        },
+        "off-after:drainVideo": {
+          "calls": 2732,
+          "totalMs": 9334.22499200236,
+          "maxMs": 10.261919999495149,
+          "over20Ms": 0
+        },
+        "off-after:socket-5": {
+          "calls": 13509,
+          "totalMs": 2418.4658879507333,
+          "maxMs": 2.0785600002855062,
+          "over20Ms": 0
+        },
+        "off-after:receive-video-batch": {
+          "calls": 4006,
+          "totalMs": 1725.1111040143296,
+          "maxMs": 1.380384000018239,
+          "over20Ms": 0
+        },
+        "off-after:videoFrame": {
+          "calls": 3601,
+          "totalMs": 2862.238303968683,
+          "maxMs": 3.625312000513077,
+          "over20Ms": 0
+        },
+        "off-after:pump": {
+          "calls": 2732,
+          "totalMs": 17360.64054400474,
+          "maxMs": 11.526751999743283,
+          "over20Ms": 0
+        },
+        "off-after:socket-4": {
+          "calls": 438,
+          "totalMs": 121.50835200585425,
+          "maxMs": 0.904895999468863,
+          "over20Ms": 0
+        },
+        "off-after:socket-11": {
+          "calls": 2640,
+          "totalMs": 463.7181119732559,
+          "maxMs": 1.1512000001966953,
+          "over20Ms": 0
+        }
+      },
+      "taskProfile": {
+        "Other": {
+          "calls": 0,
+          "totalMs": 0,
+          "maxMs": 0,
+          "over20Ms": 0,
+          "over100Ms": 0
+        },
+        "InputDispatch": {
+          "calls": 8892,
+          "totalMs": 1318.068480066955,
+          "maxMs": 0.892128000035882,
+          "over20Ms": 0,
+          "over100Ms": 0
+        },
+        "InputSend": {
+          "calls": 1997,
+          "totalMs": 4154.381696022116,
+          "maxMs": 9.587840000167489,
+          "over20Ms": 0,
+          "over100Ms": 0
+        },
+        "AudioRecv": {
+          "calls": 8702,
+          "totalMs": 17992.254815984517,
+          "maxMs": 10.213375999592245,
+          "over20Ms": 0,
+          "over100Ms": 0
+        },
+        "AudioDec": {
+          "calls": 0,
+          "totalMs": 0,
+          "maxMs": 0,
+          "over20Ms": 0,
+          "over100Ms": 0
+        },
+        "VideoRecv": {
+          "calls": 5300,
+          "totalMs": 21836.514623992145,
+          "maxMs": 15.723455999977887,
+          "over20Ms": 0,
+          "over100Ms": 0
+        },
+        "VideoDec": {
+          "calls": 0,
+          "totalMs": 0,
+          "maxMs": 0,
+          "over20Ms": 0,
+          "over100Ms": 0
+        },
+        "ControlRecv": {
+          "calls": 5194,
+          "totalMs": 4436.487647959031,
+          "maxMs": 7.886399999260902,
+          "over20Ms": 0,
+          "over100Ms": 0
+        },
+        "LossStats": {
+          "calls": 1667,
+          "totalMs": 1884.3843840165064,
+          "maxMs": 9.966975999996066,
+          "over20Ms": 0,
+          "over100Ms": 0
+        },
+        "ReqIdrFrame": {
+          "calls": 15,
+          "totalMs": 17.08943999838084,
+          "maxMs": 2.326303998939693,
+          "over20Ms": 0,
+          "over100Ms": 0
+        },
+        "CtrlAsyncCb": {
+          "calls": 0,
+          "totalMs": 0,
+          "maxMs": 0,
+          "over20Ms": 0,
+          "over100Ms": 0
+        },
+        "InvRefFrames": {
+          "calls": 649,
+          "totalMs": 1466.1532799955457,
+          "maxMs": 5.3904639994725585,
+          "over20Ms": 0,
+          "over100Ms": 0
+        },
+        "Ping": {
+          "calls": 2959,
+          "totalMs": 328.79446395579726,
+          "maxMs": 1.1731519997119904,
+          "over20Ms": 0,
+          "over100Ms": 0
+        }
+      },
+      "slowCalls": [],
+      "cryptoBenchmark": null,
+      "receiveBuffers": [
+        {
+          "fd": 3,
+          "requested": 262144,
+          "result": 0,
+          "actual": 262144,
+          "getResult": 0
+        },
+        {
+          "fd": 4,
+          "requested": 1851392,
+          "result": 0,
+          "actual": 1851392,
+          "getResult": 0
+        }
+      ],
+      "audioPacketDurationMs": 5,
+      "overlay": {
+        "method": "native-badge",
+        "visible": 1,
+        "width": 672,
+        "height": 88,
+        "counters": {
+          "updates": 964,
+          "bytes": 228028416
+        },
+        "background": 3693090828,
+        "textPixel": 4294963172
+      },
+      "motion": {
+        "samples": 90,
+        "broadChanges": 86
+      },
+      "clock": {
+        "start": {
+          "frameWakes": 283,
+          "timerWakes": 0,
+          "forcedWakes": 0,
+          "serviceWakes": 0,
+          "waitMs": 1086.3577920142561,
+          "maxWaitMs": 15.780703999102116
+        },
+        "end": {
+          "frameWakes": 4643,
+          "timerWakes": 0,
+          "forcedWakes": 0,
+          "serviceWakes": 0,
+          "waitMs": 9109.78579195682,
+          "maxWaitMs": 15.780703999102116
+        }
+      },
+      "fec": {
+        "start": {
+          "calls": 0,
+          "totalWallMs": 0,
+          "maxWallMs": 0,
+          "failed": 0,
+          "shardBytes": 0,
+          "budgetYields": 0
+        },
+        "end": {
+          "calls": 32,
+          "totalWallMs": 1189.7745599979535,
+          "maxWallMs": 78.05215999949723,
+          "failed": 0,
+          "shardBytes": 1089792,
+          "budgetYields": 126
+        }
+      },
+      "cleanup": {
+        "tasks": 0,
+        "sameOwner": true,
+        "resident": "launcher",
+        "ftp": true
+      },
+      "refreshDuring": {
+        "flags": "2",
+        "result": 0,
+        "reason": "getter output invalid"
+      },
+      "refreshAfter": {
+        "flags": "1",
+        "result": 0,
+        "reason": "getter output invalid"
+      }
+    },
+    {
+      "run": "moonlight-touch-gated-baseline",
+      "packageSha256": "782a9d07bdc7ade66b8cc2bfe325f8f6ec39507f0ff75b40be90f8c3e3175a2c",
+      "probeSha256": null,
+      "config": {
+        "codec": "h264",
+        "width": 1920,
+        "height": 1080,
+        "bitrate": 40000,
+        "fps": 120,
+        "pacing": "smooth",
+        "durationMs": 90000,
+        "warmupMs": 5000,
+        "showStats": true,
+        "simulateTouch": true,
+        "terminateDesktop": false,
+        "profile": true,
+        "touchPattern": "alternating",
+        "appId": 382300562
+      },
+      "complete": true,
+      "error": null,
+      "summary": {
+        "seconds": 90.933,
+        "decodedFps": 108.81638129172028,
+        "presentedFps": 83.79796113622116,
+        "receivedMbps": 33.42949362717605,
+        "frameIntervalMs": 11.93352790761145,
+        "frameJitterMs": 6.921335117696232,
+        "maxIntervalMs": 373.1980800004676,
+        "p50IntervalMs": 13.138976000249386,
+        "p95IntervalMs": 17.490848001092672,
+        "p99IntervalMs": 36.314048000611365,
+        "stallsOver25Ms": 162,
+        "stallsOver50Ms": 21,
+        "stallsOver100Ms": 1,
+        "stallsOverOneAndHalfFrames": 3912,
+        "videoSuperseded": 2275,
+        "videoExpired": 0,
+        "videoBacklogDrops": 2275,
+        "decoderRejected": 183,
+        "videoFrameGaps": 1009,
+        "audioEmptyEpisodes": 123,
+        "audioEmptyMs": 336.93155199848115,
+        "audioDiscardedMs": 20,
+        "pumpAvgMs": 12.67413554015191,
+        "drainAvgMs": 6.853921930628194,
+        "decoderPending": 2,
+        "copyPresentMs": 1.9136627485605293,
+        "presentationTimings": {
+          "acquire": 1234.1919040707871,
+          "submit": 2397.28086396493,
+          "present": 2626.8372480301186,
+          "wait": 2434.3800639593974
+        },
+        "uiSnapshots": 0,
+        "uiFrames": 0,
+        "simulatedTouchSamples": 33
+      },
+      "phases": {
+        "off-before": {
+          "seconds": 29.253,
+          "decodedFps": 118.96215772741257,
+          "presentedFps": 87.68331453184288,
+          "receivedMbps": 32.58082794927016,
+          "frameIntervalMs": 11.404908650292567,
+          "frameJitterMs": 4.165238862600509,
+          "maxIntervalMs": 80.10943999979645,
+          "p50IntervalMs": 12.954848000779748,
+          "p95IntervalMs": 15.745920000597835,
+          "p99IntervalMs": 18.91471999976784,
+          "stallsOver25Ms": 8,
+          "stallsOver50Ms": 3,
+          "stallsOver100Ms": 0,
+          "stallsOverOneAndHalfFrames": 1287,
+          "videoSuperseded": 915,
+          "videoExpired": 0,
+          "videoBacklogDrops": 915,
+          "decoderRejected": 0,
+          "videoFrameGaps": 27,
+          "audioEmptyEpisodes": 28,
+          "audioEmptyMs": 141.5744319986552,
+          "audioDiscardedMs": 0,
+          "pumpAvgMs": 12.735820027505815,
+          "drainAvgMs": 7.443643355209201,
+          "decoderPending": 3,
+          "copyPresentMs": 1.9083367298246448,
+          "presentationTimings": {
+            "acquire": 18418.430943840765,
+            "submit": 35489.073056065456,
+            "present": 37270.42396799654,
+            "wait": 48984.41040005024
+          },
+          "uiSnapshots": 0,
+          "uiFrames": 0,
+          "simulatedTouchSamples": 33
+        },
+        "touch": {
+          "seconds": 29.335,
+          "decodedFps": 117.12970853928753,
+          "presentedFps": 87.64274757116073,
+          "receivedMbps": 32.33044377024032,
+          "frameIntervalMs": 11.410434663555472,
+          "frameJitterMs": 8.041677353391293,
+          "maxIntervalMs": 373.1980800004676,
+          "p50IntervalMs": 12.917055999860168,
+          "p95IntervalMs": 15.5487040001899,
+          "p99IntervalMs": 19.2034559994936,
+          "stallsOver25Ms": 7,
+          "stallsOver50Ms": 2,
+          "stallsOver100Ms": 1,
+          "stallsOverOneAndHalfFrames": 1291,
+          "videoSuperseded": 864,
+          "videoExpired": 0,
+          "videoBacklogDrops": 864,
+          "decoderRejected": 0,
+          "videoFrameGaps": 87,
+          "audioEmptyEpisodes": 77,
+          "audioEmptyMs": 116.38323199935257,
+          "audioDiscardedMs": 0,
+          "pumpAvgMs": 12.801909012051652,
+          "drainAvgMs": 7.2148395421731015,
+          "decoderPending": 2,
+          "copyPresentMs": 1.9087104472874703,
+          "presentationTimings": {
+            "acquire": 18844.010015857988,
+            "submit": 36325.769120031946,
+            "present": 38182.971551990995,
+            "wait": 49832.84137601919
+          },
+          "uiSnapshots": 0,
+          "uiFrames": 0,
+          "simulatedTouchSamples": 33
+        },
+        "off-after": {
+          "seconds": 29.316,
+          "decodedFps": 89.4051030154182,
+          "presentedFps": 75.41956610724519,
+          "receivedMbps": 35.592060035475505,
+          "frameIntervalMs": 13.258696712799495,
+          "frameJitterMs": 8.1127236181469,
+          "maxIntervalMs": 77.38377599976957,
+          "p50IntervalMs": 13.449439999647439,
+          "p95IntervalMs": 33.12281600013375,
+          "p99IntervalMs": 47.02108800038695,
+          "stallsOver25Ms": 146,
+          "stallsOver50Ms": 16,
+          "stallsOver100Ms": 0,
+          "stallsOverOneAndHalfFrames": 1199,
+          "videoSuperseded": 410,
+          "videoExpired": 0,
+          "videoBacklogDrops": 410,
+          "decoderRejected": 183,
+          "videoFrameGaps": 895,
+          "audioEmptyEpisodes": 9,
+          "audioEmptyMs": 67.77228799834847,
+          "audioDiscardedMs": 20,
+          "pumpAvgMs": 12.497771760126033,
+          "drainAvgMs": 5.953984758703654,
+          "decoderPending": 2,
+          "copyPresentMs": 1.9266619918819927,
+          "presentationTimings": {
+            "acquire": 19228.664799872437,
+            "submit": 37057.73827203268,
+            "present": 38980.5529600139,
+            "wait": 50567.85027205433
+          },
+          "uiSnapshots": 0,
+          "uiFrames": 0,
+          "simulatedTouchSamples": 33
+        }
+      },
+      "mouseForwardingGated": true,
+      "inputUpdates": {
+        "gamepadQueued": 0,
+        "gamepadRejected": 0
+      },
+      "physicalContacts": 4060,
+      "physicalContactsByPhase": {
+        "off-before": 1260,
+        "touch": 1325,
+        "off-after": 1475
+      },
+      "suppressedPhysicalSamples": 2719,
+      "injectedContacts": 33,
+      "suppressedMouseButtons": null,
+      "profile": {
+        "off-before:touch-bounds": {
+          "calls": 2686,
+          "totalMs": 57.48012801166624,
+          "maxMs": 0.050623999908566475,
+          "over20Ms": 0
+        },
+        "off-before:hid-touch": {
+          "calls": 1343,
+          "totalMs": 194.61641601473093,
+          "maxMs": 0.9282879997044802,
+          "over20Ms": 0
+        },
+        "off-before:touch-route": {
+          "calls": 1343,
+          "totalMs": 76.41052797995508,
+          "maxMs": 0.3851200006902218,
+          "over20Ms": 0
+        },
+        "off-before:drainVideo": {
+          "calls": 2686,
+          "totalMs": 9111.331552000716,
+          "maxMs": 12.226751999929547,
+          "over20Ms": 0
+        },
+        "off-before:socket-5": {
+          "calls": 13311,
+          "totalMs": 2370.0529920179397,
+          "maxMs": 2.762079999782145,
+          "over20Ms": 0
+        },
+        "off-before:socket-11": {
+          "calls": 2500,
+          "totalMs": 430.50640004407614,
+          "maxMs": 1.5566400000825524,
+          "over20Ms": 0
+        },
+        "off-before:receive-video-batch": {
+          "calls": 3722,
+          "totalMs": 1625.6263359766454,
+          "maxMs": 1.3038719994947314,
+          "over20Ms": 0
+        },
+        "off-before:pump": {
+          "calls": 2685,
+          "totalMs": 17047.376768008806,
+          "maxMs": 9.79436800070107,
+          "over20Ms": 0
+        },
+        "off-before:finishVideo": {
+          "calls": 2685,
+          "totalMs": 37.8285439889878,
+          "maxMs": 0.3531840005889535,
+          "over20Ms": 0
+        },
+        "off-before:videoFrame": {
+          "calls": 3568,
+          "totalMs": 2811.081536033191,
+          "maxMs": 2.555776000022888,
+          "over20Ms": 0
+        },
+        "off-before:drainAudio": {
+          "calls": 1342,
+          "totalMs": 753.5018560094759,
+          "maxMs": 2.2553920010104775,
+          "over20Ms": 0
+        },
+        "off-before:socket-4": {
+          "calls": 422,
+          "totalMs": 118.46080000139773,
+          "maxMs": 0.957247999496758,
+          "over20Ms": 0
+        },
+        "touch:socket-5": {
+          "calls": 13428,
+          "totalMs": 2386.838527931832,
+          "maxMs": 2.375808000564575,
+          "over20Ms": 0
+        },
+        "touch:receive-video-batch": {
+          "calls": 3701,
+          "totalMs": 1619.5252480264753,
+          "maxMs": 2.1489920001477003,
+          "over20Ms": 0
+        },
+        "touch:videoFrame": {
+          "calls": 3510,
+          "totalMs": 2772.202176007442,
+          "maxMs": 4.184608000330627,
+          "over20Ms": 0
+        },
+        "touch:pump": {
+          "calls": 2717,
+          "totalMs": 17342.5923200408,
+          "maxMs": 12.670208000577986,
+          "over20Ms": 0
+        },
+        "touch:finishVideo": {
+          "calls": 2716,
+          "totalMs": 37.682240039110184,
+          "maxMs": 0.029952000826597214,
+          "over20Ms": 0
+        },
+        "touch:drainAudio": {
+          "calls": 1358,
+          "totalMs": 573.3589760167524,
+          "maxMs": 7.788288000039756,
+          "over20Ms": 0
+        },
+        "touch:touch-bounds": {
+          "calls": 1450,
+          "totalMs": 37.908127998933196,
+          "maxMs": 0.03923199977725744,
+          "over20Ms": 0
+        },
+        "touch:hid-touch": {
+          "calls": 1358,
+          "totalMs": 198.6517119947821,
+          "maxMs": 0.6158720003440976,
+          "over20Ms": 0
+        },
+        "touch:touch-route": {
+          "calls": 1358,
+          "totalMs": 29.95286399964243,
+          "maxMs": 1.2533759996294975,
+          "over20Ms": 0
+        },
+        "touch:drainVideo": {
+          "calls": 2716,
+          "totalMs": 9083.927776014432,
+          "maxMs": 6.965088000521064,
+          "over20Ms": 0
+        },
+        "touch:socket-11": {
+          "calls": 2473,
+          "totalMs": 430.1102399742231,
+          "maxMs": 3.11580799985677,
+          "over20Ms": 0
+        },
+        "touch:mouse-enqueue": {
+          "calls": 90,
+          "totalMs": 7.04572799988091,
+          "maxMs": 0.6301760002970695,
+          "over20Ms": 0
+        },
+        "touch:socket-4": {
+          "calls": 519,
+          "totalMs": 149.1664639953524,
+          "maxMs": 0.8327040001749992,
+          "over20Ms": 0
+        },
+        "off-after:videoFrame": {
+          "calls": 2884,
+          "totalMs": 2179.6460160110146,
+          "maxMs": 4.347167999483645,
+          "over20Ms": 0
+        },
+        "off-after:receive-video-batch": {
+          "calls": 5319,
+          "totalMs": 2191.16035204567,
+          "maxMs": 1.5042240004986525,
+          "over20Ms": 0
+        },
+        "off-after:socket-4": {
+          "calls": 628,
+          "totalMs": 171.02185597456992,
+          "maxMs": 1.4478399995714426,
+          "over20Ms": 0
+        },
+        "off-after:socket-5": {
+          "calls": 14241,
+          "totalMs": 2563.722687970847,
+          "maxMs": 1.6319359987974167,
+          "over20Ms": 0
+        },
+        "off-after:socket-11": {
+          "calls": 3021,
+          "totalMs": 514.9265600014478,
+          "maxMs": 0.9177279993891716,
+          "over20Ms": 0
+        },
+        "off-after:finishVideo": {
+          "calls": 2933,
+          "totalMs": 40.02825602237135,
+          "maxMs": 0.024000000208616257,
+          "over20Ms": 0
+        },
+        "off-after:drainAudio": {
+          "calls": 1467,
+          "totalMs": 813.2963839825243,
+          "maxMs": 2.3976320000365376,
+          "over20Ms": 0
+        },
+        "off-after:touch-bounds": {
+          "calls": 2931,
+          "totalMs": 64.75779197737575,
+          "maxMs": 0.0422720005735755,
+          "over20Ms": 0
+        },
+        "off-after:hid-touch": {
+          "calls": 1466,
+          "totalMs": 210.49331201519817,
+          "maxMs": 0.537024000659585,
+          "over20Ms": 0
+        },
+        "off-after:touch-route": {
+          "calls": 1466,
+          "totalMs": 86.05011203419417,
+          "maxMs": 0.5084800003096461,
+          "over20Ms": 0
+        },
+        "off-after:drainVideo": {
+          "calls": 2932,
+          "totalMs": 7807.741727990098,
+          "maxMs": 11.347328000701964,
+          "over20Ms": 0
+        },
+        "off-after:pump": {
+          "calls": 2932,
+          "totalMs": 18271.50188799482,
+          "maxMs": 13.01814400125295,
+          "over20Ms": 0
+        }
+      },
+      "taskProfile": {
+        "Other": {
+          "calls": 0,
+          "totalMs": 0,
+          "maxMs": 0,
+          "over20Ms": 0,
+          "over100Ms": 0
+        },
+        "InputDispatch": {
+          "calls": 8690,
+          "totalMs": 1246.3902719831094,
+          "maxMs": 1.3399999998509884,
+          "over20Ms": 0,
+          "over100Ms": 0
+        },
+        "InputSend": {
+          "calls": 94,
+          "totalMs": 202.4743999997154,
+          "maxMs": 4.229727999307215,
+          "over20Ms": 0,
+          "over100Ms": 0
+        },
+        "AudioRecv": {
+          "calls": 9138,
+          "totalMs": 18627.9123200085,
+          "maxMs": 9.783328000456095,
+          "over20Ms": 0,
+          "over100Ms": 0
+        },
+        "AudioDec": {
+          "calls": 0,
+          "totalMs": 0,
+          "maxMs": 0,
+          "over20Ms": 0,
+          "over100Ms": 0
+        },
+        "VideoRecv": {
+          "calls": 6008,
+          "totalMs": 24217.441632063128,
+          "maxMs": 12.102079999633133,
+          "over20Ms": 0,
+          "over100Ms": 0
+        },
+        "VideoDec": {
+          "calls": 0,
+          "totalMs": 0,
+          "maxMs": 0,
+          "over20Ms": 0,
+          "over100Ms": 0
+        },
+        "ControlRecv": {
+          "calls": 6000,
+          "totalMs": 4212.7766079632565,
+          "maxMs": 3.9861440006643534,
+          "over20Ms": 0,
+          "over100Ms": 0
+        },
+        "LossStats": {
+          "calls": 1720,
+          "totalMs": 1458.7087999880314,
+          "maxMs": 8.638079999946058,
+          "over20Ms": 0,
+          "over100Ms": 0
+        },
+        "ReqIdrFrame": {
+          "calls": 305,
+          "totalMs": 400.8057279959321,
+          "maxMs": 2.9106560004875064,
+          "over20Ms": 0,
+          "over100Ms": 0
+        },
+        "CtrlAsyncCb": {
+          "calls": 0,
+          "totalMs": 0,
+          "maxMs": 0,
+          "over20Ms": 0,
+          "over100Ms": 0
+        },
+        "InvRefFrames": {
+          "calls": 42,
+          "totalMs": 92.36591999884695,
+          "maxMs": 4.224832001142204,
+          "over20Ms": 0,
+          "over100Ms": 0
+        },
+        "Ping": {
+          "calls": 3009,
+          "totalMs": 340.1095040226355,
+          "maxMs": 0.9610240003094077,
+          "over20Ms": 0,
+          "over100Ms": 0
+        }
+      },
+      "slowCalls": [],
+      "cryptoBenchmark": null,
+      "receiveBuffers": [
+        {
+          "fd": 3,
+          "requested": 262144,
+          "result": 0,
+          "actual": 262144,
+          "getResult": 0
+        },
+        {
+          "fd": 4,
+          "requested": 1851392,
+          "result": 0,
+          "actual": 1851392,
+          "getResult": 0
+        }
+      ],
+      "audioPacketDurationMs": 5,
+      "overlay": {
+        "method": "native-badge",
+        "visible": 1,
+        "width": 672,
+        "height": 88,
+        "counters": {
+          "updates": 1060,
+          "bytes": 250736640
+        },
+        "background": 3693090828,
+        "textPixel": 4294963172
+      },
+      "motion": {
+        "samples": 90,
+        "broadChanges": 87
+      },
+      "clock": {
+        "start": {
+          "frameWakes": 286,
+          "timerWakes": 0,
+          "forcedWakes": 0,
+          "serviceWakes": 0,
+          "waitMs": 1216.3901439951733,
+          "maxWaitMs": 15.825888000428677
+        },
+        "end": {
+          "frameWakes": 4496,
+          "timerWakes": 0,
+          "forcedWakes": 0,
+          "serviceWakes": 0,
+          "waitMs": 9409.682175961323,
+          "maxWaitMs": 15.825888000428677
+        }
+      },
+      "fec": {
+        "start": {
+          "calls": 0,
+          "totalWallMs": 0,
+          "maxWallMs": 0,
+          "failed": 0,
+          "shardBytes": 0,
+          "budgetYields": 0
+        },
+        "end": {
+          "calls": 4,
+          "totalWallMs": 128.70988800097257,
+          "maxWallMs": 44.38502400089055,
+          "failed": 0,
+          "shardBytes": 133760,
+          "budgetYields": 16
+        }
+      },
+      "cleanup": {
+        "tasks": 0,
+        "sameOwner": true,
+        "resident": "launcher",
+        "ftp": true
+      },
+      "refreshDuring": {
+        "flags": "2",
+        "result": 0,
+        "reason": "getter output invalid"
+      },
+      "refreshAfter": {
+        "flags": "1",
+        "result": 0,
+        "reason": "getter output invalid"
+      }
+    },
+    {
+      "run": "moonlight-touch-audio10",
+      "packageSha256": "4dc063c1e4d0f0da0a4b70dc87742ef66b58b1e84413148d3756daaa0beb675a",
+      "probeSha256": "79ea6a0c0c9fa127ccd97d828919cbbef0a9ba084697f506e3885626708f8070",
+      "config": {
+        "codec": "h264",
+        "width": 1920,
+        "height": 1080,
+        "bitrate": 40000,
+        "fps": 120,
+        "pacing": "smooth",
+        "durationMs": 90000,
+        "warmupMs": 5000,
+        "showStats": true,
+        "simulateTouch": true,
+        "terminateDesktop": false,
+        "profile": true,
+        "touchPattern": "alternating",
+        "appId": 382300562
+      },
+      "complete": true,
+      "error": null,
+      "summary": {
+        "seconds": 90.167,
+        "decodedFps": 115.8738784699502,
+        "presentedFps": 87.81483247751395,
+        "receivedMbps": 32.225927623188085,
+        "frameIntervalMs": 11.387756492043478,
+        "frameJitterMs": 6.462343578768741,
+        "maxIntervalMs": 330.2584639992565,
+        "p50IntervalMs": 11.327743999660015,
+        "p95IntervalMs": 15.504128000698984,
+        "p99IntervalMs": 19.30524800065905,
+        "stallsOver25Ms": 29,
+        "stallsOver50Ms": 15,
+        "stallsOver100Ms": 7,
+        "stallsOverOneAndHalfFrames": 3931,
+        "videoSuperseded": 2530,
+        "videoExpired": 0,
+        "videoBacklogDrops": 2530,
+        "decoderRejected": 0,
+        "videoFrameGaps": 372,
+        "audioEmptyEpisodes": 385,
+        "audioEmptyMs": 574.3998719919473,
+        "audioDiscardedMs": 0,
+        "pumpAvgMs": 12.701753492701068,
+        "drainAvgMs": 7.28808262003373,
+        "decoderPending": 2,
+        "copyPresentMs": 1.9214817277158405,
+        "presentationTimings": {
+          "acquire": 1300.8383999839425,
+          "submit": 2577.2671680124477,
+          "present": 2659.939967962913,
+          "wait": 2517.4949440918863
+        },
+        "uiSnapshots": 0,
+        "uiFrames": 0,
+        "simulatedTouchSamples": 1369
+      },
+      "phases": {
+        "off-before": {
+          "seconds": 28.351,
+          "decodedFps": 119.00814786074565,
+          "presentedFps": 89.97918944658036,
+          "receivedMbps": 32.6180725900321,
+          "frameIntervalMs": 11.11384221403383,
+          "frameJitterMs": 3.880390577160431,
+          "maxIntervalMs": 79.2693440001458,
+          "p50IntervalMs": 10.168319999240339,
+          "p95IntervalMs": 15.29398399963975,
+          "p99IntervalMs": 19.011455999687314,
+          "stallsOver25Ms": 6,
+          "stallsOver50Ms": 3,
+          "stallsOver100Ms": 0,
+          "stallsOverOneAndHalfFrames": 1243,
+          "videoSuperseded": 823,
+          "videoExpired": 0,
+          "videoBacklogDrops": 823,
+          "decoderRejected": 0,
+          "videoFrameGaps": 28,
+          "audioEmptyEpisodes": 351,
+          "audioEmptyMs": 487.044543989934,
+          "audioDiscardedMs": 0,
+          "pumpAvgMs": 12.56386458144367,
+          "drainAvgMs": 7.255977254826932,
+          "decoderPending": 3,
+          "copyPresentMs": 1.9254093045844858,
+          "presentationTimings": {
+            "acquire": 19761.707711901166,
+            "submit": 38116.113824010805,
+            "present": 40061.862367997805,
+            "wait": 52331.62758410491
+          },
+          "uiSnapshots": 0,
+          "uiFrames": 0,
+          "simulatedTouchSamples": 1369
+        },
+        "touch": {
+          "seconds": 29.405,
+          "decodedFps": 108.72300629144704,
+          "presentedFps": 84.50943717054922,
+          "receivedMbps": 31.731555313722158,
+          "frameIntervalMs": 11.833735868008338,
+          "frameJitterMs": 9.889994946519153,
+          "maxIntervalMs": 330.2584639992565,
+          "p50IntervalMs": 12.979232001118362,
+          "p95IntervalMs": 15.8191679995507,
+          "p99IntervalMs": 21.82911999989301,
+          "stallsOver25Ms": 18,
+          "stallsOver50Ms": 9,
+          "stallsOver100Ms": 6,
+          "stallsOverOneAndHalfFrames": 1265,
+          "videoSuperseded": 712,
+          "videoExpired": 0,
+          "videoBacklogDrops": 712,
+          "decoderRejected": 0,
+          "videoFrameGaps": 322,
+          "audioEmptyEpisodes": 12,
+          "audioEmptyMs": 22.369279998354614,
+          "audioDiscardedMs": 0,
+          "pumpAvgMs": 12.877930269555112,
+          "drainAvgMs": 7.030882573328713,
+          "decoderPending": 2,
+          "copyPresentMs": 1.9180938173276587,
+          "presentationTimings": {
+            "acquire": 20184.99788783735,
+            "submit": 38946.20992003472,
+            "present": 40932.46704000693,
+            "wait": 53141.743616188425
+          },
+          "uiSnapshots": 0,
+          "uiFrames": 0,
+          "simulatedTouchSamples": 1369
+        },
+        "off-after": {
+          "seconds": 29.381,
+          "decodedFps": 119.22671113985228,
+          "presentedFps": 88.86695483475715,
+          "receivedMbps": 32.15920002722848,
+          "frameIntervalMs": 11.25328203446932,
+          "frameJitterMs": 4.174496027121866,
+          "maxIntervalMs": 105.26419200003147,
+          "p50IntervalMs": 10.574048000387847,
+          "p95IntervalMs": 15.492320001125336,
+          "p99IntervalMs": 18.768928000703454,
+          "stallsOver25Ms": 5,
+          "stallsOver50Ms": 3,
+          "stallsOver100Ms": 1,
+          "stallsOverOneAndHalfFrames": 1288,
+          "videoSuperseded": 892,
+          "videoExpired": 0,
+          "videoBacklogDrops": 892,
+          "decoderRejected": 0,
+          "videoFrameGaps": 22,
+          "audioEmptyEpisodes": 7,
+          "audioEmptyMs": 51.57897600252181,
+          "audioDiscardedMs": 0,
+          "pumpAvgMs": 12.652223879694098,
+          "drainAvgMs": 7.544980667689045,
+          "decoderPending": 2,
+          "copyPresentMs": 1.9223658429745518,
+          "presentationTimings": {
+            "acquire": 20626.73756786401,
+            "submit": 39818.9033920327,
+            "present": 41837.45382399291,
+            "wait": 54003.16924815114
+          },
+          "uiSnapshots": 0,
+          "uiFrames": 0,
+          "simulatedTouchSamples": 1369
+        }
+      },
+      "mouseForwardingGated": true,
+      "inputUpdates": {
+        "gamepadQueued": 0,
+        "gamepadRejected": 0
+      },
+      "physicalContacts": 0,
+      "physicalContactsByPhase": null,
+      "suppressedPhysicalSamples": 0,
+      "injectedContacts": 1369,
+      "suppressedMouseButtons": null,
+      "profile": {
+        "off-before:touch-bounds": {
+          "calls": 2766,
+          "totalMs": 64.91705602966249,
+          "maxMs": 0.06031999923288822,
+          "over20Ms": 0
+        },
+        "off-before:hid-touch": {
+          "calls": 1383,
+          "totalMs": 170.51830398663878,
+          "maxMs": 0.5042239995673299,
+          "over20Ms": 0
+        },
+        "off-before:touch-route": {
+          "calls": 1383,
+          "totalMs": 80.53340801596642,
+          "maxMs": 0.08310399949550629,
+          "over20Ms": 0
+        },
+        "off-before:drainVideo": {
+          "calls": 2765,
+          "totalMs": 9455.40297597088,
+          "maxMs": 11.076159999705851,
+          "over20Ms": 0
+        },
+        "off-before:socket-5": {
+          "calls": 9707,
+          "totalMs": 2485.1137279868126,
+          "maxMs": 7.8799679996445775,
+          "over20Ms": 0
+        },
+        "off-before:audioFrame": {
+          "calls": 3001,
+          "totalMs": 2323.966976037249,
+          "maxMs": 8.239264000207186,
+          "over20Ms": 0
+        },
+        "off-before:socket-4": {
+          "calls": 449,
+          "totalMs": 125.62896002084017,
+          "maxMs": 0.7957440000027418,
+          "over20Ms": 0
+        },
+        "off-before:socket-11": {
+          "calls": 3527,
+          "totalMs": 598.9721599780023,
+          "maxMs": 3.2901119999587536,
+          "over20Ms": 0
+        },
+        "off-before:pump": {
+          "calls": 2764,
+          "totalMs": 17325.06604803074,
+          "maxMs": 11.455936000682414,
+          "over20Ms": 0
+        },
+        "off-before:finishVideo": {
+          "calls": 2764,
+          "totalMs": 37.645888038910925,
+          "maxMs": 0.022655999287962914,
+          "over20Ms": 0
+        },
+        "off-before:receive-video-batch": {
+          "calls": 5092,
+          "totalMs": 2106.469983983785,
+          "maxMs": 1.7469440000131726,
+          "over20Ms": 0
+        },
+        "off-before:videoFrame": {
+          "calls": 3572,
+          "totalMs": 2835.2089600404724,
+          "maxMs": 7.041183999739587,
+          "over20Ms": 0
+        },
+        "off-before:drainAudio": {
+          "calls": 1382,
+          "totalMs": 456.5184320025146,
+          "maxMs": 1.311647999100387,
+          "over20Ms": 0
+        },
+        "touch:socket-5": {
+          "calls": 10835,
+          "totalMs": 2536.3623679894954,
+          "maxMs": 6.877375999465585,
+          "over20Ms": 0
+        },
+        "touch:audioFrame": {
+          "calls": 3000,
+          "totalMs": 2131.9074239814654,
+          "maxMs": 7.1388159999623895,
+          "over20Ms": 0
+        },
+        "touch:socket-11": {
+          "calls": 2460,
+          "totalMs": 416.66099201422185,
+          "maxMs": 1.1696639992296696,
+          "over20Ms": 0
+        },
+        "touch:receive-video-batch": {
+          "calls": 2590,
+          "totalMs": 1255.7878399528563,
+          "maxMs": 1.470656001009047,
+          "over20Ms": 0
+        },
+        "touch:pump": {
+          "calls": 2739,
+          "totalMs": 17583.07315203268,
+          "maxMs": 13.352768000215292,
+          "over20Ms": 0
+        },
+        "touch:finishVideo": {
+          "calls": 2739,
+          "totalMs": 38.259680022485554,
+          "maxMs": 0.020607998594641685,
+          "over20Ms": 0
+        },
+        "touch:drainVideo": {
+          "calls": 2739,
+          "totalMs": 8821.268575986847,
+          "maxMs": 11.315584000200033,
+          "over20Ms": 0
+        },
+        "touch:videoFrame": {
+          "calls": 3263,
+          "totalMs": 2606.739327969961,
+          "maxMs": 3.8865599995478988,
+          "over20Ms": 0
+        },
+        "touch:drainAudio": {
+          "calls": 1369,
+          "totalMs": 685.4064960079268,
+          "maxMs": 6.041792000643909,
+          "over20Ms": 0
+        },
+        "touch:touch-bounds": {
+          "calls": 2738,
+          "totalMs": 64.99728005565703,
+          "maxMs": 0.039808000437915325,
+          "over20Ms": 0
+        },
+        "touch:hid-touch": {
+          "calls": 1369,
+          "totalMs": 169.49081595707685,
+          "maxMs": 0.7233279990032315,
+          "over20Ms": 0
+        },
+        "touch:touch-route": {
+          "calls": 1369,
+          "totalMs": 250.474879976362,
+          "maxMs": 1.0588799994438887,
+          "over20Ms": 0
+        },
+        "touch:mouse-enqueue": {
+          "calls": 1318,
+          "totalMs": 88.34096000064164,
+          "maxMs": 0.5849919989705086,
+          "over20Ms": 0
+        },
+        "touch:socket-4": {
+          "calls": 1769,
+          "totalMs": 546.4784640176222,
+          "maxMs": 1.2684159995988011,
+          "over20Ms": 0
+        },
+        "off-after:socket-5": {
+          "calls": 9645,
+          "totalMs": 2451.361632041633,
+          "maxMs": 2.570496001280844,
+          "over20Ms": 0
+        },
+        "off-after:socket-4": {
+          "calls": 447,
+          "totalMs": 126.85836800467223,
+          "maxMs": 1.1412479998543859,
+          "over20Ms": 0
+        },
+        "off-after:socket-11": {
+          "calls": 3592,
+          "totalMs": 622.3149759965017,
+          "maxMs": 2.6978240003809333,
+          "over20Ms": 0
+        },
+        "off-after:receive-video-batch": {
+          "calls": 5268,
+          "totalMs": 2161.702943969518,
+          "maxMs": 1.4939839988946915,
+          "over20Ms": 0
+        },
+        "off-after:videoFrame": {
+          "calls": 3618,
+          "totalMs": 2875.5682880235836,
+          "maxMs": 7.450496000237763,
+          "over20Ms": 0
+        },
+        "off-after:pump": {
+          "calls": 2733,
+          "totalMs": 17246.021824031137,
+          "maxMs": 12.815423999913037,
+          "over20Ms": 0
+        },
+        "off-after:finishVideo": {
+          "calls": 2733,
+          "totalMs": 37.45724800508469,
+          "maxMs": 0.021343999542295933,
+          "over20Ms": 0
+        },
+        "off-after:drainAudio": {
+          "calls": 1367,
+          "totalMs": 710.9315839894116,
+          "maxMs": 2.4570879992097616,
+          "over20Ms": 0
+        },
+        "off-after:touch-bounds": {
+          "calls": 2732,
+          "totalMs": 63.822496018372476,
+          "maxMs": 0.042527999728918076,
+          "over20Ms": 0
+        },
+        "off-after:hid-touch": {
+          "calls": 1366,
+          "totalMs": 169.20575999468565,
+          "maxMs": 0.5544640002772212,
+          "over20Ms": 0
+        },
+        "off-after:touch-route": {
+          "calls": 1366,
+          "totalMs": 79.97686399053782,
+          "maxMs": 0.09958400018513203,
+          "over20Ms": 0
+        },
+        "off-after:drainVideo": {
+          "calls": 2732,
+          "totalMs": 9482.591743986122,
+          "maxMs": 6.787712000310421,
+          "over20Ms": 0
+        },
+        "off-after:audioFrame": {
+          "calls": 3021,
+          "totalMs": 2180.3532800022513,
+          "maxMs": 8.040864000096917,
+          "over20Ms": 0
+        }
+      },
+      "taskProfile": {
+        "Other": {
+          "calls": 0,
+          "totalMs": 0,
+          "maxMs": 0,
+          "over20Ms": 0,
+          "over100Ms": 0
+        },
+        "InputDispatch": {
+          "calls": 8906,
+          "totalMs": 1353.140800091438,
+          "maxMs": 1.9504000004380941,
+          "over20Ms": 0,
+          "over100Ms": 0
+        },
+        "InputSend": {
+          "calls": 1354,
+          "totalMs": 2811.837151978165,
+          "maxMs": 6.829663999378681,
+          "over20Ms": 0,
+          "over100Ms": 0
+        },
+        "AudioRecv": {
+          "calls": 9433,
+          "totalMs": 14352.91107202787,
+          "maxMs": 10.831616000272334,
+          "over20Ms": 0,
+          "over100Ms": 0
+        },
+        "AudioDec": {
+          "calls": 0,
+          "totalMs": 0,
+          "maxMs": 0,
+          "over20Ms": 0,
+          "over100Ms": 0
+        },
+        "VideoRecv": {
+          "calls": 6255,
+          "totalMs": 24480.67638399452,
+          "maxMs": 10.176767999306321,
+          "over20Ms": 0,
+          "over100Ms": 0
+        },
+        "VideoDec": {
+          "calls": 0,
+          "totalMs": 0,
+          "maxMs": 0,
+          "over20Ms": 0,
+          "over100Ms": 0
+        },
+        "ControlRecv": {
+          "calls": 6335,
+          "totalMs": 5125.220544025302,
+          "maxMs": 8.470944000408053,
+          "over20Ms": 0,
+          "over100Ms": 0
+        },
+        "LossStats": {
+          "calls": 1676,
+          "totalMs": 1539.9455679636449,
+          "maxMs": 8.14918400067836,
+          "over20Ms": 0,
+          "over100Ms": 0
+        },
+        "ReqIdrFrame": {
+          "calls": 0,
+          "totalMs": 0,
+          "maxMs": 0,
+          "over20Ms": 0,
+          "over100Ms": 0
+        },
+        "CtrlAsyncCb": {
+          "calls": 0,
+          "totalMs": 0,
+          "maxMs": 0,
+          "over20Ms": 0,
+          "over100Ms": 0
+        },
+        "InvRefFrames": {
+          "calls": 104,
+          "totalMs": 239.41328000370413,
+          "maxMs": 4.672671999782324,
+          "over20Ms": 0,
+          "over100Ms": 0
+        },
+        "Ping": {
+          "calls": 3035,
+          "totalMs": 332.3331200471148,
+          "maxMs": 1.2107199998572469,
+          "over20Ms": 0,
+          "over100Ms": 0
+        }
+      },
+      "slowCalls": [],
+      "cryptoBenchmark": null,
+      "receiveBuffers": [
+        {
+          "fd": 3,
+          "requested": 262144,
+          "result": 0,
+          "actual": 262144,
+          "getResult": 0
+        },
+        {
+          "fd": 4,
+          "requested": 1851392,
+          "result": 0,
+          "actual": 1851392,
+          "getResult": 0
+        }
+      ],
+      "audioPacketDurationMs": 10,
+      "overlay": {
+        "method": "native-badge",
+        "visible": 1,
+        "width": 672,
+        "height": 88,
+        "counters": {
+          "updates": 1156,
+          "bytes": 273444864
+        },
+        "background": 3693090828,
+        "textPixel": 4294963172
+      },
+      "motion": {
+        "samples": 89,
+        "broadChanges": 86
+      },
+      "clock": {
+        "start": {
+          "frameWakes": 332,
+          "timerWakes": 0,
+          "forcedWakes": 0,
+          "serviceWakes": 0,
+          "waitMs": 1236.4377280026674,
+          "maxWaitMs": 15.811807999387383
+        },
+        "end": {
+          "frameWakes": 4448,
+          "timerWakes": 0,
+          "forcedWakes": 0,
+          "serviceWakes": 0,
+          "waitMs": 8610.960575968958,
+          "maxWaitMs": 15.811807999387383
+        }
+      },
+      "fec": {
+        "start": {
+          "calls": 0,
+          "totalWallMs": 0,
+          "maxWallMs": 0,
+          "failed": 0,
+          "shardBytes": 0,
+          "budgetYields": 0
+        },
+        "end": {
+          "calls": 3,
+          "totalWallMs": 92.88934399932623,
+          "maxWallMs": 48.977536000311375,
+          "failed": 0,
+          "shardBytes": 99968,
+          "budgetYields": 11
+        }
+      },
+      "cleanup": {
+        "tasks": 0,
+        "sameOwner": true,
+        "resident": "launcher",
+        "ftp": true
+      },
+      "refreshDuring": {
+        "flags": "2",
+        "result": 0,
+        "reason": "getter output invalid"
+      },
+      "refreshAfter": {
+        "flags": "1",
+        "result": 0,
+        "reason": "getter output invalid"
+      }
+    },
+    {
+      "run": "moonlight-touch-gcm-cache",
+      "packageSha256": "1252f50701632650f48fbb06f7e65176ee96748774adf13c6ca40e7827a5cd63",
+      "probeSha256": "b0787ff9785fbc4587db5ece24e9aff728883fc05f46b28f66aa055318c69a36",
+      "config": {
+        "codec": "h264",
+        "width": 1920,
+        "height": 1080,
+        "bitrate": 40000,
+        "fps": 120,
+        "pacing": "smooth",
+        "durationMs": 90000,
+        "warmupMs": 5000,
+        "showStats": true,
+        "simulateTouch": true,
+        "terminateDesktop": false,
+        "profile": true,
+        "touchPattern": "alternating",
+        "appId": 382300562
+      },
+      "complete": true,
+      "error": null,
+      "summary": {
+        "seconds": 90.158,
+        "decodedFps": 119.31276203997426,
+        "presentedFps": 89.38751968765943,
+        "receivedMbps": 32.27627462898467,
+        "frameIntervalMs": 11.187357276088829,
+        "frameJitterMs": 3.8046473525300306,
+        "maxIntervalMs": 71.88880000077188,
+        "p50IntervalMs": 10.982816000469029,
+        "p95IntervalMs": 15.38892799988389,
+        "p99IntervalMs": 18.538975999690592,
+        "stallsOver25Ms": 21,
+        "stallsOver50Ms": 6,
+        "stallsOver100Ms": 0,
+        "stallsOverOneAndHalfFrames": 3988,
+        "videoSuperseded": 2697,
+        "videoExpired": 0,
+        "videoBacklogDrops": 2697,
+        "decoderRejected": 0,
+        "videoFrameGaps": 60,
+        "audioEmptyEpisodes": 132,
+        "audioEmptyMs": 268.37644799705595,
+        "audioDiscardedMs": 40,
+        "pumpAvgMs": 12.692002800972745,
+        "drainAvgMs": 7.440926912471807,
+        "decoderPending": 3,
+        "copyPresentMs": 1.9170351815340043,
+        "presentationTimings": {
+          "acquire": 1324.4658880792558,
+          "submit": 2623.622591905296,
+          "present": 2669.41631993372,
+          "wait": 2581.323423971422
+        },
+        "uiSnapshots": 0,
+        "uiFrames": 0,
+        "simulatedTouchSamples": 1346
+      },
+      "phases": {
+        "off-before": {
+          "seconds": 28.364,
+          "decodedFps": 119.16513890847553,
+          "presentedFps": 89.90269355521083,
+          "receivedMbps": 32.52661514595967,
+          "frameIntervalMs": 11.123410447058724,
+          "frameJitterMs": 3.7427833139816786,
+          "maxIntervalMs": 60.429151999764144,
+          "p50IntervalMs": 10.222175999544561,
+          "p95IntervalMs": 15.404160000383854,
+          "p99IntervalMs": 18.53628799971193,
+          "stallsOver25Ms": 5,
+          "stallsOver50Ms": 2,
+          "stallsOver100Ms": 0,
+          "stallsOverOneAndHalfFrames": 1245,
+          "videoSuperseded": 830,
+          "videoExpired": 0,
+          "videoBacklogDrops": 830,
+          "decoderRejected": 0,
+          "videoFrameGaps": 23,
+          "audioEmptyEpisodes": 94,
+          "audioEmptyMs": 146.9478399977088,
+          "audioDiscardedMs": 20,
+          "pumpAvgMs": 12.629309970602446,
+          "drainAvgMs": 7.435600037128309,
+          "decoderPending": 3,
+          "copyPresentMs": 1.9151539074337365,
+          "presentationTimings": {
+            "acquire": 21163.20230386837,
+            "submit": 40859.793088049606,
+            "present": 42906.370815987626,
+            "wait": 55779.764192157905
+          },
+          "uiSnapshots": 0,
+          "uiFrames": 0,
+          "simulatedTouchSamples": 1346
+        },
+        "touch": {
+          "seconds": 29.392,
+          "decodedFps": 119.45427327163854,
+          "presentedFps": 88.39139902014153,
+          "receivedMbps": 32.2662912357104,
+          "frameIntervalMs": 11.313316212470907,
+          "frameJitterMs": 3.7986098140546103,
+          "maxIntervalMs": 64.82553600054234,
+          "p50IntervalMs": 12.834015999920666,
+          "p95IntervalMs": 15.558815998956561,
+          "p99IntervalMs": 18.65308800060302,
+          "stallsOver25Ms": 8,
+          "stallsOver50Ms": 2,
+          "stallsOver100Ms": 0,
+          "stallsOverOneAndHalfFrames": 1311,
+          "videoSuperseded": 913,
+          "videoExpired": 0,
+          "videoBacklogDrops": 913,
+          "decoderRejected": 0,
+          "videoFrameGaps": 13,
+          "audioEmptyEpisodes": 16,
+          "audioEmptyMs": 43.75107199791819,
+          "audioDiscardedMs": 0,
+          "pumpAvgMs": 12.782718616064315,
+          "drainAvgMs": 7.517819702612556,
+          "decoderPending": 4,
+          "copyPresentMs": 1.9172955688990343,
+          "presentationTimings": {
+            "acquire": 21600.500255892635,
+            "submit": 41739.78127997553,
+            "present": 43798.00447999306,
+            "wait": 56641.73801615789
+          },
+          "uiSnapshots": 0,
+          "uiFrames": 0,
+          "simulatedTouchSamples": 1346
+        },
+        "off-after": {
+          "seconds": 29.377,
+          "decodedFps": 119.17486469006366,
+          "presentedFps": 89.79814140313852,
+          "receivedMbps": 32.08366763114001,
+          "frameIntervalMs": 11.136003736163673,
+          "frameJitterMs": 3.9107233166078563,
+          "maxIntervalMs": 71.88880000077188,
+          "p50IntervalMs": 10.711488001048565,
+          "p95IntervalMs": 15.28927999921143,
+          "p99IntervalMs": 18.252512000501156,
+          "stallsOver25Ms": 8,
+          "stallsOver50Ms": 2,
+          "stallsOver100Ms": 0,
+          "stallsOverOneAndHalfFrames": 1298,
+          "videoSuperseded": 862,
+          "videoExpired": 0,
+          "videoBacklogDrops": 862,
+          "decoderRejected": 0,
+          "videoFrameGaps": 24,
+          "audioEmptyEpisodes": 5,
+          "audioEmptyMs": 68.95807999931276,
+          "audioDiscardedMs": 20,
+          "pumpAvgMs": 12.654688190758344,
+          "drainAvgMs": 7.368971850952736,
+          "decoderPending": 3,
+          "copyPresentMs": 1.920505437462282,
+          "presentationTimings": {
+            "acquire": 22046.920543957152,
+            "submit": 42626.44639995506,
+            "present": 44700.7218559216,
+            "wait": 57510.61398410938
+          },
+          "uiSnapshots": 0,
+          "uiFrames": 0,
+          "simulatedTouchSamples": 1346
+        }
+      },
+      "mouseForwardingGated": true,
+      "inputUpdates": {
+        "gamepadQueued": 0,
+        "gamepadRejected": 0
+      },
+      "physicalContacts": 0,
+      "physicalContactsByPhase": null,
+      "suppressedPhysicalSamples": 0,
+      "injectedContacts": 1346,
+      "suppressedMouseButtons": null,
+      "profile": {
+        "off-before:touch-bounds": {
+          "calls": 2736,
+          "totalMs": 63.147135936655104,
+          "maxMs": 0.05763200018554926,
+          "over20Ms": 0
+        },
+        "off-before:hid-touch": {
+          "calls": 1368,
+          "totalMs": 168.2001279965043,
+          "maxMs": 0.4784319996833801,
+          "over20Ms": 0
+        },
+        "off-before:touch-route": {
+          "calls": 1368,
+          "totalMs": 79.11568000447005,
+          "maxMs": 0.07801599986851215,
+          "over20Ms": 0
+        },
+        "off-before:drainVideo": {
+          "calls": 2736,
+          "totalMs": 9387.45478400588,
+          "maxMs": 16.267008000053465,
+          "over20Ms": 0
+        },
+        "off-before:socket-5": {
+          "calls": 9749,
+          "totalMs": 2481.257216051221,
+          "maxMs": 7.422207999974489,
+          "over20Ms": 0
+        },
+        "off-before:audioFrame": {
+          "calls": 3000,
+          "totalMs": 2170.906879951246,
+          "maxMs": 3.835135999135673,
+          "over20Ms": 0
+        },
+        "off-before:socket-11": {
+          "calls": 3837,
+          "totalMs": 648.8961279308423,
+          "maxMs": 1.0215360010042787,
+          "over20Ms": 0
+        },
+        "off-before:pump": {
+          "calls": 2736,
+          "totalMs": 17232.68601602502,
+          "maxMs": 12.375616000033915,
+          "over20Ms": 0
+        },
+        "off-before:finishVideo": {
+          "calls": 2735,
+          "totalMs": 37.79407995007932,
+          "maxMs": 0.33977599907666445,
+          "over20Ms": 0
+        },
+        "off-before:receive-video-batch": {
+          "calls": 5408,
+          "totalMs": 2195.0004159882665,
+          "maxMs": 1.3761280002072453,
+          "over20Ms": 0
+        },
+        "off-before:videoFrame": {
+          "calls": 3577,
+          "totalMs": 2847.591104007326,
+          "maxMs": 6.664479999803007,
+          "over20Ms": 0
+        },
+        "off-before:drainAudio": {
+          "calls": 1367,
+          "totalMs": 646.8918079640716,
+          "maxMs": 1.7059840001165867,
+          "over20Ms": 0
+        },
+        "off-before:socket-4": {
+          "calls": 440,
+          "totalMs": 121.9634560002014,
+          "maxMs": 0.8315520007163286,
+          "over20Ms": 0
+        },
+        "touch:socket-5": {
+          "calls": 10992,
+          "totalMs": 2588.9856959581375,
+          "maxMs": 2.2442239997908473,
+          "over20Ms": 0
+        },
+        "touch:audioFrame": {
+          "calls": 2999,
+          "totalMs": 2065.4909760002047,
+          "maxMs": 8.597471999004483,
+          "over20Ms": 0
+        },
+        "touch:finishVideo": {
+          "calls": 2691,
+          "totalMs": 37.220287991687655,
+          "maxMs": 0.020447999238967896,
+          "over20Ms": 0
+        },
+        "touch:drainAudio": {
+          "calls": 1346,
+          "totalMs": 758.2839999962598,
+          "maxMs": 2.6422720002010465,
+          "over20Ms": 0
+        },
+        "touch:touch-bounds": {
+          "calls": 2692,
+          "totalMs": 63.32774397917092,
+          "maxMs": 0.04016000032424927,
+          "over20Ms": 0
+        },
+        "touch:hid-touch": {
+          "calls": 1346,
+          "totalMs": 169.12198399938643,
+          "maxMs": 0.7976959990337491,
+          "over20Ms": 0
+        },
+        "touch:touch-route": {
+          "calls": 1346,
+          "totalMs": 247.3227839767933,
+          "maxMs": 1.2678399998694658,
+          "over20Ms": 0
+        },
+        "touch:drainVideo": {
+          "calls": 2691,
+          "totalMs": 9220.998336039484,
+          "maxMs": 10.50239999871701,
+          "over20Ms": 0
+        },
+        "touch:receive-video-batch": {
+          "calls": 3004,
+          "totalMs": 1393.1848959838971,
+          "maxMs": 2.0785919995978475,
+          "over20Ms": 0
+        },
+        "touch:videoFrame": {
+          "calls": 3583,
+          "totalMs": 2865.113440048881,
+          "maxMs": 7.71446399949491,
+          "over20Ms": 0
+        },
+        "touch:pump": {
+          "calls": 2690,
+          "totalMs": 17144.137983962893,
+          "maxMs": 14.69062399957329,
+          "over20Ms": 0
+        },
+        "touch:socket-11": {
+          "calls": 2306,
+          "totalMs": 389.9388799853623,
+          "maxMs": 1.0211840001866221,
+          "over20Ms": 0
+        },
+        "touch:mouse-enqueue": {
+          "calls": 1297,
+          "totalMs": 88.47721599787474,
+          "maxMs": 0.7225919999182224,
+          "over20Ms": 0
+        },
+        "touch:socket-4": {
+          "calls": 1684,
+          "totalMs": 520.1950719831511,
+          "maxMs": 1.244192000478506,
+          "over20Ms": 0
+        },
+        "off-after:socket-4": {
+          "calls": 456,
+          "totalMs": 126.47827201616019,
+          "maxMs": 0.715743999928236,
+          "over20Ms": 0
+        },
+        "off-after:socket-5": {
+          "calls": 9808,
+          "totalMs": 2487.417503935285,
+          "maxMs": 3.7140159998089075,
+          "over20Ms": 0
+        },
+        "off-after:audioFrame": {
+          "calls": 3014,
+          "totalMs": 2334.0127040157095,
+          "maxMs": 7.894911999814212,
+          "over20Ms": 0
+        },
+        "off-after:pump": {
+          "calls": 2752,
+          "totalMs": 17368.741599981673,
+          "maxMs": 12.160928000696003,
+          "over20Ms": 0
+        },
+        "off-after:finishVideo": {
+          "calls": 2752,
+          "totalMs": 37.70924798492342,
+          "maxMs": 0.021664000116288662,
+          "over20Ms": 0
+        },
+        "off-after:drainVideo": {
+          "calls": 2751,
+          "totalMs": 9446.904799963348,
+          "maxMs": 9.296512000262737,
+          "over20Ms": 0
+        },
+        "off-after:socket-11": {
+          "calls": 3831,
+          "totalMs": 649.8623999496922,
+          "maxMs": 0.8762560002505779,
+          "over20Ms": 0
+        },
+        "off-after:videoFrame": {
+          "calls": 3593,
+          "totalMs": 2851.613696012646,
+          "maxMs": 6.7955839997157454,
+          "over20Ms": 0
+        },
+        "off-after:receive-video-batch": {
+          "calls": 5302,
+          "totalMs": 2166.955711987801,
+          "maxMs": 2.869120000861585,
+          "over20Ms": 0
+        },
+        "off-after:drainAudio": {
+          "calls": 1376,
+          "totalMs": 570.9944000085816,
+          "maxMs": 12.53382399957627,
+          "over20Ms": 0
+        },
+        "off-after:touch-bounds": {
+          "calls": 2750,
+          "totalMs": 64.17795201577246,
+          "maxMs": 0.37443199940025806,
+          "over20Ms": 0
+        },
+        "off-after:hid-touch": {
+          "calls": 1375,
+          "totalMs": 168.24073600582778,
+          "maxMs": 0.5629759998992085,
+          "over20Ms": 0
+        },
+        "off-after:touch-route": {
+          "calls": 1375,
+          "totalMs": 80.65398402325809,
+          "maxMs": 0.4460480008274317,
+          "over20Ms": 0
+        }
+      },
+      "taskProfile": {
+        "Other": {
+          "calls": 0,
+          "totalMs": 0,
+          "maxMs": 0,
+          "over20Ms": 0,
+          "over100Ms": 0
+        },
+        "InputDispatch": {
+          "calls": 8905,
+          "totalMs": 1346.4659839468077,
+          "maxMs": 2.4239680003374815,
+          "over20Ms": 0,
+          "over100Ms": 0
+        },
+        "InputSend": {
+          "calls": 1394,
+          "totalMs": 2247.1283839978278,
+          "maxMs": 5.009184000082314,
+          "over20Ms": 0,
+          "over100Ms": 0
+        },
+        "AudioRecv": {
+          "calls": 9594,
+          "totalMs": 14441.799360084347,
+          "maxMs": 10.162720000371337,
+          "over20Ms": 0,
+          "over100Ms": 0
+        },
+        "AudioDec": {
+          "calls": 0,
+          "totalMs": 0,
+          "maxMs": 0,
+          "over20Ms": 0,
+          "over100Ms": 0
+        },
+        "VideoRecv": {
+          "calls": 6545,
+          "totalMs": 25036.498784064315,
+          "maxMs": 12.087360000237823,
+          "over20Ms": 0,
+          "over100Ms": 0
+        },
+        "VideoDec": {
+          "calls": 0,
+          "totalMs": 0,
+          "maxMs": 0,
+          "over20Ms": 0,
+          "over100Ms": 0
+        },
+        "ControlRecv": {
+          "calls": 6690,
+          "totalMs": 5148.519295967184,
+          "maxMs": 2.8764160005375743,
+          "over20Ms": 0,
+          "over100Ms": 0
+        },
+        "LossStats": {
+          "calls": 1652,
+          "totalMs": 1186.2007999811321,
+          "maxMs": 3.6425919998437166,
+          "over20Ms": 0,
+          "over100Ms": 0
+        },
+        "ReqIdrFrame": {
+          "calls": 0,
+          "totalMs": 0,
+          "maxMs": 0,
+          "over20Ms": 0,
+          "over100Ms": 0
+        },
+        "CtrlAsyncCb": {
+          "calls": 0,
+          "totalMs": 0,
+          "maxMs": 0,
+          "over20Ms": 0,
+          "over100Ms": 0
+        },
+        "InvRefFrames": {
+          "calls": 23,
+          "totalMs": 44.87542399857193,
+          "maxMs": 3.778528000228107,
+          "over20Ms": 0,
+          "over100Ms": 0
+        },
+        "Ping": {
+          "calls": 3081,
+          "totalMs": 347.24988801870495,
+          "maxMs": 1.3324159998446703,
+          "over20Ms": 0,
+          "over100Ms": 0
+        }
+      },
+      "slowCalls": [],
+      "cryptoBenchmark": {
+        "messages": 100,
+        "referenceMs": 162.3977279998362,
+        "cachedMs": 91.32208000030369
+      },
+      "receiveBuffers": [
+        {
+          "fd": 3,
+          "requested": 262144,
+          "result": 0,
+          "actual": 262144,
+          "getResult": 0
+        },
+        {
+          "fd": 4,
+          "requested": 1851392,
+          "result": 0,
+          "actual": 1851392,
+          "getResult": 0
+        }
+      ],
+      "audioPacketDurationMs": 10,
+      "overlay": {
+        "method": "native-badge",
+        "visible": 1,
+        "width": 672,
+        "height": 88,
+        "counters": {
+          "updates": 1251,
+          "bytes": 295916544
+        },
+        "background": 3693090828,
+        "textPixel": 4294963172
+      },
+      "motion": {
+        "samples": 89,
+        "broadChanges": 86
+      },
+      "clock": {
+        "start": {
+          "frameWakes": 339,
+          "timerWakes": 0,
+          "forcedWakes": 0,
+          "serviceWakes": 0,
+          "waitMs": 1413.7611520038918,
+          "maxWaitMs": 15.9572799988091
+        },
+        "end": {
+          "frameWakes": 4429,
+          "timerWakes": 0,
+          "forcedWakes": 0,
+          "serviceWakes": 0,
+          "waitMs": 8719.129983977415,
+          "maxWaitMs": 15.9572799988091
+        }
+      },
+      "fec": {
+        "start": {
+          "calls": 0,
+          "totalWallMs": 0,
+          "maxWallMs": 0,
+          "failed": 0,
+          "shardBytes": 0,
+          "budgetYields": 0
+        },
+        "end": {
+          "calls": 0,
+          "totalWallMs": 0,
+          "maxWallMs": 0,
+          "failed": 0,
+          "shardBytes": 0,
+          "budgetYields": 0
+        }
+      },
+      "cleanup": {
+        "tasks": 0,
+        "sameOwner": true,
+        "resident": "launcher",
+        "ftp": true
+      },
+      "refreshDuring": {
+        "flags": "2",
+        "result": 0,
+        "reason": "getter output invalid"
+      },
+      "refreshAfter": {
+        "flags": "1",
+        "result": 0,
+        "reason": "getter output invalid"
+      }
+    },
+    {
+      "run": "moonlight-touch-gcm-final",
+      "packageSha256": "1252f50701632650f48fbb06f7e65176ee96748774adf13c6ca40e7827a5cd63",
+      "probeSha256": "0ea05c22d3483b13bf766f3a98d1f6661c379c67a0bf7549c3265894cb7af029",
+      "config": {
+        "codec": "h264",
+        "width": 1920,
+        "height": 1080,
+        "bitrate": 40000,
+        "fps": 120,
+        "pacing": "smooth",
+        "durationMs": 120000,
+        "warmupMs": 5000,
+        "showStats": true,
+        "simulateTouch": true,
+        "terminateDesktop": true,
+        "profile": true,
+        "touchPattern": "continuous",
+        "appId": 382300562
+      },
+      "complete": true,
+      "error": null,
+      "summary": {
+        "seconds": 120.513,
+        "decodedFps": 119.2817372399658,
+        "presentedFps": 89.95710006389352,
+        "receivedMbps": 32.34839740111025,
+        "frameIntervalMs": 11.11653412932386,
+        "frameJitterMs": 3.757917702649123,
+        "maxIntervalMs": 69.56364800035954,
+        "p50IntervalMs": 10.184511999599636,
+        "p95IntervalMs": 15.273088001646101,
+        "p99IntervalMs": 18.82633600011468,
+        "stallsOver25Ms": 26,
+        "stallsOver50Ms": 10,
+        "stallsOver100Ms": 0,
+        "stallsOverOneAndHalfFrames": 5316,
+        "videoSuperseded": 3534,
+        "videoExpired": 0,
+        "videoBacklogDrops": 3534,
+        "decoderRejected": 0,
+        "videoFrameGaps": 79,
+        "audioEmptyEpisodes": 231,
+        "audioEmptyMs": 456.1797440070659,
+        "audioDiscardedMs": 0,
+        "pumpAvgMs": 12.649397159048533,
+        "drainAvgMs": 7.277220549005927,
+        "decoderPending": 3,
+        "copyPresentMs": 1.920047588226926,
+        "presentationTimings": {
+          "acquire": 1772.287360029295,
+          "submit": 3452.3318079467863,
+          "present": 3785.0510400813073,
+          "wait": 3512.3182399608195
+        },
+        "uiSnapshots": 0,
+        "uiFrames": 0,
+        "simulatedTouchSamples": 3304
+      },
+      "phases": {
+        "touch": {
+          "seconds": 119.506,
+          "decodedFps": 119.28271383863571,
+          "presentedFps": 89.92853915284589,
+          "receivedMbps": 32.361214198450284,
+          "frameIntervalMs": 11.120037606773987,
+          "frameJitterMs": 3.7620100619618677,
+          "maxIntervalMs": 69.56364800035954,
+          "p50IntervalMs": 10.254432000219822,
+          "p95IntervalMs": 15.279711999930441,
+          "p99IntervalMs": 18.831328000873327,
+          "stallsOver25Ms": 26,
+          "stallsOver50Ms": 10,
+          "stallsOver100Ms": 0,
+          "stallsOverOneAndHalfFrames": 5273,
+          "videoSuperseded": 3508,
+          "videoExpired": 0,
+          "videoBacklogDrops": 3508,
+          "decoderRejected": 0,
+          "videoFrameGaps": 79,
+          "audioEmptyEpisodes": 224,
+          "audioEmptyMs": 439.4242880064994,
+          "audioDiscardedMs": 0,
+          "pumpAvgMs": 12.65136053324318,
+          "drainAvgMs": 7.277493639978567,
+          "decoderPending": 3,
+          "copyPresentMs": 1.919953317573651,
+          "presentationTimings": {
+            "acquire": 23905.779039965593,
+            "submit": 46240.69702390393,
+            "present": 48662.96896000758,
+            "wait": 61920.357504063766
+          },
+          "uiSnapshots": 0,
+          "uiFrames": 0,
+          "simulatedTouchSamples": 3304
+        }
+      },
+      "mouseForwardingGated": true,
+      "inputUpdates": {
+        "gamepadQueued": 34,
+        "gamepadRejected": 0
+      },
+      "physicalContacts": 2178,
+      "physicalContactsByPhase": {
+        "touch": 2178
+      },
+      "suppressedPhysicalSamples": 0,
+      "injectedContacts": 3304,
+      "suppressedMouseButtons": null,
+      "profile": {
+        "touch:touch-bounds": {
+          "calls": 6309,
+          "totalMs": 124.49046404939145,
+          "maxMs": 0.03411199990659952,
+          "over20Ms": 0
+        },
+        "touch:hid-touch": {
+          "calls": 5482,
+          "totalMs": 690.5402240063995,
+          "maxMs": 1.1466560000553727,
+          "over20Ms": 0
+        },
+        "touch:touch-route": {
+          "calls": 5482,
+          "totalMs": 166.93728000111878,
+          "maxMs": 1.2394559998065233,
+          "over20Ms": 0
+        },
+        "touch:drainVideo": {
+          "calls": 10964,
+          "totalMs": 37497.69542390946,
+          "maxMs": 11.554432000033557,
+          "over20Ms": 0
+        },
+        "touch:socket-5": {
+          "calls": 39795,
+          "totalMs": 9846.905632019043,
+          "maxMs": 3.8995520006865263,
+          "over20Ms": 0
+        },
+        "touch:audioFrame": {
+          "calls": 12000,
+          "totalMs": 9364.53891199641,
+          "maxMs": 8.668479999527335,
+          "over20Ms": 0
+        },
+        "touch:socket-11": {
+          "calls": 14381,
+          "totalMs": 2381.3516479264945,
+          "maxMs": 7.091551999561489,
+          "over20Ms": 0
+        },
+        "touch:receive-video-batch": {
+          "calls": 19462,
+          "totalMs": 8003.143136011437,
+          "maxMs": 1.5599040007218719,
+          "over20Ms": 0
+        },
+        "touch:pump": {
+          "calls": 10964,
+          "totalMs": 69159.45036798064,
+          "maxMs": 13.600416000001132,
+          "over20Ms": 0
+        },
+        "touch:finishVideo": {
+          "calls": 10964,
+          "totalMs": 85.74352008849382,
+          "maxMs": 0.0163199994713068,
+          "over20Ms": 0
+        },
+        "touch:videoFrame": {
+          "calls": 14315,
+          "totalMs": 11274.688896011561,
+          "maxMs": 7.846975999884307,
+          "over20Ms": 0
+        },
+        "touch:drainAudio": {
+          "calls": 5482,
+          "totalMs": 1954.057119987905,
+          "maxMs": 3.5420159995555878,
+          "over20Ms": 0
+        },
+        "touch:mouse-enqueue": {
+          "calls": 797,
+          "totalMs": 54.49638400878757,
+          "maxMs": 0.7040640003979206,
+          "over20Ms": 0
+        },
+        "touch:socket-4": {
+          "calls": 2581,
+          "totalMs": 742.9256959753111,
+          "maxMs": 1.1215040003880858,
+          "over20Ms": 0
+        }
+      },
+      "taskProfile": {
+        "Other": {
+          "calls": 0,
+          "totalMs": 0,
+          "maxMs": 0,
+          "over20Ms": 0,
+          "over100Ms": 0
+        },
+        "InputDispatch": {
+          "calls": 12116,
+          "totalMs": 1857.8489919519052,
+          "maxMs": 1.2165759997442365,
+          "over20Ms": 0,
+          "over100Ms": 0
+        },
+        "InputSend": {
+          "calls": 884,
+          "totalMs": 1453.4162240121514,
+          "maxMs": 3.993280000053346,
+          "over20Ms": 0,
+          "over100Ms": 0
+        },
+        "AudioRecv": {
+          "calls": 13307,
+          "totalMs": 20214.397152063437,
+          "maxMs": 9.86425600014627,
+          "over20Ms": 0,
+          "over100Ms": 0
+        },
+        "AudioDec": {
+          "calls": 0,
+          "totalMs": 0,
+          "maxMs": 0,
+          "over20Ms": 0,
+          "over100Ms": 0
+        },
+        "VideoRecv": {
+          "calls": 9397,
+          "totalMs": 33824.698432050645,
+          "maxMs": 10.231328000314534,
+          "over20Ms": 0,
+          "over100Ms": 0
+        },
+        "VideoDec": {
+          "calls": 0,
+          "totalMs": 0,
+          "maxMs": 0,
+          "over20Ms": 0,
+          "over100Ms": 0
+        },
+        "ControlRecv": {
+          "calls": 9650,
+          "totalMs": 7022.2454080553725,
+          "maxMs": 8.61459199897945,
+          "over20Ms": 0,
+          "over100Ms": 0
+        },
+        "LossStats": {
+          "calls": 2247,
+          "totalMs": 1594.0621440010145,
+          "maxMs": 3.2097600009292364,
+          "over20Ms": 0,
+          "over100Ms": 0
+        },
+        "ReqIdrFrame": {
+          "calls": 0,
+          "totalMs": 0,
+          "maxMs": 0,
+          "over20Ms": 0,
+          "over100Ms": 0
+        },
+        "CtrlAsyncCb": {
+          "calls": 0,
+          "totalMs": 0,
+          "maxMs": 0,
+          "over20Ms": 0,
+          "over100Ms": 0
+        },
+        "InvRefFrames": {
+          "calls": 26,
+          "totalMs": 54.89091199543327,
+          "maxMs": 4.306528000161052,
+          "over20Ms": 0,
+          "over100Ms": 0
+        },
+        "Ping": {
+          "calls": 4149,
+          "totalMs": 465.3910399945453,
+          "maxMs": 0.8730879994109273,
+          "over20Ms": 0,
+          "over100Ms": 0
+        }
+      },
+      "slowCalls": [],
+      "cryptoBenchmark": {
+        "messages": 100,
+        "referenceMs": 216.64150399994105,
+        "cachedMs": 91.22070400044322
+      },
+      "receiveBuffers": [
+        {
+          "fd": 3,
+          "requested": 262144,
+          "result": 0,
+          "actual": 262144,
+          "getResult": 0
+        },
+        {
+          "fd": 4,
+          "requested": 1851392,
+          "result": 0,
+          "actual": 1851392,
+          "getResult": 0
+        }
+      ],
+      "audioPacketDurationMs": 10,
+      "overlay": {
+        "method": "native-badge",
+        "visible": 1,
+        "width": 672,
+        "height": 88,
+        "counters": {
+          "updates": 1376,
+          "bytes": 325484544
+        },
+        "background": 3693090828,
+        "textPixel": 4294963172
+      },
+      "motion": {
+        "samples": 119,
+        "broadChanges": 116
+      },
+      "clock": {
+        "start": {
+          "frameWakes": 288,
+          "timerWakes": 0,
+          "forcedWakes": 0,
+          "serviceWakes": 0,
+          "waitMs": 1087.930752011016,
+          "maxWaitMs": 15.958015999756753
+        },
+        "end": {
+          "frameWakes": 5796,
+          "timerWakes": 0,
+          "forcedWakes": 0,
+          "serviceWakes": 0,
+          "waitMs": 11143.333376026712,
+          "maxWaitMs": 15.958015999756753
+        }
+      },
+      "fec": {
+        "start": {
+          "calls": 0,
+          "totalWallMs": 0,
+          "maxWallMs": 0,
+          "failed": 0,
+          "shardBytes": 0,
+          "budgetYields": 0
+        },
+        "end": {
+          "calls": 2,
+          "totalWallMs": 42.87523200083524,
+          "maxWallMs": 36.49596800003201,
+          "failed": 0,
+          "shardBytes": 63360,
+          "budgetYields": 4
+        }
+      },
+      "cleanup": {
+        "tasks": 0,
+        "sameOwner": true,
+        "resident": "launcher",
+        "ftp": true
+      },
+      "refreshDuring": {
+        "flags": "2",
+        "result": 0,
+        "reason": "getter output invalid"
+      },
+      "refreshAfter": {
+        "flags": "1",
+        "result": 0,
+        "reason": "getter output invalid"
+      },
+      "humanQualification": "Invalid physical-input qualification: user reported the PC mouse did not move. The probe switched synthetic and physical primary IDs without a neutral sample, which can leave the gesture safety gate blocked."
+    },
+    {
+      "run": "moonlight-touch-gcm-physical",
+      "packageSha256": "4f768bac6719702d29d9815990052da98b4927111865775106480e2f3e3b6f14",
+      "probeSha256": "6fbad640c0b64a51aada5f48f14956301d6574159205ebeb62379288c8ed53a3",
+      "config": {
+        "codec": "h264",
+        "width": 1920,
+        "height": 1080,
+        "bitrate": 40000,
+        "fps": 120,
+        "pacing": "smooth",
+        "durationMs": 180000,
+        "warmupMs": 5000,
+        "showStats": true,
+        "simulateTouch": false,
+        "terminateDesktop": false,
+        "profile": true,
+        "touchPattern": "continuous",
+        "appId": 382300562
+      },
+      "complete": true,
+      "error": null,
+      "summary": {
+        "seconds": 180.166,
+        "decodedFps": 109.24369747899159,
+        "presentedFps": 83.09003918608394,
+        "receivedMbps": 32.061023722566965,
+        "frameIntervalMs": 12.035229811088836,
+        "frameJitterMs": 14.081846433425454,
+        "maxIntervalMs": 527.7633919995278,
+        "p50IntervalMs": 12.345888000912964,
+        "p95IntervalMs": 16.025951999239624,
+        "p99IntervalMs": 20.973439999856055,
+        "stallsOver25Ms": 106,
+        "stallsOver50Ms": 57,
+        "stallsOver100Ms": 38,
+        "stallsOverOneAndHalfFrames": 7472,
+        "videoSuperseded": 4713,
+        "videoExpired": 0,
+        "videoBacklogDrops": 4713,
+        "decoderRejected": 0,
+        "videoFrameGaps": 1937,
+        "audioEmptyEpisodes": 188,
+        "audioEmptyMs": 408.11321599781513,
+        "audioDiscardedMs": 80,
+        "pumpAvgMs": 12.732922992121075,
+        "drainAvgMs": 6.991979304612963,
+        "decoderPending": 3,
+        "copyPresentMs": 1.9407143396121351,
+        "presentationTimings": {
+          "acquire": 2451.523104077205,
+          "submit": 4778.408991948701,
+          "present": 5039.399584034458,
+          "wait": 4810.91446399875
+        },
+        "uiSnapshots": 10,
+        "uiFrames": 2,
+        "simulatedTouchSamples": 0
+      },
+      "phases": {},
+      "mouseForwardingGated": false,
+      "inputUpdates": {
+        "gamepadQueued": 1963,
+        "gamepadRejected": 0
+      },
+      "physicalContacts": 2810,
+      "physicalContactsByPhase": {
+        "physical": 2810
+      },
+      "suppressedPhysicalSamples": 0,
+      "injectedContacts": 0,
+      "suppressedMouseButtons": null,
+      "profile": {
+        "physical:touch-bounds": {
+          "calls": 16461,
+          "totalMs": 256.8368960749358,
+          "maxMs": 0.3520959997549653,
+          "over20Ms": 0
+        },
+        "physical:hid-touch": {
+          "calls": 8242,
+          "totalMs": 1024.7867200551555,
+          "maxMs": 0.88633600063622,
+          "over20Ms": 0
+        },
+        "physical:mouse-enqueue": {
+          "calls": 2452,
+          "totalMs": 146.58422403316945,
+          "maxMs": 0.5613439995795488,
+          "over20Ms": 0
+        },
+        "physical:touch-route": {
+          "calls": 8242,
+          "totalMs": 715.8646719260141,
+          "maxMs": 9.009887999854982,
+          "over20Ms": 0
+        },
+        "physical:display-videoBuffer": {
+          "calls": 14968,
+          "totalMs": 7120.039200063795,
+          "maxMs": 7.337279999628663,
+          "over20Ms": 0
+        },
+        "physical:display-publish": {
+          "calls": 14968,
+          "totalMs": 16103.72761601489,
+          "maxMs": 10.046719999983907,
+          "over20Ms": 0
+        },
+        "physical:drainVideo": {
+          "calls": 16484,
+          "totalMs": 53224.657695953734,
+          "maxMs": 15.380384000018239,
+          "over20Ms": 0
+        },
+        "physical:socket-5": {
+          "calls": 62247,
+          "totalMs": 14948.588799750432,
+          "maxMs": 7.275296000763774,
+          "over20Ms": 0
+        },
+        "physical:audioFrame": {
+          "calls": 18016,
+          "totalMs": 13472.51363199763,
+          "maxMs": 13.022399999201298,
+          "over20Ms": 0
+        },
+        "physical:socket-11": {
+          "calls": 20228,
+          "totalMs": 3335.5409920094535,
+          "maxMs": 2.902367999777198,
+          "over20Ms": 0
+        },
+        "physical:pump": {
+          "calls": 16484,
+          "totalMs": 104627.67328018323,
+          "maxMs": 15.612095998600125,
+          "over20Ms": 0
+        },
+        "physical:finishVideo": {
+          "calls": 16484,
+          "totalMs": 124.78799989633262,
+          "maxMs": 0.31487999949604273,
+          "over20Ms": 0
+        },
+        "physical:socket-4": {
+          "calls": 6248,
+          "totalMs": 1799.0345600275323,
+          "maxMs": 4.721312000416219,
+          "over20Ms": 0
+        },
+        "physical:drainAudio": {
+          "calls": 8242,
+          "totalMs": 3735.3568640518934,
+          "maxMs": 5.547039999626577,
+          "over20Ms": 0
+        },
+        "physical:videoFrame": {
+          "calls": 19678,
+          "totalMs": 15631.898399963044,
+          "maxMs": 8.295487999916077,
+          "over20Ms": 0
+        },
+        "physical:receive-video-batch": {
+          "calls": 25527,
+          "totalMs": 10704.619008123875,
+          "maxMs": 7.702368000522256,
+          "over20Ms": 0
+        },
+        "physical:controller-enqueue": {
+          "calls": 1963,
+          "totalMs": 99.34649599064142,
+          "maxMs": 0.346752000041306,
+          "over20Ms": 0
+        }
+      },
+      "taskProfile": {
+        "Other": {
+          "calls": 0,
+          "totalMs": 0,
+          "maxMs": 0,
+          "over20Ms": 0,
+          "over100Ms": 0
+        },
+        "InputDispatch": {
+          "calls": 17883,
+          "totalMs": 2547.497664039023,
+          "maxMs": 1.4407999999821186,
+          "over20Ms": 0,
+          "over100Ms": 0
+        },
+        "InputSend": {
+          "calls": 3161,
+          "totalMs": 7069.442080014385,
+          "maxMs": 10.646623999811709,
+          "over20Ms": 0,
+          "over100Ms": 0
+        },
+        "AudioRecv": {
+          "calls": 18830,
+          "totalMs": 28361.526303991675,
+          "maxMs": 14.445663999766111,
+          "over20Ms": 0,
+          "over100Ms": 0
+        },
+        "AudioDec": {
+          "calls": 0,
+          "totalMs": 0,
+          "maxMs": 0,
+          "over20Ms": 0,
+          "over100Ms": 0
+        },
+        "VideoRecv": {
+          "calls": 12744,
+          "totalMs": 47721.28249602206,
+          "maxMs": 13.7630400005728,
+          "over20Ms": 0,
+          "over100Ms": 0
+        },
+        "VideoDec": {
+          "calls": 0,
+          "totalMs": 0,
+          "maxMs": 0,
+          "over20Ms": 0,
+          "over100Ms": 0
+        },
+        "ControlRecv": {
+          "calls": 13049,
+          "totalMs": 10787.596064025536,
+          "maxMs": 6.916960000060499,
+          "over20Ms": 0,
+          "over100Ms": 0
+        },
+        "LossStats": {
+          "calls": 3198,
+          "totalMs": 2653.4530880255625,
+          "maxMs": 7.278655999340117,
+          "over20Ms": 0,
+          "over100Ms": 0
+        },
+        "ReqIdrFrame": {
+          "calls": 2,
+          "totalMs": 2.4136959994211793,
+          "maxMs": 1.481279999949038,
+          "over20Ms": 0,
+          "over100Ms": 0
+        },
+        "CtrlAsyncCb": {
+          "calls": 0,
+          "totalMs": 0,
+          "maxMs": 0,
+          "over20Ms": 0,
+          "over100Ms": 0
+        },
+        "InvRefFrames": {
+          "calls": 599,
+          "totalMs": 1170.438144008629,
+          "maxMs": 4.695968000218272,
+          "over20Ms": 0,
+          "over100Ms": 0
+        },
+        "Ping": {
+          "calls": 6064,
+          "totalMs": 667.5149759538472,
+          "maxMs": 1.1250240001827478,
+          "over20Ms": 0,
+          "over100Ms": 0
+        }
+      },
+      "slowCalls": [],
+      "cryptoBenchmark": {
+        "messages": 100,
+        "referenceMs": 186.01369599997997,
+        "cachedMs": 91.29190399963409
+      },
+      "receiveBuffers": [
+        {
+          "fd": 3,
+          "requested": 262144,
+          "result": 0,
+          "actual": 262144,
+          "getResult": 0
+        },
+        {
+          "fd": 4,
+          "requested": 1851392,
+          "result": 0,
+          "actual": 1851392,
+          "getResult": 0
+        }
+      ],
+      "audioPacketDurationMs": 10,
+      "overlay": {
+        "method": "native-badge",
+        "visible": 1,
+        "width": 672,
+        "height": 88,
+        "counters": {
+          "updates": 1561,
+          "bytes": 369245184
+        },
+        "background": 3693090828,
+        "textPixel": 4294963172
+      },
+      "motion": {
+        "samples": 178,
+        "broadChanges": 167
+      },
+      "clock": {
+        "start": {
+          "frameWakes": 331,
+          "timerWakes": 0,
+          "forcedWakes": 0,
+          "serviceWakes": 0,
+          "waitMs": 1316.867967995815,
+          "maxWaitMs": 15.775871999561787
+        },
+        "end": {
+          "frameWakes": 8574,
+          "timerWakes": 0,
+          "forcedWakes": 0,
+          "serviceWakes": 0,
+          "waitMs": 17860.648991928436,
+          "maxWaitMs": 67.46633600071073
+        }
+      },
+      "fec": {
+        "start": {
+          "calls": 0,
+          "totalWallMs": 0,
+          "maxWallMs": 0,
+          "failed": 0,
+          "shardBytes": 0,
+          "budgetYields": 0
+        },
+        "end": {
+          "calls": 21,
+          "totalWallMs": 878.8817280000076,
+          "maxWallMs": 78.38972799945623,
+          "failed": 0,
+          "shardBytes": 713856,
+          "budgetYields": 93
+        }
+      },
+      "cleanup": {
+        "tasks": 0,
+        "sameOwner": true,
+        "resident": "launcher",
+        "ftp": true
+      },
+      "refreshDuring": {
+        "flags": "2",
+        "result": 0,
+        "reason": "getter output invalid"
+      },
+      "refreshAfter": {
+        "flags": "1",
+        "result": 0,
+        "reason": "getter output invalid"
+      },
+      "humanQualification": "User confirmed real touchscreen mouse and controller inputs work, and both still cause stalls. 180 s real-only run; no injected contacts or button suppression."
+    },
+    {
+      "run": "moonlight-touch-deadlines",
+      "packageSha256": "8563b1c190db5e36edb1ca4a7b9efbeee4ceeaaec474bde76caa148f4872bcf3",
+      "probeSha256": "d0bac1a345124d7858ee03675b7e825ba8313da73abeb167afc9b0cb79540378",
+      "config": {
+        "codec": "h264",
+        "width": 1920,
+        "height": 1080,
+        "bitrate": 40000,
+        "fps": 120,
+        "pacing": "smooth",
+        "durationMs": 120000,
+        "warmupMs": 5000,
+        "showStats": true,
+        "simulateTouch": false,
+        "terminateDesktop": false,
+        "profile": true,
+        "touchPattern": "continuous",
+        "appId": 382300562
+      },
+      "complete": true,
+      "error": null,
+      "summary": {
+        "seconds": 119.731,
+        "decodedFps": 37.16664857054564,
+        "presentedFps": 37.158296514687095,
+        "receivedMbps": 28.435329730813244,
+        "frameIntervalMs": 26.883468874803228,
+        "frameJitterMs": 87.84143879994863,
+        "maxIntervalMs": 1278.50761600025,
+        "p50IntervalMs": 8.909888000227511,
+        "p95IntervalMs": 24.37033599987626,
+        "p99IntervalMs": 418.7552960002795,
+        "stallsOver25Ms": 222,
+        "stallsOver50Ms": 186,
+        "stallsOver100Ms": 180,
+        "stallsOverOneAndHalfFrames": 1446,
+        "videoSuperseded": 1,
+        "videoExpired": 0,
+        "videoBacklogDrops": 1,
+        "decoderRejected": 0,
+        "videoFrameGaps": 9895,
+        "audioEmptyEpisodes": 671,
+        "audioEmptyMs": 757.8769599795341,
+        "audioDiscardedMs": 60,
+        "pumpAvgMs": 19.20311021225538,
+        "drainAvgMs": 5.580641375738874,
+        "decoderPending": 0,
+        "copyPresentMs": 1.903528861319665,
+        "presentationTimings": {
+          "acquire": 719.3327040132135,
+          "submit": 1412.418591982685,
+          "present": 1489.6490879375488,
+          "wait": 1377.8610240016133
+        },
+        "uiSnapshots": 0,
+        "uiFrames": 0,
+        "simulatedTouchSamples": 0
+      },
+      "phases": {},
+      "mouseForwardingGated": false,
+      "inputUpdates": {
+        "gamepadQueued": 0,
+        "gamepadRejected": 0
+      },
+      "physicalContacts": 75,
+      "physicalContactsByPhase": {
+        "physical": 75
+      },
+      "suppressedPhysicalSamples": 0,
+      "injectedContacts": 0,
+      "suppressedMouseButtons": null,
+      "profile": {
+        "physical:touch-bounds": {
+          "calls": 8968,
+          "totalMs": 140.96255999058485,
+          "maxMs": 0.032735999673604965,
+          "over20Ms": 0
+        },
+        "physical:hid-touch": {
+          "calls": 4484,
+          "totalMs": 521.5721600409597,
+          "maxMs": 0.9748480012640357,
+          "over20Ms": 0
+        },
+        "physical:touch-route": {
+          "calls": 4484,
+          "totalMs": 224.6034239968285,
+          "maxMs": 1.1473280005156994,
+          "over20Ms": 0
+        },
+        "physical:drainVideo": {
+          "calls": 51598,
+          "totalMs": 22037.549536063336,
+          "maxMs": 14.85881599970162,
+          "over20Ms": 0
+        },
+        "physical:finishVideo": {
+          "calls": 51598,
+          "totalMs": 328.6587199084461,
+          "maxMs": 0.5879999995231628,
+          "over20Ms": 0
+        },
+        "physical:audioFrame": {
+          "calls": 12023,
+          "totalMs": 9275.03631999623,
+          "maxMs": 12.012032000347972,
+          "over20Ms": 0
+        },
+        "physical:pump": {
+          "calls": 53443,
+          "totalMs": 85603.55200004112,
+          "maxMs": 13.212159999646246,
+          "over20Ms": 0
+        },
+        "physical:socket-5": {
+          "calls": 65685,
+          "totalMs": 16602.146143910475,
+          "maxMs": 10.088031999766827,
+          "over20Ms": 0
+        },
+        "physical:socket-11": {
+          "calls": 13346,
+          "totalMs": 2159.0095359999686,
+          "maxMs": 1.9132479997351766,
+          "over20Ms": 0
+        },
+        "physical:socket-4": {
+          "calls": 9427,
+          "totalMs": 2370.712064061314,
+          "maxMs": 7.420928000472486,
+          "over20Ms": 0
+        },
+        "physical:videoFrame": {
+          "calls": 4450,
+          "totalMs": 3590.0051840068772,
+          "maxMs": 5.1441280003637075,
+          "over20Ms": 0
+        },
+        "physical:receive-video-batch": {
+          "calls": 9205,
+          "totalMs": 4341.199999924749,
+          "maxMs": 2.3983359998092055,
+          "over20Ms": 0
+        },
+        "physical:display-videoBuffer": {
+          "calls": 4449,
+          "totalMs": 2033.8930559791625,
+          "maxMs": 5.047903999686241,
+          "over20Ms": 0
+        },
+        "physical:display-publish": {
+          "calls": 4449,
+          "totalMs": 4789.891455958597,
+          "maxMs": 11.739488000050187,
+          "over20Ms": 0
+        },
+        "physical:drainAudio": {
+          "calls": 4484,
+          "totalMs": 1714.2165440348908,
+          "maxMs": 7.075520000420511,
+          "over20Ms": 0
+        },
+        "physical:mouse-enqueue": {
+          "calls": 71,
+          "totalMs": 4.7064640037715435,
+          "maxMs": 0.33840000070631504,
+          "over20Ms": 0
+        }
+      },
+      "taskProfile": {
+        "Other": {
+          "calls": 0,
+          "totalMs": 0,
+          "maxMs": 0,
+          "over20Ms": 0,
+          "over100Ms": 0
+        },
+        "InputDispatch": {
+          "calls": 22384,
+          "totalMs": 2247.861984051764,
+          "maxMs": 6.815456000156701,
+          "over20Ms": 0,
+          "over100Ms": 0
+        },
+        "InputSend": {
+          "calls": 176,
+          "totalMs": 141.83807998150587,
+          "maxMs": 3.6223360002040863,
+          "over20Ms": 0,
+          "over100Ms": 0
+        },
+        "AudioRecv": {
+          "calls": 32066,
+          "totalMs": 25913.418751935475,
+          "maxMs": 12.329088000580668,
+          "over20Ms": 0,
+          "over100Ms": 0
+        },
+        "AudioDec": {
+          "calls": 0,
+          "totalMs": 0,
+          "maxMs": 0,
+          "over20Ms": 0,
+          "over100Ms": 0
+        },
+        "VideoRecv": {
+          "calls": 22558,
+          "totalMs": 24278.004000071436,
+          "maxMs": 6.088767999783158,
+          "over20Ms": 0,
+          "over100Ms": 0
+        },
+        "VideoDec": {
+          "calls": 0,
+          "totalMs": 0,
+          "maxMs": 0,
+          "over20Ms": 0,
+          "over100Ms": 0
+        },
+        "ControlRecv": {
+          "calls": 13508,
+          "totalMs": 7439.335199995898,
+          "maxMs": 10.663647999987006,
+          "over20Ms": 0,
+          "over100Ms": 0
+        },
+        "LossStats": {
+          "calls": 4262,
+          "totalMs": 3655.451583973132,
+          "maxMs": 7.043103999458253,
+          "over20Ms": 0,
+          "over100Ms": 0
+        },
+        "ReqIdrFrame": {
+          "calls": 21,
+          "totalMs": 16.415680000558496,
+          "maxMs": 1.474303999915719,
+          "over20Ms": 0,
+          "over100Ms": 0
+        },
+        "CtrlAsyncCb": {
+          "calls": 0,
+          "totalMs": 0,
+          "maxMs": 0,
+          "over20Ms": 0,
+          "over100Ms": 0
+        },
+        "InvRefFrames": {
+          "calls": 12655,
+          "totalMs": 14590.015327989124,
+          "maxMs": 12.897855999879539,
+          "over20Ms": 0,
+          "over100Ms": 0
+        },
+        "Ping": {
+          "calls": 4486,
+          "totalMs": 469.59385602362454,
+          "maxMs": 7.59443200007081,
+          "over20Ms": 0,
+          "over100Ms": 0
+        }
+      },
+      "slowCalls": [],
+      "cryptoBenchmark": {
+        "messages": 100,
+        "referenceMs": 214.12156799901277,
+        "cachedMs": 91.12160000018775
+      },
+      "receiveBuffers": [
+        {
+          "fd": 3,
+          "requested": 262144,
+          "result": 0,
+          "actual": 262144,
+          "getResult": 0
+        },
+        {
+          "fd": 4,
+          "requested": 1851392,
+          "result": 0,
+          "actual": 1851392,
+          "getResult": 0
+        }
+      ],
+      "audioPacketDurationMs": 10,
+      "overlay": {
+        "method": "native-badge",
+        "visible": 1,
+        "width": 672,
+        "height": 88,
+        "counters": {
+          "updates": 1685,
+          "bytes": 398576640
+        },
+        "background": 3693090828,
+        "textPixel": 4294963172
+      },
+      "motion": {
+        "samples": 118,
+        "broadChanges": 111
+      },
+      "clock": {
+        "start": {
+          "frameWakes": 263,
+          "timerWakes": 0,
+          "forcedWakes": 0,
+          "serviceWakes": 0,
+          "waitMs": 692.7545600011945,
+          "maxWaitMs": 15.771552000194788
+        },
+        "end": {
+          "frameWakes": 4729,
+          "timerWakes": 0,
+          "forcedWakes": 0,
+          "serviceWakes": 0,
+          "waitMs": 8199.40662402194,
+          "maxWaitMs": 15.771552000194788
+        }
+      },
+      "fec": {
+        "start": {
+          "calls": 3,
+          "totalWallMs": 89.25427200179547,
+          "maxWallMs": 51.17283200006932,
+          "failed": 0,
+          "shardBytes": 95744,
+          "budgetYields": 41
+        },
+        "end": {
+          "calls": 190,
+          "totalWallMs": 7198.470912001096,
+          "maxWallMs": 129.47990400064737,
+          "failed": 0,
+          "shardBytes": 6344448,
+          "budgetYields": 3196
+        }
+      },
+      "cleanup": {
+        "tasks": 0,
+        "sameOwner": true,
+        "resident": "launcher",
+        "ftp": true
+      },
+      "refreshDuring": {
+        "flags": "2",
+        "result": 0,
+        "reason": "getter output invalid"
+      },
+      "refreshAfter": {
+        "flags": "1",
+        "result": 0,
+        "reason": "getter output invalid"
+      },
+      "humanQualification": "Rejected regression: user reported 15\u201340 rendered FPS and 7000+ frame gaps. The priority pass restarted on every short protocol slice, starving video. This candidate was replaced by the established rendering loop for the fair-scheduler trial."
+    },
+    {
+      "run": "moonlight-touch-fair",
+      "packageSha256": "42777382ad11db76c5e696633d1a7ebb121a639fe92ca0d3c039d623d04372ce",
+      "probeSha256": "2bff7aebf95ecb3538f73448e5c9cb1e20077a8e273550f101adf327dec8af04",
+      "config": {
+        "codec": "h264",
+        "width": 1920,
+        "height": 1080,
+        "bitrate": 40000,
+        "fps": 120,
+        "pacing": "smooth",
+        "durationMs": 90000,
+        "warmupMs": 5000,
+        "showStats": true,
+        "simulateTouch": false,
+        "terminateDesktop": false,
+        "profile": true,
+        "touchPattern": "continuous",
+        "appId": 382300562
+      },
+      "complete": true,
+      "error": null,
+      "summary": {
+        "seconds": 89.246,
+        "decodedFps": 119.05295475427471,
+        "presentedFps": 88.5641933532035,
+        "receivedMbps": 32.62795365618628,
+        "frameIntervalMs": 11.291843655870437,
+        "frameJitterMs": 4.048180255755312,
+        "maxIntervalMs": 77.09084800072014,
+        "p50IntervalMs": 10.522719998843968,
+        "p95IntervalMs": 16.008671999908984,
+        "p99IntervalMs": 19.809632000513375,
+        "stallsOver25Ms": 17,
+        "stallsOver50Ms": 7,
+        "stallsOver100Ms": 0,
+        "stallsOverOneAndHalfFrames": 3858,
+        "videoSuperseded": 2721,
+        "videoExpired": 0,
+        "videoBacklogDrops": 2721,
+        "decoderRejected": 0,
+        "videoFrameGaps": 80,
+        "audioEmptyEpisodes": 543,
+        "audioEmptyMs": 4586.305567987263,
+        "audioDiscardedMs": 1280,
+        "pumpAvgMs": 12.589983968374783,
+        "drainAvgMs": 7.353838727274576,
+        "decoderPending": 1,
+        "copyPresentMs": 1.9333156963554872,
+        "presentationTimings": {
+          "acquire": 1273.656896050088,
+          "submit": 2512.1538560520858,
+          "present": 2643.674527979456,
+          "wait": 2530.3669759361073
+        },
+        "uiSnapshots": 0,
+        "uiFrames": 0,
+        "simulatedTouchSamples": 0
+      },
+      "phases": {},
+      "mouseForwardingGated": false,
+      "inputUpdates": {
+        "gamepadQueued": 883,
+        "gamepadRejected": 0
+      },
+      "physicalContacts": 1060,
+      "physicalContactsByPhase": {
+        "physical": 1060
+      },
+      "suppressedPhysicalSamples": 0,
+      "injectedContacts": 0,
+      "suppressedMouseButtons": null,
+      "profile": {
+        "physical:touch-bounds": {
+          "calls": 8172,
+          "totalMs": 125.94816000480205,
+          "maxMs": 0.33500799909234047,
+          "over20Ms": 0
+        },
+        "physical:hid-touch": {
+          "calls": 4086,
+          "totalMs": 497.91545602027327,
+          "maxMs": 1.0093759996816516,
+          "over20Ms": 0
+        },
+        "physical:touch-route": {
+          "calls": 4086,
+          "totalMs": 315.6235520411283,
+          "maxMs": 1.120800000615418,
+          "over20Ms": 0
+        },
+        "physical:display-videoBuffer": {
+          "calls": 7980,
+          "totalMs": 3782.5330879464746,
+          "maxMs": 5.793344000354409,
+          "over20Ms": 0
+        },
+        "physical:display-publish": {
+          "calls": 7980,
+          "totalMs": 8532.117375995032,
+          "maxMs": 6.4741759998723865,
+          "over20Ms": 0
+        },
+        "physical:drainVideo": {
+          "calls": 8172,
+          "totalMs": 27950.034016025253,
+          "maxMs": 12.249631999991834,
+          "over20Ms": 0
+        },
+        "physical:receive-video-batch": {
+          "calls": 15657,
+          "totalMs": 6410.238464033231,
+          "maxMs": 1.7586560007184744,
+          "over20Ms": 0
+        },
+        "physical:videoFrame": {
+          "calls": 10722,
+          "totalMs": 8552.521792034619,
+          "maxMs": 6.498431999236345,
+          "over20Ms": 0
+        },
+        "physical:pump": {
+          "calls": 8172,
+          "totalMs": 51274.833535904065,
+          "maxMs": 12.859136000275612,
+          "over20Ms": 0
+        },
+        "physical:finishVideo": {
+          "calls": 8172,
+          "totalMs": 63.96515202149749,
+          "maxMs": 0.33321599941700697,
+          "over20Ms": 0
+        },
+        "physical:socket-5": {
+          "calls": 27871,
+          "totalMs": 6108.053504073992,
+          "maxMs": 6.475359999574721,
+          "over20Ms": 0
+        },
+        "physical:audioFrame": {
+          "calls": 9006,
+          "totalMs": 6566.900415981188,
+          "maxMs": 5.256575998850167,
+          "over20Ms": 0
+        },
+        "physical:socket-11": {
+          "calls": 11439,
+          "totalMs": 1967.71948798839,
+          "maxMs": 4.27292799949646,
+          "over20Ms": 0
+        },
+        "physical:socket-4": {
+          "calls": 2443,
+          "totalMs": 730.5241920445114,
+          "maxMs": 1.338175999931991,
+          "over20Ms": 0
+        },
+        "physical:drainAudio": {
+          "calls": 4086,
+          "totalMs": 1769.1016319980845,
+          "maxMs": 2.966399999335408,
+          "over20Ms": 0
+        },
+        "physical:mouse-enqueue": {
+          "calls": 1053,
+          "totalMs": 62.70841602515429,
+          "maxMs": 0.5860800007358193,
+          "over20Ms": 0
+        },
+        "physical:controller-enqueue": {
+          "calls": 883,
+          "totalMs": 46.685120007023215,
+          "maxMs": 0.4500799998641014,
+          "over20Ms": 0
+        }
+      },
+      "taskProfile": {
+        "Other": {
+          "calls": 0,
+          "totalMs": 0,
+          "maxMs": 0,
+          "over20Ms": 0,
+          "over100Ms": 0
+        },
+        "InputDispatch": {
+          "calls": 7201,
+          "totalMs": 800.9951040316373,
+          "maxMs": 5.992320000194013,
+          "over20Ms": 0,
+          "over100Ms": 0
+        },
+        "InputSend": {
+          "calls": 1055,
+          "totalMs": 2180.32188801188,
+          "maxMs": 8.160128000192344,
+          "over20Ms": 0,
+          "over100Ms": 0
+        },
+        "AudioRecv": {
+          "calls": 7266,
+          "totalMs": 12380.334463974461,
+          "maxMs": 8.365247999317944,
+          "over20Ms": 0,
+          "over100Ms": 0
+        },
+        "AudioDec": {
+          "calls": 0,
+          "totalMs": 0,
+          "maxMs": 0,
+          "over20Ms": 0,
+          "over100Ms": 0
+        },
+        "VideoRecv": {
+          "calls": 7034,
+          "totalMs": 25987.132640046068,
+          "maxMs": 10.250880000181496,
+          "over20Ms": 0,
+          "over100Ms": 0
+        },
+        "VideoDec": {
+          "calls": 0,
+          "totalMs": 0,
+          "maxMs": 0,
+          "over20Ms": 0,
+          "over100Ms": 0
+        },
+        "ControlRecv": {
+          "calls": 7278,
+          "totalMs": 6111.000800071284,
+          "maxMs": 5.983648000285029,
+          "over20Ms": 0,
+          "over100Ms": 0
+        },
+        "LossStats": {
+          "calls": 1601,
+          "totalMs": 1095.2112960163504,
+          "maxMs": 2.948319999501109,
+          "over20Ms": 0,
+          "over100Ms": 0
+        },
+        "ReqIdrFrame": {
+          "calls": 0,
+          "totalMs": 0,
+          "maxMs": 0,
+          "over20Ms": 0,
+          "over100Ms": 0
+        },
+        "CtrlAsyncCb": {
+          "calls": 0,
+          "totalMs": 0,
+          "maxMs": 0,
+          "over20Ms": 0,
+          "over100Ms": 0
+        },
+        "InvRefFrames": {
+          "calls": 32,
+          "totalMs": 50.32873600162566,
+          "maxMs": 3.2206080006435513,
+          "over20Ms": 0,
+          "over100Ms": 0
+        },
+        "Ping": {
+          "calls": 3104,
+          "totalMs": 481.3172800196335,
+          "maxMs": 1.4047360001131892,
+          "over20Ms": 0,
+          "over100Ms": 0
+        }
+      },
+      "slowCalls": [],
+      "cryptoBenchmark": {
+        "messages": 100,
+        "referenceMs": 253.84838399942964,
+        "cachedMs": 55.47916799969971
+      },
+      "receiveBuffers": [
+        {
+          "fd": 3,
+          "requested": 262144,
+          "result": 0,
+          "actual": 262144,
+          "getResult": 0
+        },
+        {
+          "fd": 4,
+          "requested": 1851392,
+          "result": 0,
+          "actual": 1851392,
+          "getResult": 0
+        }
+      ],
+      "audioPacketDurationMs": 10,
+      "overlay": {
+        "method": "native-badge",
+        "visible": 1,
+        "width": 672,
+        "height": 88,
+        "counters": {
+          "updates": 1780,
+          "bytes": 421048320
+        },
+        "background": 3693090828,
+        "textPixel": 4294963172
+      },
+      "motion": {
+        "samples": 88,
+        "broadChanges": 84
+      },
+      "clock": {
+        "start": {
+          "frameWakes": 344,
+          "timerWakes": 0,
+          "forcedWakes": 0,
+          "serviceWakes": 0,
+          "waitMs": 1348.6974399816245,
+          "maxWaitMs": 16.15267200022936
+        },
+        "end": {
+          "frameWakes": 4392,
+          "timerWakes": 0,
+          "forcedWakes": 0,
+          "serviceWakes": 0,
+          "waitMs": 9350.52553598117,
+          "maxWaitMs": 16.15267200022936
+        }
+      },
+      "fec": {
+        "start": {
+          "calls": 0,
+          "totalWallMs": 0,
+          "maxWallMs": 0,
+          "failed": 0,
+          "shardBytes": 0,
+          "budgetYields": 0
+        },
+        "end": {
+          "calls": 0,
+          "totalWallMs": 0,
+          "maxWallMs": 0,
+          "failed": 0,
+          "shardBytes": 0,
+          "budgetYields": 0
+        }
+      },
+      "cleanup": {
+        "tasks": 0,
+        "sameOwner": true,
+        "resident": "launcher",
+        "ftp": true
+      },
+      "refreshDuring": {
+        "flags": "2",
+        "result": 0,
+        "reason": "getter output invalid"
+      },
+      "refreshAfter": {
+        "flags": "1",
+        "result": 0,
+        "reason": "getter output invalid"
+      },
+      "humanQualification": "User reported improved stalls; untouched rendering remained about 90 FPS. Audio counters still show substantial starvation."
+    },
+    {
+      "run": "moonlight-touch-fair-deadlines",
+      "packageSha256": "60a01408d1ae63eb451648292848b24b2c8d9977a23edb285e29ee4a989f82c7",
+      "probeSha256": "b160c96de3aa38a3f745b022c1dd5068fbd1f79a1217b63c58fbbb0ab8964e68",
+      "config": {
+        "codec": "h264",
+        "width": 1920,
+        "height": 1080,
+        "bitrate": 40000,
+        "fps": 120,
+        "pacing": "smooth",
+        "durationMs": 120000,
+        "warmupMs": 5000,
+        "showStats": true,
+        "simulateTouch": false,
+        "terminateDesktop": false,
+        "profile": true,
+        "touchPattern": "continuous",
+        "appId": 382300562
+      },
+      "complete": true,
+      "error": null,
+      "summary": {
+        "seconds": 119.55,
+        "decodedFps": 100.81137599330825,
+        "presentedFps": 98.36051861145964,
+        "receivedMbps": 31.58374825595985,
+        "frameIntervalMs": 10.166410901607254,
+        "frameJitterMs": 15.533072294404839,
+        "maxIntervalMs": 533.6322559993714,
+        "p50IntervalMs": 8.443167999386787,
+        "p95IntervalMs": 14.429279999807477,
+        "p99IntervalMs": 22.482240000739694,
+        "stallsOver25Ms": 90,
+        "stallsOver50Ms": 55,
+        "stallsOver100Ms": 53,
+        "stallsOverOneAndHalfFrames": 1293,
+        "videoSuperseded": 293,
+        "videoExpired": 0,
+        "videoBacklogDrops": 293,
+        "decoderRejected": 0,
+        "videoFrameGaps": 2298,
+        "audioEmptyEpisodes": 211,
+        "audioEmptyMs": 359.57939199358225,
+        "audioDiscardedMs": 60,
+        "pumpAvgMs": 15.841394391988846,
+        "drainAvgMs": 9.321164616225916,
+        "decoderPending": 1,
+        "copyPresentMs": 1.7709908937808538,
+        "presentationTimings": {
+          "acquire": 1803.024895974435,
+          "submit": 3651.640640133992,
+          "present": 3914.214559913613,
+          "wait": 3517.015968068503
+        },
+        "uiSnapshots": 0,
+        "uiFrames": 0,
+        "simulatedTouchSamples": 0
+      },
+      "phases": {},
+      "mouseForwardingGated": false,
+      "inputUpdates": {
+        "gamepadQueued": 312,
+        "gamepadRejected": 0
+      },
+      "physicalContacts": 634,
+      "physicalContactsByPhase": {
+        "physical": 634
+      },
+      "suppressedPhysicalSamples": 0,
+      "injectedContacts": 0,
+      "suppressedMouseButtons": null,
+      "profile": {
+        "physical:touch-bounds": {
+          "calls": 8810,
+          "totalMs": 132.43430406972766,
+          "maxMs": 0.03276799991726875,
+          "over20Ms": 0
+        },
+        "physical:hid-touch": {
+          "calls": 4405,
+          "totalMs": 528.7408961839974,
+          "maxMs": 0.8772800005972385,
+          "over20Ms": 0
+        },
+        "physical:touch-route": {
+          "calls": 4405,
+          "totalMs": 278.05379203055054,
+          "maxMs": 0.8384640011936426,
+          "over20Ms": 0
+        },
+        "physical:socket-11": {
+          "calls": 17150,
+          "totalMs": 3028.3958078417927,
+          "maxMs": 6.636479999870062,
+          "over20Ms": 0
+        },
+        "physical:socket-5": {
+          "calls": 40275,
+          "totalMs": 9465.420863955282,
+          "maxMs": 7.426816000603139,
+          "over20Ms": 0
+        },
+        "physical:videoFrame": {
+          "calls": 12103,
+          "totalMs": 10010.992319973186,
+          "maxMs": 10.113567999564111,
+          "over20Ms": 0
+        },
+        "physical:pump": {
+          "calls": 30731,
+          "totalMs": 69431.73884806316,
+          "maxMs": 11.291583999991417,
+          "over20Ms": 0
+        },
+        "physical:display-videoBuffer": {
+          "calls": 11808,
+          "totalMs": 3959.050176024437,
+          "maxMs": 4.40771200042218,
+          "over20Ms": 0
+        },
+        "physical:display-publish": {
+          "calls": 11808,
+          "totalMs": 11093.778240062296,
+          "maxMs": 6.655327999033034,
+          "over20Ms": 0
+        },
+        "physical:drainVideo": {
+          "calls": 24064,
+          "totalMs": 38031.45587209053,
+          "maxMs": 11.298783999867737,
+          "over20Ms": 0
+        },
+        "physical:finishVideo": {
+          "calls": 24064,
+          "totalMs": 196.01059215608984,
+          "maxMs": 0.020447999238967896,
+          "over20Ms": 0
+        },
+        "physical:audioFrame": {
+          "calls": 12001,
+          "totalMs": 9062.42646412272,
+          "maxMs": 7.889696000143886,
+          "over20Ms": 0
+        },
+        "physical:receive-video-batch": {
+          "calls": 10253,
+          "totalMs": 5065.812063958496,
+          "maxMs": 1.5674240002408624,
+          "over20Ms": 0
+        },
+        "physical:drainAudio": {
+          "calls": 4405,
+          "totalMs": 2274.2720960481092,
+          "maxMs": 2.459648000076413,
+          "over20Ms": 0
+        },
+        "physical:socket-4": {
+          "calls": 3969,
+          "totalMs": 1071.9514240752906,
+          "maxMs": 5.619872000068426,
+          "over20Ms": 0
+        },
+        "physical:controller-enqueue": {
+          "calls": 312,
+          "totalMs": 16.418848012574017,
+          "maxMs": 0.3358720000833273,
+          "over20Ms": 0
+        },
+        "physical:mouse-enqueue": {
+          "calls": 577,
+          "totalMs": 35.6380480164662,
+          "maxMs": 0.5327360015362501,
+          "over20Ms": 0
+        }
+      },
+      "taskProfile": {
+        "Other": {
+          "calls": 0,
+          "totalMs": 0,
+          "maxMs": 0,
+          "over20Ms": 0,
+          "over100Ms": 0
+        },
+        "InputDispatch": {
+          "calls": 13638,
+          "totalMs": 1289.2239999119192,
+          "maxMs": 2.708992000669241,
+          "over20Ms": 0,
+          "over100Ms": 0
+        },
+        "InputSend": {
+          "calls": 1234,
+          "totalMs": 1270.8783999746665,
+          "maxMs": 5.1511679999530315,
+          "over20Ms": 0,
+          "over100Ms": 0
+        },
+        "AudioRecv": {
+          "calls": 15284,
+          "totalMs": 18398.397984023206,
+          "maxMs": 8.495647998526692,
+          "over20Ms": 0,
+          "over100Ms": 0
+        },
+        "AudioDec": {
+          "calls": 0,
+          "totalMs": 0,
+          "maxMs": 0,
+          "over20Ms": 0,
+          "over100Ms": 0
+        },
+        "VideoRecv": {
+          "calls": 16193,
+          "totalMs": 30109.294304057024,
+          "maxMs": 10.777983999811113,
+          "over20Ms": 0,
+          "over100Ms": 0
+        },
+        "VideoDec": {
+          "calls": 0,
+          "totalMs": 0,
+          "maxMs": 0,
+          "over20Ms": 0,
+          "over100Ms": 0
+        },
+        "ControlRecv": {
+          "calls": 13043,
+          "totalMs": 9079.213791874237,
+          "maxMs": 7.66451200004667,
+          "over20Ms": 0,
+          "over100Ms": 0
+        },
+        "LossStats": {
+          "calls": 2770,
+          "totalMs": 1892.797600030899,
+          "maxMs": 5.028159999288619,
+          "over20Ms": 0,
+          "over100Ms": 0
+        },
+        "ReqIdrFrame": {
+          "calls": 0,
+          "totalMs": 0,
+          "maxMs": 0,
+          "over20Ms": 0,
+          "over100Ms": 0
+        },
+        "CtrlAsyncCb": {
+          "calls": 0,
+          "totalMs": 0,
+          "maxMs": 0,
+          "over20Ms": 0,
+          "over100Ms": 0
+        },
+        "InvRefFrames": {
+          "calls": 2081,
+          "totalMs": 2372.8315839758143,
+          "maxMs": 2.651007999666035,
+          "over20Ms": 0,
+          "over100Ms": 0
+        },
+        "Ping": {
+          "calls": 4393,
+          "totalMs": 604.8470079926774,
+          "maxMs": 1.4830080000683665,
+          "over20Ms": 0,
+          "over100Ms": 0
+        }
+      },
+      "slowCalls": [],
+      "cryptoBenchmark": {
+        "messages": 100,
+        "referenceMs": 291.68236800003797,
+        "cachedMs": 55.72544000018388
+      },
+      "receiveBuffers": [
+        {
+          "fd": 3,
+          "requested": 262144,
+          "result": 0,
+          "actual": 262144,
+          "getResult": 0
+        },
+        {
+          "fd": 4,
+          "requested": 1851392,
+          "result": 0,
+          "actual": 1851392,
+          "getResult": 0
+        }
+      ],
+      "audioPacketDurationMs": 10,
+      "overlay": {
+        "method": "native-badge",
+        "visible": 1,
+        "width": 672,
+        "height": 88,
+        "counters": {
+          "updates": 1905,
+          "bytes": 450616320
+        },
+        "background": 3693090828,
+        "textPixel": 4294963172
+      },
+      "motion": {
+        "samples": 118,
+        "broadChanges": 112
+      },
+      "clock": {
+        "start": {
+          "frameWakes": 262,
+          "timerWakes": 0,
+          "forcedWakes": 0,
+          "serviceWakes": 0,
+          "waitMs": 721.7390400087461,
+          "maxWaitMs": 15.906143999658525
+        },
+        "end": {
+          "frameWakes": 4650,
+          "timerWakes": 0,
+          "forcedWakes": 0,
+          "serviceWakes": 0,
+          "waitMs": 8608.978624002077,
+          "maxWaitMs": 15.906143999658525
+        }
+      },
+      "fec": {
+        "start": {
+          "calls": 0,
+          "totalWallMs": 0,
+          "maxWallMs": 0,
+          "failed": 0,
+          "shardBytes": 0,
+          "budgetYields": 0
+        },
+        "end": {
+          "calls": 31,
+          "totalWallMs": 1168.8612799979746,
+          "maxWallMs": 97.4751680009067,
+          "failed": 0,
+          "shardBytes": 1033472,
+          "budgetYields": 502
+        }
+      },
+      "cleanup": {
+        "tasks": 0,
+        "sameOwner": true,
+        "resident": "launcher",
+        "ftp": true
+      },
+      "refreshDuring": {
+        "flags": "2",
+        "result": 0,
+        "reason": "getter output invalid"
+      },
+      "refreshAfter": {
+        "flags": "1",
+        "result": 0,
+        "reason": "getter output invalid"
+      },
+      "humanQualification": "User clarified that untouched rendering was 100\u2013115 FPS; any touch/controller input caused a large drop."
+    },
+    {
+      "run": "moonlight-touch-direct-crypto",
+      "packageSha256": "c964acc0f18b9eb45d883dbcc832f28febe2022d54f1d835390f9b6f70082449",
+      "probeSha256": "e5096ea5d9be06b728f2be7f00a44343ed1482b4c9be6071e0bda2dfdd5d3ef9",
+      "config": {
+        "codec": "h264",
+        "width": 1920,
+        "height": 1080,
+        "bitrate": 40000,
+        "fps": 120,
+        "pacing": "smooth",
+        "durationMs": 180000,
+        "warmupMs": 5000,
+        "showStats": true,
+        "simulateTouch": false,
+        "terminateDesktop": false,
+        "profile": true,
+        "touchPattern": "continuous",
+        "appId": 382300562
+      },
+      "complete": true,
+      "error": null,
+      "summary": {
+        "seconds": 179.555,
+        "decodedFps": 104.02940603157806,
+        "presentedFps": 101.4508089443346,
+        "receivedMbps": 32.92969236167191,
+        "frameIntervalMs": 9.857096577953419,
+        "frameJitterMs": 9.793216963316485,
+        "maxIntervalMs": 428.5407679993659,
+        "p50IntervalMs": 8.435263998806477,
+        "p95IntervalMs": 14.547104001045227,
+        "p99IntervalMs": 34.46867199987173,
+        "stallsOver25Ms": 316,
+        "stallsOver50Ms": 96,
+        "stallsOver100Ms": 35,
+        "stallsOverOneAndHalfFrames": 1855,
+        "videoSuperseded": 463,
+        "videoExpired": 0,
+        "videoBacklogDrops": 463,
+        "decoderRejected": 245,
+        "videoFrameGaps": 2859,
+        "audioEmptyEpisodes": 431,
+        "audioEmptyMs": 819.3458560295403,
+        "audioDiscardedMs": 40,
+        "pumpAvgMs": 15.706362973946655,
+        "drainAvgMs": 9.42796702973382,
+        "decoderPending": 2,
+        "copyPresentMs": 1.7805494194051523,
+        "presentationTimings": {
+          "acquire": 2833.8133760541677,
+          "submit": 5664.871008168906,
+          "present": 6106.056064195931,
+          "wait": 5438.896224094555
+        },
+        "uiSnapshots": 0,
+        "uiFrames": 0,
+        "simulatedTouchSamples": 0
+      },
+      "phases": {},
+      "mouseForwardingGated": false,
+      "inputUpdates": {
+        "gamepadQueued": 224,
+        "gamepadRejected": 0
+      },
+      "physicalContacts": 672,
+      "physicalContactsByPhase": {
+        "physical": 672
+      },
+      "suppressedPhysicalSamples": 0,
+      "injectedContacts": 0,
+      "suppressedMouseButtons": null,
+      "profile": {
+        "physical:touch-bounds": {
+          "calls": 13246,
+          "totalMs": 212.1006081365049,
+          "maxMs": 0.315488001331687,
+          "over20Ms": 0
+        },
+        "physical:hid-touch": {
+          "calls": 6623,
+          "totalMs": 786.2676798235625,
+          "maxMs": 1.9142719991505146,
+          "over20Ms": 0
+        },
+        "physical:touch-route": {
+          "calls": 6623,
+          "totalMs": 414.0695679858327,
+          "maxMs": 7.741567997261882,
+          "over20Ms": 0
+        },
+        "physical:display-videoBuffer": {
+          "calls": 18295,
+          "totalMs": 6103.7863360550255,
+          "maxMs": 5.578880000859499,
+          "over20Ms": 0
+        },
+        "physical:display-publish": {
+          "calls": 18295,
+          "totalMs": 17283.138784095645,
+          "maxMs": 15.15225600078702,
+          "over20Ms": 0
+        },
+        "physical:drainVideo": {
+          "calls": 34518,
+          "totalMs": 58291.01878401823,
+          "maxMs": 19.394912000745535,
+          "over20Ms": 0
+        },
+        "physical:finishVideo": {
+          "calls": 34518,
+          "totalMs": 284.71472035720944,
+          "maxMs": 0.35046399757266045,
+          "over20Ms": 0
+        },
+        "physical:pump": {
+          "calls": 45305,
+          "totalMs": 103520.7677121386,
+          "maxMs": 11.889344001188874,
+          "over20Ms": 0
+        },
+        "physical:socket-5": {
+          "calls": 59628,
+          "totalMs": 14165.69923196733,
+          "maxMs": 9.799744000658393,
+          "over20Ms": 0
+        },
+        "physical:audioFrame": {
+          "calls": 18030,
+          "totalMs": 12338.655871806666,
+          "maxMs": 11.071647999808192,
+          "over20Ms": 0
+        },
+        "physical:socket-11": {
+          "calls": 29508,
+          "totalMs": 5178.745952034369,
+          "maxMs": 9.258975997567177,
+          "over20Ms": 0
+        },
+        "physical:videoFrame": {
+          "calls": 19004,
+          "totalMs": 15597.542944021523,
+          "maxMs": 8.757887998595834,
+          "over20Ms": 0
+        },
+        "physical:socket-4": {
+          "calls": 4309,
+          "totalMs": 1208.4839679654688,
+          "maxMs": 5.099391998723149,
+          "over20Ms": 0
+        },
+        "physical:receive-video-batch": {
+          "calls": 16704,
+          "totalMs": 8177.709056075662,
+          "maxMs": 5.584640001878142,
+          "over20Ms": 0
+        },
+        "physical:drainAudio": {
+          "calls": 6623,
+          "totalMs": 3057.26787202619,
+          "maxMs": 4.590784000232816,
+          "over20Ms": 0
+        },
+        "physical:mouse-enqueue": {
+          "calls": 663,
+          "totalMs": 45.21052801981568,
+          "maxMs": 0.5707519985735416,
+          "over20Ms": 0
+        },
+        "physical:controller-enqueue": {
+          "calls": 224,
+          "totalMs": 12.263615982607007,
+          "maxMs": 0.5272959992289543,
+          "over20Ms": 0
+        }
+      },
+      "taskProfile": {
+        "Other": {
+          "calls": 0,
+          "totalMs": 0,
+          "maxMs": 0,
+          "over20Ms": 0,
+          "over100Ms": 0
+        },
+        "InputDispatch": {
+          "calls": 21032,
+          "totalMs": 2001.5671681370586,
+          "maxMs": 6.936703998595476,
+          "over20Ms": 0,
+          "over100Ms": 0
+        },
+        "InputSend": {
+          "calls": 1205,
+          "totalMs": 1202.3409279808402,
+          "maxMs": 10.4695999994874,
+          "over20Ms": 0,
+          "over100Ms": 0
+        },
+        "AudioRecv": {
+          "calls": 23568,
+          "totalMs": 26768.956575892866,
+          "maxMs": 11.649439999833703,
+          "over20Ms": 0,
+          "over100Ms": 0
+        },
+        "AudioDec": {
+          "calls": 0,
+          "totalMs": 0,
+          "maxMs": 0,
+          "over20Ms": 0,
+          "over100Ms": 0
+        },
+        "VideoRecv": {
+          "calls": 25824,
+          "totalMs": 46869.90591990948,
+          "maxMs": 9.429120000451803,
+          "over20Ms": 0,
+          "over100Ms": 0
+        },
+        "VideoDec": {
+          "calls": 0,
+          "totalMs": 0,
+          "maxMs": 0,
+          "over20Ms": 0,
+          "over100Ms": 0
+        },
+        "ControlRecv": {
+          "calls": 22474,
+          "totalMs": 15141.79305603914,
+          "maxMs": 9.830399999395013,
+          "over20Ms": 0,
+          "over100Ms": 0
+        },
+        "LossStats": {
+          "calls": 3925,
+          "totalMs": 2494.012255895883,
+          "maxMs": 9.114207999780774,
+          "over20Ms": 0,
+          "over100Ms": 0
+        },
+        "ReqIdrFrame": {
+          "calls": 413,
+          "totalMs": 402.2790080290288,
+          "maxMs": 2.397696001455188,
+          "over20Ms": 0,
+          "over100Ms": 0
+        },
+        "CtrlAsyncCb": {
+          "calls": 0,
+          "totalMs": 0,
+          "maxMs": 0,
+          "over20Ms": 0,
+          "over100Ms": 0
+        },
+        "InvRefFrames": {
+          "calls": 657,
+          "totalMs": 735.2733120210469,
+          "maxMs": 3.1605759989470243,
+          "over20Ms": 0,
+          "over100Ms": 0
+        },
+        "Ping": {
+          "calls": 6607,
+          "totalMs": 922.4136000238359,
+          "maxMs": 9.034848000854254,
+          "over20Ms": 0,
+          "over100Ms": 0
+        }
+      },
+      "slowCalls": [],
+      "cryptoBenchmark": {
+        "messages": 100,
+        "referenceMs": 307.34278400056064,
+        "cachedMs": 52.709791999310255
+      },
+      "receiveBuffers": [
+        {
+          "fd": 3,
+          "requested": 262144,
+          "result": 0,
+          "actual": 262144,
+          "getResult": 0
+        },
+        {
+          "fd": 4,
+          "requested": 1851392,
+          "result": 0,
+          "actual": 1851392,
+          "getResult": 0
+        }
+      ],
+      "audioPacketDurationMs": 10,
+      "overlay": {
+        "method": "native-badge",
+        "visible": 1,
+        "width": 672,
+        "height": 88,
+        "counters": {
+          "updates": 2089,
+          "bytes": 494140416
+        },
+        "background": 3693090828,
+        "textPixel": 4294963172
+      },
+      "motion": {
+        "samples": 177,
+        "broadChanges": 167
+      },
+      "clock": {
+        "start": {
+          "frameWakes": 265,
+          "timerWakes": 0,
+          "forcedWakes": 0,
+          "serviceWakes": 0,
+          "waitMs": 684.2007679846138,
+          "maxWaitMs": 15.891999999061227
+        },
+        "end": {
+          "frameWakes": 6861,
+          "timerWakes": 0,
+          "forcedWakes": 0,
+          "serviceWakes": 0,
+          "waitMs": 12566.148127967492,
+          "maxWaitMs": 15.891999999061227
+        }
+      },
+      "fec": {
+        "start": {
+          "calls": 0,
+          "totalWallMs": 0,
+          "maxWallMs": 0,
+          "failed": 0,
+          "shardBytes": 0,
+          "budgetYields": 0
+        },
+        "end": {
+          "calls": 5,
+          "totalWallMs": 188.82588799856603,
+          "maxWallMs": 49.119936000555754,
+          "failed": 0,
+          "shardBytes": 173184,
+          "budgetYields": 85
+        }
+      },
+      "cleanup": {
+        "tasks": 0,
+        "sameOwner": true,
+        "resident": "launcher",
+        "ftp": true
+      },
+      "refreshDuring": {
+        "flags": "2",
+        "result": 0,
+        "reason": "getter output invalid"
+      },
+      "refreshAfter": {
+        "flags": "1",
+        "result": 0,
+        "reason": "getter output invalid"
+      },
+      "humanQualification": "User reported 80\u201390 FPS and touch-only stalls, with the previous build feeling better. Whole-run mean masks controller-active intervals at about 48\u201368 FPS; no smooth-input qualification."
+    },
+    {
+      "run": "moonlight-touch-buffer-accessors",
+      "packageSha256": "eabf00988e905831b9bcd608587bc5b5215d89bf7210a18564793964901c6700",
+      "probeSha256": "6ef319ba70a4d7d29089c3f6f033b63cd574c0e045c99bab714fbe7af25e9a76",
+      "config": {
+        "codec": "h264",
+        "width": 1920,
+        "height": 1080,
+        "bitrate": 40000,
+        "fps": 120,
+        "pacing": "smooth",
+        "durationMs": 180000,
+        "warmupMs": 5000,
+        "showStats": true,
+        "simulateTouch": false,
+        "terminateDesktop": false,
+        "profile": true,
+        "touchPattern": "continuous",
+        "appId": 382300562
+      },
+      "complete": true,
+      "error": null,
+      "summary": {
+        "seconds": 180.786,
+        "decodedFps": 102.99470091710641,
+        "presentedFps": 100.47791311274104,
+        "receivedMbps": 33.52248479417654,
+        "frameIntervalMs": 9.952351945389585,
+        "frameJitterMs": 9.21347154273982,
+        "maxIntervalMs": 385.0107200015336,
+        "p50IntervalMs": 8.428447999060154,
+        "p95IntervalMs": 15.397439999505877,
+        "p99IntervalMs": 37.892831997945905,
+        "stallsOver25Ms": 471,
+        "stallsOver50Ms": 118,
+        "stallsOver100Ms": 34,
+        "stallsOverOneAndHalfFrames": 1773,
+        "videoSuperseded": 455,
+        "videoExpired": 0,
+        "videoBacklogDrops": 455,
+        "decoderRejected": 426,
+        "videoFrameGaps": 3067,
+        "audioEmptyEpisodes": 424,
+        "audioEmptyMs": 711.0358400158584,
+        "audioDiscardedMs": 40,
+        "pumpAvgMs": 16.110674579462785,
+        "drainAvgMs": 8.989689813231589,
+        "decoderPending": 2,
+        "copyPresentMs": 1.571651591971094,
+        "presentationTimings": {
+          "acquire": 2939.337151966989,
+          "submit": 5759.4815999101775,
+          "present": 6057.8802877198905,
+          "wait": 5470.171839959919
+        },
+        "uiSnapshots": 0,
+        "uiFrames": 0,
+        "simulatedTouchSamples": 0
+      },
+      "phases": {},
+      "mouseForwardingGated": false,
+      "inputUpdates": {
+        "gamepadQueued": 690,
+        "gamepadRejected": 0
+      },
+      "physicalContacts": 1139,
+      "physicalContactsByPhase": {
+        "physical": 1139
+      },
+      "suppressedPhysicalSamples": 0,
+      "injectedContacts": 0,
+      "suppressedMouseButtons": null,
+      "profile": {
+        "physical:touch-bounds": {
+          "calls": 13214,
+          "totalMs": 200.8596479818225,
+          "maxMs": 0.03267199918627739,
+          "over20Ms": 0
+        },
+        "physical:hid-touch": {
+          "calls": 6607,
+          "totalMs": 799.7902399711311,
+          "maxMs": 0.8976960014551878,
+          "over20Ms": 0
+        },
+        "physical:touch-route": {
+          "calls": 6607,
+          "totalMs": 456.88406396843493,
+          "maxMs": 0.9143359996378422,
+          "over20Ms": 0
+        },
+        "physical:display-videoBuffer": {
+          "calls": 18094,
+          "totalMs": 6093.027712006122,
+          "maxMs": 10.573920000344515,
+          "over20Ms": 0
+        },
+        "physical:display-publish": {
+          "calls": 18094,
+          "totalMs": 17236.31244798191,
+          "maxMs": 12.698335997760296,
+          "over20Ms": 0
+        },
+        "physical:drainVideo": {
+          "calls": 35236,
+          "totalMs": 54731.959103848785,
+          "maxMs": 18.611775999888778,
+          "over20Ms": 0
+        },
+        "physical:finishVideo": {
+          "calls": 35236,
+          "totalMs": 290.57673614285886,
+          "maxMs": 0.9000960011035204,
+          "over20Ms": 0
+        },
+        "physical:socket-5": {
+          "calls": 62305,
+          "totalMs": 14842.79478418827,
+          "maxMs": 12.814976001158357,
+          "over20Ms": 0
+        },
+        "physical:audioFrame": {
+          "calls": 18015,
+          "totalMs": 12187.810976225883,
+          "maxMs": 13.735071998089552,
+          "over20Ms": 0
+        },
+        "physical:socket-11": {
+          "calls": 30160,
+          "totalMs": 5301.20892787911,
+          "maxMs": 11.861727999523282,
+          "over20Ms": 0
+        },
+        "physical:receive-video-batch": {
+          "calls": 24478,
+          "totalMs": 10838.474304081872,
+          "maxMs": 11.947072001174092,
+          "over20Ms": 0
+        },
+        "physical:pump": {
+          "calls": 47942,
+          "totalMs": 105942.07142385654,
+          "maxMs": 14.445056000724435,
+          "over20Ms": 0
+        },
+        "physical:videoFrame": {
+          "calls": 18967,
+          "totalMs": 11721.591711973771,
+          "maxMs": 11.848736001178622,
+          "over20Ms": 0
+        },
+        "physical:socket-4": {
+          "calls": 5145,
+          "totalMs": 1461.531935993582,
+          "maxMs": 10.59276800043881,
+          "over20Ms": 0
+        },
+        "physical:drainAudio": {
+          "calls": 6607,
+          "totalMs": 3538.8597760591656,
+          "maxMs": 6.356480000540614,
+          "over20Ms": 0
+        },
+        "physical:mouse-enqueue": {
+          "calls": 1128,
+          "totalMs": 71.24697605893016,
+          "maxMs": 0.590208001434803,
+          "over20Ms": 0
+        },
+        "physical:controller-enqueue": {
+          "calls": 690,
+          "totalMs": 36.28921600431204,
+          "maxMs": 0.4300479982048273,
+          "over20Ms": 0
+        }
+      },
+      "taskProfile": {
+        "Other": {
+          "calls": 0,
+          "totalMs": 0,
+          "maxMs": 0,
+          "over20Ms": 0,
+          "over100Ms": 0
+        },
+        "InputDispatch": {
+          "calls": 21833,
+          "totalMs": 2065.580127879977,
+          "maxMs": 5.437952000647783,
+          "over20Ms": 0,
+          "over100Ms": 0
+        },
+        "InputSend": {
+          "calls": 2348,
+          "totalMs": 2475.9744960069656,
+          "maxMs": 5.567167999222875,
+          "over20Ms": 0,
+          "over100Ms": 0
+        },
+        "AudioRecv": {
+          "calls": 24792,
+          "totalMs": 26991.79539220035,
+          "maxMs": 14.332671999931335,
+          "over20Ms": 0,
+          "over100Ms": 0
+        },
+        "AudioDec": {
+          "calls": 0,
+          "totalMs": 0,
+          "maxMs": 0,
+          "over20Ms": 0,
+          "over100Ms": 0
+        },
+        "VideoRecv": {
+          "calls": 26803,
+          "totalMs": 46715.82288006134,
+          "maxMs": 12.651103999465704,
+          "over20Ms": 0,
+          "over100Ms": 0
+        },
+        "VideoDec": {
+          "calls": 0,
+          "totalMs": 0,
+          "maxMs": 0,
+          "over20Ms": 0,
+          "over100Ms": 0
+        },
+        "ControlRecv": {
+          "calls": 23673,
+          "totalMs": 15650.169760297984,
+          "maxMs": 13.512480000033975,
+          "over20Ms": 0,
+          "over100Ms": 0
+        },
+        "LossStats": {
+          "calls": 4001,
+          "totalMs": 2507.000448040664,
+          "maxMs": 11.623295998200774,
+          "over20Ms": 0,
+          "over100Ms": 0
+        },
+        "ReqIdrFrame": {
+          "calls": 710,
+          "totalMs": 690.5125760044903,
+          "maxMs": 2.2801920007914305,
+          "over20Ms": 0,
+          "over100Ms": 0
+        },
+        "CtrlAsyncCb": {
+          "calls": 0,
+          "totalMs": 0,
+          "maxMs": 0,
+          "over20Ms": 0,
+          "over100Ms": 0
+        },
+        "InvRefFrames": {
+          "calls": 462,
+          "totalMs": 512.5361919831485,
+          "maxMs": 2.981920000165701,
+          "over20Ms": 0,
+          "over100Ms": 0
+        },
+        "Ping": {
+          "calls": 6627,
+          "totalMs": 890.0624320786446,
+          "maxMs": 2.542816000059247,
+          "over20Ms": 0,
+          "over100Ms": 0
+        }
+      },
+      "slowCalls": [],
+      "cryptoBenchmark": {
+        "messages": 100,
+        "referenceMs": 316.95203199982643,
+        "cachedMs": 52.56336000189185
+      },
+      "receiveBuffers": [
+        {
+          "fd": 3,
+          "requested": 262144,
+          "result": 0,
+          "actual": 262144,
+          "getResult": 0
+        },
+        {
+          "fd": 4,
+          "requested": 1851392,
+          "result": 0,
+          "actual": 1851392,
+          "getResult": 0
+        }
+      ],
+      "audioPacketDurationMs": 10,
+      "overlay": {
+        "method": "native-badge",
+        "visible": 1,
+        "width": 672,
+        "height": 88,
+        "counters": {
+          "updates": 2273,
+          "bytes": 537664512
+        },
+        "background": 3693090828,
+        "textPixel": 4294963172
+      },
+      "motion": {
+        "samples": 178,
+        "broadChanges": 168
+      },
+      "clock": {
+        "start": {
+          "frameWakes": 229,
+          "timerWakes": 0,
+          "forcedWakes": 0,
+          "serviceWakes": 0,
+          "waitMs": 660.6886079646647,
+          "maxWaitMs": 15.868000000715256
+        },
+        "end": {
+          "frameWakes": 6860,
+          "timerWakes": 0,
+          "forcedWakes": 0,
+          "serviceWakes": 0,
+          "waitMs": 13090.83097615093,
+          "maxWaitMs": 16.597343999892473
+        }
+      },
+      "fec": {
+        "start": {
+          "calls": 0,
+          "totalWallMs": 0,
+          "maxWallMs": 0,
+          "failed": 0,
+          "shardBytes": 0,
+          "budgetYields": 0
+        },
+        "end": {
+          "calls": 9,
+          "totalWallMs": 367.7270719986409,
+          "maxWallMs": 59.92419199831784,
+          "failed": 0,
+          "shardBytes": 313984,
+          "budgetYields": 161
+        }
+      },
+      "cleanup": {
+        "tasks": 0,
+        "sameOwner": true,
+        "resident": "launcher",
+        "ftp": true
+      },
+      "refreshDuring": {
+        "flags": "2",
+        "result": 0,
+        "reason": "getter output invalid"
+      },
+      "refreshAfter": {
+        "flags": "1",
+        "result": 0,
+        "reason": "getter output invalid"
+      },
+      "humanQualification": "User confirmed higher untouched FPS around 110 and reduced but still unpleasant touch/controller stalls. Per-second counters: idle 106.74 FPS (138.13 s), touch-active 89.25 FPS (20.34 s), controller-active 71.97 FPS (22.32 s). Input categories are sampled, not isolated replay-identical phases."
+    }
+  ]
+}

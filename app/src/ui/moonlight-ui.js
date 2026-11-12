@@ -54,6 +54,14 @@
         zIndex: "1", boxSizing: "border-box", padding:"24px", fontSize:"16px"
     });
     root.id = "moonlight-simple-ui";root.setAttribute("data-civ-native-ui","1");
+    // Revision keys avoid copying cached cover data URLs into a markup key on
+    // every library navigation. The stream view retains its own narrower key.
+    if(typeof window.MutationObserver==="function"){
+        var sceneRevision=0,sceneObserver=new window.MutationObserver(function(){sceneRevision++;});
+        root.__civNanoVGSceneKey=function(){return "moonlight-ui:"+window.innerWidth+"x"+window.innerHeight+":"+sceneRevision;};
+        sceneObserver.observe(root,{subtree:true,attributes:true,childList:true,characterData:true});
+        removers.push(function(){sceneObserver.disconnect();delete root.__civNanoVGSceneKey;});
+    }
     // A non-text focus target for returning from the OS keyboard.
     root.tabIndex = -1;
     root.style.outline = "none";
@@ -677,9 +685,9 @@
 
     function action(name, inputStatus, source, x, y) {
         if (closed) return;
+        if (screen === "stream") { stream.action(name,Number(inputStatus),x,y);return; }
         if(nativeView)nativeView.invalidate();
         if(appDialog.isOpen()){appDialog.action(name,Number(inputStatus),x,y);return;}
-        if (screen === "stream") { stream.action(name,Number(inputStatus),x,y);return; }
         if (name === "keyboard-escape") name = "cancel";
         var phase = Number(inputStatus);
         if (nativeEditor) {

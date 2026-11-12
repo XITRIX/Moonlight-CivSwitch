@@ -3,18 +3,32 @@ const assert=require('node:assert/strict');
 const fs=require('node:fs');
 const vm=require('node:vm');
 const path=require('node:path');
-function transport(wire,{stall=false,signal}={}){
+function transport(wire,{stall=false,signal,secure=false,privateCaller=false}={}){
  const memory=Buffer.alloc(131072),allocated=new Set(),names=new Map();
- let cursor=4096,nextExport=0x200000n,offset=0,closed=0,request='';
+ let cursor=4096,nextExport=0x200000n,offset=0,closed=0,request='',serverCert=0;
  const exports=new Proxy({},{get:(_,name)=>{for(const [address,value]of names)if(value===name)return address;const address=nextExport++;names.set(address,name);return address;}});
  const context={window:{__moonlightSdkExports:exports,MoonlightStore:{create:()=>({})}},sdk_base:0x100000n,setTimeout,
-  malloc:size=>{const p=BigInt(cursor);cursor+=Number(size)+8;allocated.add(p);return p;},free:p=>assert(allocated.delete(p)),
+  malloc:size=>{const p=BigInt(cursor);cursor+=Number(size)+8;memory.fill(0xa5,Number(p),Number(p)+Number(size));allocated.add(p);return p;},free:p=>assert(allocated.delete(p)),
   write_buffer:(p,bytes)=>Buffer.from(bytes).copy(memory,Number(p)),read_buffer:(p,size)=>new Uint8Array(memory.subarray(Number(p),Number(p)+size)),
   text_encode:text=>new Uint8Array(Buffer.from(text)),
-  read32:p=>p===0x100004n?0x100n:p===0x100100n?0x30444f4dn:p===0x100104n?0x100n:1n,
+  forge:{pki:{certificateFromPem:()=>({subject:{getField:()=>({value:'paired-host'})}}),certificateToAsn1:()=>({})},asn1:{toDer:()=>({getBytes:()=>"X"})}},
+  read32:p=>p>=4096n&&p<131072n?BigInt(memory.readUInt32LE(Number(p))):p===0x100004n?0x100n:p===0x100100n?0x30444f4dn:p===0x100104n?0x100n:1n,
   read64:p=>{const n=Number(p-0x100200n);if(n>=0&&n<48)return n%16===0?BigInt([4,5,6][n/16]):0x101000n;return 0n;},
   call_rop:(address,...args)=>{
    const name=names.get(address);
+   if(name.includes('ssl')){
+    const put=(p,n)=>memory.writeUInt32LE(n,Number(p));
+    if(name.includes('IsInitialized'))return 1n;
+    if(name.includes('ImportServerPki'))assert.equal(memory[Number(args[2]+args[3]-1n)],0,'certificate includes its NUL');
+    if(name.includes('ImportClientPki'))assert.equal(memory[Number(args[3]+args[5])],0,'password terminator is initialized');
+    if(name.includes('SetHostName'))assert.equal(memory[Number(args[1]+args[2]-1n)],0,'TLS host includes its NUL');
+    if(name.includes('SetServerCertBuffer'))serverCert=Number(args[1]);
+    if(name.includes('DoHandshake'))memory[serverCert]=88;
+    if(name.includes('GetServerCertSize'))put(args[1],1);
+    if(name.includes('Connection5Write')){request+=memory.subarray(Number(args[1]),Number(args[1]+args[3])).toString();put(args[2],Number(args[3]));}
+    if(name.includes('Connection4Read')){const count=Math.min(Number(args[3]),997,wire.length-offset);wire.copy(memory,Number(args[1]),offset,offset+count);offset+=count;put(args[2],count);}
+    return 0n;
+   }
    if(name.includes('socket6Socket'))return 5n;
    if(name.includes('socket5Fcntl')||name.includes('socket7Connect'))return 0n;
    if(name.includes('socket5Close')){closed++;return 0n;}
@@ -28,13 +42,17 @@ function transport(wire,{stall=false,signal}={}){
    throw Error('Unexpected native call '+name);
   }
  };
+ let privateCalls=0;
+ if(privateCaller)context.window.__moonlightNativeGraphics={ready:true,context:{rawCall:(p,args)=>{privateCalls++;assert(args.every(v=>typeof v==='bigint'));return context.call_rop(p,...args);}}};
+ context.window.forge=context.forge;
  vm.createContext(context);vm.runInContext(fs.readFileSync(path.join(__dirname,'../app/vendor/civhomebrew-sdk.js'),'utf8'),context);vm.runInContext(fs.readFileSync(path.join(__dirname,'../app/src/platform/native-network.js'),'utf8'),context);
- return {run:options=>context.window.MoonlightNative.create().requestHttp({host:'192.168.1.4',port:47989,path:'/test',signal,...options}),
-  check:()=>{assert.equal(allocated.size,0);assert.equal(closed,1);},request:()=>request};
+ return {run:options=>context.window.MoonlightNative.create()[secure?'requestHttps':'requestHttp']({identity:secure?{p12Bytes:new Uint8Array([1,2,3]),p12Password:'pw'}:undefined,pinnedCertificatePem:secure?'paired-certificate':undefined,host:'192.168.1.4',port:47989,path:'/test',signal,...options}),
+  check:()=>{assert.equal(allocated.size,0);assert.equal(closed,1);if(privateCaller)assert(privateCalls>10,'TLS and cleanup use the guarded caller');},request:()=>request};
 }
 const response=(body,headers='Content-Length: '+body.length)=>Buffer.concat([Buffer.from('HTTP/1.1 200 OK\r\n'+headers+'\r\n\r\n'),body]);
 (async()=>{
  let t=transport(response(Buffer.from('Grüße 🎮')));assert.equal(await t.run(),'Grüße 🎮');t.check();assert.match(t.request(),/Accept: application\/xml/);
+ t=transport(response(Buffer.from('secure')),{secure:true,privateCaller:true});assert.equal(await t.run(),'secure');t.check();
  const bytes=Buffer.alloc(170000);for(let i=0;i<bytes.length;i++)bytes[i]=i%256;
  t=transport(response(bytes));const result=await t.run({responseType:'binary',maxResponseBytes:2097152});
  assert.equal(Buffer.compare(Buffer.from(result,'binary'),bytes),0);t.check();assert.match(t.request(),/Accept: image\/png/);

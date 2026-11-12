@@ -10,7 +10,7 @@
   function now(){return global.performance&&global.performance.now?global.performance.now():Date.now();}
   function isInterrupted(){return interruptAfter!==Infinity&&now()>=interruptAfter;}
   function alloc(size){var p=malloc(size);if(!p)throw Error("Native streaming allocation failed");allocations.push(p);return p;}
-  function invoke(name,args){return call_rop.apply(null,[transport.resolveNativeSymbol(name)].concat((args||[]).map(BigInt)));}
+  function invoke(name,args,caller){var pointer=transport.resolveNativeSymbol(name),values=(args||[]).map(BigInt);return caller?caller(BigInt(pointer),values):call_rop.apply(null,[pointer].concat(values));}
   function signed(value){return Number(BigInt.asIntN(32,value));}
   function call(name,args){var result=signed(invoke("_ZN2nn6socket"+name,args));return result<0?-Number(invoke("_ZN2nn6socket12GetLastErrnoEv",[])):result;}
   function copy(pointer,length){var bytes=new Uint8Array(length),view=new DataView(bytes.buffer),i=0;for(;i+8<=length;i+=8)view.setBigUint64(i,read64(pointer+BigInt(i)),true);for(;i<length;i++)bytes[i]=Number(read8(pointer+BigInt(i)));return bytes;}
@@ -32,6 +32,9 @@
    heapBuffer=heap.buffer;heapView=new DataView(heap.buffer);heapAddress=external;return external;
   }
   function toNative(heap,pointer,length,destination){pointer=bounds(heap,pointer,length);if(length)call_rop(memcpy_addr,destination,base(heap)+BigInt(pointer),BigInt(length));}
+  // Borrow only for a synchronous native call. The complete core heap remains
+  // rooted and cannot grow until the caller returns to JavaScript.
+  function nativePointer(heap,pointer,length){return base(heap)+BigInt(bounds(heap,pointer,length));}
   function fromNative(heap,pointer,length,source){pointer=bounds(heap,pointer,length);if(length)call_rop(memcpy_addr,base(heap)+BigInt(pointer),source,BigInt(length));}
   function attachCore(core){
    if(batchCore)throw Error("Receive batching already attached");
@@ -174,7 +177,7 @@
     if(result<0)stats.lastError=-result;return result;
    }catch(error){stats.lastError=5;throw error;}
   }
-  return {io:io,receiveVideoBatch:receiveVideoBatch,stats:stats,invoke:invoke,copy:copy,toNative:toNative,fromNative:fromNative,heapAddress:base,attachCore:attachCore,
+  return {io:io,receiveVideoBatch:receiveVideoBatch,stats:stats,invoke:invoke,copy:copy,toNative:toNative,fromNative:fromNative,nativePointer:nativePointer,heapAddress:base,attachCore:attachCore,
    interrupt:function(graceMs){interruptAfter=Math.min(interruptAfter,now()+Math.max(0,Math.min(100,Number(graceMs)||0)));},isInterrupted:isInterrupted,
    randomFill:function(target){var p=alloc(Math.max(1,target.length));try{invoke("_ZN2nn6crypto36GenerateCryptographicallyRandomBytesEPvm",[p,target.length]);target.set(copy(p,target.length));}finally{allocations.pop();free(p);}},
    close:function(){for(var fd of descriptors)call("5CloseEi",[fd]);descriptors.clear();batchSockets.clear();batchSlots=[];if(batchHeap){batchCore._free(batchHeap);batchHeap=0;}batchCore=null;batchFunction=null;for(var p of allocations.reverse())free(p);allocations=[];heapBuffer=null;heapView=null;}

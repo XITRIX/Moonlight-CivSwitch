@@ -120,3 +120,63 @@ then publishes the installed manifest/catalog. Do not resend a large monolithic
 RPC after a console reset. The first 27 MiB Doom RPC crashed Civ VII; the exact
 native cause was not established. Completed installs are detected by their
 manifest checksum and still read back before a deployment receipt is accepted.
+
+## Moonlight streaming performance check
+
+Build and inspect a fresh package first. With the matching native Launcher idle:
+
+```sh
+python3 tools/test_moonlight_performance.py install --host SWITCH_IP
+python3 tools/test_moonlight_performance.py arm --host SWITCH_IP \
+  --sunshine PC_IP:47989 --codec h264 --pacing smooth --duration 60
+```
+
+By default the installed app requests 1920×1080/60 at 50,000 kbit/s, warms up for five
+seconds, measures, disconnects and returns to Launcher. Keep moving content on
+the PC. Saved settings and pairing are read without being rewritten. The helper
+updates only Moonlight, verifies each installed script/icon, and preserves other
+apps and system components. It does not replace the live native owner.
+
+Check completion through `status`; do not send a raw payload while the app runs.
+After normal return, use `extract` with the same host/output directory. Results
+include FPS, interval percentiles/stall counts, decoder/frame gaps, audio-empty
+counts and ownership/cleanup. Use separate `--output` directories for comparisons;
+each requires its own install receipt. `--codec av1`, `--pacing latency` and
+`--fps 120`, `--bitrate KBIT_PER_SECOND` and `--show-stats` select further cases.
+`--resolution 1440p` or `--resolution 4k` requires AV1; 4K is capped at 60 FPS.
+The shared display remains 1920×1080, so larger sources are downscaled.
+These overrides do not persist preferences. The 120 FPS case also reads
+the panel rate during streaming and after disconnect, rejecting failed refresh
+restoration. `--simulate-touch` adds a moving native
+trackpad contact during measurement, without clicks, and records UI snapshot/
+redraw counts. Physical contacts take priority over the injected contact.
+`--app-id ID` pins the Sunshine application across comparisons. `--show-stats`
+keeps the compact native statistics badge enabled; register/pixel samples in the
+result distinguish an enabled badge from simply disabling the overlay. The probe
+also samples a 5×5 luma grid once per stats interval to check changing capture
+content without copying a full frame. This is not a gameplay benchmark or optical
+scanout measurement.
+
+`--profile` adds bounded in-RAM timings for HID, touch routing, socket operations,
+media callbacks and the cooperative C tasks. Where supported it checks actual
+receive-buffer sizes and benchmarks original/cached GCM before streaming.
+`--simulate-touch --touch-pattern alternating` divides measurement into remote
+mouse forwarding off/on/off. HID polling and real contacts remain active in all
+phases; real and injected contacts are suppressed in the off phases. Synthetic
+movement fills the on phase when no physical contact is present. Mouse buttons
+are suppressed during this motion-only measurement to prevent transition taps.
+The result records physical/injected/suppressed counts, stage costs and phase
+summaries. `--compact` on extraction omits per-frame intervals and the complete
+sample array; summaries, measurement endpoints, motion samples, profiles and
+cleanup evidence remain. Each new activation saves its exact probe and hash.
+
+`--terminate-desktop` selects Terminate after the stream and exercises 48 library
+navigation actions: 24 D-pad and 24 stick-equivalent events. These are injected
+controller actions; physical controller behavior needs separate qualification. It
+permits only apps named Desktop or Virtual Display; it
+refuses to terminate another running application. This closes the host session
+and may remove a virtual monitor. Use only for an explicitly authorized cleanup
+test. Normal tests select Disconnect.
+No diagnostics are logged over TCP while
+streaming. These counters measure submissions; physical scanout, visible motion
+and audible quality still need separate observation.

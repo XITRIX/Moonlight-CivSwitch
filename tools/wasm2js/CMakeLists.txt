@@ -52,6 +52,10 @@ list(FILTER STREAM_SOURCES EXCLUDE REGEX "/RtpVideoQueue\\.c$")
 list(APPEND STREAM_SOURCES "${CMAKE_CURRENT_BINARY_DIR}/RtpVideoQueue.c")
 list(FILTER STREAM_SOURCES EXCLUDE REGEX "/VideoStream\\.c$")
 list(APPEND STREAM_SOURCES "${CMAKE_CURRENT_BINARY_DIR}/VideoStream.c")
+list(FILTER STREAM_SOURCES EXCLUDE REGEX "/SdpGenerator\\.c$")
+list(APPEND STREAM_SOURCES "${CMAKE_CURRENT_BINARY_DIR}/SdpGenerator.c")
+list(FILTER STREAM_SOURCES EXCLUDE REGEX "/PlatformCrypto\\.c$")
+list(APPEND STREAM_SOURCES "${CMAKE_CURRENT_BINARY_DIR}/PlatformCrypto.c")
 add_executable(moonlight-stream ${STREAM_SOURCES} ${ENET_SOURCES}
   "${CORE}/nanors/rs.c" "${CORE}/nanors/deps/obl/oblas_common.c"
   "${CORE}/nanors/deps/obl/oblas_lite.c" "${NATIVE}/bridge.c"
@@ -62,6 +66,8 @@ foreach(property INCLUDE_DIRECTORIES COMPILE_DEFINITIONS COMPILE_OPTIONS)
 endforeach()
 target_include_directories(moonlight-stream PRIVATE "${CMAKE_CURRENT_BINARY_DIR}" "${NATIVE}")
 target_sources(moonlight-stream PRIVATE "${NATIVE}/video-receive.c" "${FIXTURES}/video-receive-tests.c")
+target_sources(moonlight-stream PRIVATE "${FIXTURES}/audio-duration-tests.c")
+target_sources(moonlight-stream PRIVATE "${FIXTURES}/crypto-cache-tests.c")
 target_link_libraries(moonlight-stream PRIVATE mbedcrypto)
 target_compile_options(moonlight-stream PRIVATE -O3 -flto
   -fno-builtin-malloc -fno-builtin-free -fno-builtin-realloc)

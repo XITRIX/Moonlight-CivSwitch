@@ -1,10 +1,11 @@
 const test=require('node:test'),assert=require('node:assert/strict'),fs=require('node:fs'),vm=require('node:vm');
 
-async function runTick(failVideo=false,failClose=false,videoPacing="smooth",mode={width:1280,height:720,fps:60,bitrate:3000},emptyFirst=false,failPoolClose=false,cancelPreparation=false,betweenFrames=null){
+async function runTick(failVideo=false,failClose=false,videoPacing="smooth",mode={width:1280,height:720,fps:60,bitrate:3000},emptyFirst=false,failPoolClose=false,cancelPreparation=false,betweenFrames=null,native=false){
  let time=0,state=0,tasks=0,client,closed=0,interrupted=false,ioClosed=false,mediaOptions,videoCalls=0;
  let ioOptions;
  const pairCalls=[],poolCalls=[],batchCalls=[],referenceCalls=[],order=[],heap=new Uint8Array(1024);
  const core={HEAPU8:heap,_malloc:()=>128,_free(){},lengthBytesUTF8:s=>s.length,stringToUTF8(){},UTF8ToString:()=>'',_LiGetLaunchUrlQueryParameters:()=>0,
+  _ml_session_set_video_format:()=>0,
   _ml_video_batch_configure:enabled=>{assert.equal(tasks,0);batchCalls.push(enabled);return 0;},
   _ml_session_set_reference_recovery:enabled=>{assert.equal(tasks,0);referenceCalls.push(enabled);return 0;},
   _ml_session_reference_recovery:()=>referenceCalls.includes(1),
@@ -12,11 +13,11 @@ async function runTick(failVideo=false,failClose=false,videoPacing="smooth",mode
   _ml_packet_pool_configure:enabled=>{assert.equal(tasks,0);poolCalls.push(enabled);return !enabled&&failPoolClose?-1:0;},
   _ml_session_start:()=>{state=2;tasks=1;return 0;},_ml_session_state:()=>state,_ml_runtime_tasks:()=>tasks,_ml_session_video_frames:()=>1,
   _ml_session_stop:()=>{assert(interrupted);state=4;},
-  _ml_runtime_pump:budget=>{assert(budget>0);if(state===4){state=0;tasks=0;}else{order.push('pump:'+budget);time+=betweenFrames==='overrun'&&budget===2?20:budget;if(betweenFrames==='stop'&&budget===2)client.stop();}},_ml_session_gamepad:()=>0};
+  _ml_runtime_pump:budget=>{assert(budget>0);if(state===4){state=0;tasks=0;}else{order.push('pump:'+budget);time+=(betweenFrames==='overrun'&&budget===2||betweenFrames==='nativeOverrun'&&budget===4)?20:budget;if(betweenFrames==='stop'&&budget===2)client.stop();}},_ml_session_gamepad:()=>0};
  const scope={setTimeout,clearTimeout,Date,performance,Uint8Array,window:null,__moonlightStreamFactory:async()=>core,
   MoonlightTelemetry:{now:()=>time,create:()=>({sample:()=>({})}),readCore:()=>null},
   MoonlightNative:{create:()=>({})},MoonlightStreamIO:{create:(transport,options)=>(ioOptions=options,{stats:{},interrupt:()=>{interrupted=true;},close:()=>{assert.equal(tasks,0);ioClosed=true;}})},
-  MoonlightStreamMedia:{create:(io,runtime,options)=>(mediaOptions=options,{drainVideo:()=>{videoCalls++;order.push('video');time+=4;if(failVideo&&(!emptyFirst||videoCalls>1))throw Error('copy failed');return !(emptyFirst&&videoCalls===1);},finishVideo:()=>{order.push('finish');},drainAudio:()=>{order.push('audio');time+=1;if(betweenFrames==='audioError')throw Error('audio service failed');},stats:()=>({}),close:()=>{assert.equal(tasks,0);closed++;if(failClose)throw Error('GPU pending');}})},
+  MoonlightStreamMedia:{create:(io,runtime,options)=>(mediaOptions=options,{drainVideo:()=>{videoCalls++;order.push('video');time+=betweenFrames==='nativeRenderOverrun'?20:4;if(failVideo&&(!emptyFirst||videoCalls>1))throw Error('copy failed');return !(emptyFirst&&videoCalls===1);},finishVideo:()=>{order.push('finish');},drainAudio:()=>{order.push('audio');time+=1;if(betweenFrames==='audioError')throw Error('audio service failed');},stats:()=>({}),close:()=>{assert.equal(tasks,0);closed++;if(failClose)throw Error('GPU pending');}})},
   MoonlightSessionProtocol:{create:()=>({launch:async()=>({host:'host',version:'7',url:'rtsp://host',key:new Uint8Array(16),keyId:1,codecSupport:1})})}};
  const timers=new Map(),frames=new Map();let next=0;
  if(betweenFrames){
@@ -29,7 +30,8 @@ async function runTick(failVideo=false,failClose=false,videoPacing="smooth",mode
   };
  }
  scope.window=scope;vm.createContext(scope);vm.runInContext(fs.readFileSync('app/src/streaming/stream-client.js','utf8'),scope);
- client=scope.MoonlightStreamClient.create({renderer:'native-gpu-texture',host:'host',app:{id:1},mode:{...mode,videoPacing},onStats:()=>client.stop()});
+ scope.MoonlightNativeVideo={createMedia:scope.MoonlightStreamMedia.create};
+ client=scope.MoonlightStreamClient.create({renderer:native?'native-vulkan':'native-gpu-texture',host:'host',app:{id:1},mode:{...mode,videoPacing},onStats:()=>client.stop()});
  const result=await client.start();assert.equal(tasks,0);assert.equal(closed,cancelPreparation?0:1);assert.equal(timers.size,0);assert.equal(frames.size,0);return {order,result,ioClosed,mediaOptions,poolCalls,pairCalls,batchCalls,referenceCalls,ioOptions,unfinished:scope.__moonlightStreamUnfinished};
 }
 
@@ -88,6 +90,46 @@ test('demanding 60 FPS modes get 12 ms while lighter modes retain 10 ms',async()
   const {order,result,mediaOptions}=await runTick(false,false,"smooth",mode),budget=mode.fps===60?12:10;
   assert.equal(result.error,null);assert.equal(result.stats.pumpBudgetMs,budget);assert.equal(result.stats.pumpMs,budget);
   const first=budget===12&&mode.bitrate<40000?6:4;assert.deepEqual(order,['video','pump:'+first,'finish','pump:'+(budget-first),'finish','audio']);
+ }
+});
+test('native modes retain bounded receive and presentation headroom at 60 and 120 FPS',async()=>{
+ for(const fps of [60,120]){
+  const mode={width:1920,height:1080,fps,bitrate:50000},budget=fps===60?13.5:12,first=4,remaining=fps===60?5.5:8;
+  const r=await runTick(false,false,'smooth',mode,false,false,false,null,true);
+  assert.equal(r.result.error,null);assert.equal(r.result.stats.pumpBudgetMs,budget);
+  assert.deepEqual(r.order,['video','pump:'+first,'finish',...(fps>60?['video']:[]),'pump:'+remaining,'finish','audio']);
+  assert.deepEqual(r.batchCalls,[1]);assert.deepEqual(r.referenceCalls,[1]);assert.equal(r.ioOptions.directVideoBatch,true);assert.equal(r.ioClosed,true);
+ }
+});
+test('native rendering and protocol overruns consume remaining frame work instead of adding another pump',async()=>{
+ const mode={width:1920,height:1080,fps:60,bitrate:50000};
+ for(const activity of ['nativeOverrun','nativeRenderOverrun']){
+  const r=await runTick(false,false,'smooth',mode,false,false,false,activity,true);
+  assert.equal(r.result.error,null);assert.equal(r.result.stats.nativeFrameWorkBudgetMs,13.5);
+  assert.deepEqual(r.order,['pump:2','audio','video',...(activity==='nativeOverrun'?['pump:4']:[]),'finish','finish','audio']);
+ }
+});
+test('low-rate native output retries an empty early drain inside the same frame work limit',async()=>{
+ const mode={width:1920,height:1080,fps:60,bitrate:20000};
+ const r=await runTick(false,false,'smooth',mode,true,false,false,null,true);
+ assert.equal(r.result.error,null);assert.equal(r.result.stats.nativeFrameWorkBudgetMs,13.5);
+ assert.deepEqual(r.order,['video','pump:4','finish','video','pump:1.5','finish','audio']);
+ assert.equal(r.ioOptions.directVideoBatch,false);assert.equal(r.ioClosed,true);
+});
+test('AV1 retains its receive allowance rather than charging its larger decoder readback to H.264 frame work',async()=>{
+ const mode={width:1920,height:1080,fps:60,bitrate:50000,codec:'av1'};
+ const r=await runTick(false,false,'smooth',mode,false,false,false,null,true);
+ assert.equal(r.result.error,null);assert.equal(r.result.stats.nativeFrameWorkBudgetMs,null);assert.equal(r.result.stats.pumpBudgetMs,11);
+ assert.deepEqual(r.order,['video','pump:4','finish','pump:7','finish','audio']);
+});
+
+test('low-rate native AV1 reserves CPU time for 4K readback without changing high-rate recovery',async()=>{
+ for(const bitrate of [10000,20000,30000]){
+  const mode={width:3840,height:2160,fps:60,bitrate,codec:'av1'},budget=bitrate<=20000?9:11;
+  const r=await runTick(false,false,'smooth',mode,false,false,false,null,true);
+  assert.equal(r.result.error,null);assert.equal(r.result.stats.nativeFrameWorkBudgetMs,null);
+  assert.equal(r.result.stats.pumpBudgetMs,budget);assert.equal(r.result.stats.pumpMs,budget);
+  assert.equal(r.ioClosed,true);
  }
 });
 

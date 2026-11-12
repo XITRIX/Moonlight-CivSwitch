@@ -4,6 +4,15 @@
  function create(options){
   var element = global.MoonlightLayout.element;
   var panel=element("div",options.parent,{display:"none",position:"fixed",left:"0",top:"0",right:"0",bottom:"0",backgroundColor:"transparent",flexDirection:"column",alignItems:"center",justifyContent:"center",overflow:"hidden"});panel.id="moonlight-stream-screen";
+  var uiRevision=0,previousSceneKey=options.parent.__civNanoVGSceneKey,sceneObserver=null;
+  // Remote input changes no local pixels. Avoid serializing the hidden game
+  // library (including artwork URLs) on every SDK input/cache check.
+  function sceneKey(){return visible?"moonlight-stream:"+global.innerWidth+"x"+global.innerHeight+":"+uiRevision:previousSceneKey?previousSceneKey.call(options.parent):null;}
+  options.parent.__civNanoVGSceneKey=sceneKey;
+  if(typeof global.MutationObserver==="function"){
+   sceneObserver=new global.MutationObserver(function(){uiRevision++;});
+   sceneObserver.observe(panel,{subtree:true,attributes:true,childList:true,characterData:true});
+  }
   // the layout engine can report a zero-height absolute child when its fixed flex parent
   // has only top/bottom insets. Give local overlays a concrete containing size.
   function resizePanel(){panel.style.width=global.innerWidth+"px";panel.style.height=global.innerHeight+"px";global.MoonlightLayout.resize(panel);invalidateNativeUi();}
@@ -15,13 +24,15 @@
   var touchNotice=element("div",panel,{display:"none",position:"absolute",bottom:"20px",left:"20px",right:"20px",zIndex:"2",padding:"12px",fontSize:"18px",color:"#fff",backgroundColor:"#131d2e",pointerEvents:"none"});touchNotice.id="moonlight-touch-status";touchNotice.setAttribute("role","status");
   var overlay=element("div",panel,{display:"none",position:"absolute",left:"14px",top:"14px",zIndex:"2",maxWidth:"90vw",padding:"12px 16px",borderRadius:"8px",backgroundColor:"rgba(12,18,32,0.88)",color:"#e4efff",fontFamily:"Arial, sans-serif",fontSize:"16px",lineHeight:"1.4",whiteSpace:"pre-wrap",pointerEvents:"none"});overlay.id="moonlight-performance-overlay";overlay.setAttribute("aria-label","Streaming performance");
   var nativeUiDirty=true,nativeUiSettleAt=0;
-  function invalidateNativeUi(){nativeUiDirty=true;nativeUiSettleAt=Date.now()+100;}
+  function invalidateNativeUi(){uiRevision++;nativeUiDirty=true;nativeUiSettleAt=Date.now()+100;}
   panel.addEventListener("click",invalidateNativeUi,false);
+  var statisticsFrame=null,statisticsSample=null;
   var overlayEnabled=false,lastStats=null,exitTimer=null,terminateRequested=false,terminateSignal=null,chordHeld=false,inputGate=false,localButtons=0,localIgnoreUntil=0,currentApp=null,currentHost="",currentMode=null,lastTouchCount=0;
   var mouse=null,keyboardReturnMouse=false;
   var menu=global.MoonlightStreamMenu.create({parent:panel,onClose:resumeInput,onMouse:openMouse,onKeyboard:function(){openKeyboard("gamepad");},onTouchMode:setTouchMode,onPerformanceOverlay:setPerformanceOverlay,onLogout:openExit});
   var dialog=global.MoonlightAppDialog.create({parent:panel,id:"moonlight-stream-exit",onCancel:function(){openMenu(true);}});
   var nativeMenuNeutral=false;
+  function localOverlay(){return dialog.isOpen()||menu.isOpen()||keyboard&&keyboard.isOpen()||mouse&&mouse.isOpen();}
   function resumeInput(){invalidateNativeUi();inputGate=true;localIgnoreUntil=Date.now()+200;lastPad="";}
   function openMenu(restoreLogout){
    invalidateNativeUi();
@@ -33,12 +44,22 @@
    if(options.onTouchMode)options.onTouchMode(mode);
    if(touchInput)touchInput.setMode(mode);currentMode.touchMode=mode;touchNotice.style.display="none";
   }
+  function updateStatistics(){
+   var display=global.MoonlightNativeDisplay,renderer=global.MoonlightNativeStreamMenu;
+   if(display&&display.setStatistics&&renderer&&renderer.renderStatistics){
+    if(overlayEnabled&&lastStats&&statisticsSample!==lastStats){statisticsFrame=renderer.renderStatistics(lastStats);statisticsSample=lastStats;}
+    if(display.setStatistics(overlayEnabled?statisticsFrame:null,function(){return visible&&!stopping&&hasImage&&!localOverlay()&&touchNotice.style.display==="none";})){
+     if(overlay.style.display!=="none"){overlay.style.display="none";invalidateNativeUi();}return;
+    }
+   }
+   if(overlayEnabled&&lastStats&&!stopping){overlay.textContent=global.MoonlightTelemetry.format(lastStats);overlay.style.display="block";invalidateNativeUi();}
+  }
   function setPerformanceOverlay(enabled){
    invalidateNativeUi();
    if(options.onPerformanceOverlay)options.onPerformanceOverlay(enabled);
    overlayEnabled=enabled;currentMode.showStats=enabled;
-   overlay.textContent=lastStats?global.MoonlightTelemetry.format(lastStats):"Waiting for stream statistics…";
-   overlay.style.display=enabled?"block":"none";
+   if(!enabled)overlay.style.display="none";
+   updateStatistics();
   }
   function openExit(){
    invalidateNativeUi();
@@ -47,7 +68,7 @@
    dialog.show({title:"Leave "+currentApp.title+"?",description:"Disconnect keeps the app running on your PC.\nTerminate closes it. Unsaved progress could be lost.",labels:["Disconnect","Terminate"],actions:[function(){stop();},function(){terminateRequested=true;stop();}]});
   }
   function localInput(input){
-   var buttons=input.state[0],before=localButtons;localButtons=buttons;if(buttons!==before||buttons&&(menu.isOpen()||dialog.isOpen()||keyboard&&keyboard.isOpen()||mouse&&mouse.isOpen()))invalidateNativeUi();
+   var buttons=input.state[0],before=localButtons;localButtons=buttons;if(localOverlay()&&(buttons!==before||buttons))invalidateNativeUi();
    if(input.exit){if(!chordHeld){chordHeld=true;openMenu();}return true;}
    chordHeld=false;
    if(dialog.isOpen()||menu.isOpen()){
@@ -63,7 +84,7 @@
    return false;
   }
   function cancelExitCheck(){if(exitTimer!==null)clearTimeout(exitTimer);exitTimer=null;}
-  function checkExit(){exitTimer=null;if(!visible||stopping)return;poll(true);if(nativeUiDirty||nativeUiSettleAt&&Date.now()>=nativeUiSettleAt){nativeUiDirty=false;if(nativeUiSettleAt&&Date.now()>=nativeUiSettleAt)nativeUiSettleAt=0;if(global.CivNanoVGPrototype)global.CivNanoVGPrototype.invalidate();}if(visible&&!stopping)exitTimer=setTimeout(checkExit,50);}
+  function checkExit(){exitTimer=null;if(!visible||stopping)return;poll(true);if(nativeUiDirty||nativeUiSettleAt&&Date.now()>=nativeUiSettleAt){nativeUiDirty=false;if(nativeUiSettleAt&&Date.now()>=nativeUiSettleAt){nativeUiSettleAt=0;uiRevision++;}if(global.CivNanoVGPrototype)global.CivNanoVGPrototype.invalidate();}if(visible&&!stopping)exitTimer=setTimeout(checkExit,50);}
   var client=null,lifetime=null,loading=false,lastImage="",imageStarted=0,visible=false,stopping=false,hasImage=false,nativeInput=null,fullInput=false,lastPad="",nativeButtons=0,nativeAxes=[0,0],pressedKeys=new Set(),suspended=false,touchInput=null,nativeTouch=null;
   var remoteKeys=null,keyboard=null;
   if(global.MoonlightStreamKeyboard){
@@ -86,10 +107,10 @@
    if(openMode==="gamepad"){client.gamepad(0,0,0,0,0,0,0);lastPad="";}
    return keyboard.open(openMode);
   }
-  function touchError(text){touchNotice.textContent=text;touchNotice.style.display="block";}
+  function touchError(text){invalidateNativeUi();touchNotice.textContent=text;touchNotice.style.display="block";}
   function touchAllowed(local){return visible&&!!client&&!stopping&&!suspended&&!dialog.isOpen()&&!menu.isOpen()&&(local||Date.now()>=localIgnoreUntil);}
   function routeTouch(points){
-   if(points.length||lastTouchCount)invalidateNativeUi();
+   if(localOverlay()&&(points.length||lastTouchCount))invalidateNativeUi();
    lastTouchCount=points.length;
    if(menu.isOpen()){touchInput.update(points,false);menu.updateTouches(points);return;}
    if(keyboard&&keyboard.isOpen()){touchInput.update(points,false);keyboard.updateTouches(points,touchAllowed(true));}
@@ -127,10 +148,10 @@
   }
   function stop(){if(stopping||!visible)return lifetime;cancelExitCheck();dialog.hide();menu.hide();release();stopping=true;status("Stopping stream…");invalidateNativeUi();if(global.CivNanoVGPrototype)global.CivNanoVGPrototype.invalidate();if(client)return client.stop();return lifetime;}
   function status(text){message.textContent=text;if(!hasImage||stopping)message.style.display="block";}
-  function showImage(){if(!hasImage)invalidateNativeUi();hasImage=true;message.style.display="none";}
+  function showImage(){if(!hasImage){invalidateNativeUi();hasImage=true;message.style.display="none";updateStatistics();}}
   image.onload=function(){loading=false;image.style.display="block";showImage();};image.onerror=function(){loading=false;options.log("Image presentation failed");};
   function nativeAction(name,phase,x,y){
-   invalidateNativeUi();
+   if(localOverlay())invalidateNativeUi();
    if(dialog.isOpen()){dialog.action(name,phase,x,y);return;}
    if(menu.isOpen()){if(!fullInput)menu.action(name,phase,x,y);return;}
    if(keyboard&&keyboard.mode()==="gamepad"){if(!fullInput)keyboard.action(name,phase);return;}
@@ -161,7 +182,7 @@
    }finally{if(!exitOnly)pollTouch();}
   }
   function key(event,down){
-   invalidateNativeUi();
+   if(localOverlay())invalidateNativeUi();
    if(!visible)return false;
    if(dialog.key(event,down))return true;
    if(menu.key(event,down))return true;
@@ -190,7 +211,7 @@
   }
   function show(host,app,mode,hostName){
    if(lifetime)return lifetime;
-   mode=global.MoonlightSettings.validate(mode);overlayEnabled=mode.showStats;lastStats=null;overlay.style.display="none";overlay.textContent="Waiting for stream statistics…";
+   mode=global.MoonlightSettings.validate(mode);overlayEnabled=mode.showStats;lastStats=null;statisticsFrame=null;statisticsSample=null;overlay.style.display="none";overlay.textContent="Waiting for stream statistics…";
    currentApp=app;currentHost=hostName||host;currentMode=mode;
    lastTouchCount=0;terminateRequested=false;terminateSignal={aborted:false};chordHeld=false;nativeMenuNeutral=false;menu.hide();inputGate=false;localButtons=0;localIgnoreUntil=0;dialog.hide();
    touchNotice.style.display="none";touchNotice.textContent="";
@@ -202,7 +223,7 @@
     if(url===lastImage)return;lastImage=url;
     if(url.indexOf("live:/")===0){loading=false;image.style.display="none";liveImage.style.backgroundImage='url("'+url+'")';liveImage.style.display="block";showImage();}
     else{liveImage.style.display="none";loading=true;imageStarted=Date.now();image.src=url;}
-   },canPresent:function(){return !stopping&&(!loading||Date.now()-imageStarted>1000);},log:options.log,onStats:function(stats){if(overlayEnabled)invalidateNativeUi();lastStats=stats;if(overlayEnabled){overlay.textContent=global.MoonlightTelemetry.format(stats);overlay.style.display="block";}if(options.onStats)options.onStats(stats);},onError:function(error){options.log("Error: "+error.message);}});
+   },canPresent:function(){return !stopping&&(!loading||Date.now()-imageStarted>1000);},log:options.log,onStats:function(stats){lastStats=stats;if(!stopping)updateStatistics();if(options.onStats)options.onStats(stats);},onError:function(error){options.log("Error: "+error.message);}});
    if(global.MoonlightTouchInput){
     try{nativeTouch=global.MoonlightTouchInput.createNative();}catch(error){nativeTouch=null;touchError("Native touchscreen unavailable: "+error.message);}
     touchInput=global.MoonlightTouchInput.create({mode:mode.touchMode,width:mode.width,height:mode.height,bounds:function(){return panel.getBoundingClientRect();},startBlocked:!!nativeTouch,
@@ -217,6 +238,7 @@
     return result;
    }).finally(function(){
     cancelExitCheck();
+    if(global.MoonlightNativeDisplay&&global.MoonlightNativeDisplay.setStatistics)global.MoonlightNativeDisplay.setStatistics(null);statisticsFrame=null;statisticsSample=null;
     if(touchInput){touchInput.close();touchInput=null;}if(nativeTouch){nativeTouch.close();nativeTouch=null;}
     keyboardReturnMouse=false;mouse.close();
      if(keyboard)keyboard.close();if(remoteKeys)remoteKeys.reset();
@@ -225,7 +247,7 @@
    return lifetime;
   }
   function suspend(value){suspended=!!value;if(suspended)release();}
-  function destroy(){if(terminateSignal)terminateSignal.aborted=true;dialog.hide();menu.hide();var done=stop();image.onload=image.onerror=null;return Promise.resolve(done).finally(function(){global.removeEventListener("resize",resizePanel);panel.removeEventListener("click",invalidateNativeUi,false);if(keyboard)keyboard.destroy();mouse.destroy();menu.destroy();dialog.destroy();if(panel.parentNode)panel.parentNode.removeChild(panel);});}
+  function destroy(){if(terminateSignal)terminateSignal.aborted=true;dialog.hide();menu.hide();var done=stop();image.onload=image.onerror=null;return Promise.resolve(done).finally(function(){global.removeEventListener("resize",resizePanel);panel.removeEventListener("click",invalidateNativeUi,false);if(sceneObserver)sceneObserver.disconnect();if(options.parent.__civNanoVGSceneKey===sceneKey){if(previousSceneKey)options.parent.__civNanoVGSceneKey=previousSceneKey;else delete options.parent.__civNanoVGSceneKey;}if(keyboard)keyboard.destroy();mouse.destroy();menu.destroy();dialog.destroy();if(panel.parentNode)panel.parentNode.removeChild(panel);});}
   return {show:show,stop:stop,poll:poll,action:nativeAction,key:key,suspend:suspend,destroy:destroy,openKeyboard:openKeyboard};
  }
  global.MoonlightStreamScreen={create:create};

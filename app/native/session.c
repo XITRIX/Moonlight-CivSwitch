@@ -149,7 +149,8 @@ static void start_task(void* ignored) {
     if(rumble_enabled)listener.rumble=rumble;
     video.setup=video_setup;video.submitDecodeUnit=video_submit;video.capabilities=CAPABILITY_DIRECT_SUBMIT;
     if(reference_recovery&&requested_video_format==VIDEO_FORMAT_H264)video.capabilities|=CAPABILITY_REFERENCE_FRAME_INVALIDATION_AVC;
-    audio.init=audio_setup;audio.decodeAndPlaySample=audio_submit;audio.capabilities=CAPABILITY_DIRECT_SUBMIT;
+    audio.init=audio_setup;audio.decodeAndPlaySample=audio_submit;
+    audio.capabilities=CAPABILITY_DIRECT_SUBMIT|CAPABILITY_SUPPORTS_ARBITRARY_AUDIO_DURATION;
     int result=LiStartConnection(&server,&config,&listener,&video,&audio,NULL,0,NULL,0);
     if(result){error_code=result;state=3;ml_event(6,result,0);}
 }
@@ -307,6 +308,17 @@ int ml_input_priority_test_start(void) {
     return 0;
 }
 int ml_input_priority_test_result(void) { return input_priority_result; }
+
+static int fairness_result;
+static void test_priority_hog(void* ignored) {
+    while(!fairness_result)ml_runtime_checkpoint();
+}
+static void test_normal_progress(void* ignored) {fairness_result=42;}
+int ml_scheduler_fairness_test_start(void) {
+    if(ml_runtime_tasks())return -1;fairness_result=0;
+    return ml_spawn_input_task(test_priority_hog,NULL)||ml_spawn_task(test_normal_progress,NULL);
+}
+int ml_scheduler_fairness_test_result(void) {return fairness_result;}
 
 static int input_wake_result;
 static void test_input_sleeper(void* ignored) { (void)ignored;input_wake_result=1;PltSleepMs(60000);input_wake_result=2; }

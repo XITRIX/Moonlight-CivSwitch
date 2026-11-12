@@ -7,7 +7,8 @@ heap-view initializations, including memory growth. No stores are rewritten.
 import re
 
 
-def specialize(source, symbol_text, expected_sites=378):
+# The pinned large-table GCM configuration removes four lowered load sites.
+def specialize(source, symbol_text, expected_sites=374):
     names = {original: short for short, original in
              (line.split(':', 1) for line in symbol_text.splitlines() if ':' in line)}
     h, f64 = names['HEAPU8'], names['HEAPF64']

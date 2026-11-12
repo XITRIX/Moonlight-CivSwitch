@@ -1,6 +1,6 @@
 const assert=require('node:assert/strict');
 const {inflateSync}=require('node:zlib');
-const {randomFillSync}=require('node:crypto');
+const {randomFillSync,createCipheriv}=require('node:crypto');
 const vm=require('node:vm'),fs=require('node:fs'),path=require('node:path');
 const root=path.resolve(__dirname,'../..');
 const preview={Uint8Array,Uint32Array,Int32Array,Number,DataView,btoa:s=>Buffer.from(s,'binary').toString('base64')};preview.window=preview;vm.createContext(preview);vm.runInContext(fs.readFileSync(path.join(root,'app/src/streaming/png-preview.js'),'utf8'),preview);
@@ -40,7 +40,17 @@ const make=require(path.join(root,'dist/runtime/moonlight-stream.js'));
  assert.equal(core._ml_test_packet_pool(),0,'packet pool preserves ownership, exhaustion fallback, realloc, and refuses live teardown');
  assert.equal(core._ml_packet_pool_benchmark(1),0,'packet-sized allocation churn reuses buffers and releases all ownership');
  for(const algorithm of ['rtsp','fec','crypto','unaligned'])assert.equal(core['_ml_test_'+algorithm](),0,'optimized stream core: '+algorithm);
+ for(let seed=0;seed<32;seed++)for(const length of [0,1,15,16,17,31,64,127,512]){
+  const pointer=core._ml_crypto_cache_fixture(length,seed);assert(pointer,'cached authentication, replay rejection and cleanup');
+  const nonce=seed*8+7,key=Buffer.from(Array.from({length:16},(_,i)=>i)),iv=Buffer.from(Array.from({length:12},(_,i)=>i));iv.writeUInt32LE(nonce);
+  const input=Buffer.from(Array.from({length},(_,i)=>(i*17+nonce)&255));
+  const cipher=createCipheriv('aes-128-gcm',key,iv),expected=Buffer.concat([cipher.update(input),cipher.final(),cipher.getAuthTag()]);
+  assert.deepEqual(Buffer.from(core.HEAPU8.subarray(pointer,pointer+length+16)),expected,'persistent GCM matches independent Node AEAD');
+ }
+ for(const cached of [0,1])assert(core._ml_crypto_cache_benchmark(10,cached)>=0);
  assert.equal(core._ml_test_fec_vectors(),0,'all GF coefficients, unaligned rows, tails and in-place scaling match upstream');
+ assert.equal(core._ml_test_audio_duration(),0,'real adapted SDP keeps legacy/HQ policies and selects 10 ms high-refresh stereo');
+ assert.equal(core._ml_test_zeroize(),0,'direct volatile wipe clears exact ranges and preserves guards');
  assert.equal(core._ml_test_fec_large(),0,'64+16 shard encode/recovery agrees with upstream parity');
  assert.equal(core._ml_test_video_queue(),0,'receive queue matches upstream for gaps, duplicates, reordering, wrap and FEC');
  assert.equal(core._ml_video_queue_benchmark(0,3),core._ml_video_queue_benchmark(1,3),'queue benchmark processes identical packets');
@@ -63,17 +73,29 @@ const make=require(path.join(root,'dist/runtime/moonlight-stream.js'));
  for(const name of ['unaligned','crypto'])assert.equal(core['_ml_test_'+name](),0,'fresh native load view after heap growth: '+name);
  assert.equal(core._ml_session_metrics(),0,'metrics are unavailable outside an active connection');
  const yieldsBefore=core._ml_runtime_budget_yields();
+ assert.equal(core._ml_runtime_profile_enable(2),-1);
+ assert.equal(core._ml_runtime_profile_enable(1),0);
  assert.equal(core._ml_budget_test_start(),0);core._ml_runtime_pump(1);
  assert.equal(core._ml_budget_test_result(),0,'checkpoint returns to JS before long-running work finishes');
  assert(core._ml_runtime_budget_yields()>yieldsBefore);
  const budgetDeadline=Date.now()+2000;
  while(core._ml_runtime_tasks()&&Date.now()<budgetDeadline){core._ml_runtime_pump(1);await new Promise(r=>setTimeout(r,2));}
  assert.equal(core._ml_budget_test_result(),1);assert.equal(core._ml_runtime_tasks(),0);
+ const profilePointer=core._ml_runtime_profile(),profile=new DataView(core.HEAPU8.buffer);
+ const other=Array.from({length:5},(_,i)=>profile.getFloat64(profilePointer+i*8,true));
+ assert(other[0]>0&&other[1]>0&&other[2]>0,'opt-in profiler records real scheduler turns');
+ assert(other.every(Number.isFinite));assert(other[2]<=other[1]);
+ assert.equal(core._ml_runtime_profile_enable(0),0);
+ assert.equal(profile.getFloat64(profilePointer,true),0,'disabling clears the bounded RAM profile');
  assert.equal(core._ml_input_priority_test_start(),0);core._ml_runtime_pump(2);
  assert.equal(core._ml_input_priority_test_result(),123,'dispatch, InputSend and audio run before a busy video task exhausts the budget');
  const priorityDeadline=Date.now()+2000;
  while(core._ml_runtime_tasks()&&Date.now()<priorityDeadline){core._ml_runtime_pump(2);await new Promise(r=>setTimeout(r,2));}
  assert.equal(core._ml_input_priority_test_result(),1234);assert.equal(core._ml_runtime_tasks(),0,'priority tasks join and release normally');
+ assert.equal(core._ml_scheduler_fairness_test_start(),0);
+ core._ml_runtime_pump(.25);assert.equal(core._ml_scheduler_fairness_test_result(),0,'priority worker consumes the first slice');
+ core._ml_runtime_pump(2);assert.equal(core._ml_scheduler_fairness_test_result(),42,'normal work runs despite a permanently runnable priority worker');
+ while(core._ml_runtime_tasks())core._ml_runtime_pump(2);
  assert.equal(core._ml_input_wake_test_start(),0);
  const inputWakeDeadline=Date.now()+1000;
  while(core._ml_runtime_tasks()&&Date.now()<inputWakeDeadline){core._ml_runtime_pump(2);await new Promise(r=>setTimeout(r,2));}

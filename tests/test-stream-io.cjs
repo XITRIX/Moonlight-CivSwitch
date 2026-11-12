@@ -74,6 +74,9 @@ test('TCP/UDP receive and send borrow core memory without intermediate payload c
 });
 test('heap replacement revalidates the pointer, and invalid ranges are rejected before receiving',()=>{
  const e=environment();e.io.io(5,[7,128,30,0,0,0],e.heap);
+ assert.equal(e.io.nativePointer(e.heap,128,30),0x200000080n);
+ assert.throws(()=>e.io.nativePointer(e.heap,1020,30),/range/);
+ assert.throws(()=>e.io.nativePointer(e.heap.subarray(1),0,1),/complete/);
  const larger=new Uint8Array(2048);e.views.push(larger);e.io.io(5,[7,1024,30,0,0,0],larger);assert.deepEqual(larger.slice(1024,1054),e.payload);
  const count=()=>e.calls.filter(c=>c[0].includes('Recv')).length,previous=count();
  assert.throws(()=>e.io.io(5,[7,1020,30,0,0,0],e.heap),/range/);
@@ -143,4 +146,11 @@ test('large receive batches preserve all 32 slots and fetch the next batch only 
  e.enqueue(7,Array.from({length:33},(_,i)=>new Uint8Array(1400).fill(i)));
  for(let i=0;i<33;i++){assert.equal(e.io.io(5,[7,128,1400,0,0,0],e.heap),1400);assert.equal(e.heap[128],i);assert.equal(e.heap[1527],i);}
  assert.equal(e.io.stats.batchPackets,33);assert.equal(e.io.stats.nativeReceiveCalls,2);assert.equal(e.io.stats.batchCacheHits,31);e.io.close();assert.equal(e.freedCore(),1);assert.equal(e.owned.size,0);
+});
+
+// Native media uses the renderer's guarded stack without changing packet I/O.
+test('native service calls can borrow an owned caller without invoking the loader stack',()=>{
+ const e=environment(),before=e.calls.length,seen=[];
+ assert.equal(e.io.invoke('42',[1,2n],(pointer,args)=>{seen.push([pointer,...args]);return 17n;}),17n);
+ assert.deepEqual(seen,[[42n,1n,2n]]);assert.equal(e.calls.length,before);e.io.close();
 });

@@ -1,0 +1,2281 @@
+{
+  "recommendedProfile": {
+    "mode": {
+      "width": 1920,
+      "height": 1080,
+      "fps": 60,
+      "bitrate": 20000,
+      "showStats": true,
+      "videoPacing": "smooth",
+      "rumble": true,
+      "touchMode": "trackpad",
+      "mouse": {
+        "speed": 34,
+        "swapButtons": false,
+        "invertScroll": false
+      },
+      "codec": "h264"
+    },
+    "readbackVerified": true,
+    "qualifiedBy": "moonlight-overlay-60-20-queued",
+    "limits": "Measured fresh submissions, not locked 60 FPS or physical scanout/audio qualification; requested 120 FPS/40 Mbps remains unstable."
+  },
+  "repairedTerminationChecks": {
+    "cycles": 5,
+    "navigationSteps": 240
+  },
+  "date": "2026-11-12",
+  "platform": "Switch 2 / Civ VII 1.0.0 / SDK 1.3.5 / resident 0.4.3-sdk.9",
+  "rejectedRuns": [
+    "moonlight-overlay-120-40-three",
+    "moonlight-overlay-120-40-interleaved"
+  ],
+  "originalCrash": {
+    "reported": true,
+    "reproduced": false,
+    "nativeCrashTraceAvailable": false,
+    "scope": "User identified D-pad/stick navigation. Baseline and repaired terminate/navigation loops inject controller-equivalent events and are bounded checks, not physical-controller qualification or proof of the original crash cause."
+  },
+  "workload": "Sequential live Sunshine runs with native trackpad motion and overlay enabled. Baseline used Virtual Display; the first badge-only run used Desktop after the termination check. Compare host application and content before attributing all FPS differences to code. User confirmed moving content before the guarded Virtual Display check.",
+  "measurement": "Fresh native video submissions, not optical scanout or input-to-display latency. Native badge registers/pixel samples show the overlay was enabled; no full UI redraw is required per stats update.",
+  "currentPackageSha256": "383a24cc0788c9e49efa1e21370cf4bd2b583b81b0b6ce1931afe9ed38d3d990",
+  "runs": [
+    {
+      "run": "moonlight-overlay-120-20-queued",
+      "packageSha256": "383a24cc0788c9e49efa1e21370cf4bd2b583b81b0b6ce1931afe9ed38d3d990",
+      "app": {
+        "id": "382300562",
+        "title": "Virtual Display"
+      },
+      "config": {
+        "codec": "h264",
+        "width": 1920,
+        "height": 1080,
+        "bitrate": 20000,
+        "fps": 120,
+        "pacing": "smooth",
+        "durationMs": 60000,
+        "warmupMs": 5000,
+        "showStats": true,
+        "simulateTouch": true,
+        "terminateDesktop": true,
+        "appId": 382300562
+      },
+      "complete": true,
+      "error": null,
+      "summary": {
+        "seconds": 60.743,
+        "decodedFps": 100.71942446043165,
+        "presentedFps": 84.22369655762803,
+        "receivedMbps": 16.12066707274912,
+        "frameIntervalMs": 11.873420791243104,
+        "frameJitterMs": 12.660451776700938,
+        "maxIntervalMs": 300.1534080002457,
+        "p50IntervalMs": 10.912959999404848,
+        "p95IntervalMs": 17.724671999458224,
+        "p99IntervalMs": 19.609599999617785,
+        "stallsOver25Ms": 33,
+        "stallsOver50Ms": 14,
+        "stallsOver100Ms": 14,
+        "stallsOverOneAndHalfFrames": 594,
+        "videoSuperseded": 1001,
+        "videoExpired": 0,
+        "videoBacklogDrops": 1001,
+        "decoderRejected": 0,
+        "videoFrameGaps": 1182,
+        "audioEmptyEpisodes": 932,
+        "audioEmptyMs": 2766.721055999864,
+        "audioDiscardedMs": 20,
+        "pumpAvgMs": 12.79726085461924,
+        "drainAvgMs": 6.068567852549567,
+        "decoderPending": 2,
+        "copyPresentMs": 1.887124641135807,
+        "presentationTimings": {
+          "acquire": 11862.988063982804,
+          "submit": 22519.296448026762,
+          "present": 23775.289344060628,
+          "wait": 32925.50710399916
+        },
+        "uiSnapshots": 0,
+        "uiFrames": 0,
+        "simulatedTouchSamples": 2895
+      },
+      "overlay": {
+        "method": "native-badge",
+        "visible": 1,
+        "width": 672,
+        "height": 88,
+        "counters": {
+          "updates": 484,
+          "bytes": 114487296
+        },
+        "background": 3693090828,
+        "textPixel": 4294963172
+      },
+      "motion": {
+        "samples": 60,
+        "broadChanges": 53
+      },
+      "statsUpdateCosts": [
+        {
+          "time": 1794518641073,
+          "ms": 2.4977600001730025
+        },
+        {
+          "time": 1794518642079,
+          "ms": 1.6976959998719394
+        },
+        {
+          "time": 1794518643085,
+          "ms": 1.7691199998371303
+        },
+        {
+          "time": 1794518644097,
+          "ms": 1.7227199994958937
+        },
+        {
+          "time": 1794518645114,
+          "ms": 1.7201919998042285
+        },
+        {
+          "time": 1794518646133,
+          "ms": 1.7106880000792444
+        },
+        {
+          "time": 1794518647136,
+          "ms": 1.8083519996143878
+        },
+        {
+          "time": 1794518648158,
+          "ms": 1.7176320003345609
+        },
+        {
+          "time": 1794518649178,
+          "ms": 1.7542720003984869
+        },
+        {
+          "time": 1794518650194,
+          "ms": 1.7372799995355308
+        },
+        {
+          "time": 1794518651204,
+          "ms": 1.7671359996311367
+        },
+        {
+          "time": 1794518652218,
+          "ms": 1.6457919999957085
+        },
+        {
+          "time": 1794518653236,
+          "ms": 1.6627199999056756
+        },
+        {
+          "time": 1794518654244,
+          "ms": 1.702080000191927
+        },
+        {
+          "time": 1794518655263,
+          "ms": 1.766399999614805
+        },
+        {
+          "time": 1794518656270,
+          "ms": 1.687328000087291
+        },
+        {
+          "time": 1794518657277,
+          "ms": 1.6401279997080564
+        },
+        {
+          "time": 1794518658294,
+          "ms": 1.657727999612689
+        },
+        {
+          "time": 1794518659310,
+          "ms": 1.7479999996721745
+        },
+        {
+          "time": 1794518660312,
+          "ms": 1.6609919997863472
+        },
+        {
+          "time": 1794518661320,
+          "ms": 1.6400000001303852
+        },
+        {
+          "time": 1794518662332,
+          "ms": 1.7100479998625815
+        },
+        {
+          "time": 1794518663348,
+          "ms": 1.7523199995048344
+        },
+        {
+          "time": 1794518664364,
+          "ms": 1.6497599999420345
+        },
+        {
+          "time": 1794518665379,
+          "ms": 1.6780160004273057
+        },
+        {
+          "time": 1794518666383,
+          "ms": 1.6435839999467134
+        },
+        {
+          "time": 1794518667388,
+          "ms": 1.7690879991278052
+        },
+        {
+          "time": 1794518668393,
+          "ms": 1.6692800000309944
+        },
+        {
+          "time": 1794518669410,
+          "ms": 1.6716800001449883
+        },
+        {
+          "time": 1794518670421,
+          "ms": 1.7090239999815822
+        },
+        {
+          "time": 1794518671431,
+          "ms": 1.7384640001691878
+        },
+        {
+          "time": 1794518672439,
+          "ms": 1.6950719999149442
+        },
+        {
+          "time": 1794518673449,
+          "ms": 1.666880000848323
+        },
+        {
+          "time": 1794518674467,
+          "ms": 1.6598080000840127
+        },
+        {
+          "time": 1794518675469,
+          "ms": 1.7456640005111694
+        },
+        {
+          "time": 1794518676485,
+          "ms": 1.6734719998203218
+        },
+        {
+          "time": 1794518677506,
+          "ms": 1.6932480004616082
+        },
+        {
+          "time": 1794518678517,
+          "ms": 1.6759039997123182
+        },
+        {
+          "time": 1794518679536,
+          "ms": 1.7972159995697439
+        },
+        {
+          "time": 1794518680550,
+          "ms": 1.6711359997279942
+        },
+        {
+          "time": 1794518681554,
+          "ms": 1.6177599998191
+        },
+        {
+          "time": 1794518682572,
+          "ms": 1.7034560008905828
+        },
+        {
+          "time": 1794518683577,
+          "ms": 1.7556160003878176
+        },
+        {
+          "time": 1794518684599,
+          "ms": 1.703551999758929
+        },
+        {
+          "time": 1794518685610,
+          "ms": 1.688864000607282
+        },
+        {
+          "time": 1794518686620,
+          "ms": 1.6763200000859797
+        },
+        {
+          "time": 1794518687624,
+          "ms": 1.8293120004236698
+        },
+        {
+          "time": 1794518688638,
+          "ms": 1.7166720009408891
+        },
+        {
+          "time": 1794518689659,
+          "ms": 1.6580799999646842
+        },
+        {
+          "time": 1794518690681,
+          "ms": 1.6514239995740354
+        },
+        {
+          "time": 1794518691690,
+          "ms": 1.7555840001441538
+        },
+        {
+          "time": 1794518692707,
+          "ms": 1.6571519998833537
+        },
+        {
+          "time": 1794518693712,
+          "ms": 1.6599040003493428
+        },
+        {
+          "time": 1794518694735,
+          "ms": 1.66800000006333
+        },
+        {
+          "time": 1794518695742,
+          "ms": 1.7598399999551475
+        },
+        {
+          "time": 1794518696757,
+          "ms": 1.6941439998336136
+        },
+        {
+          "time": 1794518697765,
+          "ms": 1.720063999760896
+        },
+        {
+          "time": 1794518698771,
+          "ms": 1.6772479992359877
+        },
+        {
+          "time": 1794518699791,
+          "ms": 1.7751679997891188
+        },
+        {
+          "time": 1794518700794,
+          "ms": 1.6723200003616512
+        },
+        {
+          "time": 1794518701809,
+          "ms": 1.6483199996873736
+        },
+        {
+          "time": 1794518702825,
+          "ms": 1.6894720001146197
+        },
+        {
+          "time": 1794518703830,
+          "ms": 1.7822400005534291
+        },
+        {
+          "time": 1794518704840,
+          "ms": 1.6690559992566705
+        },
+        {
+          "time": 1794518705852,
+          "ms": 1.6591040003113449
+        },
+        {
+          "time": 1794518706868,
+          "ms": 1.6746880002319813
+        },
+        {
+          "time": 1794518707880,
+          "ms": 1.7622080002911389
+        },
+        {
+          "time": 1794518708897,
+          "ms": 1.7176959998905659
+        }
+      ],
+      "navigationSteps": 48,
+      "library": {
+        "nativeSources": [
+          "moonlight-cover-1.png",
+          "moonlight-cover-2.png",
+          "moonlight-cover-0.png"
+        ],
+        "gamefaceImages": 0,
+        "textureBytes": 12997632
+      },
+      "refreshDuring": {
+        "flags": "2",
+        "result": 0,
+        "reason": "getter output invalid"
+      },
+      "refreshAfter": {
+        "flags": "1",
+        "result": 0,
+        "reason": "getter output invalid"
+      },
+      "cleanup": {
+        "tasks": 0,
+        "sameDisplay": true,
+        "launcher": true,
+        "ftp": true
+      }
+    },
+    {
+      "run": "moonlight-overlay-120-30-queued",
+      "packageSha256": "383a24cc0788c9e49efa1e21370cf4bd2b583b81b0b6ce1931afe9ed38d3d990",
+      "app": {
+        "id": "382300562",
+        "title": "Virtual Display"
+      },
+      "config": {
+        "codec": "h264",
+        "width": 1920,
+        "height": 1080,
+        "bitrate": 30000,
+        "fps": 120,
+        "pacing": "smooth",
+        "durationMs": 60000,
+        "warmupMs": 5000,
+        "showStats": true,
+        "simulateTouch": true,
+        "terminateDesktop": true,
+        "appId": 382300562
+      },
+      "complete": true,
+      "error": null,
+      "summary": {
+        "seconds": 59.701,
+        "decodedFps": 61.60700825781813,
+        "presentedFps": 58.85998559488116,
+        "receivedMbps": 24.440625919163836,
+        "frameIntervalMs": 16.989830756972225,
+        "frameJitterMs": 32.10472947767103,
+        "maxIntervalMs": 396.64646400045604,
+        "p50IntervalMs": 11.240384000353515,
+        "p95IntervalMs": 26.438719999976456,
+        "p99IntervalMs": 235.52976000029594,
+        "stallsOver25Ms": 189,
+        "stallsOver50Ms": 96,
+        "stallsOver100Ms": 59,
+        "stallsOverOneAndHalfFrames": 925,
+        "videoSuperseded": 165,
+        "videoExpired": 0,
+        "videoBacklogDrops": 165,
+        "decoderRejected": 0,
+        "videoFrameGaps": 3972,
+        "audioEmptyEpisodes": 618,
+        "audioEmptyMs": 1579.8243199964054,
+        "audioDiscardedMs": 20,
+        "pumpAvgMs": 12.855154235029104,
+        "drainAvgMs": 4.180186364265931,
+        "decoderPending": 1,
+        "copyPresentMs": 1.9025989937347954,
+        "presentationTimings": {
+          "acquire": 10947.177311969572,
+          "submit": 20703.532704052494,
+          "present": 21902.162176057158,
+          "wait": 30420.14620799014
+        },
+        "uiSnapshots": 0,
+        "uiFrames": 0,
+        "simulatedTouchSamples": 3179
+      },
+      "overlay": {
+        "method": "native-badge",
+        "visible": 1,
+        "width": 672,
+        "height": 88,
+        "counters": {
+          "updates": 418,
+          "bytes": 98875392
+        },
+        "background": 3693090828,
+        "textPixel": 4294963172
+      },
+      "motion": {
+        "samples": 59,
+        "broadChanges": 53
+      },
+      "statsUpdateCosts": [
+        {
+          "time": 1794518276391,
+          "ms": 2.448255999945104
+        },
+        {
+          "time": 1794518277397,
+          "ms": 2.0208000000566244
+        },
+        {
+          "time": 1794518278401,
+          "ms": 1.7339199995622039
+        },
+        {
+          "time": 1794518279413,
+          "ms": 1.7192640001885593
+        },
+        {
+          "time": 1794518280416,
+          "ms": 1.7293119998648763
+        },
+        {
+          "time": 1794518281428,
+          "ms": 1.7173119997605681
+        },
+        {
+          "time": 1794518282434,
+          "ms": 1.8032000004313886
+        },
+        {
+          "time": 1794518283450,
+          "ms": 1.7303359997458756
+        },
+        {
+          "time": 1794518284454,
+          "ms": 1.7289279997348785
+        },
+        {
+          "time": 1794518285472,
+          "ms": 1.7019840003922582
+        },
+        {
+          "time": 1794518286488,
+          "ms": 1.7595839998684824
+        },
+        {
+          "time": 1794518287499,
+          "ms": 1.6963840001262724
+        },
+        {
+          "time": 1794518288502,
+          "ms": 1.715584000106901
+        },
+        {
+          "time": 1794518289506,
+          "ms": 1.7212799997068942
+        },
+        {
+          "time": 1794518290523,
+          "ms": 1.7663679998368025
+        },
+        {
+          "time": 1794518291546,
+          "ms": 1.724416000302881
+        },
+        {
+          "time": 1794518292557,
+          "ms": 1.6413760003633797
+        },
+        {
+          "time": 1794518293578,
+          "ms": 1.684320000000298
+        },
+        {
+          "time": 1794518294593,
+          "ms": 1.7668799995444715
+        },
+        {
+          "time": 1794518295613,
+          "ms": 1.6447359998710454
+        },
+        {
+          "time": 1794518296619,
+          "ms": 1.6688319998793304
+        },
+        {
+          "time": 1794518297630,
+          "ms": 1.6764159998856485
+        },
+        {
+          "time": 1794518298649,
+          "ms": 1.7682879995554686
+        },
+        {
+          "time": 1794518299667,
+          "ms": 1.6853120001032948
+        },
+        {
+          "time": 1794518300678,
+          "ms": 1.680511999875307
+        },
+        {
+          "time": 1794518301695,
+          "ms": 1.6881599999032915
+        },
+        {
+          "time": 1794518302715,
+          "ms": 1.7778239999897778
+        },
+        {
+          "time": 1794518303724,
+          "ms": 1.6891520000062883
+        },
+        {
+          "time": 1794518304731,
+          "ms": 1.7651839996688068
+        },
+        {
+          "time": 1794518305738,
+          "ms": 1.6968640005216002
+        },
+        {
+          "time": 1794518306757,
+          "ms": 1.7669439995661378
+        },
+        {
+          "time": 1794518307763,
+          "ms": 1.6522559998556972
+        },
+        {
+          "time": 1794518308769,
+          "ms": 1.6663040001876652
+        },
+        {
+          "time": 1794518309777,
+          "ms": 1.6786240004003048
+        },
+        {
+          "time": 1794518310795,
+          "ms": 1.7638719999231398
+        },
+        {
+          "time": 1794518311815,
+          "ms": 1.6589119997806847
+        },
+        {
+          "time": 1794518312825,
+          "ms": 1.6902720001526177
+        },
+        {
+          "time": 1794518313836,
+          "ms": 1.7030720002949238
+        },
+        {
+          "time": 1794518314846,
+          "ms": 1.7865280001424253
+        },
+        {
+          "time": 1794518315861,
+          "ms": 1.6858879998326302
+        },
+        {
+          "time": 1794518316865,
+          "ms": 1.6431360002607107
+        },
+        {
+          "time": 1794518317868,
+          "ms": 1.6855040001682937
+        },
+        {
+          "time": 1794518318882,
+          "ms": 1.7622079998254776
+        },
+        {
+          "time": 1794518319886,
+          "ms": 1.6740480000153184
+        },
+        {
+          "time": 1794518320898,
+          "ms": 1.684160000178963
+        },
+        {
+          "time": 1794518321907,
+          "ms": 1.6855359999462962
+        },
+        {
+          "time": 1794518322915,
+          "ms": 1.7785600000061095
+        },
+        {
+          "time": 1794518323918,
+          "ms": 1.6820799997076392
+        },
+        {
+          "time": 1794518324922,
+          "ms": 1.6917439997196198
+        },
+        {
+          "time": 1794518325942,
+          "ms": 1.6940480000339448
+        },
+        {
+          "time": 1794518326945,
+          "ms": 1.7863999996334314
+        },
+        {
+          "time": 1794518327953,
+          "ms": 1.6668799999170005
+        },
+        {
+          "time": 1794518328955,
+          "ms": 1.711168000008911
+        },
+        {
+          "time": 1794518329977,
+          "ms": 1.6795840002596378
+        },
+        {
+          "time": 1794518330984,
+          "ms": 1.736383999697864
+        },
+        {
+          "time": 1794518332000,
+          "ms": 1.6489920006133616
+        },
+        {
+          "time": 1794518333015,
+          "ms": 1.6696640001609921
+        },
+        {
+          "time": 1794518334038,
+          "ms": 1.6701440000906587
+        },
+        {
+          "time": 1794518335051,
+          "ms": 1.7860479997470975
+        },
+        {
+          "time": 1794518336056,
+          "ms": 1.7271680003032088
+        },
+        {
+          "time": 1794518337078,
+          "ms": 1.6708800001069903
+        },
+        {
+          "time": 1794518338091,
+          "ms": 1.6848320001736283
+        },
+        {
+          "time": 1794518339094,
+          "ms": 1.7655039997771382
+        },
+        {
+          "time": 1794518340110,
+          "ms": 1.6875199996866286
+        },
+        {
+          "time": 1794518341116,
+          "ms": 1.7036160002462566
+        },
+        {
+          "time": 1794518342138,
+          "ms": 1.6898240000009537
+        },
+        {
+          "time": 1794518343151,
+          "ms": 1.7715199999511242
+        },
+        {
+          "time": 1794518344173,
+          "ms": 1.7074879999272525
+        }
+      ],
+      "navigationSteps": 48,
+      "library": {
+        "nativeSources": [
+          "moonlight-cover-1.png",
+          "moonlight-cover-2.png",
+          "moonlight-cover-0.png"
+        ],
+        "gamefaceImages": 0,
+        "textureBytes": 12997632
+      },
+      "refreshDuring": {
+        "flags": "2",
+        "result": 0,
+        "reason": "getter output invalid"
+      },
+      "refreshAfter": {
+        "flags": "1",
+        "result": 0,
+        "reason": "getter output invalid"
+      },
+      "cleanup": {
+        "tasks": 0,
+        "sameDisplay": true,
+        "launcher": true,
+        "ftp": true
+      }
+    },
+    {
+      "run": "moonlight-overlay-120-40-baseline",
+      "packageSha256": "8c889a65fb18906f270469c95367aff94088042ea1bdee3de2f45d69c387d8a6",
+      "app": {
+        "id": "382300562",
+        "title": "Virtual Display"
+      },
+      "config": {
+        "codec": "h264",
+        "width": 1920,
+        "height": 1080,
+        "bitrate": 40000,
+        "fps": 120,
+        "pacing": "smooth",
+        "durationMs": 30000,
+        "warmupMs": 5000,
+        "showStats": true,
+        "simulateTouch": true
+      },
+      "complete": true,
+      "error": null,
+      "summary": {
+        "seconds": 29.37,
+        "decodedFps": 101.56622403813415,
+        "presentedFps": 76.23425263874702,
+        "receivedMbps": 31.2203620020429,
+        "frameIntervalMs": 13.11781994104506,
+        "frameJitterMs": 15.922769976741911,
+        "maxIntervalMs": 340.1064320000587,
+        "p50IntervalMs": 12.606272000120953,
+        "p95IntervalMs": 18.414240000071004,
+        "p99IntervalMs": 94.96201599994674,
+        "stallsOver25Ms": 101,
+        "stallsOver50Ms": 43,
+        "stallsOver100Ms": 14,
+        "stallsOverOneAndHalfFrames": 1136,
+        "videoSuperseded": 744,
+        "videoExpired": 0,
+        "videoBacklogDrops": 744,
+        "decoderRejected": 0,
+        "videoFrameGaps": 519,
+        "audioEmptyEpisodes": 70,
+        "audioEmptyMs": 68.47232000040822,
+        "audioDiscardedMs": 1100,
+        "pumpAvgMs": 12.711460515342784,
+        "drainAvgMs": 5.883816711650393,
+        "decoderPending": 4,
+        "copyPresentMs": 1.7866429513168607,
+        "presentationTimings": {
+          "acquire": 5401.933055998641,
+          "submit": 9934.187808003255,
+          "present": 10511.55267198912,
+          "wait": 13019.464735992151
+        },
+        "uiSnapshots": 58,
+        "uiFrames": 29,
+        "simulatedTouchSamples": 1340
+      },
+      "overlay": null,
+      "motion": {
+        "samples": 0,
+        "broadChanges": 0
+      },
+      "statsUpdateCosts": null,
+      "navigationSteps": 0,
+      "library": null,
+      "refreshDuring": {
+        "flags": "2",
+        "result": 0,
+        "reason": "getter output invalid"
+      },
+      "refreshAfter": {
+        "flags": "1",
+        "result": 0,
+        "reason": "getter output invalid"
+      },
+      "cleanup": {
+        "tasks": 0,
+        "sameDisplay": true,
+        "launcher": true,
+        "ftp": true
+      }
+    },
+    {
+      "run": "moonlight-overlay-120-40-final",
+      "packageSha256": "00f0669488823f02153258ee2ad582ac2c1d302360402948f5e48c258f7482f4",
+      "app": {
+        "id": "382300562",
+        "title": "Virtual Display"
+      },
+      "config": {
+        "codec": "h264",
+        "width": 1920,
+        "height": 1080,
+        "bitrate": 40000,
+        "fps": 120,
+        "pacing": "smooth",
+        "durationMs": 60000,
+        "warmupMs": 5000,
+        "showStats": true,
+        "simulateTouch": true,
+        "terminateDesktop": false,
+        "appId": 382300562
+      },
+      "complete": true,
+      "error": null,
+      "summary": {
+        "seconds": 59.751,
+        "decodedFps": 85.15338655419993,
+        "presentedFps": 73.06990677980285,
+        "receivedMbps": 30.95315211460896,
+        "frameIntervalMs": 13.684783956023812,
+        "frameJitterMs": 23.7881437302647,
+        "maxIntervalMs": 534.3506239997223,
+        "p50IntervalMs": 12.997343999799341,
+        "p95IntervalMs": 18.29244800005108,
+        "p99IntervalMs": 80.41791999991983,
+        "stallsOver25Ms": 74,
+        "stallsOver50Ms": 46,
+        "stallsOver100Ms": 44,
+        "stallsOverOneAndHalfFrames": 2326,
+        "videoSuperseded": 723,
+        "videoExpired": 0,
+        "videoBacklogDrops": 723,
+        "decoderRejected": 0,
+        "videoFrameGaps": 2057,
+        "audioEmptyEpisodes": 330,
+        "audioEmptyMs": 998.2144640008919,
+        "audioDiscardedMs": 0,
+        "pumpAvgMs": 12.832749981003506,
+        "drainAvgMs": 5.517209215736834,
+        "decoderPending": 3,
+        "copyPresentMs": 1.8801489619777525,
+        "presentationTimings": {
+          "acquire": 9453.216767975711,
+          "submit": 17746.022912032415,
+          "present": 18802.569440046253,
+          "wait": 26081.94326397033
+        },
+        "uiSnapshots": 0,
+        "uiFrames": 0,
+        "simulatedTouchSamples": 2963
+      },
+      "overlay": {
+        "method": "native-badge",
+        "visible": 1,
+        "width": 672,
+        "height": 88,
+        "counters": {
+          "updates": 286,
+          "bytes": 67651584
+        },
+        "background": 3693090828,
+        "textPixel": 4294963172
+      },
+      "motion": {
+        "samples": 59,
+        "broadChanges": 56
+      },
+      "statsUpdateCosts": null,
+      "navigationSteps": 0,
+      "library": null,
+      "refreshDuring": {
+        "flags": "2",
+        "result": 0,
+        "reason": "getter output invalid"
+      },
+      "refreshAfter": {
+        "flags": "1",
+        "result": 0,
+        "reason": "getter output invalid"
+      },
+      "cleanup": {
+        "tasks": 0,
+        "sameDisplay": true,
+        "launcher": true,
+        "ftp": true
+      }
+    },
+    {
+      "run": "moonlight-overlay-120-40-guarded",
+      "packageSha256": "be94513eb4be52b9455c3f03c6c6ae6ac32277228a1fedd75ba1fb8b94823c1f",
+      "app": {
+        "id": "382300562",
+        "title": "Virtual Display"
+      },
+      "config": {
+        "codec": "h264",
+        "width": 1920,
+        "height": 1080,
+        "bitrate": 40000,
+        "fps": 120,
+        "pacing": "smooth",
+        "durationMs": 60000,
+        "warmupMs": 5000,
+        "showStats": true,
+        "simulateTouch": true,
+        "terminateDesktop": false,
+        "appId": 382300562
+      },
+      "complete": true,
+      "error": null,
+      "summary": {
+        "seconds": 60.905,
+        "decodedFps": 119.0871028651178,
+        "presentedFps": 90.78072407848288,
+        "receivedMbps": 32.46570705196618,
+        "frameIntervalMs": 11.015796812443446,
+        "frameJitterMs": 4.105703396097392,
+        "maxIntervalMs": 141.6852160000708,
+        "p50IntervalMs": 10.21916799992323,
+        "p95IntervalMs": 15.057055999757722,
+        "p99IntervalMs": 18.399680000031367,
+        "stallsOver25Ms": 10,
+        "stallsOver50Ms": 8,
+        "stallsOver100Ms": 1,
+        "stallsOverOneAndHalfFrames": 2715,
+        "videoSuperseded": 1724,
+        "videoExpired": 0,
+        "videoBacklogDrops": 1724,
+        "decoderRejected": 0,
+        "videoFrameGaps": 53,
+        "audioEmptyEpisodes": 400,
+        "audioEmptyMs": 529.1256959987804,
+        "audioDiscardedMs": 0,
+        "pumpAvgMs": 12.579312940504765,
+        "drainAvgMs": 7.208744215303534,
+        "decoderPending": 4,
+        "copyPresentMs": 1.8906317149556102,
+        "presentationTimings": {
+          "acquire": 7439.671871990082,
+          "submit": 13791.747808009597,
+          "present": 14598.200671995452,
+          "wait": 19917.63696000261
+        },
+        "uiSnapshots": 0,
+        "uiFrames": 0,
+        "simulatedTouchSamples": 2759
+      },
+      "overlay": {
+        "method": "native-badge",
+        "visible": 1,
+        "width": 672,
+        "height": 88,
+        "counters": {
+          "updates": 118,
+          "bytes": 27912192
+        },
+        "background": 3693090828,
+        "textPixel": 4294963172
+      },
+      "motion": {
+        "samples": 60,
+        "broadChanges": 57
+      },
+      "statsUpdateCosts": null,
+      "navigationSteps": 0,
+      "library": null,
+      "refreshDuring": {
+        "flags": "2",
+        "result": 0,
+        "reason": "getter output invalid"
+      },
+      "refreshAfter": {
+        "flags": "1",
+        "result": 0,
+        "reason": "getter output invalid"
+      },
+      "cleanup": {
+        "tasks": 0,
+        "sameDisplay": true,
+        "launcher": true,
+        "ftp": true
+      }
+    },
+    {
+      "run": "moonlight-overlay-120-40-interleaved",
+      "packageSha256": "29ab03ad57cc01f3b79869c7029dc91bf0f998918fe7e0ea8e3827608d97b907",
+      "app": {
+        "id": "382300562",
+        "title": "Virtual Display"
+      },
+      "config": {
+        "codec": "h264",
+        "width": 1920,
+        "height": 1080,
+        "bitrate": 40000,
+        "fps": 120,
+        "pacing": "smooth",
+        "durationMs": 30000,
+        "warmupMs": 5000,
+        "showStats": true,
+        "simulateTouch": true,
+        "terminateDesktop": false,
+        "appId": 382300562
+      },
+      "complete": true,
+      "error": null,
+      "summary": {
+        "seconds": 29.376,
+        "decodedFps": 48.27069716775599,
+        "presentedFps": 47.79411764705882,
+        "receivedMbps": 27.57502233115468,
+        "frameIntervalMs": 20.755171031339234,
+        "frameJitterMs": 61.028073628230615,
+        "maxIntervalMs": 772.0218879999593,
+        "p50IntervalMs": 9.598624000325799,
+        "p95IntervalMs": 24.657376000192016,
+        "p99IntervalMs": 343.31836799997836,
+        "stallsOver25Ms": 68,
+        "stallsOver50Ms": 37,
+        "stallsOver100Ms": 34,
+        "stallsOverOneAndHalfFrames": 632,
+        "videoSuperseded": 14,
+        "videoExpired": 0,
+        "videoBacklogDrops": 14,
+        "decoderRejected": 0,
+        "videoFrameGaps": 2070,
+        "audioEmptyEpisodes": 23,
+        "audioEmptyMs": 92.44656000006944,
+        "audioDiscardedMs": 0,
+        "pumpAvgMs": 13.402569198463393,
+        "drainAvgMs": 3.5443636158734044,
+        "decoderPending": 0,
+        "copyPresentMs": 1.8470628376011378,
+        "presentationTimings": {
+          "acquire": 8637.250463987817,
+          "submit": 16142.235200020928,
+          "present": 17112.410912042877,
+          "wait": 23769.02975999286
+        },
+        "uiSnapshots": 0,
+        "uiFrames": 0,
+        "simulatedTouchSamples": 1607
+      },
+      "overlay": {
+        "method": "native-badge",
+        "visible": 1,
+        "width": 672,
+        "height": 88,
+        "counters": {
+          "updates": 220,
+          "bytes": 52039680
+        },
+        "background": 3693090828,
+        "textPixel": 4294963172
+      },
+      "motion": {
+        "samples": 29,
+        "broadChanges": 26
+      },
+      "statsUpdateCosts": null,
+      "navigationSteps": 0,
+      "library": null,
+      "refreshDuring": {
+        "flags": "2",
+        "result": 0,
+        "reason": "getter output invalid"
+      },
+      "refreshAfter": {
+        "flags": "1",
+        "result": 0,
+        "reason": "getter output invalid"
+      },
+      "cleanup": {
+        "tasks": 0,
+        "sameDisplay": true,
+        "launcher": true,
+        "ftp": true
+      }
+    },
+    {
+      "run": "moonlight-overlay-120-40-native",
+      "packageSha256": "f7f5fb3d07576929babfac5f44086d5d86bccdc2142c0f13b6068a6cc2af21bf",
+      "app": {
+        "id": "881448767",
+        "title": "Desktop"
+      },
+      "config": {
+        "codec": "h264",
+        "width": 1920,
+        "height": 1080,
+        "bitrate": 40000,
+        "fps": 120,
+        "pacing": "smooth",
+        "durationMs": 30000,
+        "warmupMs": 5000,
+        "showStats": true,
+        "simulateTouch": true,
+        "terminateDesktop": false
+      },
+      "complete": true,
+      "error": null,
+      "summary": {
+        "seconds": 30.411,
+        "decodedFps": 100.75301700042748,
+        "presentedFps": 91.90753345828811,
+        "receivedMbps": 14.974572095623294,
+        "frameIntervalMs": 10.87930248014309,
+        "frameJitterMs": 4.099841405864637,
+        "maxIntervalMs": 78.45968000008725,
+        "p50IntervalMs": 12.313728000037372,
+        "p95IntervalMs": 16.922047999920323,
+        "p99IntervalMs": 19.97945600003004,
+        "stallsOver25Ms": 15,
+        "stallsOver50Ms": 2,
+        "stallsOver100Ms": 0,
+        "stallsOverOneAndHalfFrames": 1354,
+        "videoSuperseded": 268,
+        "videoExpired": 0,
+        "videoBacklogDrops": 268,
+        "decoderRejected": 0,
+        "videoFrameGaps": 0,
+        "audioEmptyEpisodes": 24,
+        "audioEmptyMs": 72.21673600072972,
+        "audioDiscardedMs": 0,
+        "pumpAvgMs": 12.050023146040466,
+        "drainAvgMs": 5.838574480683163,
+        "decoderPending": 3,
+        "copyPresentMs": 1.7859110010714538,
+        "presentationTimings": {
+          "acquire": 6222.922815990285,
+          "submit": 11424.755616012706,
+          "present": 12046.790303997623,
+          "wait": 16083.517631991315
+        },
+        "uiSnapshots": 0,
+        "uiFrames": 0,
+        "simulatedTouchSamples": 1504
+      },
+      "overlay": {
+        "method": "native-badge",
+        "visible": 1,
+        "width": 672,
+        "height": 88,
+        "counters": {
+          "updates": 36,
+          "bytes": 8515584
+        },
+        "background": 3693090828,
+        "textPixel": 4294963172
+      },
+      "motion": {
+        "samples": 0,
+        "broadChanges": 0
+      },
+      "statsUpdateCosts": null,
+      "navigationSteps": 0,
+      "library": null,
+      "refreshDuring": {
+        "flags": "2",
+        "result": 0,
+        "reason": "getter output invalid"
+      },
+      "refreshAfter": {
+        "flags": "1",
+        "result": 0,
+        "reason": "getter output invalid"
+      },
+      "cleanup": {
+        "tasks": 0,
+        "sameDisplay": true,
+        "launcher": true,
+        "ftp": true
+      }
+    },
+    {
+      "run": "moonlight-overlay-120-40-queued",
+      "packageSha256": "383a24cc0788c9e49efa1e21370cf4bd2b583b81b0b6ce1931afe9ed38d3d990",
+      "app": {
+        "id": "382300562",
+        "title": "Virtual Display"
+      },
+      "config": {
+        "codec": "h264",
+        "width": 1920,
+        "height": 1080,
+        "bitrate": 40000,
+        "fps": 120,
+        "pacing": "smooth",
+        "durationMs": 60000,
+        "warmupMs": 5000,
+        "showStats": true,
+        "simulateTouch": true,
+        "terminateDesktop": true,
+        "appId": 382300562
+      },
+      "complete": true,
+      "error": null,
+      "summary": {
+        "seconds": 60.723,
+        "decodedFps": 85.32187144903908,
+        "presentedFps": 73.6294320109349,
+        "receivedMbps": 30.78677825535629,
+        "frameIntervalMs": 13.581569145157708,
+        "frameJitterMs": 22.601748575719913,
+        "maxIntervalMs": 483.2420160002075,
+        "p50IntervalMs": 12.87587200012058,
+        "p95IntervalMs": 18.40585600025952,
+        "p99IntervalMs": 97.04095999989659,
+        "stallsOver25Ms": 81,
+        "stallsOver50Ms": 48,
+        "stallsOver100Ms": 45,
+        "stallsOverOneAndHalfFrames": 2400,
+        "videoSuperseded": 710,
+        "videoExpired": 0,
+        "videoBacklogDrops": 710,
+        "decoderRejected": 0,
+        "videoFrameGaps": 2091,
+        "audioEmptyEpisodes": 1555,
+        "audioEmptyMs": 4772.0999039974995,
+        "audioDiscardedMs": 40,
+        "pumpAvgMs": 12.830398829275836,
+        "drainAvgMs": 5.259528574809566,
+        "decoderPending": 3,
+        "copyPresentMs": 1.8954646173066594,
+        "presentationTimings": {
+          "acquire": 10267.24041596998,
+          "submit": 19356.557856065665,
+          "present": 20468.254336055295,
+          "wait": 28383.223391979947
+        },
+        "uiSnapshots": 0,
+        "uiFrames": 0,
+        "simulatedTouchSamples": 3003
+      },
+      "overlay": {
+        "method": "native-badge",
+        "visible": 1,
+        "width": 672,
+        "height": 88,
+        "counters": {
+          "updates": 352,
+          "bytes": 83263488
+        },
+        "background": 3693090828,
+        "textPixel": 4294963172
+      },
+      "motion": {
+        "samples": 60,
+        "broadChanges": 59
+      },
+      "statsUpdateCosts": [
+        {
+          "time": 1794517897210,
+          "ms": 2.5260799997486174
+        },
+        {
+          "time": 1794517898214,
+          "ms": 1.6725439997389913
+        },
+        {
+          "time": 1794517899225,
+          "ms": 1.728832000400871
+        },
+        {
+          "time": 1794517900248,
+          "ms": 1.747104000300169
+        },
+        {
+          "time": 1794517901269,
+          "ms": 1.733215999789536
+        },
+        {
+          "time": 1794517902280,
+          "ms": 1.7412159997038543
+        },
+        {
+          "time": 1794517903294,
+          "ms": 1.7968959999270737
+        },
+        {
+          "time": 1794517904315,
+          "ms": 1.7300160005688667
+        },
+        {
+          "time": 1794517905318,
+          "ms": 1.7704960000701249
+        },
+        {
+          "time": 1794517906334,
+          "ms": 1.7446719999425113
+        },
+        {
+          "time": 1794517907352,
+          "ms": 1.7556160003878176
+        },
+        {
+          "time": 1794517908358,
+          "ms": 1.6624639998190105
+        },
+        {
+          "time": 1794517909372,
+          "ms": 1.6895039998926222
+        },
+        {
+          "time": 1794517910375,
+          "ms": 1.6921279998496175
+        },
+        {
+          "time": 1794517911391,
+          "ms": 1.7575359996408224
+        },
+        {
+          "time": 1794517912400,
+          "ms": 1.658304000273347
+        },
+        {
+          "time": 1794517913420,
+          "ms": 1.693407999817282
+        },
+        {
+          "time": 1794517914436,
+          "ms": 1.6713599995709956
+        },
+        {
+          "time": 1794517915454,
+          "ms": 1.7567679998464882
+        },
+        {
+          "time": 1794517916462,
+          "ms": 1.7118400000035763
+        },
+        {
+          "time": 1794517917465,
+          "ms": 1.6592000001110137
+        },
+        {
+          "time": 1794517918482,
+          "ms": 1.675584000069648
+        },
+        {
+          "time": 1794517919491,
+          "ms": 1.7666559997014701
+        },
+        {
+          "time": 1794517920503,
+          "ms": 1.6763839996419847
+        },
+        {
+          "time": 1794517921522,
+          "ms": 1.6816320000216365
+        },
+        {
+          "time": 1794517922524,
+          "ms": 1.675872000399977
+        },
+        {
+          "time": 1794517923538,
+          "ms": 1.7752000004984438
+        },
+        {
+          "time": 1794517924549,
+          "ms": 1.6506879995577037
+        },
+        {
+          "time": 1794517925571,
+          "ms": 1.6693759998306632
+        },
+        {
+          "time": 1794517926586,
+          "ms": 1.701503999531269
+        },
+        {
+          "time": 1794517927604,
+          "ms": 1.753984000068158
+        },
+        {
+          "time": 1794517928618,
+          "ms": 1.6469119996763766
+        },
+        {
+          "time": 1794517929631,
+          "ms": 1.7080959999002516
+        },
+        {
+          "time": 1794517930651,
+          "ms": 1.6900480003096163
+        },
+        {
+          "time": 1794517931654,
+          "ms": 1.804384000133723
+        },
+        {
+          "time": 1794517932657,
+          "ms": 1.708159999921918
+        },
+        {
+          "time": 1794517933667,
+          "ms": 1.7142400001175702
+        },
+        {
+          "time": 1794517934671,
+          "ms": 1.7130559999495745
+        },
+        {
+          "time": 1794517935685,
+          "ms": 1.7756159999407828
+        },
+        {
+          "time": 1794517936688,
+          "ms": 1.6418240005150437
+        },
+        {
+          "time": 1794517937707,
+          "ms": 1.6830080007202923
+        },
+        {
+          "time": 1794517938710,
+          "ms": 1.6895040003582835
+        },
+        {
+          "time": 1794517939730,
+          "ms": 1.7709119995124638
+        },
+        {
+          "time": 1794517940739,
+          "ms": 1.6766719999723136
+        },
+        {
+          "time": 1794517941759,
+          "ms": 1.7281279996968806
+        },
+        {
+          "time": 1794517942778,
+          "ms": 1.7077440000139177
+        },
+        {
+          "time": 1794517943801,
+          "ms": 1.7673599999397993
+        },
+        {
+          "time": 1794517944813,
+          "ms": 1.6716160005889833
+        },
+        {
+          "time": 1794517945829,
+          "ms": 1.6715200003236532
+        },
+        {
+          "time": 1794517946832,
+          "ms": 1.6769280000589788
+        },
+        {
+          "time": 1794517947840,
+          "ms": 1.7786240000277758
+        },
+        {
+          "time": 1794517948843,
+          "ms": 1.6959999999962747
+        },
+        {
+          "time": 1794517949848,
+          "ms": 1.680960000026971
+        },
+        {
+          "time": 1794517950866,
+          "ms": 1.6840639999136329
+        },
+        {
+          "time": 1794517951872,
+          "ms": 1.7941760001704097
+        },
+        {
+          "time": 1794517952884,
+          "ms": 1.6725119999609888
+        },
+        {
+          "time": 1794517953893,
+          "ms": 1.7053120001219213
+        },
+        {
+          "time": 1794517954899,
+          "ms": 1.6873920001089573
+        },
+        {
+          "time": 1794517955910,
+          "ms": 1.755136000458151
+        },
+        {
+          "time": 1794517956913,
+          "ms": 1.6687039993703365
+        },
+        {
+          "time": 1794517957923,
+          "ms": 1.684031999669969
+        },
+        {
+          "time": 1794517958940,
+          "ms": 1.765184000134468
+        },
+        {
+          "time": 1794517959962,
+          "ms": 1.7809279998764396
+        },
+        {
+          "time": 1794517960973,
+          "ms": 1.6804160000756383
+        },
+        {
+          "time": 1794517961983,
+          "ms": 1.6709439996629953
+        },
+        {
+          "time": 1794517962999,
+          "ms": 1.6976319998502731
+        },
+        {
+          "time": 1794517964017,
+          "ms": 1.856639999896288
+        },
+        {
+          "time": 1794517965035,
+          "ms": 1.71836799941957
+        }
+      ],
+      "navigationSteps": 48,
+      "library": {
+        "nativeSources": [
+          "moonlight-cover-1.png",
+          "moonlight-cover-2.png",
+          "moonlight-cover-0.png"
+        ],
+        "gamefaceImages": 0,
+        "textureBytes": 12997632
+      },
+      "refreshDuring": {
+        "flags": "2",
+        "result": 0,
+        "reason": "getter output invalid"
+      },
+      "refreshAfter": {
+        "flags": "1",
+        "result": 0,
+        "reason": "getter output invalid"
+      },
+      "cleanup": {
+        "tasks": 0,
+        "sameDisplay": true,
+        "launcher": true,
+        "ftp": true
+      }
+    },
+    {
+      "run": "moonlight-overlay-120-40-three",
+      "packageSha256": "a58ace0d1259b81b228c909c9f063c14801999c88b1927d7bffd76034e4657fd",
+      "app": {
+        "id": "382300562",
+        "title": "Virtual Display"
+      },
+      "config": {
+        "codec": "h264",
+        "width": 1920,
+        "height": 1080,
+        "bitrate": 40000,
+        "fps": 120,
+        "pacing": "smooth",
+        "durationMs": 60000,
+        "warmupMs": 5000,
+        "showStats": true,
+        "simulateTouch": true,
+        "terminateDesktop": false,
+        "appId": 382300562
+      },
+      "complete": true,
+      "error": null,
+      "summary": {
+        "seconds": 59.849,
+        "decodedFps": 80.88689869504921,
+        "presentedFps": 78.8484352286588,
+        "receivedMbps": 30.51544413440492,
+        "frameIntervalMs": 12.682476572155092,
+        "frameJitterMs": 24.6865638547388,
+        "maxIntervalMs": 650.6121920002624,
+        "p50IntervalMs": 8.24249599990435,
+        "p95IntervalMs": 19.387711999937892,
+        "p99IntervalMs": 63.577215999830514,
+        "stallsOver25Ms": 108,
+        "stallsOver50Ms": 52,
+        "stallsOver100Ms": 47,
+        "stallsOverOneAndHalfFrames": 1112,
+        "videoSuperseded": 123,
+        "videoExpired": 0,
+        "videoBacklogDrops": 123,
+        "decoderRejected": 0,
+        "videoFrameGaps": 2322,
+        "audioEmptyEpisodes": 315,
+        "audioEmptyMs": 574.0443520040717,
+        "audioDiscardedMs": 0,
+        "pumpAvgMs": 12.873811242567838,
+        "drainAvgMs": 6.126596020997199,
+        "decoderPending": 3,
+        "copyPresentMs": 1.8533628921395136,
+        "presentationTimings": {
+          "acquire": 8312.248991994304,
+          "submit": 15510.187968012855,
+          "present": 16422.42694401012,
+          "wait": 22399.418463993134
+        },
+        "uiSnapshots": 0,
+        "uiFrames": 0,
+        "simulatedTouchSamples": 2867
+      },
+      "overlay": {
+        "method": "native-badge",
+        "visible": 1,
+        "width": 672,
+        "height": 88,
+        "counters": {
+          "updates": 184,
+          "bytes": 43524096
+        },
+        "background": 3693090828,
+        "textPixel": 4294963172
+      },
+      "motion": {
+        "samples": 59,
+        "broadChanges": 51
+      },
+      "statsUpdateCosts": null,
+      "navigationSteps": 0,
+      "library": null,
+      "refreshDuring": {
+        "flags": "2",
+        "result": 0,
+        "reason": "getter output invalid"
+      },
+      "refreshAfter": {
+        "flags": "1",
+        "result": 0,
+        "reason": "getter output invalid"
+      },
+      "cleanup": {
+        "tasks": 0,
+        "sameDisplay": true,
+        "launcher": true,
+        "ftp": true
+      }
+    },
+    {
+      "run": "moonlight-overlay-60-20-queued",
+      "packageSha256": "383a24cc0788c9e49efa1e21370cf4bd2b583b81b0b6ce1931afe9ed38d3d990",
+      "app": {
+        "id": "382300562",
+        "title": "Virtual Display"
+      },
+      "config": {
+        "codec": "h264",
+        "width": 1920,
+        "height": 1080,
+        "bitrate": 20000,
+        "fps": 60,
+        "pacing": "smooth",
+        "durationMs": 60000,
+        "warmupMs": 5000,
+        "showStats": true,
+        "simulateTouch": true,
+        "terminateDesktop": true,
+        "appId": 382300562
+      },
+      "complete": true,
+      "error": null,
+      "summary": {
+        "seconds": 59.951,
+        "decodedFps": 59.99899918266584,
+        "presentedFps": 59.18166502643826,
+        "receivedMbps": 16.789724942035996,
+        "frameIntervalMs": 16.897222268320316,
+        "frameJitterMs": 2.594106137393375,
+        "maxIntervalMs": 83.6027839994058,
+        "p50IntervalMs": 16.642496000044048,
+        "p95IntervalMs": 17.815584000200033,
+        "p99IntervalMs": 29.9467520006001,
+        "stallsOver25Ms": 44,
+        "stallsOver50Ms": 2,
+        "stallsOver100Ms": 0,
+        "stallsOverOneAndHalfFrames": 44,
+        "videoSuperseded": 49,
+        "videoExpired": 0,
+        "videoBacklogDrops": 49,
+        "decoderRejected": 0,
+        "videoFrameGaps": 0,
+        "audioEmptyEpisodes": 131,
+        "audioEmptyMs": 306.74563198629767,
+        "audioDiscardedMs": 20,
+        "pumpAvgMs": 10.296011760902081,
+        "drainAvgMs": 3.7508430180743373,
+        "decoderPending": 1,
+        "copyPresentMs": 1.8976518962812623,
+        "presentationTimings": {
+          "acquire": 12509.177983935573,
+          "submit": 23820.39881605746,
+          "present": 25088.700480030777,
+          "wait": 34438.780672024484
+        },
+        "uiSnapshots": 0,
+        "uiFrames": 0,
+        "simulatedTouchSamples": 3610
+      },
+      "overlay": {
+        "method": "native-badge",
+        "visible": 1,
+        "width": 672,
+        "height": 88,
+        "counters": {
+          "updates": 550,
+          "bytes": 130099200
+        },
+        "background": 3693090828,
+        "textPixel": 4294963172
+      },
+      "motion": {
+        "samples": 59,
+        "broadChanges": 58
+      },
+      "statsUpdateCosts": [
+        {
+          "time": 1794518862123,
+          "ms": 2.51942399982363
+        },
+        {
+          "time": 1794518863139,
+          "ms": 1.6784960003569722
+        },
+        {
+          "time": 1794518864146,
+          "ms": 1.7339519998058677
+        },
+        {
+          "time": 1794518865160,
+          "ms": 1.680575999431312
+        },
+        {
+          "time": 1794518866164,
+          "ms": 1.6972159994766116
+        },
+        {
+          "time": 1794518867181,
+          "ms": 1.7261439990252256
+        },
+        {
+          "time": 1794518868197,
+          "ms": 1.7858559992164373
+        },
+        {
+          "time": 1794518869213,
+          "ms": 1.7835199991241097
+        },
+        {
+          "time": 1794518870231,
+          "ms": 1.7214720007032156
+        },
+        {
+          "time": 1794518871249,
+          "ms": 1.7127679996192455
+        },
+        {
+          "time": 1794518872265,
+          "ms": 1.6949439998716116
+        },
+        {
+          "time": 1794518873281,
+          "ms": 1.680575999431312
+        },
+        {
+          "time": 1794518874297,
+          "ms": 1.6399360001087189
+        },
+        {
+          "time": 1794518875314,
+          "ms": 1.6799999997019768
+        },
+        {
+          "time": 1794518876331,
+          "ms": 1.7260159999132156
+        },
+        {
+          "time": 1794518877348,
+          "ms": 1.6219840003177524
+        },
+        {
+          "time": 1794518878364,
+          "ms": 1.6609279997646809
+        },
+        {
+          "time": 1794518879381,
+          "ms": 1.6260160002857447
+        },
+        {
+          "time": 1794518880399,
+          "ms": 1.7214079992845654
+        },
+        {
+          "time": 1794518881415,
+          "ms": 1.6096639996394515
+        },
+        {
+          "time": 1794518882431,
+          "ms": 1.628032000735402
+        },
+        {
+          "time": 1794518883448,
+          "ms": 1.6197120007127523
+        },
+        {
+          "time": 1794518884464,
+          "ms": 1.7029439993202686
+        },
+        {
+          "time": 1794518885481,
+          "ms": 1.6309120003134012
+        },
+        {
+          "time": 1794518886496,
+          "ms": 1.6144319996237755
+        },
+        {
+          "time": 1794518887515,
+          "ms": 1.6752319997176528
+        },
+        {
+          "time": 1794518888532,
+          "ms": 1.7178560001775622
+        },
+        {
+          "time": 1794518889548,
+          "ms": 1.627551999874413
+        },
+        {
+          "time": 1794518890564,
+          "ms": 1.6287679998204112
+        },
+        {
+          "time": 1794518891581,
+          "ms": 1.6404480002820492
+        },
+        {
+          "time": 1794518892599,
+          "ms": 1.7025279998779297
+        },
+        {
+          "time": 1794518893615,
+          "ms": 1.6375040002167225
+        },
+        {
+          "time": 1794518894631,
+          "ms": 1.6427199998870492
+        },
+        {
+          "time": 1794518895648,
+          "ms": 1.6338880006223917
+        },
+        {
+          "time": 1794518896664,
+          "ms": 1.7093760007992387
+        },
+        {
+          "time": 1794518897681,
+          "ms": 1.644960000179708
+        },
+        {
+          "time": 1794518898698,
+          "ms": 1.6260799998417497
+        },
+        {
+          "time": 1794518899713,
+          "ms": 1.6331199994310737
+        },
+        {
+          "time": 1794518900731,
+          "ms": 1.7488320004194975
+        },
+        {
+          "time": 1794518901749,
+          "ms": 1.631071999669075
+        },
+        {
+          "time": 1794518902764,
+          "ms": 1.650143999606371
+        },
+        {
+          "time": 1794518903781,
+          "ms": 1.6752320006489754
+        },
+        {
+          "time": 1794518904797,
+          "ms": 1.7111680004745722
+        },
+        {
+          "time": 1794518905815,
+          "ms": 1.6575039997696877
+        },
+        {
+          "time": 1794518906831,
+          "ms": 1.6366399992257357
+        },
+        {
+          "time": 1794518907848,
+          "ms": 1.63100800011307
+        },
+        {
+          "time": 1794518908864,
+          "ms": 1.7229760000482202
+        },
+        {
+          "time": 1794518909881,
+          "ms": 1.6283519994467497
+        },
+        {
+          "time": 1794518910899,
+          "ms": 1.621696000918746
+        },
+        {
+          "time": 1794518911914,
+          "ms": 1.6087679993361235
+        },
+        {
+          "time": 1794518912931,
+          "ms": 1.72915199957788
+        },
+        {
+          "time": 1794518913944,
+          "ms": 1.6154239997267723
+        },
+        {
+          "time": 1794518914948,
+          "ms": 1.6327039999887347
+        },
+        {
+          "time": 1794518915964,
+          "ms": 1.630463999696076
+        },
+        {
+          "time": 1794518916981,
+          "ms": 1.750624000094831
+        },
+        {
+          "time": 1794518917997,
+          "ms": 1.624928000383079
+        },
+        {
+          "time": 1794518919015,
+          "ms": 1.6311360001564026
+        },
+        {
+          "time": 1794518920032,
+          "ms": 1.6375679997727275
+        },
+        {
+          "time": 1794518921046,
+          "ms": 1.732255999930203
+        },
+        {
+          "time": 1794518922048,
+          "ms": 1.6089600007981062
+        },
+        {
+          "time": 1794518923064,
+          "ms": 1.6317440001294017
+        },
+        {
+          "time": 1794518924082,
+          "ms": 1.650016000494361
+        },
+        {
+          "time": 1794518925097,
+          "ms": 1.6996159991249442
+        },
+        {
+          "time": 1794518926115,
+          "ms": 1.6253440007567406
+        },
+        {
+          "time": 1794518927132,
+          "ms": 1.6477119997143745
+        },
+        {
+          "time": 1794518928148,
+          "ms": 1.6201920006424189
+        },
+        {
+          "time": 1794518929164,
+          "ms": 1.7543359994888306
+        }
+      ],
+      "navigationSteps": 48,
+      "library": {
+        "nativeSources": [
+          "moonlight-cover-1.png",
+          "moonlight-cover-2.png",
+          "moonlight-cover-0.png"
+        ],
+        "gamefaceImages": 0,
+        "textureBytes": 12997632
+      },
+      "refreshDuring": null,
+      "refreshAfter": null,
+      "cleanup": {
+        "tasks": 0,
+        "sameDisplay": true,
+        "launcher": true,
+        "ftp": true
+      }
+    },
+    {
+      "run": "moonlight-terminate-navigation-baseline",
+      "packageSha256": "8c889a65fb18906f270469c95367aff94088042ea1bdee3de2f45d69c387d8a6",
+      "app": {
+        "id": "382300562",
+        "title": "Virtual Display"
+      },
+      "config": {
+        "codec": "h264",
+        "width": 1920,
+        "height": 1080,
+        "bitrate": 40000,
+        "fps": 120,
+        "pacing": "smooth",
+        "durationMs": 10000,
+        "warmupMs": 5000,
+        "showStats": true,
+        "simulateTouch": true,
+        "terminateDesktop": true
+      },
+      "complete": true,
+      "error": null,
+      "summary": {
+        "seconds": 10.151,
+        "decodedFps": 106.19643384888188,
+        "presentedFps": 80.78021869766526,
+        "receivedMbps": 31.36181893409516,
+        "frameIntervalMs": 12.37989467317068,
+        "frameJitterMs": 10.983875504306708,
+        "maxIntervalMs": 127.02051200007554,
+        "p50IntervalMs": 12.602911999914795,
+        "p95IntervalMs": 16.17628799995873,
+        "p99IntervalMs": 81.12857600010466,
+        "stallsOver25Ms": 32,
+        "stallsOver50Ms": 14,
+        "stallsOver100Ms": 2,
+        "stallsOverOneAndHalfFrames": 416,
+        "videoSuperseded": 259,
+        "videoExpired": 0,
+        "videoBacklogDrops": 259,
+        "decoderRejected": 0,
+        "videoFrameGaps": 131,
+        "audioEmptyEpisodes": 19,
+        "audioEmptyMs": 7.136831999872811,
+        "audioDiscardedMs": 280,
+        "pumpAvgMs": 12.780501955154357,
+        "drainAvgMs": 6.231587659194856,
+        "decoderPending": 4,
+        "copyPresentMs": 1.8042635317082607,
+        "presentationTimings": {
+          "acquire": 5655.493791994755,
+          "submit": 10391.625888003364,
+          "present": 10981.724607991448,
+          "wait": 14251.190143995234
+        },
+        "uiSnapshots": 20,
+        "uiFrames": 10,
+        "simulatedTouchSamples": 451
+      },
+      "overlay": null,
+      "motion": {
+        "samples": 0,
+        "broadChanges": 0
+      },
+      "statsUpdateCosts": null,
+      "navigationSteps": 48,
+      "library": null,
+      "refreshDuring": {
+        "flags": "2",
+        "result": 0,
+        "reason": "getter output invalid"
+      },
+      "refreshAfter": {
+        "flags": "1",
+        "result": 0,
+        "reason": "getter output invalid"
+      },
+      "cleanup": {
+        "tasks": 0,
+        "sameDisplay": true,
+        "launcher": true,
+        "ftp": true
+      }
+    },
+    {
+      "run": "moonlight-terminate-navigation-guarded-1",
+      "packageSha256": "be94513eb4be52b9455c3f03c6c6ae6ac32277228a1fedd75ba1fb8b94823c1f",
+      "app": {
+        "id": "881448767",
+        "title": "Desktop"
+      },
+      "config": {
+        "codec": "h264",
+        "width": 1920,
+        "height": 1080,
+        "bitrate": 40000,
+        "fps": 120,
+        "pacing": "smooth",
+        "durationMs": 10000,
+        "warmupMs": 5000,
+        "showStats": true,
+        "simulateTouch": true,
+        "terminateDesktop": true
+      },
+      "complete": true,
+      "error": null,
+      "summary": {
+        "seconds": 9.116,
+        "decodedFps": 98.72751206669592,
+        "presentedFps": 87.31899956121106,
+        "receivedMbps": 15.013377797279508,
+        "frameIntervalMs": 11.45043525628157,
+        "frameJitterMs": 4.139810092371445,
+        "maxIntervalMs": 39.706784000154585,
+        "p50IntervalMs": 12.906112000113353,
+        "p95IntervalMs": 17.924031999893486,
+        "p99IntervalMs": 22.33478399994783,
+        "stallsOver25Ms": 7,
+        "stallsOver50Ms": 0,
+        "stallsOver100Ms": 0,
+        "stallsOverOneAndHalfFrames": 422,
+        "videoSuperseded": 103,
+        "videoExpired": 0,
+        "videoBacklogDrops": 103,
+        "decoderRejected": 0,
+        "videoFrameGaps": 0,
+        "audioEmptyEpisodes": 1,
+        "audioEmptyMs": 0.5771520000416785,
+        "audioDiscardedMs": 0,
+        "pumpAvgMs": 12.412270399996356,
+        "drainAvgMs": 6.410000727271174,
+        "decoderPending": 2,
+        "copyPresentMs": 1.8803758392041436,
+        "presentationTimings": {
+          "acquire": 6435.110303989495,
+          "submit": 11831.11600001224,
+          "present": 12484.692575995505,
+          "wait": 17210.82630400012
+        },
+        "uiSnapshots": 0,
+        "uiFrames": 0,
+        "simulatedTouchSamples": 485
+      },
+      "overlay": {
+        "method": "native-badge",
+        "visible": 1,
+        "width": 672,
+        "height": 88,
+        "counters": {
+          "updates": 52,
+          "bytes": 12300288
+        },
+        "background": 3693090828,
+        "textPixel": 4294963172
+      },
+      "motion": {
+        "samples": 0,
+        "broadChanges": 0
+      },
+      "statsUpdateCosts": null,
+      "navigationSteps": 48,
+      "library": null,
+      "refreshDuring": {
+        "flags": "2",
+        "result": 0,
+        "reason": "getter output invalid"
+      },
+      "refreshAfter": {
+        "flags": "1",
+        "result": 0,
+        "reason": "getter output invalid"
+      },
+      "cleanup": {
+        "tasks": 0,
+        "sameDisplay": true,
+        "launcher": true,
+        "ftp": true
+      }
+    }
+  ]
+}

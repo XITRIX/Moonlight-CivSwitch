@@ -17,7 +17,7 @@ typedef struct Task {
     void* wait_object;
     uint32_t generation;
     double wake_time;
-    int state, detached, index, saved_errno, priority;
+    int state, detached, index, saved_errno, priority, profile_id;
 } Task;
 typedef struct { Task* owner; } Mutex;
 static Task* tasks[TASK_LIMIT];
@@ -26,6 +26,24 @@ static emscripten_fiber_t root;
 static unsigned char root_async_stack[STACK_BYTES];
 static int cursor, pumping, budget_yields;
 static double pump_deadline;
+/* Opt-in RAM-only service attribution. Disabled in ordinary app sessions.
+   Each row: calls, active ms, maximum turn ms, turns >20 ms, turns >100 ms.
+   Time suspended in another task or the JS event loop is excluded. */
+static int profile_enabled;
+static double profile[13 * 5];
+int ml_runtime_profile_enable(int enabled) {
+    if(enabled!=0&&enabled!=1)return -1;
+    memset(profile,0,sizeof(profile));profile_enabled=enabled;return 0;
+}
+const double* ml_runtime_profile(void) {return profile;}
+static int profile_id(const char* name) {
+    const char* names[]={"Other","InputDispatch","InputSend","AudioRecv","AudioDec",
+        "VideoRecv","VideoDec","ControlRecv","LossStats","ReqIdrFrame","CtrlAsyncCb","InvRefFrames","Ping"};
+    if(!name)return 0;
+    if(!strcmp(name,"AudioPing")||!strcmp(name,"VideoPing"))return 12;
+    for(int i=2;i<12;i++)if(!strcmp(name,names[i]))return i;
+    return 0;
+}
 
 static void* load_pointer(void* storage) { void* p; memcpy(&p, storage, sizeof(p)); return p; }
 static void store_pointer(void* storage, void* p) { memcpy(storage, &p, sizeof(p)); }
@@ -44,6 +62,7 @@ static void task_entry(void* value) {
 }
 static int create_task(ML_TASK_ENTRY entry, void* argument, int detached, Task** output) {
     int slot;
+    if(!ml_runtime_tasks())cursor=0;
     for (slot = 0; slot < TASK_LIMIT && tasks[slot]; slot++);
     if (slot == TASK_LIMIT) return EAGAIN;
     Task* task = calloc(1, sizeof(*task));
@@ -63,7 +82,7 @@ static void destroy_task(Task* task) {
 }
 int ml_spawn_task(ML_TASK_ENTRY entry, void* argument) { Task* task; return create_task(entry, argument, 1, &task); }
 int ml_spawn_input_task(ML_TASK_ENTRY entry, void* argument) {
-    Task* task;int result=create_task(entry,argument,1,&task);if(!result)task->priority=2;return result;
+    Task* task;int result=create_task(entry,argument,1,&task);if(!result){task->priority=2;task->profile_id=1;}return result;
 }
 int ml_runtime_current_task(void) { return current != NULL; }
 int ml_runtime_tasks(void) { int count=0; for(int i=0;i<TASK_LIMIT;i++)if(tasks[i])count++; return count; }
@@ -85,7 +104,11 @@ static int runnable(Task* task) {
         (task->state == WAIT_JOIN && ((Task*)task->wait_object)->state == FINISHED);
 }
 static void run_task(Task* task) {
+    double begin=profile_enabled?emscripten_get_now():0;
     current=task;task->state=READY;emscripten_fiber_swap(&root,&task->fiber);current=NULL;
+    if(profile_enabled){double elapsed=emscripten_get_now()-begin,*row=profile+task->profile_id*5;
+        row[0]++;row[1]+=elapsed;if(elapsed>row[2])row[2]=elapsed;if(elapsed>20)row[3]++;if(elapsed>100)row[4]++;
+    }
 }
 int ml_runtime_pump(double budget_ms) {
     if (pumping) return -1;
@@ -94,27 +117,22 @@ int ml_runtime_pump(double budget_ms) {
     emscripten_fiber_init_from_current_context(&root, root_async_stack, sizeof(root_async_stack));
     pump_deadline = emscripten_get_now() + budget_ms;
     int steps = 0;
-    // Dispatch the latest controller state, then upstream's InputSend task,
-    // before packet draining can consume this frame's budget. Each gets one
-    // turn, then audio gets a turn before video; round-robin still services all tasks.
+    // Preserve the position across pump budgets. Restarting the priority pass
+    // on every call lets input/audio repeatedly consume a short slice before
+    // video/control can run. Each runnable task gets one turn per cycle, with
+    // dispatch, send and audio first; interrupted cycles resume where they left.
     const int priorities[]={2,1,3};
-    for(unsigned turn=0;turn<sizeof(priorities)/sizeof(priorities[0]);turn++) {
-        int priority=priorities[turn];
-        for(int i=0;i<TASK_LIMIT;i++) {
-            Task* task=tasks[i];if(!task||task->priority!=priority||!runnable(task))continue;
-            run_task(task);steps++;
-            if(emscripten_get_now()>=pump_deadline)goto done;
-        }
-    }
     for (int scanned = 0; scanned < TASK_LIMIT * 8 && steps < 128; scanned++) {
-        Task* task = tasks[cursor]; cursor = (cursor + 1) % TASK_LIMIT;
+        int position=cursor;cursor=(cursor+1)%(TASK_LIMIT*4);
+        Task* task=tasks[position%TASK_LIMIT];
         if (!task) continue;
         if (task->state == FINISHED) { if (task->detached) destroy_task(task); continue; }
+        int priority=position<TASK_LIMIT*3?priorities[position/TASK_LIMIT]:0;
+        if(task->priority!=priority)continue;
         if (!runnable(task)) continue;
         run_task(task);steps++;
         if (emscripten_get_now() >= pump_deadline) break;
     }
-done:
     pumping = 0;
     return steps;
 }
@@ -123,7 +141,7 @@ void PltSleepMs(int ms) { ml_yield_ms(ms); }
 void PltSleepMsInterruptible(PLT_THREAD* thread, int ms) { while(ms>0&&!thread->cancelled){int step=ms<50?ms:50;PltSleepMs(step);ms-=step;} }
 int PltCreateThread(const char* name, ThreadEntry entry, void* context, PLT_THREAD* thread) {
     Task* task; int result=create_task(entry,context,0,&task);
-    if(!result){task->priority=name&&!strcmp(name,"InputSend")?1:name&&(!strcmp(name,"AudioRecv")||!strcmp(name,"AudioDec"))?3:0;thread->thread=(pthread_t)task;thread->cancelled=false;}return result;
+    if(!result){task->profile_id=profile_id(name);task->priority=name&&!strcmp(name,"InputSend")?1:name&&(!strcmp(name,"AudioRecv")||!strcmp(name,"AudioDec"))?3:0;thread->thread=(pthread_t)task;thread->cancelled=false;}return result;
 }
 void PltInterruptThread(PLT_THREAD* thread) {
     thread->cancelled=true;Task* task=(Task*)thread->thread;

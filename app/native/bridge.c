@@ -5,6 +5,20 @@
 #include <mbedtls/entropy.h>
 #include <errno.h>
 
+void mbedtls_platform_zeroize(void* buffer,size_t length) {
+    volatile unsigned char* bytes=buffer;
+    while(length--)*bytes++=0;
+}
+int ml_test_zeroize(void) {
+    unsigned char bytes[4098];
+    const size_t sizes[]={0,1,15,16,17,256,4096};
+    for(size_t i=0;i<sizeof(sizes)/sizeof(sizes[0]);i++){
+        memset(bytes,0xa5,sizeof(bytes));mbedtls_platform_zeroize(bytes+1,sizes[i]);
+        for(size_t j=0;j<sizeof(bytes);j++)if(bytes[j]!=(j>=1&&j<=sizes[i]?0:0xa5))return 1;
+    }
+    mbedtls_platform_zeroize(NULL,0);return 0;
+}
+
 extern int ml_random_fill(unsigned char* output, size_t length);
 
 int mbedtls_hardware_poll(void* context, unsigned char* output, size_t length, size_t* written) {
