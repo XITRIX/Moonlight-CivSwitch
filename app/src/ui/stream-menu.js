@@ -2,13 +2,10 @@
 (function(global){
  "use strict";
  function create(options){
-  var page="",selected=0,rows=[],items=[],host="",mode="trackpad",closed=false,ignoreUntil=0,last={name:"",time:0},nextRepeat=0,layouts=[],scale=1,touch=null,touchBlocked=false;
+  var page="",selected=0,rows=[],items=[],host="",mode="trackpad",showStats=false,closed=false,ignoreUntil=0,last={name:"",time:0},nextRepeat=0,touch=null,touchBlocked=false;
   var font="BodyFont, BodyFont-JP, BodyFont-KR, BodyFont-SC, BodyFont-TC, Arial, sans-serif";
-  function node(tag,parent,style,text){
-   var n=document.createElement(tag),pixels={};
-   for(var property in style){if(typeof style[property]==="number"){pixels[property]=style[property];n.style[property]=style[property]*scale+"px";}else n.style[property]=style[property];}
-   if(Object.keys(pixels).length)layouts.push({node:n,pixels:pixels});if(text!==undefined)n.textContent=text;parent.appendChild(n);return n;
-  }
+  var scale=global.MoonlightLayout.viewport().scale;
+  var node=global.MoonlightLayout.element;
   var overlay=node("div",options.parent,{position:"absolute",left:0,right:0,top:0,bottom:0,display:"none",backgroundColor:"rgba(0,0,0,0.64)",zIndex:"5",color:"#f5f5f5",fontFamily:font,fontWeight:"400"});overlay.id="moonlight-stream-menu";
   overlay.setAttribute("role","dialog");overlay.setAttribute("aria-modal","true");overlay.setAttribute("aria-labelledby","moonlight-stream-menu-title");
   node("div",overlay,{position:"absolute",left:15,right:30,top:0,height:87,backgroundColor:"rgba(0,0,0,0.85)",borderBottom:"1px solid #aaa"});
@@ -22,23 +19,21 @@
    node("span",b,{display:"flex",alignItems:"center",justifyContent:"center",width:25,height:25,marginRight:10,border:"1px solid #fff",borderRadius:"50%",fontFamily:font,fontSize:18},letter);
    node("span",b,{fontFamily:font,fontWeight:"400"},text);b.addEventListener("click",fn);return b;
   }
-  var backButton=footer("B","Back",back),acceptButton=footer("A","OK",activate),fixedLayouts=layouts.length;
-  function resize(){
-   var bounds=options.parent.getBoundingClientRect();scale=Math.min(bounds.width/1280,bounds.height/720)||1;
-   for(var layout of layouts)for(var property in layout.pixels)layout.node.style[property]=layout.pixels[property]*scale+"px";
-  }
+  var backButton=footer("B","Back",back),acceptButton=footer("A","OK",activate);
+  function resize(){scale=global.MoonlightLayout.viewport().scale;global.MoonlightLayout.resize(overlay);}
   function definitions(){
    if(page==="more")return [
     {id:"mouse",label:"Mouse by Gamepad",description:"Move, click, drag and scroll with the controller."},
     {id:"keyboard",label:"Show keyboard",description:"Use the controller to type and hold keyboard shortcuts."},
-    {id:"touchscreen",label:"Touchscreen mode",value:mode==="trackpad"?"Trackpad":"Touchpad",description:"Choose how the touchscreen controls this stream."}
+    {id:"touchscreen",label:"Touchscreen mode",value:mode==="trackpad"?"Trackpad":"Touchpad",description:"Choose how the touchscreen controls this stream."},
+    {id:"performance",label:"Performance overlay",value:showStats?"On":"Off",description:"Show streaming performance statistics."}
    ];
    if(page==="touchscreen")return [
     {id:"trackpad",label:"Trackpad",description:"Move the cursor with one finger. Tap to click. Swipe with two fingers to scroll."},
     {id:"touchpad",label:"Touchpad",description:"Send each finger directly to Sunshine. Requires host touch support."}
    ];
    return [
-    {id:"more",label:"More",value:">",description:"Mouse, keyboard and touchscreen controls."},
+    {id:"more",label:"More",value:">",description:"Mouse, keyboard, touchscreen and performance controls."},
     {id:"logout",label:"Logout",description:"Disconnect from the host or terminate the running app."}
    ];
   }
@@ -47,18 +42,19 @@
    var item=items[selected];description.textContent=item?item.label+"\n\n"+item.description:"";
   }
   function draw(){
-   while(list.firstChild)list.removeChild(list.firstChild);layouts.length=fixedLayouts;rows=[];items=definitions();overlay.setAttribute("data-page",page);
+   while(list.firstChild)list.removeChild(list.firstChild);rows=[];items=definitions();overlay.setAttribute("data-page",page);
    items.forEach(function(item,i){
     var row=node("button",list,{width:"100%",height:70,display:"flex",alignItems:"center",justifyContent:"space-between",paddingLeft:16,paddingRight:16,border:"3px solid transparent",boxSizing:"border-box",fontFamily:font,fontWeight:"400",fontSize:23,textAlign:"left",color:"#f5f5f5",backgroundColor:"transparent",outline:"none"});row.type="button";row.tabIndex=-1;row.id="moonlight-stream-menu-"+item.id;
     node("span",row,{fontFamily:font,fontWeight:"400"},item.label);
     node("span",row,{fontFamily:font,fontWeight:"400",color:"#00efcf",marginLeft:16},page==="touchscreen"?(item.id===mode?"On":""):item.value||"");
     if(page==="touchscreen"){row.setAttribute("role","menuitemradio");row.setAttribute("aria-checked",String(item.id===mode));}
+    if(item.id==="performance"){row.setAttribute("role","menuitemcheckbox");row.setAttribute("aria-checked",String(showStats));}
     row.addEventListener("click",function(){if(!page)return;selected=i;paint();activate();});rows.push(row);
    });resize();paint();
   }
   function resetActions(){ignoreUntil=Date.now()+150;last={name:"",time:0};nextRepeat=0;}
-  function show(name,touchMode,touching,restoreLogout){
-   if(closed)return;host=name;title.textContent=host;mode=touchMode;page="main";selected=restoreLogout?1:0;touch=null;touchBlocked=!!touching;list.scrollTop=0;resetActions();overlay.style.display="block";draw();
+  function show(name,touchMode,touching,restoreLogout,performanceOverlay){
+   if(closed)return;host=name;title.textContent=host;mode=touchMode;showStats=!!performanceOverlay;page="main";selected=restoreLogout?1:0;touch=null;touchBlocked=!!touching;list.scrollTop=0;resetActions();overlay.style.display="block";draw();
   }
   function hide(){if(!page)return;page="";touch=null;overlay.style.display="none";overlay.removeAttribute("data-page");if(options.onClose)options.onClose();}
   function back(){
@@ -72,6 +68,10 @@
    if(id==="keyboard"){hide();options.onKeyboard();return;}
    if(id==="mouse"){hide();options.onMouse();return;}
    if(id==="logout"){hide();options.onLogout();return;}
+   if(id==="performance"){
+    try{options.onPerformanceOverlay(!showStats);showStats=!showStats;draw();}catch(error){description.textContent="Could not save performance overlay.\n\n"+error.message;}
+    return;
+   }
    try{options.onTouchMode(id);mode=id;draw();}catch(error){description.textContent="Could not save touchscreen mode.\n\n"+error.message;}
   }
   function action(name,phase,x,y){

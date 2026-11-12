@@ -29,7 +29,7 @@ async function runTick(failVideo=false,failClose=false,videoPacing="smooth",mode
   };
  }
  scope.window=scope;vm.createContext(scope);vm.runInContext(fs.readFileSync('app/src/streaming/stream-client.js','utf8'),scope);
- client=scope.MoonlightStreamClient.create({host:'host',app:{id:1},mode:{...mode,videoPacing},onStats:()=>client.stop()});
+ client=scope.MoonlightStreamClient.create({renderer:'native-gpu-texture',host:'host',app:{id:1},mode:{...mode,videoPacing},onStats:()=>client.stop()});
  const result=await client.start();assert.equal(tasks,0);assert.equal(closed,cancelPreparation?0:1);assert.equal(timers.size,0);assert.equal(frames.size,0);return {order,result,ioClosed,mediaOptions,poolCalls,pairCalls,batchCalls,referenceCalls,ioOptions,unfinished:scope.__moonlightStreamUnfinished};
 }
 

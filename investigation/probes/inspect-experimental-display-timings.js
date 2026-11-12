@@ -1,0 +1,1 @@
+(async()=>{var s=window.__moonlightNativeGraphics;await log('MOONLIGHT_NATIVE_TIMING '+JSON.stringify({presentTimings:s&&s.present&&s.present.timings,retired:s&&s.retired,ready:s&&s.ready,unfinished:!!window.__moonlightStreamUnfinished}));})();

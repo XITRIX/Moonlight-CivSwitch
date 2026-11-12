@@ -1,0 +1,103 @@
+{
+  "date": "2026-11-11",
+  "status": "PARTIAL TEXT SNAPSHOT, NOT A GIT CLONE",
+  "transport": "Public r.jina.ai text rendering of Gitee pages; not verified against Git objects",
+  "upstreamNs2jbCommit": "95f5525089273c5fce0b95047f3600f8442e96ae",
+  "files": [
+    {
+      "path": "README.rendered.txt",
+      "source": "https://gitee.com/mza1010/civswitch-kit",
+      "sha256": "4628fbf5b359fcfd7c0c642e45ddd2c764dcd0fa1e93dcf15d7a1177dcceb042",
+      "checks": null
+    },
+    {
+      "path": "CHANGES.md",
+      "source": "https://gitee.com/mza1010/civswitch-kit/raw/main/CHANGES.md",
+      "sha256": "d1d8d4dc6cb8bc722668766a3eb3e222194cab77b9e87d42769b985b58e90bbd",
+      "checks": null
+    },
+    {
+      "path": "docs/PORT-HANDOFF.md",
+      "source": "https://gitee.com/mza1010/civswitch-kit/raw/main/docs/PORT-HANDOFF.md",
+      "sha256": "7719423b3dd7379b5f856cfa9867b84d35b636f3b43f159468c524318e123549",
+      "checks": null
+    },
+    {
+      "path": "docs/UPSTREAM-SYNC-2026-11-10.md",
+      "source": "https://gitee.com/mza1010/civswitch-kit/raw/main/docs/UPSTREAM-SYNC-2026-11-10.md",
+      "sha256": "8e2f78012b70b16b9791ff4e74f9e466e4b3daf4bf5b47f5b3d41aa4632d44e0",
+      "checks": null
+    },
+    {
+      "path": "port/civ_bridge.js",
+      "source": "https://gitee.com/mza1010/civswitch-kit/raw/main/port/civ_bridge.js",
+      "sha256": "a4a37c957c6d4a85ac24b7d058b12f46ec3710658b920b04e0744060045fcc4c",
+      "checks": {
+        "syntaxExitCode": 0,
+        "output": ""
+      }
+    },
+    {
+      "path": "port/engine/switch2/pipeline.cjs",
+      "source": "https://gitee.com/mza1010/civswitch-kit/raw/main/port/engine/switch2/pipeline.cjs",
+      "sha256": "3819e255aa99a49d36422fd4af643eb8bdb7c669c357d23dd7e1f78b0ccdacc1",
+      "checks": {
+        "syntaxExitCode": 0,
+        "output": ""
+      }
+    },
+    {
+      "path": "port/engine/switch2/memory/probe-reserved-gap.cjs",
+      "source": "https://gitee.com/mza1010/civswitch-kit/raw/main/port/engine/switch2/memory/probe-reserved-gap.cjs",
+      "sha256": "28ec3fc4d985fa1f208897906cfbd35139dee228f12cc59e75202895124b9c9c",
+      "checks": {
+        "syntaxExitCode": 0,
+        "output": ""
+      }
+    },
+    {
+      "path": "port/engine/switch2/memory/verify-proof.cjs",
+      "source": "https://gitee.com/mza1010/civswitch-kit/raw/main/port/engine/switch2/memory/verify-proof.cjs?audit=source",
+      "sha256": "d5bc4a8482c976c948eef96b793c97a3669defd180506a3570d47309de0ad982",
+      "checks": {
+        "syntaxExitCode": 0,
+        "output": ""
+      }
+    },
+    {
+      "path": "port/engine/switch2/acquire.cjs",
+      "source": "https://gitee.com/mza1010/civswitch-kit/raw/main/port/engine/switch2/acquire.cjs?audit=source",
+      "sha256": "83d357675076889d8b97f7bb8d9c00664da85b1c75c5347bc37bd1b39c3cced7",
+      "checks": {
+        "syntaxExitCode": 0,
+        "output": ""
+      }
+    },
+    {
+      "path": "port/engine/switch2/process/fs-execute.cjs",
+      "source": "https://gitee.com/mza1010/civswitch-kit/raw/main/port/engine/switch2/process/fs-execute.cjs?audit=1",
+      "sha256": "87ec302667c9c7e095e3c4b0d8ca55038541afbb14a25e9a34aa8a56df45ceda",
+      "checks": {
+        "syntaxExitCode": 0,
+        "output": ""
+      }
+    },
+    {
+      "path": "port/engine/switch2/firmware-dump.cjs",
+      "source": "https://gitee.com/mza1010/civswitch-kit/raw/main/port/engine/switch2/firmware-dump.cjs?audit=source",
+      "sha256": "da60f25ef027ab17c7590c20170caefc66c1d65e1444e7e84f7e0b6095e176fb",
+      "checks": {
+        "syntaxExitCode": 0,
+        "output": ""
+      }
+    },
+    {
+      "path": "port/civ7-app/thread-code.json",
+      "source": "https://gitee.com/mza1010/civswitch-kit/raw/main/port/civ7-app/thread-code.json?audit=source",
+      "sha256": "c9098910497df234007bf74ed9cd1abb27317d936f2bc55c4fe527f5fa4126e2",
+      "checks": {
+        "jsonParse": true
+      }
+    }
+  ]
+}

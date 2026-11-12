@@ -1,0 +1,192 @@
+{
+  "sdk": "1.3.0",
+  "revision": "f6843e971db0ba8481e35d6188dc4ce16d2c5f4b",
+  "doom": {
+    "complete": true,
+    "cycles": 2,
+    "profiles": [
+      {
+        "scene": "stationary",
+        "elapsedMs": 8041,
+        "frames": 236,
+        "fps": 29.3495833851511,
+        "ticsPerSecond": 34.94590225096381,
+        "renderMsPerFrame": 15.369768000000786,
+        "presentMsPerFrame": 6.003337898304904,
+        "audioCPUPercent": 18.367175823905903,
+        "audioBuffersPerSecond": 49.86941922646437,
+        "uploadedBytesPerFrame": 261201.35593220338,
+        "presentations": 236,
+        "lastPresentation": {
+          "gpuWaitMs": 3.7921920000080718,
+          "deferredWait": true,
+          "uploadMs": 1.0262720000027912,
+          "computeFenceMs": 0.003200000006472692,
+          "binsRebuilt": false,
+          "gpuSceneHit": true,
+          "combinedRasterPresent": true,
+          "rasterPresentMs": 1.5480640000023413,
+          "totalMs": 6.389183999999659
+        },
+        "texturePreparation": {
+          "geometryHits": 6,
+          "geometryMisses": 0,
+          "geometryBytes": 792128,
+          "textureGeneration": 472,
+          "texturePackedBytes": 256000,
+          "textureFullPacks": 2,
+          "preparedBytes": 3541760,
+          "preparedHit": true,
+          "inputBytes": 6973760
+        }
+      },
+      {
+        "scene": "turning",
+        "elapsedMs": 8043,
+        "frames": 203,
+        "fps": 25.239338555265448,
+        "ticsPerSecond": 35.0615441999254,
+        "renderMsPerFrame": 11.568223842365061,
+        "presentMsPerFrame": 5.801223566502248,
+        "audioCPUPercent": 39.51591038170115,
+        "audioBuffersPerSecond": 49.98135024244685,
+        "uploadedBytesPerFrame": 256770.2068965517,
+        "presentations": 203,
+        "lastPresentation": {
+          "gpuWaitMs": 1.0592000000033295,
+          "deferredWait": true,
+          "uploadMs": 1.0408000000024913,
+          "computeFenceMs": 0.003360000002430752,
+          "binsRebuilt": false,
+          "gpuSceneHit": true,
+          "combinedRasterPresent": true,
+          "rasterPresentMs": 1.5786559999978635,
+          "totalMs": 3.700831999987713
+        },
+        "texturePreparation": {
+          "geometryHits": 6,
+          "geometryMisses": 0,
+          "geometryBytes": 802496,
+          "textureGeneration": 731,
+          "texturePackedBytes": 256000,
+          "textureFullPacks": 2,
+          "preparedBytes": 3131648,
+          "preparedHit": true,
+          "inputBytes": 6973760
+        }
+      },
+      {
+        "scene": "firing",
+        "elapsedMs": 8080,
+        "frames": 205,
+        "fps": 25.371287128712872,
+        "ticsPerSecond": 35.024752475247524,
+        "renderMsPerFrame": 9.900513092683068,
+        "presentMsPerFrame": 5.786748565853113,
+        "audioCPUPercent": 43.053802376238096,
+        "audioBuffersPerSecond": 49.87623762376238,
+        "uploadedBytesPerFrame": 256863.21951219512,
+        "presentations": 205,
+        "lastPresentation": {
+          "gpuWaitMs": 0.9793599999975413,
+          "deferredWait": true,
+          "uploadMs": 1.000287999995635,
+          "computeFenceMs": 0.003456000005826354,
+          "binsRebuilt": false,
+          "gpuSceneHit": true,
+          "combinedRasterPresent": true,
+          "rasterPresentMs": 1.6070079999917652,
+          "totalMs": 3.6087679999909597
+        },
+        "texturePreparation": {
+          "geometryHits": 6,
+          "geometryMisses": 0,
+          "geometryBytes": 812864,
+          "textureGeneration": 1047,
+          "texturePackedBytes": 256000,
+          "textureFullPacks": 2,
+          "preparedBytes": 2721536,
+          "preparedHit": true,
+          "inputBytes": 6973760
+        }
+      }
+    ]
+  },
+  "hello": {
+    "complete": true,
+    "cycles": 2
+  },
+  "moonlight": {
+    "complete": true,
+    "codecs": [
+      "h264",
+      "av1"
+    ],
+    "publicHostSaved": true
+  },
+  "installedPackages": [
+    {
+      "id": "hello-civswitch",
+      "sha256": "10306112b320aae45e3fdfb10502c16727cb77df3074b8d41a994d29e04de2af",
+      "entry": {
+        "id": "hello-civswitch",
+        "name": "Hello CivHomebrew",
+        "bytes": 1438342,
+        "checksum": "d2a90ed8"
+      },
+      "verifiedScripts": 2
+    },
+    {
+      "id": "moonlight-civswitch",
+      "sha256": "7ee64e0d46ff213d1d708b866899356dd11d45d6eaba02e895c7445fadece3a3",
+      "entry": {
+        "id": "moonlight-civswitch",
+        "name": "Moonlight",
+        "bytes": 3821008,
+        "checksum": "eb8977ef"
+      },
+      "verifiedScripts": 40
+    },
+    {
+      "id": "doom-civhomebrew",
+      "sha256": "1c8641da4cb1631fce44c13b697d93abf0fa982cf19296dd2cfa7251d14fd4a3",
+      "entry": {
+        "id": "doom-civhomebrew",
+        "name": "Doom",
+        "bytes": 27389440,
+        "checksum": "a517723a"
+      },
+      "verifiedScripts": 47
+    }
+  ],
+  "acceptance": "User: I think for now it is good enough; tuning stopped.",
+  "finalResident": {
+    "mode": "launcher",
+    "busy": false,
+    "app": null,
+    "launcher": true,
+    "ftp": true,
+    "closed": false,
+    "services": {
+      "rpc": true,
+      "raw": true,
+      "release": "0.4.3-sdk.4",
+      "bootIntegrated": true
+    }
+  },
+  "date": "2026-11-12",
+  "platform": "Switch 2 / Civ VII 1.0.0",
+  "core": {
+    "release": "0.4.3-sdk.4",
+    "checksum": "aa3676ac"
+  },
+  "launcher": {
+    "release": "0.4.3-nanovg.8",
+    "checksum": "a5cbdb04"
+  },
+  "limitations": [
+    "Injected controller actions; physical controller input is separate.",
+    "Short streaming samples do not establish sustained 60 FPS or per-codec audibility.",
+    "Package hashes describe the console-tested builds before later repository cleanup."
+  ]
+}

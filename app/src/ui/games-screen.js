@@ -12,13 +12,7 @@
             var pending=artwork.close();artwork=null;artworkTasks.push(pending);
             pending.then(function(){artworkTasks=artworkTasks.filter(function(value){return value!==pending;});});
         }
-        function element(tag, parent, styles, text) {
-            var node = document.createElement(tag);
-            Object.assign(node.style, styles || {});
-            if (text !== undefined) node.textContent = text;
-            parent.appendChild(node);
-            return node;
-        }
+        var element = global.MoonlightLayout.element;
         var panel = element("div", options.parent, {
             display:"none",flexDirection:"column",width:"1100px",maxWidth:"88vw",padding:"28px",
             border:"1px solid #29354b",borderRadius:"18px",backgroundColor:"#131d2e",boxSizing:"border-box"
@@ -28,7 +22,7 @@
         var header=element("div",panel,{display:"flex",alignItems:"center",justifyContent:"space-between",marginBottom:"6px"});
         element("h2",header,{fontSize:"36px",lineHeight:"1.2",margin:"0",color:"#f4f7ff"},"Games");
         var hostname = element("div",panel,{fontSize:"18px",color:"#a7b6cf",marginBottom:"16px"});
-        // Explicit flex rows work in Gameface without relying on CSS Grid.
+        // Explicit flex rows work in the layout engine without relying on CSS Grid.
         var library = element("div",panel,{position:"relative"});
         var grid = element("div",library,{display:"flex",flexDirection:"column"});
         grid.id = "moonlight-game-list";
@@ -61,7 +55,7 @@
         message.setAttribute("role","status");
         var footer = element("div",panel,{display:"flex",alignItems:"center",marginTop:"12px"});
         var count = element("div",footer,{fontSize:"16px",color:"#a7b6cf",flexGrow:"1"});
-        var buttonStyle = {height:"44px",padding:"0 18px",marginLeft:"12px",fontSize:"18px",fontFamily:"Arial, sans-serif",
+        var buttonStyle = {display:"flex",alignItems:"center",justifyContent:"center",lineHeight:"22px",height:"44px",padding:"0 18px",marginLeft:"12px",fontSize:"18px",fontFamily:"Arial, sans-serif",
             color:"#fff",border:"2px solid #35435b",borderRadius:"8px",backgroundColor:"#0c1423",outline:"none"};
         var terminate=element("button",header,Object.assign({},buttonStyle,{display:"none",alignItems:"center",justifyContent:"center",textAlign:"center",lineHeight:"22px",boxSizing:"border-box",width:"180px",flexShrink:"0"}));
         element("span",terminate,{display:"block",lineHeight:"22px"},"Terminate app");
@@ -76,14 +70,15 @@
         footerButtons.forEach(function (button) {button.type="button";button.tabIndex=-1;});
 
         function layout() {
-            var width = Math.min(1100, Math.floor((global.innerWidth || 1280) * 0.88));
-            panel.style.width = width + "px";
+            var viewport=global.MoonlightLayout.viewport();
+            var width = Math.min(1100, Math.floor(viewport.width / viewport.scale * 0.88));
+            global.MoonlightLayout.style(panel,{width:width+"px"});
             columns = width >= 960 ? 4 : width >= 700 ? 3 : 2;
             cardWidth = Math.floor((width - 56 - gap * (columns - 1)) / columns);
             cardHeight = Math.floor(cardWidth * 4 / 3);
-            var rows = Math.max(1, Math.min(2, Math.floor(((global.innerHeight || 720) - 300 + gap) / (cardHeight + gap))));
+            var rows = Math.max(1, Math.min(2, Math.floor((viewport.height / viewport.scale - 300 + gap) / (cardHeight + gap))));
             pageSize = rows * columns;
-            grid.style.minHeight = cardHeight + "px";
+            global.MoonlightLayout.style(grid,{minHeight:cardHeight+"px"});
             grid.setAttribute("aria-colcount",String(columns));
             grid.setAttribute("aria-rowcount",String(Math.ceil(apps.length / columns)));
             if (selected < apps.length) {
@@ -142,7 +137,7 @@
                 });
             } else card.art.appendChild(image);
             card.image=image;image.moonlightCard=card;image.moonlightAppId=card.id;
-            image.style.width=Math.ceil(value.width*scale)+"px";image.style.height=Math.ceil(value.height*scale)+"px";
+            global.MoonlightLayout.style(image,{width:Math.ceil(value.width*scale)+"px",height:Math.ceil(value.height*scale)+"px"});
             if(value.loaded)card.placeholder.style.visibility="hidden";
             else if(!image.getAttribute("src"))image.src=value.url;
         }

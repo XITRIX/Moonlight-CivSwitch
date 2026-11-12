@@ -1,0 +1,49 @@
+{
+  "moduleHash": "cf649bbd",
+  "textSha256": "48295bbe7f84577373650f044f2ecdb4ff80fe39d1dfedeb3e50ee208f0e09e3",
+  "managerOffset": 68420064,
+  "functions": {
+    "tls": {
+      "offset": 1319664,
+      "size": 8,
+      "hex": "60d03bd5c0035fd6"
+    },
+    "send": {
+      "offset": 1320200,
+      "size": 8,
+      "hex": "210400d4c0035fd6"
+    },
+    "close": {
+      "offset": 1320160,
+      "size": 8,
+      "hex": "c10200d4c0035fd6"
+    },
+    "transfer": {
+      "offset": 1366400,
+      "size": 152,
+      "hex": "7f2303d5ffc301d1fd7b04a9f52b00f9f44f06a9fd030191f30300aae0030091"
+    }
+  },
+  "evidence": {
+    "acquireReply": {
+      "offset": 1363644,
+      "hex": "2802805275d03bd5a80200f9a6d5ff97f403002ae0020035280280d2a90240f92800c0f20800f0f229a941923f0108eb01030054a90a40b93f810071a1020054b41240b9a80200f908048052a80a00b914010035600240b9"
+    },
+    "openPacket": {
+      "offset": 1344408,
+      "hex": "a80e80d275d03bd5a3520039bf2e00798b7c0853ac7c0853ad7c1053ae7c1853f30301aaf40300aae00301aa0802a0f20801c0f2a80200f9687c0853a8560039488801b008910991ab6600394b018052a4620039bf360079a5720039ac760039ad7a0039ae7e0039a282003909fd44d30afd62d3ab22012948fc48d3bfc202f8bf4202f8290d04124a6d1e12a886003929010a2aa91200b949fc50d34afc58d3a98a0039aa8e0039"
+    },
+    "h264MemoryPacket": {
+      "offset": 1352476,
+      "hex": "e90f40b92a1b80d2e00b40f97ad03bd5a85b40b9ca00c0f2590b00f95f6303290a00f0f24a0300f94a0080524a270129a95340b94923042983e0ff97"
+    },
+    "av1MemoryPacket": {
+      "offset": 1344044,
+      "hex": "e90f40b92a1b80d2e00b40f97ad03bd5a85b40b9ca00c0f2590b00f90a00f0f24a0300f94a0080524a2701296900805249630329a95340b949230429bee8ff97"
+    },
+    "releasePacket": {
+      "offset": 1346304,
+      "hex": "600240f96810805274d03bd5880200f994e6ff97a01f00b9a0070035880240f908a941921f0d02f161070054880200f9"
+    }
+  }
+}

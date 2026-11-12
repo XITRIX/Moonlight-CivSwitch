@@ -40,7 +40,7 @@ async function stream(rumbleEnabled){
   MoonlightNative:{create:()=>({})},MoonlightStreamIO:{create:()=>({stats:{},interrupt(){},close(){}})},
   MoonlightStreamMedia:{create:()=>({drainVideo:()=>{order.push('video');time++;return true;},finishVideo:()=>order.push('present'),drainAudio:()=>{order.push('audio');time++;},stats:()=>({}),close(){}})},
   MoonlightSessionProtocol:{create:()=>({launch:async()=>({host:'host',version:'7',url:'rtsp://host',key:new Uint8Array(16),keyId:1,codecSupport:1})})}};
- client=load(scope).create({host:'host',app:{id:1},mode:{width:1920,height:1080,fps:60,bitrate:50000,rumble:rumbleEnabled},onRumble:(...args)=>{order.push('rumble');calls.push(args);time+=5;},onStats:()=>client.stop()});
+ client=load(scope).create({renderer:'native-gpu-texture',host:'host',app:{id:1},mode:{width:1920,height:1080,fps:60,bitrate:50000,rumble:rumbleEnabled},onRumble:(...args)=>{order.push('rumble');calls.push(args);time+=5;},onStats:()=>client.stop()});
  return {result:await client.start(),calls,configured,order};
 }
 test('50 Mbps receives both pump slices and presents video/audio before one coalesced rumble call',async()=>{

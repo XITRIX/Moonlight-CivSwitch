@@ -1,7 +1,7 @@
 /* Own one core, native media objects, and native sockets for a stream. */
 (function(global){
  "use strict";
- function createClock(){
+ function createClock(options){
   var pending=null,stats={frameWakes:0,timerWakes:0,forcedWakes:0,serviceWakes:0,waitMs:0,maxWaitMs:0};
   function now(){return global.performance&&global.performance.now?global.performance.now():Date.now();}
   function wait(service){
@@ -13,7 +13,7 @@
     if(entry.serviceTimer!==null)clearTimeout(entry.serviceTimer);
     var elapsed=now()-entry.begin;stats.waitMs+=elapsed;stats.maxWaitMs=Math.max(stats.maxWaitMs,elapsed);stats[reason+"Wakes"]++;if(error)reject(error);else resolve();
    };
-   var framed=typeof global.requestAnimationFrame==="function";
+   var framed=!(options&&options.nativeDisplay)&&typeof global.requestAnimationFrame==="function";
    // A hidden page may stop animation callbacks; keep startup/stop progressing.
    entry.timer=setTimeout(function(){entry.finish("timer");},framed?50:2);
    if(framed)entry.frame=global.requestAnimationFrame(function(){entry.finish("frame");});
@@ -57,15 +57,17 @@
   var signal={aborted:false},stopRequested=false,core,io,media,failure=null,done=null,startedAt=0,connectedAt=0,latestStats=null;
   var cpu=options.renderer==="png"||options.renderer==="native-texture";
   var mode=options.mode||(cpu?{width:320,height:180,fps:15,bitrate:1000}:{width:1280,height:720,fps:60,bitrate:20000});
+  var nativeDisplay=!options.renderer||options.renderer==="native-vulkan";
   // Higher-rate streams need another receive/Opus turn before the next frame.
   // Keep room for rendering and input; lighter modes retain their 10 ms budget.
   // Loss recovery is also needed during busy 40–70 Mbps gameplay. Reserving
   // this path for 80 Mbps left lower settings waiting for repeated IDRs.
   var highPacketRate=!cpu&&mode.bitrate>=40000;
   var pumpBudgetMs=highPacketRate&&mode.bitrate>=80000&&mode.fps===60?13.5:mode.fps===60&&(mode.width>1280||mode.height>720||mode.bitrate>=8000)?12:10;
+  if(nativeDisplay&&mode.fps>60)pumpBudgetMs=5;
   // At 40 Mbps, an earlier output check leaves more GPU overlap time.
   var completionBudgetMs=pumpBudgetMs===12&&mode.bitrate<40000?6:4;
-  var telemetry=global.MoonlightTelemetry.create(),clock=createClock(),pumpMs=0,drainMs=0,iterations=0,maxPumpMs=0,maxDrainMs=0;
+  var telemetry=global.MoonlightTelemetry.create(),clock=createClock({nativeDisplay:nativeDisplay}),pumpMs=0,drainMs=0,iterations=0,maxPumpMs=0,maxDrainMs=0;
   var serviceIterations=0,servicePumpMs=0,serviceDrainMs=0,maxServiceMs=0,waitBudgetMs=0;
   function serviceBetweenFrames(){
    if(stopRequested||failure||core._ml_session_state()!==2)return;
@@ -107,10 +109,12 @@
      // Native callbacks return -1 after recording their actual exception. Keep
      // that cause instead of replacing it with the C stage's generic result.
      if(event===3)failure=failure||Error(stageName(a)+" failed: "+b);
-     if(event===4){connectedAt=Date.now();status("Streaming "+mode.width+"×"+mode.height+" · press − and + together to exit");}
+     if(event===4){connectedAt=Date.now();status("Streaming "+mode.width+"×"+mode.height+" · press − and + together to "+(nativeDisplay?"disconnect":"exit"));}
      if(event===5&&!stopRequested)failure=failure||Error("Stream terminated: "+a);
     }};
     core=await make({moonlightPlatform:platform});
+    if(core._ml_session_set_video_format){if(core._ml_session_set_video_format(mode.codec==="av1"?0x1000:1)!==0)throw Error("Cannot prepare the requested video codec");}
+    else if(mode.codec==="av1")throw Error("Rebuild the streaming runtime for AV1");
     // C callbacks only retain the latest levels; native HID calls run after media.
     platform.rumble=function(controller,low,high){if(!stopRequested)rumble.queue(controller,low,high);};
     if(core._ml_session_set_rumble&&core._ml_session_set_rumble(mode.rumble!==false&&typeof options.onRumble==="function"?1:0)!==0)throw Error("Cannot prepare controller rumble");
@@ -130,7 +134,8 @@
     if(io.attachCore)io.attachCore(core);
     if(highPacketRate&&core._ml_video_batch_configure&&core._ml_video_batch_configure(1)!==0)throw Error("Cannot prepare direct video receive");
     if(global.MoonlightNativeTexture&&options.renderer==="native-texture"){status("Preparing native video colors…");await global.MoonlightNativeTexture.prepare();if(stopRequested)return;}
-    media=global.MoonlightStreamMedia.create(io,core,{onStatus:status,onImage:options.onImage,canPresent:options.canPresent,renderer:options.renderer,synchronousGpu:options.synchronousGpu,smoothVideo:mode.videoPacing!=="latency"});
+    var mediaOptions={onStatus:status,onImage:options.onImage,canPresent:options.canPresent,renderer:options.renderer,synchronousGpu:options.synchronousGpu,smoothVideo:mode.videoPacing!=="latency",mode:mode,onPresented:options.onPresented,report:function(value){report("NATIVE "+JSON.stringify(value));}};
+    media=nativeDisplay?await global.MoonlightNativeVideo.createMedia(io,core,mediaOptions):global.MoonlightStreamMedia.create(io,core,mediaOptions);
     platform.videoSetup=guarded("videoSetup",-1);platform.videoFrame=guarded("videoFrame",-1);
     platform.audioSetup=guarded("audioSetup",-1);platform.audioFrame=guarded("audioFrame",undefined);
     status("Starting application on Sunshine…");
@@ -145,6 +150,7 @@
     startedAt=Date.now();var lastStats=0;
     while(!stopRequested){
      waitBudgetMs=0;await clock.wait(cpu?null:serviceBetweenFrames);if(stopRequested)break;
+     if(media.prepareVideo)await media.prepareVideo();
      // Queue video early and service the core while its GPU copy completes.
      // A nonblocking fence check publishes once; pending work keeps its slot.
      // At 40 Mbps, an empty early drain gets one retry after the first pump. Final fence
@@ -178,7 +184,7 @@
       // Never free buffers still referenced by a suspended C task.
       failure=failure||Error("Core cleanup timed out; restart Civ VII before reusing streaming");report(failure.message);
       global.__moonlightStreamUnfinished={core:core,io:io,media:media};
-     }else{try{if(media){latestStats=collect(false);media.close();}if(core._ml_packet_pool_configure&&core._ml_packet_pool_configure(0)!==0)throw Error("Packet pool still owns live buffers");if(core._ml_fec_prepare_pair&&core._ml_fec_prepare_pair(-1)!==0)throw Error("Recovery tables still in use");if(latestStats&&global.MoonlightTelemetry.readPacketPool)latestStats.packetPool=global.MoonlightTelemetry.readPacketPool(core);if(io)io.close();}catch(error){failure=failure||error;report(error.message);global.__moonlightStreamUnfinished={core:core,io:io,media:media};}}
+     }else{try{if(media){latestStats=collect(false);await media.close();}if(core._ml_packet_pool_configure&&core._ml_packet_pool_configure(0)!==0)throw Error("Packet pool still owns live buffers");if(core._ml_fec_prepare_pair&&core._ml_fec_prepare_pair(-1)!==0)throw Error("Recovery tables still in use");if(latestStats&&global.MoonlightTelemetry.readPacketPool)latestStats.packetPool=global.MoonlightTelemetry.readPacketPool(core);if(io)io.close();}catch(error){failure=failure||error;report(error.message);global.__moonlightStreamUnfinished={core:core,io:io,media:media};}}
     }else if(io)io.close();
     if(options.onStopped)options.onStopped(failure,latestStats);
    }

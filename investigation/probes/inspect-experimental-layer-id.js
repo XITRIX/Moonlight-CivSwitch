@@ -1,0 +1,1 @@
+(async()=>{var c=window.__moonlightNativeGraphics.context;for(var e of c.findSymbols(/(Layer|NativeWindow).*(Id|ID|Handle|Visib|Sdk|SDK)/))await log('MOONLIGHT_LAYER_ID_EXPORT '+JSON.stringify(e));await log('MOONLIGHT_LAYER_ID_COMPLETE');})();

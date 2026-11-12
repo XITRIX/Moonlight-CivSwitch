@@ -32,3 +32,12 @@ Their pinned revisions are in
 [sources.lock.json](../../third_party/sources.lock.json); bootstrap them with
 `npm run bootstrap` from the repository root. The local SDK lives under
 `toolchains/emsdk/`.
+
+## civswitch-kit research
+
+The local `civswitch-kit/` Git checkout and the partial text snapshot under
+`civswitch-kit-audit-2026-11-11/source/` are ignored research inputs, not submodules
+or app dependencies. The audit report and retrieval manifest retain provenance,
+source URLs and hashes; local test logs remain outside the commit set. The
+snapshot was retrieved from https://gitee.com/mza1010/civswitch-kit and was not
+verified against Git objects. See the audit's `AUDIT.txt` for its limits.

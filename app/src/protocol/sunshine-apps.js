@@ -14,7 +14,7 @@
             return String.fromCodePoint(point);
         });
     }
-    // Gameface has no DOMParser. Parse this small XML response with bounded
+    // the layout engine has no DOMParser. Parse this small XML response with bounded
     // depth/size and exact tag matching; never interpret titles as markup.
     function parseRoot(xml, allowError) {
         if (typeof xml !== "string" || xml.length > 131072) invalid();

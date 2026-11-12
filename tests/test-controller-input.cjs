@@ -3,7 +3,7 @@ const assert=require('node:assert/strict');
 const fs=require('node:fs');
 const vm=require('node:vm');
 const source=fs.readFileSync('app/src/streaming/controller-input.js','utf8');
-function load(scope={}){const context=vm.createContext({window:{},...scope});vm.runInContext(source,context);return context.window.MoonlightControllerInput;}
+function load(scope={}){const context=vm.createContext({window:{},...scope});vm.runInContext(fs.readFileSync('app/vendor/civhomebrew-sdk.js','utf8'),context);vm.runInContext(source,context);return context.window.MoonlightControllerInput;}
 const input=load();
 const list=x=>Array.from(x.state);
 test('native buttons follow standard positions and keep B available during play',()=>{

@@ -1,0 +1,182 @@
+{
+  "date": "2026-11-12",
+  "sdk": "1.3.5",
+  "sdkCommit": "276347008772de88798f7771b36ccaa47642cecc",
+  "coreRelease": "0.4.3-sdk.8",
+  "launcherRelease": "0.4.3-nanovg.12",
+  "coldActivation": {
+    "components": {
+      "core": {
+        "state": {
+          "version": 1,
+          "generation": 48,
+          "active": 0,
+          "previous": 1,
+          "pending": null,
+          "attempted": false,
+          "hashes": [
+            "7d226f83",
+            "41b62e9d"
+          ]
+        },
+        "checksum": "7d226f83"
+      },
+      "launcher": {
+        "state": {
+          "version": 1,
+          "generation": 69,
+          "active": 1,
+          "previous": 0,
+          "pending": null,
+          "attempted": false,
+          "hashes": [
+            "e7ea71f2",
+            "f09dde92"
+          ]
+        },
+        "checksum": "f09dde92"
+      }
+    },
+    "sdk": "1.3.5",
+    "ordered": "function",
+    "launcher": "a73c49a204debe5e360b6f80418dca1a174b0dc7c58ba0a8a36e23fc6aa408e8",
+    "native": {
+      "state": "ready",
+      "device": "73073250384",
+      "swapchain": "73071193728",
+      "errors": []
+    }
+  },
+  "liveRuntime": {
+    "sdk": "1.3.5",
+    "nativeUi": "1.3.5",
+    "keyboard": true,
+    "apps": [
+      {
+        "id": "hello-civswitch",
+        "nativeUi": {
+          "api": 1,
+          "library": "civapps-native-ui",
+          "version": "1.3.5",
+          "minVersion": "1.3.5"
+        },
+        "scripts": 2
+      },
+      {
+        "id": "moonlight-civswitch",
+        "nativeUi": {
+          "api": 1,
+          "library": "civapps-native-ui",
+          "version": "1.3.5",
+          "minVersion": "1.3.5"
+        },
+        "scripts": 41
+      },
+      {
+        "id": "doom-civhomebrew",
+        "nativeUi": {
+          "api": 1,
+          "library": "civapps-native-ui",
+          "version": "1.3.5",
+          "minVersion": "1.3.5"
+        },
+        "scripts": 47
+      },
+      {
+        "id": "civswitch-kit-checks",
+        "nativeUi": {
+          "api": 1,
+          "library": "civapps-native-ui",
+          "version": "1.3.5",
+          "minVersion": "1.3.5"
+        },
+        "scripts": 6
+      },
+      {
+        "id": "sw2nes",
+        "nativeUi": {
+          "api": 1,
+          "library": "civapps-native-ui",
+          "version": "1.3.5",
+          "minVersion": "1.3.5"
+        },
+        "scripts": 4
+      }
+    ],
+    "errors": []
+  },
+  "installed": [
+    {
+      "id": "hello-civswitch",
+      "packageSha256": "901ec45c6ad4f137ea55286cdabc74942feef8a3f0e4455024f0b6b6039bc4d1",
+      "verifiedScripts": 2,
+      "entry": {
+        "id": "hello-civswitch",
+        "name": "Hello CivHomebrew",
+        "bytes": 1451948,
+        "checksum": "6e61b613"
+      }
+    },
+    {
+      "id": "moonlight-civswitch",
+      "packageSha256": "53773245111715903f75442a73aadbc446401952130ed6f170546d412ccc4157",
+      "verifiedScripts": 41,
+      "entry": {
+        "id": "moonlight-civswitch",
+        "name": "Moonlight",
+        "bytes": 3824366,
+        "checksum": "998e1b95"
+      }
+    },
+    {
+      "id": "doom-civhomebrew",
+      "packageSha256": "f6c363971a2fbcc1a7ddc98c6e3f2244ea7adccf63cc9c79df54d19b5f6ecaa4",
+      "verifiedScripts": 47,
+      "entry": {
+        "id": "doom-civhomebrew",
+        "name": "Doom",
+        "bytes": 27403312,
+        "checksum": "275871cd"
+      }
+    },
+    {
+      "id": "civswitch-kit-checks",
+      "packageSha256": "592f7196cb3634a9fadffc288246edbf921f4faaef24d41f5923c47001f40eaf",
+      "verifiedScripts": 6,
+      "entry": {
+        "id": "civswitch-kit-checks",
+        "name": "CivSwitch Kit Checks",
+        "bytes": 49784,
+        "checksum": "1b25b7c2"
+      }
+    },
+    {
+      "id": "sw2nes",
+      "packageSha256": "6d6bdba738c6cc1176aa2b771119f31784d85e8c02b0ef46da03d6a25e78975a",
+      "verifiedScripts": 4,
+      "entry": {
+        "id": "sw2nes",
+        "name": "SW2NES",
+        "bytes": 836872,
+        "checksum": "1db1c7b4"
+      }
+    }
+  ],
+  "validation": {
+    "sdk": "58 Node tests, 19 Python checks, both stack oracles; browser and host Vulkan passed",
+    "moonlight": "146 Node tests and fresh-package Chrome smoke passed; pairing overlay lifecycle browser checks passed",
+    "doom": "engine/unit/kernel/performance, package, browser and shared-SDK roundtrips passed",
+    "civhomebrew": "106 Node and 49 Python checks passed, including all 5 streamed-install checks and automatic CLI routing",
+    "hello": "browser native handoffs passed",
+    "kit": "browser native UI lifecycle passed",
+    "sw2nes": "native UI integration passed after replacing wall-clock input pulses with sampled press/release checks"
+  },
+  "deployment": {
+    "recoveryCopies": false,
+    "doom": "Whole-package RPC reset and user-confirmed Civ VII crash; exact native cause unknown. After restart, per-file installation verified all 47 scripts and icon before manifest/catalog publication.",
+    "verification": "All 100 installed app scripts, icons and metadata matched packages. After cold activation, platform and native UI both reported SDK 1.3.5 with no renderer errors."
+  },
+  "limits": [
+    "Installation/readback and runtime-version checks do not establish fresh gameplay or streaming qualification for every updated app."
+  ]
+}

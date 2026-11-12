@@ -4,40 +4,8 @@
     window.MoonlightNative = { available: typeof sdk_base !== "undefined" && typeof call_rop === "function", create: create };
     function create() {
         if (!window.MoonlightNative.available) throw new Error("Native networking requires the CivSwitch loader.");
-        var cache = window.__moonlightSdkExports || {};
-        var mod = sdk_base + read32(sdk_base + 4n);
-        if (read32(mod) !== 0x30444f4dn) throw new Error("Unrecognized SDK module.");
-        var dynamic = mod + BigInt.asIntN(32, read32(mod + 4n)), tags = {};
-        for (var i = 0; i < 128; i++) {
-            var tag = Number(read64(dynamic + BigInt(i * 16)));
-            if (!tag) break;
-            var value = read64(dynamic + BigInt(i * 16 + 8));
-            tags[tag] = value < sdk_base ? sdk_base + value : value;
-        }
-        var table = tags[4], strings = tags[5], symbols = tags[6];
-        if (!table || !strings || !symbols) throw new Error("SDK export table unavailable.");
-        var buckets = Number(read32(table)), count = Number(read32(table + 4n));
-        function resolve(name) {
-            if (cache[name]) return cache[name];
-            var hash = 0;
-            for (var j = 0; j < name.length; j++) {
-                hash = ((hash << 4) + name.charCodeAt(j)) >>> 0;
-                var high = hash & 0xf0000000;
-                if (high) hash ^= high >>> 24;
-                hash = (hash & ~high) >>> 0;
-            }
-            var index = Number(read32(table + 8n + BigInt((hash % buckets) * 4)));
-            for (var k = 0; index && k < count; k++) {
-                var symbol = symbols + BigInt(index * 24);
-                if (read_null_terminated_string(strings + read32(symbol)) === name) {
-                    var offset = read64(symbol + 8n);
-                    if (!offset) break;
-                    return (cache[name] = sdk_base + offset);
-                }
-                index = Number(read32(table + 8n + BigInt((buckets + index) * 4)));
-            }
-            throw new Error("Missing SDK export: " + name);
-        }
+        var bridge=window.CivHomebrewSDK.native.create({cache:window.__moonlightSdkExports});
+        var resolve=bridge.resolveNativeSymbol;
         function call(name) {
             var args = Array.prototype.slice.call(arguments, 1).map(BigInt);
             return call_rop.apply(null, [resolve(name)].concat(args));

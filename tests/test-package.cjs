@@ -20,7 +20,7 @@ const pause=ms=>new Promise(resolve=>setTimeout(resolve,ms));
  if(process.env.GITHUB_REPOSITORY)expectedMetadata.extensions={...expectedMetadata.extensions,updates:{...expectedMetadata.extensions?.updates,schema:1,releasesUrl:'https://github.com/'+process.env.GITHUB_REPOSITORY+'/releases/latest',asset:'moonlight.civapp'}};
  assert.deepEqual(pkg.metadata,expectedMetadata);
  assert.deepEqual(pkg.scripts.map(script=>script.name),manifest.scripts);
- for(const script of pkg.scripts)assert.equal(script.source,fs.readFileSync(path.join(root,script.name),'utf8'),script.name);
+ for(const script of pkg.scripts){let expected=fs.readFileSync(path.join(root,script.name),'utf8');assert.equal(script.source,expected,script.name);}
  assert.equal(pkg.scripts.at(-1).name,'app/src/ui/moonlight-ui.js');
  assert.equal(pkg.icon,'data:image/png;base64,'+fs.readFileSync(path.join(root,manifest.icon)).toString('base64'));
 
@@ -60,13 +60,55 @@ const pause=ms=>new Promise(resolve=>setTimeout(resolve,ms));
    await new Promise(r=>setTimeout(r,100));
    return {scripts:loaded.scripts.length,factory:typeof __moonlightStreamFactory,
     staleUpload:!!window.__moonlightStreamModuleUpload,pending:!__done,
-    hosts:document.getElementById('moonlight-hosts-screen')?.style.display};
+    hosts:document.getElementById('moonlight-hosts-screen')?.style.display,defaults:MoonlightSettings.defaults()};
   })()`);
   assert.equal(result.scripts,manifest.scripts.length);assert.equal(result.factory,'function');assert.equal(result.staleUpload,false);
   assert.equal(result.pending,true);assert.equal(result.hosts,'flex');
+  assert.equal(result.defaults.width,1280);assert.equal(result.defaults.renderer,undefined);assert.equal(result.defaults.codec,'h264');
+  // Exercise the installed package's real settings entry point: native AV1 is
+  // available in ordinary Moonlight, without a Lab flag or alternate package.
+  const nativeSettings=await evaluate(`(()=>{
+   for(const name of ['MoonlightNativeContext','MoonlightNativeDisplay','MoonlightNativeVideo'])
+    if(!window[name])throw Error('Missing bundled native dependency: '+name);
+   window.__savedPackageMode=MoonlightSettings.validate({...MoonlightSettings.defaults(),width:1280,height:720,renderer:'gameface',codec:'h264'});
+   MoonlightNative.available=true;
+   MoonlightNative.create=()=>({listHosts:()=>[],loadStreamSettings:()=>__savedPackageMode,saveStreamSettings:mode=>{__savedPackageMode=JSON.parse(JSON.stringify(mode));}});
+   document.getElementById('moonlight-open-settings').click();
+   document.getElementById('moonlight-settings-resolution').click();
+   document.getElementById('moonlight-settings-codec').click();
+   const notice=document.getElementById('moonlight-settings-status').textContent;
+   document.getElementById('moonlight-settings-back').click();
+   document.getElementById('moonlight-open-settings').click();
+   return {saved:__savedPackageMode,notice,
+    codec:document.getElementById('moonlight-settings-codec').getAttribute('data-value'),
+    renderer:!!document.getElementById('moonlight-settings-renderer'),
+    highModes:MoonlightSettings.frameRates.includes(120)&&MoonlightSettings.resolutions.some(r=>r.width===3840)};
+  })()`);
+  assert.equal(nativeSettings.saved.width,1920);assert.equal(nativeSettings.saved.height,1080);assert.equal(nativeSettings.saved.fps,60);
+  assert.equal(nativeSettings.saved.codec,'av1');assert.equal(nativeSettings.saved.renderer,undefined);
+  assert.equal(nativeSettings.codec,'av1');assert.equal(nativeSettings.renderer,false);assert.equal(nativeSettings.highModes,true);
+  assert.match(nativeSettings.notice,/Disconnect returns to Moonlight/i);
   assert.equal(await evaluate('(async()=>{window.__moonlightSimpleUI.close();await __lifetime;return __done;})()'),true);
+  // Start the real packaged UI under a Gameface resident with no native owner.
+  const blocked=await evaluate(`(async()=>{
+   window.call_rop=()=>{throw Error('The blocker must not call native graphics');};
+   window.__civhomebrewCore={};MoonlightNative.available=true;
+   window.__blockedDone=false;
+   window.__blockedLifetime=eval(__package.scripts.at(-1).source);
+   __blockedLifetime.then(()=>__blockedDone=true);
+   await new Promise(r=>setTimeout(r,50));
+   return {title:document.querySelector('#civ-sdk-update-launcher h1')?.textContent,
+    hosts:!!document.getElementById('moonlight-hosts-screen'),pending:!__blockedDone,
+    nativeSession:!!CivAppsNativeUI.sessions.current};
+  })()`);
+  assert.deepEqual(blocked,{title:'Update Launcher',hosts:false,pending:true,nativeSession:false});
+  assert.equal(await evaluate(`(async()=>{
+   window.dispatchEvent(new CustomEvent('navigate-input',{detail:{name:'cancel',status:0}}));
+   await __blockedLifetime;
+   return __blockedDone&&!document.getElementById('moonlight-simple-ui')&&!window.__civswitchApp;
+  })()`),true);
  }finally{
   await cleanup(socket,profile);
  }
- console.log('Moonlight package smoke passed: bundled scripts matching sources, decoded 256×256 icon, runtime factory, visible Hosts UI, pending lifetime and clean close.');
+ console.log('Moonlight package smoke passed: bundled scripts matching sources, decoded 256×256 icon, runtime factory, visible Hosts UI, native AV1 selection/save/reopen, high modes, pending lifetime, Gameface Update Launcher blocker and clean close.');
 })().catch(error=>{console.error(error);process.exitCode=1;});

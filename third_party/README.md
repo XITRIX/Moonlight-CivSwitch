@@ -25,3 +25,17 @@ source revisions, artifact hashes and compiler-transform counts, plus a
 
 Research references such as CivSwitch and nxhid remain under
 [investigation/references/](../investigation/references/README.md).
+
+## Moonlight-nx2 native video subset
+
+`moonlight-nx2/` is a minimal, checksum-pinned selection from the supplied upstream
+archive, not a checkout of the whole project. It contains only the 18 files needed
+by `tools/build-native-runtime.py`: decoder/video JavaScript and ABI tables,
+prebuilt video shaders, the license and provenance manifest. Keeping these inputs
+allows offline, reproducible regeneration of `app/vendor/moonlight-nx2-runtime.js`.
+The unused font atlas, font extraction tool and asset-blob builder were removed.
+
+Shared display/context/refresh helpers already come from CivHomebrew-SDK and are
+not copied here. Moonlight-specific decoder/protocol/presentation extensions stay
+in this app. The console package contains the generated runtime and notices, not
+this source directory. Do not vendor the upstream launcher or PC service here.

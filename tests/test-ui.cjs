@@ -124,8 +124,18 @@ const sleep=ms=>new Promise(r=>setTimeout(r,ms));
   assert.equal(await evaluate('document.getElementById("moonlight-settings-bitrate").getAttribute("data-value")'),'20000');
   await key('ArrowLeft');
   assert.equal(await evaluate('document.getElementById("moonlight-settings-resolution").getAttribute("data-value")'),'960x540');
-  await key('ArrowRight');await key('ArrowRight');await key('ArrowRight');
+  await key('ArrowRight');await key('ArrowRight');
   assert.equal(await evaluate('document.getElementById("moonlight-settings-resolution").getAttribute("data-value")'),'1920x1080');
+  await key('ArrowRight');await key('ArrowRight');
+  assert.equal(await evaluate('document.getElementById("moonlight-settings-resolution").getAttribute("data-value")'),'3840x2160');
+  assert.equal(await evaluate('document.getElementById("moonlight-settings-renderer")'),null);
+  assert.equal(await evaluate('document.getElementById("moonlight-settings-codec").getAttribute("data-value")'),'av1');
+  assert.equal(await evaluate('document.getElementById("moonlight-settings-fps").getAttribute("data-value")'),'60');
+  const nativeSettingsPng=await call('Page.captureScreenshot',{format:'png'});
+  fs.writeFileSync(path.join(__dirname,'../investigation/evidence/native-settings-screen-preview.png'),Buffer.from(nativeSettingsPng.data,'base64'));
+  await evaluate('document.getElementById("moonlight-settings-codec").click()');
+  assert.equal(await evaluate('document.getElementById("moonlight-settings-codec").getAttribute("data-value")'),'h264');
+  for(let i=0;i<7;i++)await key('ArrowUp');
   await key('ArrowLeft');await key('ArrowLeft');
   await gameAction('nav-down');await gameAction('nav-left');await gameAction('nav-right');
   assert.equal(await evaluate('document.getElementById("moonlight-settings-fps").getAttribute("data-value")'),'60');
@@ -183,7 +193,7 @@ const sleep=ms=>new Promise(r=>setTimeout(r,ms));
   assert.equal(await evaluate('document.getElementById("moonlight-settings-screen").style.display'),'flex');
   assert.match(await evaluate('document.getElementById("moonlight-settings-status").textContent'),/disk full/);
   await evaluate('window.__failSettingsSave=false');await key('Escape');await sleep(250);
-  assert.deepEqual(await evaluate('window.__savedMode'),{width:960,height:540,fps:60,bitrate:8000,showStats:true,videoPacing:"smooth",rumble:true,touchMode:"trackpad",mouse:{speed:34,swapButtons:false,invertScroll:false}});
+  assert.deepEqual(await evaluate('window.__savedMode'),{width:960,height:540,fps:60,bitrate:8000,codec:"h264",showStats:true,videoPacing:"smooth",rumble:true,touchMode:"trackpad",mouse:{speed:34,swapButtons:false,invertScroll:false}});
   await evaluate('HTMLElement.prototype.click=undefined');
   await key('ArrowDown');await gameAction('accept');
   await until('document.querySelectorAll("#moonlight-game-list button").length===4');
@@ -247,8 +257,8 @@ const sleep=ms=>new Promise(r=>setTimeout(r,ms));
   await evaluate('window.__pad.buttons[15].pressed=false');await sleep(50);
   await evaluate('window.__pad.buttons[14].pressed=true');await sleep(120);assert.equal(await selected(),'1');
   await evaluate('window.__pad.buttons[14].pressed=false');await sleep(50);await evaluate('window.__pad=null');
-  // A taller viewport gets two rows; short final rows retain the preferred column.
-  await call('Emulation.setDeviceMetricsOverride',{width:1920,height:1080,deviceScaleFactor:1,mobile:false});
+  // More vertical space (a 4:3 viewport) gets two rows; resolution alone does not change density.
+  await call('Emulation.setDeviceMetricsOverride',{width:1920,height:1440,deviceScaleFactor:1,mobile:false});
   await evaluate('window.__apps=window.__allApps;document.getElementById("moonlight-games-refresh").click()');
   await until('document.querySelectorAll("#moonlight-game-list button").length===8');
   const rows=await evaluate('Array.from(document.querySelectorAll("#moonlight-game-list button"),n=>{const r=n.getBoundingClientRect();return {x:r.x,y:r.y};})');
@@ -256,7 +266,7 @@ const sleep=ms=>new Promise(r=>setTimeout(r,ms));
   await key('ArrowDown');assert.equal(await selected(),'5');
   await key('ArrowRight');await key('ArrowRight');await key('ArrowRight');assert.equal(await selected(),'8');
   await key('ArrowDown');assert.equal(await selected(),'10');await key('ArrowUp');assert.equal(await selected(),'8');
-  assert.equal(await evaluate('document.getElementById("moonlight-games-screen").getBoundingClientRect().bottom<=1080'),true);
+  assert.equal(await evaluate('document.getElementById("moonlight-games-screen").getBoundingClientRect().bottom<=1440'),true);
   // Download errors and decoder errors retain navigable initial placeholders.
   await evaluate('window.__idOffset=20;window.__artMode="error";document.getElementById("moonlight-games-refresh").click()');
   await until('document.querySelectorAll("#moonlight-game-list button").length===8&&document.getElementById("moonlight-games-refresh").getAttribute("aria-disabled")==="false"');
@@ -353,7 +363,7 @@ const sleep=ms=>new Promise(r=>setTimeout(r,ms));
   await evaluate('window.dispatchEvent(new Event("focus"));__touchDOM("touchend",[]);__openKeys();__touchDOM("touchend",[]);__keyTouches([[10,"KeyW"]]);__touchDOM("touchcancel",[]);true');
   assert.equal(await evaluate('document.getElementById("moonlight-stream-keyboard").style.display'),'none','touch cancellation dismisses');
   assert.deepEqual(await evaluate('__streamEvents.filter(e=>e[0]==="key").slice(-2).map(e=>e.slice(1,3))'),[[87,true],[87,false]]);
-  assert.deepEqual(await evaluate('window.__streamOptions.mode'),{width:960,height:540,fps:60,bitrate:8000,showStats:true,videoPacing:"smooth",rumble:true,touchMode:"trackpad",mouse:{speed:34,swapButtons:false,invertScroll:false}});
+  assert.deepEqual(await evaluate('window.__streamOptions.mode'),{width:960,height:540,fps:60,bitrate:8000,codec:"h264",showStats:true,videoPacing:"smooth",rumble:true,touchMode:"trackpad",mouse:{speed:34,swapButtons:false,invertScroll:false}});
   await evaluate('window.__streamOptions.onImage("live:/moonlight-experiment/1");window.__streamOptions.onImage("live:/moonlight-experiment/1");true');
   assert.equal(await evaluate('document.getElementById("moonlight-stream-native-image").style.display'),'block');
   await evaluate('window.__streamOptions.onStats({mode:window.__streamOptions.mode,telemetry:{textureFps:59.8,decodedFps:60,rttMs:3,decodeReadyMs:4,audioBufferedMsUpperBound:40}});true');
@@ -384,8 +394,29 @@ const sleep=ms=>new Promise(r=>setTimeout(r,ms));
   const menuPng=await call('Page.captureScreenshot',{format:'png'});
   fs.writeFileSync(path.join(os.tmpdir(),'moonlight-stream-menu-preview.png'),Buffer.from(menuPng.data,'base64'));
   await key('Enter');await sleep(70);
-  assert.deepEqual(await evaluate('Array.from(document.querySelectorAll("#moonlight-stream-menu-list button span:first-child"),n=>n.textContent)'),['Mouse by Gamepad','Show keyboard','Touchscreen mode']);
-  await key('ArrowDown');await key('Enter');await sleep(250);
+  assert.deepEqual(await evaluate('Array.from(document.querySelectorAll("#moonlight-stream-menu-list button span:first-child"),n=>n.textContent)'),['Mouse by Gamepad','Show keyboard','Touchscreen mode','Performance overlay']);
+  for(const [width,height] of [[1280,720],[1920,1080]]){
+   await call('Emulation.setDeviceMetricsOverride',{width,height,deviceScaleFactor:1,mobile:false});await sleep(70);
+   assert.equal(await evaluate('Array.from(document.querySelectorAll("#moonlight-stream-menu-list button")).every(n=>{const r=n.getBoundingClientRect();return r.left>=0&&r.right<innerWidth/2&&r.bottom<innerHeight;})'),true,'all More rows fit at both resolutions');
+  }
+  await key('ArrowDown');await key('ArrowDown');await key('ArrowDown');await gameAction('accept');
+  assert.equal(await evaluate('__savedMode.showStats'),false,'controller toggle saves the overlay preference');
+  assert.equal(await evaluate('document.getElementById("moonlight-stream-menu-performance").getAttribute("aria-checked")'),'false');
+  assert.equal(await evaluate('document.getElementById("moonlight-performance-overlay").style.display'),'none','toggle hides the overlay immediately');
+  await evaluate('__streamOptions.onStats({mode:__streamOptions.mode,telemetry:{textureFps:58.5}});true');
+  assert.equal(await evaluate('document.getElementById("moonlight-performance-overlay").style.display'),'none','new statistics respect the disabled overlay');
+  assert.equal(await evaluate('__moonlightStreamDiagnostics.stats.telemetry.textureFps'),58.5,'diagnostics continue while hidden');
+  await gameAction('accept');
+  assert.equal(await evaluate('__savedMode.showStats'),true);
+  assert.equal(await evaluate('document.getElementById("moonlight-performance-overlay").style.display'),'block','toggle shows the latest statistics immediately');
+  assert.match(await evaluate('document.getElementById("moonlight-performance-overlay").textContent'),/Texture 58.5 FPS/);
+  await evaluate('window.__failSettingsSave=true;true');await gameAction('accept');
+  assert.match(await evaluate('document.getElementById("moonlight-stream-menu-description").textContent'),/Could not save performance overlay.*\n\ndisk full/);
+  assert.equal(await evaluate('__savedMode.showStats'),true,'failed save preserves the preference');
+  assert.equal(await evaluate('document.getElementById("moonlight-stream-menu-performance").getAttribute("aria-checked")'),'true');
+  assert.equal(await evaluate('document.getElementById("moonlight-performance-overlay").style.display'),'block','failed save preserves the live overlay');
+  await evaluate('window.__failSettingsSave=false;true');
+  await key('ArrowUp');await key('ArrowUp');await key('Enter');await sleep(250);
   assert.equal(await evaluate('document.getElementById("moonlight-stream-keyboard").dataset.mode'),'gamepad','menu opens controller keyboard without touchscreen');
   await gameAction('accept');
   assert.deepEqual(await evaluate('__streamEvents.filter(e=>e[0]==="key").at(-1).slice(1,3)'),[81,true]);
@@ -396,7 +427,13 @@ const sleep=ms=>new Promise(r=>setTimeout(r,ms));
   assert.equal(await evaluate('__streamEvents.slice(__menuStart).some(e=>e[0]==="pad"&&e[1]!==0)'),false,'drawer and keyboard commands stay local');
   await evaluate(`HTMLElement.prototype.click=window.__browserClick;
    window.__menuTap=id=>{const r=document.getElementById('moonlight-stream-menu-'+id).getBoundingClientRect();__touchDOM('touchstart',[[80,r.x+r.width/2,r.y+r.height/2]]);__touchDOM('touchend',[]);};true`);
-  await key('Escape');await evaluate('__menuTap("more");__menuTap("touchscreen");__menuTap("touchpad");true');
+  await key('Escape');await evaluate('__menuTap("more");true');
+  assert.equal(await evaluate('document.getElementById("moonlight-stream-menu-performance").getAttribute("aria-checked")'),'true','reopened menu reflects the active preference');
+  await evaluate('__menuTap("performance");true');
+  assert.equal(await evaluate('__savedMode.showStats'),false,'touch can toggle the overlay off');
+  assert.equal(await evaluate('document.getElementById("moonlight-performance-overlay").style.display'),'none');
+  await evaluate('__menuTap("performance");__menuTap("touchscreen");__menuTap("touchpad");true');
+  assert.equal(await evaluate('__savedMode.showStats'),true,'touch can toggle the overlay back on');
   assert.equal(await evaluate('__savedMode.touchMode'),'touchpad','live touch mode is saved');
   assert.equal(await evaluate('document.getElementById("moonlight-stream-menu-touchpad").getAttribute("aria-checked")'),'true');
   await evaluate('__touchDOM("touchstart",[[81,1500,500]]);__touchDOM("touchend",[]);true');await sleep(250);
@@ -550,7 +587,7 @@ const sleep=ms=>new Promise(r=>setTimeout(r,ms));
   await sleep(300);await evaluate('window.__running=7;document.getElementById("moonlight-games-refresh").click();true');
   await until('document.querySelector("#moonlight-game-list button")?.getAttribute("data-app-id")==="7"');
   assert.equal(await selected(),'7');
-  assert.equal(await evaluate('document.querySelectorAll("#moonlight-game-list button:disabled").length'),7);
+  assert.equal(await evaluate('document.querySelectorAll("#moonlight-game-list button:disabled").length===document.querySelectorAll("#moonlight-game-list button").length-1'),true);
   assert.equal(await evaluate('document.getElementById("moonlight-games-terminate").style.display'),'flex');
   await key('ArrowRight');assert.equal(await evaluate('document.getElementById("moonlight-games-terminate").getAttribute("data-selected")'),'true');
   await key('ArrowLeft');assert.equal(await selected(),'7');
@@ -643,14 +680,16 @@ const sleep=ms=>new Promise(r=>setTimeout(r,ms));
   // Mock the shipped textbox's Element-mode completion: stale input contents
   // must be replaced by GenericData, with callback cleanup after it returns.
   await evaluate(`
-   window.__imeSubscriptions=[];window.__editors=[];
+   window.__imeSubscriptions=[];window.__editors=[];window.__imeOverlayEvents=[];
+   window.__savedKeyboardAdapter=MoonlightNativeUi.keyboard;
+   MoonlightNativeUi.keyboard=()=>{__imeOverlayEvents.push('open');let closed=false;return {close(){if(closed)throw Error('Overlay closed twice');closed=true;__imeOverlayEvents.push('close');}};};
    window.engine={on(name,fn,owner){const s={name,fn,owner};__imeSubscriptions.push(s);return {clear(){const i=__imeSubscriptions.indexOf(s);if(i>=0)__imeSubscriptions.splice(i,1);}};},off(name,fn,owner){window.__imeSubscriptions=__imeSubscriptions.filter(s=>s.name!==name||s.fn!==fn||s.owner!==owner);}};
    window.__emitIME=(name,data)=>{for(const s of __imeSubscriptions.slice())if(s.name===name)s.fn.call(s.owner,data);};
    window.__createElement=document.createElement.bind(document);
    class Textbox {
     constructor(node){this.Root=node;this.textInput=__createElement('input');this.textInput.readOnly=true;node.appendChild(this.textInput);}
     onAttributeChanged(name,old,value){if(name==='value')this.textInput.value=value;}
-    onActivate(){this.opened=this.textInput.value;this.editable=!this.textInput.readOnly;this.focused=document.activeElement===this.textInput;engine.on('IMEValidated',this.onVirtualKeyboardTextEntered,this);engine.on('IMECanceled',this.clearVirtualKeyboardCallbacks,this);}
+    onActivate(){__imeOverlayEvents.push('activate');this.opened=this.textInput.value;this.editable=!this.textInput.readOnly;this.focused=document.activeElement===this.textInput;engine.on('IMEValidated',this.onVirtualKeyboardTextEntered,this);engine.on('IMECanceled',this.clearVirtualKeyboardCallbacks,this);}
     onVirtualKeyboardTextEntered(){this.Root.setAttribute('value',this.textInput.value);this.Root.dispatchEvent(new CustomEvent('text-edit-stop',{detail:{confirmed:false}}));this.clearVirtualKeyboardCallbacks();this.attachedDuringCallback=this.Root.isConnected;}
     clearVirtualKeyboardCallbacks(){engine.off('IMEValidated',this.onVirtualKeyboardTextEntered,this);engine.off('IMECanceled',this.clearVirtualKeyboardCallbacks,this);}
    }
@@ -661,6 +700,7 @@ const sleep=ms=>new Promise(r=>setTimeout(r,ms));
   const nativeSource=fs.readFileSync(path.join(__dirname,'../app/src/ui/moonlight-ui.js'),'utf8').replace('import("/core/ui/components/fxs-textbox.js")','Promise.resolve({})');
   await evaluate('void eval('+JSON.stringify(nativeSource)+');true');
   await key('Enter');await key('Enter');await until('__editors[0]?.opened!==undefined');
+  assert.deepEqual(await evaluate('__imeOverlayEvents'),['open','activate'],'overlay acquired before native activation');
   assert.deepEqual(await evaluate('({opened:__editors[0].opened,editable:__editors[0].editable,focused:__editors[0].focused})'),{opened:'',editable:true,focused:true});
   await evaluate('__editors[0].textInput.value="old192.168.1.20";__emitIME("IMEValidated",{data:"192.168.1.20"});true');
   await until('!document.querySelector("fxs-textbox")');
@@ -684,6 +724,8 @@ const sleep=ms=>new Promise(r=>setTimeout(r,ms));
   await evaluate('window.__moonlightSimpleUI.close();true');
   assert.equal(await evaluate('__imeSubscriptions.length'),0,'closing removes every owned input/IME subscription');
   assert.equal(await evaluate('!!document.querySelector("fxs-textbox")'),false);
+  assert.deepEqual(await evaluate('__imeOverlayEvents'),['open','activate','close','open','activate','close','open','activate','close','open','activate','close'],'confirm, cancel and unload release each overlay exactly once');
+  await evaluate('MoonlightNativeUi.keyboard=__savedKeyboardAdapter;true');
   // Exercise keyboard combinations, shortcuts, failure recovery and the hint bar independently.
   await evaluate(`window.__keyboardEvents=[];window.__keyboardTime=0;window.__keyboardFailure=0;window.__keyboardResets=0;
    window.__keyboardParent=document.createElement('div');Object.assign(__keyboardParent.style,{position:'fixed',inset:'0',background:'#000'});document.body.appendChild(__keyboardParent);
@@ -751,6 +793,7 @@ const sleep=ms=>new Promise(r=>setTimeout(r,ms));
   await evaluate('__keyboard.close();__keyboard.open("gamepad");__keyboard.action("backspace",0);__keyboard.action("backspace",1);__keyboard.action("space",0);__keyboard.action("space",1);true');
   assert.deepEqual(await evaluate('__keyboardEvents'),[[8,true,0],[8,false,0],[32,true,0],[32,false,0]],'action fallback sends balanced shortcuts');
   await evaluate('__keyboard.destroy();__keyboardParent.remove();true');
+
  }finally{
   await cleanup(socket,profile);
  }

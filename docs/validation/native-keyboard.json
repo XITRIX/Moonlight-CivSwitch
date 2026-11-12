@@ -1,0 +1,77 @@
+{
+  "date": "2026-11-12",
+  "environment": {
+    "hardware": "Switch 2",
+    "game": "Civilization VII cartridge 1.0.0",
+    "runtimeSDK": "1.3.3",
+    "resident": "0.4.3-sdk.7",
+    "graphics": "nnCompat cf649bbd"
+  },
+  "implementation": {
+    "readerOffset": "0x51f0c0",
+    "stateOffset": "0x5e83550",
+    "imageWidth": 1280,
+    "imageHeight": 720,
+    "imageFormat": "RGBA8",
+    "readerCaptureSha256": "a06516656471ef8ce2f3bf06478b88c649156b08f63047065c516abf4f0eef5d",
+    "imageReaderImport": "_ZN2nn5swkbd14InlineKeyboard8GetImageEPvm",
+    "codeScanMs": 8574
+  },
+  "moonlightTrial": {
+    "userConfirmed": [
+      "genuine keyboard visible",
+      "confirmation",
+      "cancellation",
+      "reopen"
+    ],
+    "lastEditorCounters": {
+      "polls": 271,
+      "frames": 270,
+      "errors": 0,
+      "lastReadMs": 0
+    },
+    "rendererErrors": []
+  },
+  "reaEvidence": {
+    "nativeCallPath": "ev_4d2670386283238e92a0fb2583110be1d203cf9baebe223ec4ba29ee1dd0029f",
+    "nativeTeardown": "ev_376eace0af563ed4b0f3f13bc3a387cc9e8ff6be42bb0b45adac6fd405ad6279"
+  },
+  "limits": [
+    "Only this game/build and native renderer qualified",
+    "No display-layer ordering or content-visibility API is used"
+  ],
+  "hostValidation": {
+    "sdkNodeTests": 58,
+    "sdkPythonTests": 19,
+    "sdkStackOracles": "both passed",
+    "sdkBrowser": "passed",
+    "sdkHostVulkan": "passed with host GPU access; release shaders, alpha, dynamic RGBA updates and retained geometry",
+    "moonlightNodeTests": 146,
+    "moonlightBrowser": "passed, including native editor overlay lifecycle",
+    "moonlightFreshPackage": "built and inspected; Chrome package smoke passed",
+    "launcherNodeTests": 106,
+    "launcherPythonTests": 44,
+    "launcherBrowser": "passed"
+  },
+  "artifacts": {
+    "sdk": "1.3.5",
+    "launcher": "0.4.3-nanovg.12",
+    "moonlightScripts": 41,
+    "persistentDeviceUpdate": "Launcher installed, cold-activated and source-verified; installed Moonlight unchanged"
+  },
+  "launcherInstallation": {
+    "date": "2026-11-12",
+    "release": "0.4.3-nanovg.12",
+    "checksum": "f09dde92",
+    "pendingSlot": null,
+    "verification": "Stored source byte count and checksum matched fresh package; core and app catalog unchanged",
+    "activation": "cold-activated and verified after user restart",
+    "runtime": {
+      "sdk": "1.3.5",
+      "keyboardHelper": true,
+      "nativeState": "ready",
+      "errors": []
+    },
+    "userConfirmed": "FTP native keyboard working after permanent installation and Civ VII restart"
+  }
+}

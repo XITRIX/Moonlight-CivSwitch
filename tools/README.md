@@ -97,8 +97,26 @@ Adapted from [XITRIX/CivHomebrew](https://github.com/XITRIX/CivHomebrew), revisi
 are combined into one file, with `--inspect` added. It is a PC tool and is not
 included in the app's runtime scripts.
 
-Run `python3 -B tests/test_packager.py` for generic packaging checks, including a
-copy of the single script running in an unrelated directory under isolated Python.
+Generic packaging checks live in CivHomebrew-SDK (`npm test`), including a copy
+of the single script running in an unrelated directory under isolated Python.
+The packager is vendored from the checksum-pinned SDK release.
 `npm run test:package` also launches Moonlight's package in Chrome to verify its
 sources, script order, icon, runtime factory and UI lifetime. Build/package first;
 set `CHROME_BIN` if needed. Browser checks do not establish console compatibility.
+
+
+Local investigation/tool regressions run with `npm run test:tools`. Optional
+console qualification helpers require an explicit address; they are not part of
+host tests. For the SDK roundtrip, use
+`python3 tools/test_sdk_device.py arm moonlight --host SWITCH_IP --sunshine PC_IP`
+only after installing matching packages and returning to Launcher. The Sunshine
+address must already be reachable and paired. Device actions remain explicit CLI
+operations; no console action runs as part of packaging or test commands.
+
+
+The SDK deployment helper uses CivHomebrew's `tools/install_streamed.py` for
+packages larger than 8 MiB. It sends and verifies one extracted file at a time,
+then publishes the installed manifest/catalog. Do not resend a large monolithic
+RPC after a console reset. The first 27 MiB Doom RPC crashed Civ VII; the exact
+native cause was not established. Completed installs are detected by their
+manifest checksum and still read back before a deployment receipt is accepted.

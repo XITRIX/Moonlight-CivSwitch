@@ -1,0 +1,1 @@
+(async()=>{var s=window.__moonlightNativeGraphics,c=s.context;await log('MOONLIGHT_RETIRED_LAYER '+JSON.stringify({pointer:s.display.layer,bytes:c.read(s.display.layer+0x4a0,128).toString('hex')}));await log('MOONLIGHT_RETIRED_LAYER_STATE_COMPLETE');})();

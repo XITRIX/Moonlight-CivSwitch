@@ -15,7 +15,8 @@
   function check(){if(options.signal&&options.signal.aborted)throw Error("Stream canceled");}
   async function launch(input,appId,mode,extra){
    if(!Number.isInteger(appId)||appId<1||appId>0xffffffff)throw Error("Invalid application ID");
-   if(!mode||![mode.width,mode.height,mode.fps,mode.bitrate].every(Number.isInteger)||mode.width<64||mode.width>1920||mode.height<64||mode.height>1080||mode.fps<1||mode.fps>60||mode.bitrate<128||mode.bitrate>80000)throw Error("Invalid prototype stream mode");
+   var nativeDisplay=!!mode,av1=mode&&mode.codec==="av1";
+   if(!mode||![mode.width,mode.height,mode.fps,mode.bitrate].every(Number.isInteger)||mode.width<64||mode.width>(nativeDisplay&&av1?3840:1920)||mode.height<64||mode.height>(nativeDisplay&&av1?2160:1080)||mode.fps<1||mode.fps>(nativeDisplay?120:60)||mode.bitrate<128||mode.bitrate>80000||(av1&&!nativeDisplay)||(mode.width>2560&&mode.fps>60))throw Error("Invalid prototype stream mode");
    var address=global.MoonlightPairing.parseHost(input),identity=await options.loadIdentity(),host=await options.loadHost(address.key);check();
    if(!identity||!host||!host.certificatePem||host.uniqueId!==identity.uniqueId)throw Error("Pair with this host first");
    if(!/^\d+\.\d+\.\d+\.\d+$/.test(address.host))throw Error("The streaming adapter currently requires an IPv4 address");
@@ -33,6 +34,7 @@
    if(field(info,"PairStatus")!=="1")throw Error("Sunshine no longer recognizes this pairing");
    var version=field(info,"appversion"),current=field(info,"currentgame"),state=field(info,"state"),codec=field(info,"ServerCodecModeSupport",true);
    if(!/^\d+(?:\.-?\d+){1,3}$/.test(version)||!/^\d+$/.test(current)||Number(current)>0xffffffff||codec&&!/^\d+$/.test(codec))throw Error("Invalid Sunshine server information");
+   if(av1&&!(Number(codec)&0x10000))throw Error("This Sunshine host does not advertise AV1 Main8 encoding; choose H.264");
    var resume=state.indexOf("_SERVER_BUSY")>=0&&Number(current)!==0;
    if(resume&&Number(current)!==appId)throw Error("Another application is running on the host; select that application to resume it");
    var key=bytes(options,16),id=bytes(options,4),keyId=new DataView(id.buffer).getUint32(0,false);

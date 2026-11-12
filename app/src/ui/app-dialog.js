@@ -2,7 +2,7 @@
 (function(global){
     "use strict";
     function create(options){
-        function node(tag,parent,style,text){var n=document.createElement(tag);Object.assign(n.style,style);if(text!==undefined)n.textContent=text;parent.appendChild(n);return n;}
+            var node = global.MoonlightLayout.element;
         var layer=node("div",options.parent,{position:"absolute",left:"0",right:"0",top:"0",bottom:"0",display:"none",alignItems:"center",justifyContent:"center",backgroundColor:"rgba(0,0,0,0.72)",zIndex:"6"});
         layer.id=options.id;layer.setAttribute("role","dialog");layer.setAttribute("aria-modal","true");layer.setAttribute("aria-labelledby",options.id+"-title");layer.setAttribute("aria-describedby",options.id+"-description");
         var panel=node("div",layer,{width:"680px",maxWidth:"88vw",boxSizing:"border-box",boxShadow:"inset 0 0 0 1px #3b4146",borderRadius:"8px",backgroundColor:"#1b1e21",color:"#f5f5f5",textAlign:"center",overflow:"hidden"});
@@ -17,8 +17,8 @@
         }
         // Full-size focus borders cover the panel ring and row separator.
         // Only each button's outer bottom corner follows the popup's radius.
-        buttons[0].style.borderBottomLeftRadius="8px";
-        buttons[1].style.borderBottomRightRadius="8px";
+        global.MoonlightLayout.style(buttons[0],{borderBottomLeftRadius:"8px"});
+        global.MoonlightLayout.style(buttons[1],{borderBottomRightRadius:"8px"});
         var hint=node("div",layer,{position:"absolute",bottom:"28px",right:"40px",fontSize:"22px",color:"#f5f5f5"},"B Back     A OK");
         function paint(){buttons.forEach(function(button,index){var active=selected===index;button.style.backgroundColor=active?"#303a3d":"transparent";button.style.borderColor=active?"#00efcf":"transparent";button.setAttribute("data-selected",active?"true":"false");});}
         function hide(){opened=false;layer.style.display="none";last={name:"",time:0};}

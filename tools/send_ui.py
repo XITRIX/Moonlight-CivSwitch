@@ -10,12 +10,14 @@ from civswitch_sender import prepare_payload, upload_module
 APP_DIR = Path(__file__).resolve().parents[1] / "app"
 APP_SCRIPTS = (
     "vendor/forge-1.4.3.min.js",
+    "vendor/native-ui-runtime.js",
     "src/storage/pairing-store.js",
     "src/storage/artwork-store.js",
     "src/storage/stream-settings.js",
     "src/platform/native-network.js",
     "src/protocol/sunshine-pairing.js",
     "src/protocol/sunshine-apps.js",
+    "src/ui/layout.js",
     "src/ui/game-artwork.js",
     "src/ui/hosts-screen.js",
     "src/ui/app-dialog.js",
@@ -25,6 +27,14 @@ APP_SCRIPTS = (
     "src/streaming/telemetry.js",
     "src/streaming/png-preview.js",
     "src/streaming/native-texture.js",
+    "src/streaming/native-buffer.js",
+    "vendor/moonlight-nx2-runtime.js",
+    "src/streaming/native-stack.js",
+    "src/streaming/native-context.js",
+    "src/ui/native-stream-menu.js",
+    "src/streaming/native-cleanup.js",
+    "src/streaming/native-display.js",
+    "src/streaming/native-video.js",
     "src/streaming/native-media.js",
     "src/streaming/sunshine-session.js",
     "src/streaming/stream-client.js",
@@ -35,6 +45,7 @@ APP_SCRIPTS = (
     "src/ui/stream-mouse.js",
     "src/ui/stream-menu.js",
     "src/ui/stream-screen.js",
+    "src/ui/native-ui.js",
     "src/ui/moonlight-ui.js",
 )
 CLEANUP_SCRIPTS = (

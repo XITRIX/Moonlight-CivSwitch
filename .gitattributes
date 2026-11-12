@@ -1,0 +1,8 @@
+# Preserve checksum-pinned release bytes and fold generated code in reviews.
+app/vendor/** -text linguist-vendored
+third_party/** -text linguist-vendored
+tools/civapps-native-ui/** -text linguist-vendored
+tools/civapps_native_ui.py -text linguist-generated
+tools/package_payload.py -text linguist-generated
+tools/send_app.py -text linguist-generated
+tools/classic_modules.py -text linguist-generated

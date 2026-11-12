@@ -1,0 +1,39 @@
+{
+  "source": "https://gitlab.com/Azkali/moonlight-nx2",
+  "snapshot": "user-provided moonlight-nx2-main archive, reviewed 2026-11-10",
+  "purpose": "Decoder/display reference subset; no companion service is shipped or used",
+  "sha256": {
+    "LICENSE": "d3403d44a052f4a6c29418dabee48cefcb1e54fbd62579bbc7533863eb2e4813",
+    "src/streamer/civ7/renderer-pipelines.js": "1aa234258e160dc2177ac6ca97aa0563968d8221bdc6d5a9c24b7d1f0b3f661a",
+    "src/streamer/civ7/present-batch.js": "7fca91891d714a4fc501fcafeff0cd528e61653da12983d3c099afaa30feb997",
+    "src/renderer/civ7/layout.js": "2640019819960219f809a514525d4796282c78bf2f214c2ed810459076b83c44",
+    "src/streamer/civ7/av1-decode.js": "211162071c22681fa47752a6021636307de9284e63e275398807293ee8e20eec",
+    "src/streamer/civ7/av1-decoder.js": "be25b30b318a33313c2afc9ea9a6065ffbb72aad717d2f48a005dc522e731b92",
+    "src/streamer/civ7/codec-probe.js": "f6ea9efd26bb2041906d042e6ce578d2c24f50e69d4e0d5fb2f5c6a14149e201",
+    "src/streamer/civ7/codec-sample.js": "17f21910109d58a074ec33815084766fe456a6ca065a72b2836d78fd33e70086",
+    "src/streamer/console-api/codec-probe-functions.json": "867a0bb571d0bdf0a90fac5894e952a15901591e6986c16ee4499e4ced172d03",
+    "src/streamer/console-api/codec-sample-functions.json": "2599ec2370800c6e50174d98bce0c42047fbaccba0e969200ac50aa14686c370",
+    "src/streamer/console-api/av1-stream-functions.json": "0a174f52f20326d6d38303cd27afc3783ccfde3dc7347418716397568171d2ac",
+    "src/renderer/civ7/prebuilt/renderer.json": "27b336f298f3f6d5130f735358a76de160c608c0b4966dade1f6d39749177860",
+    "src/renderer/civ7/prebuilt/shaders.bin": "eeb6077d009d7eedff545cfe7fb148e7bdf253b5845f9f303412c0fdb0f432d4",
+    "src/streamer/session/av1-stream.js": "8206a8fe6d8bcbe2a18c46984744864f5a2693caab18826c2b5b62db77eb7e21",
+    "src/streamer/civ7/operation-mode.js": "29a46eaf4a992d35c5e9fe693300506c6287dc00c568635e632a4ab1ee53edae",
+    "src/streamer/civ7/sdk.js": "9c014185f52535fd20e03f5e796d44c5df56c5ca30adbd3d30b2ba845e8ba7ef",
+    "src/streamer/civ7/sdk-functions.json": "d26f2de1d8a6d83971a58c7aa9a5935f787392721409595aacfb432db044adb3"
+  },
+  "sharedSDK": {
+    "repository": "https://github.com/XITRIX/CivHomebrew-SDK.git",
+    "version": "1.3.5",
+    "sha256": {
+      "src/streamer/civ7/display.js": "0299230e6a740efa75a6d836861fe0aae28904cb541b0f8d7397071808ad4c7c",
+      "src/streamer/civ7/call-plan.js": "d7cd8cde1f857749ac2ec373ed56a7fbcb2adcec9f1ae0b7f97267e22ff989dd",
+      "src/streamer/civ7/pipelines.js": "7f38212d53bc0cc6688c78f24b6af68628439622409159c293fd7e2536198b4f",
+      "src/streamer/civ7/compat.js": "6d44809d6b9a55bb3e62052de22fd8fca902d3c0707b9cc677f33d06b9d049a8",
+      "src/streamer/civ7/refresh-rate.js": "da30d63d418725c89831e46340fffcc2101a53d1330e7e19c08c85d9afe6ab25",
+      "src/streamer/civ7/refresh-rate-record.js": "912eba37e8e1cfe0f26b317ad69b5c27e4b8f7e35b183864fc9fb47b5261cd5c",
+      "src/streamer/civ7/compat-functions.json": "61dea743dfdf7ff5fddc069e68a824658b1a69e876acac596701b7b2465e9517",
+      "src/streamer/civ7/filesystem-functions.json": "86271fd773dbe780ebd4180ac7d18c604bba60b06177cfc703346946967fb0a4",
+      "src/streamer/shared/ring.js": "62f3eddd217fa0756a205e5442963769221f23416843cd4b834b8e1f3634d063"
+    }
+  }
+}

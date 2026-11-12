@@ -16,8 +16,8 @@ import struct
 import sys
 import tempfile
 
-MAX_SOURCE = 8*1024*1024
-MAX_FRAME = 12*1024*1024
+MAX_SOURCE = 32*1024*1024
+MAX_FRAME = 48*1024*1024
 
 
 def text_length(value):
@@ -100,7 +100,7 @@ def validate(p):
             raise ValueError('Empty script')
         total += len(s['source'].encode('utf-8'))
     if total > MAX_SOURCE:
-        raise ValueError('Scripts exceed 8 MiB')
+        raise ValueError('Scripts exceed 32 MiB')
     m = p.get('metadata', {})
     if not isinstance(m, dict):
         raise ValueError('Invalid metadata')
@@ -124,12 +124,15 @@ def validate(p):
         if not 33 <= len(raw) <= 512*1024 or raw[:8] != b'\x89PNG\r\n\x1a\n' or raw[12:16] != b'IHDR' or struct.unpack('>II', raw[16:24]) != (256, 256):
             raise ValueError('Icon must be a 256×256 PNG, at most 512 KiB')
     if len(wire_json(p)) > MAX_FRAME:
-        raise ValueError('Package exceeds 12 MiB serialized limit')
+        raise ValueError('Package exceeds 48 MiB serialized limit')
     return p
 
 
 def wire_json(p):
-    return json.dumps(p, ensure_ascii=False, separators=(',', ':')).encode('utf-8')
+    # Keep the transport ASCII even when metadata or a small UI script contains
+    # Unicode. Gameface can then parse large embedded data without promoting the
+    # entire JSON frame to a two-byte string. JSON escapes preserve source text.
+    return json.dumps(p, ensure_ascii=True, separators=(',', ':')).encode('ascii')
 
 
 def inside(root, relative):
@@ -162,7 +165,7 @@ def pack_directory(directory, manifest=None):
     for name in scripts:
         path = inside(directory, name)
         if path.stat().st_size > MAX_SOURCE:
-            raise ValueError('Script exceeds 8 MiB')
+            raise ValueError('Script exceeds 32 MiB')
         p['scripts'].append({'name':name, 'source':path.read_text(encoding='utf-8')})
     if icon is not None and icon.is_file():
         if icon.stat().st_size > 512*1024:
@@ -175,7 +178,7 @@ def read_package(path, app_id=None, name=None):
     if path.is_dir():
         return pack_directory(path)
     if path.stat().st_size > MAX_FRAME:
-        raise ValueError('Input exceeds 12 MiB')
+        raise ValueError('Input exceeds 48 MiB')
     if path.suffix == '.civapp':
         return validate(json.loads(path.read_text(encoding='utf-8')))
     if path.suffix != '.js':

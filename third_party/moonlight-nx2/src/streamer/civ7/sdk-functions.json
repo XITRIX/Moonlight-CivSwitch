@@ -1,0 +1,218 @@
+{
+  "padStyle": {
+    "symbol": "_ZN2nn3hid6detail15GetNpadStyleSetEPNS_4util10BitFlagSetILi32ENS0_12NpadStyleTagEEERKj",
+    "offset": 4904224,
+    "size": 108,
+    "hex": "fd7bbda9f50b00f9f44f02a9fd030091f50301aaf40300aa53599152b300a072"
+  },
+  "padFullKey": {
+    "symbol": "_ZN2nn3hid12GetNpadStateEPNS0_16NpadFullKeyStateERKj",
+    "offset": 4948336,
+    "size": 104,
+    "hex": "ff8300d1fd7b01a9fd430091e30301aae10300aa680040b91f2100710429507a"
+  },
+  "padHandheld": {
+    "symbol": "_ZN2nn3hid12GetNpadStateEPNS0_17NpadHandheldStateERKj",
+    "offset": 4948560,
+    "size": 104,
+    "hex": "ff8300d1fd7b01a9fd430091e30301aae10300aa680040b91f2100710429507a"
+  },
+  "padJoyDual": {
+    "symbol": "_ZN2nn3hid12GetNpadStateEPNS0_16NpadJoyDualStateERKj",
+    "offset": 4950288,
+    "size": 104,
+    "hex": "ff8300d1fd7b01a9fd430091e30301aae10300aa680040b91f2100710429507a"
+  },
+  "_ZN2nn5audio19OpenDefaultAudioOutEPNS0_8AudioOutERKNS0_17AudioOutParameterE": {
+    "symbol": "_ZN2nn5audio19OpenDefaultAudioOutEPNS0_8AudioOutERKNS0_17AudioOutParameterE",
+    "offset": 1950992,
+    "size": 16,
+    "hex": "e20301aa613700d021a40d91cd4b1014"
+  },
+  "_ZN2nn5audio13CloseAudioOutEPNS0_8AudioOutE": {
+    "symbol": "_ZN2nn5audio13CloseAudioOutEPNS0_8AudioOutE",
+    "offset": 1952144,
+    "size": 292,
+    "hex": "fd7bbda9f50b00f9f44f02a9fd030091f30300aa404c00b000d01f91b1281094"
+  },
+  "_ZN2nn5audio12OpenAudioOutEPNS0_8AudioOutEPKcRKNS0_17AudioOutParameterE": {
+    "symbol": "_ZN2nn5audio12OpenAudioOutEPNS0_8AudioOutEPKcRKNS0_17AudioOutParameterE",
+    "offset": 1951008,
+    "size": 552,
+    "hex": "ff4306d1fd7b15a9fc5f16a9f65717a9f44f18a9fd430591f30300aa404c00b0"
+  },
+  "_ZN2nn5audio19OpenDefaultAudioOutEPNS0_8AudioOutEPNS_2os11SystemEventERKNS0_17AudioOutParameterE": {
+    "symbol": "_ZN2nn5audio19OpenDefaultAudioOutEPNS0_8AudioOutEPNS_2os11SystemEventERKNS0_17AudioOutParameterE",
+    "offset": 1951568,
+    "size": 276,
+    "hex": "fd7bbda9f50b00f9f44f02a9fd030091f30301aa613700d021a40d91f40300aa"
+  },
+  "_ZN2nn5audio25GetReleasedAudioOutBufferEPNS0_8AudioOutE": {
+    "symbol": "_ZN2nn5audio25GetReleasedAudioOutBufferEPNS0_8AudioOutE",
+    "offset": 1953248,
+    "size": 200,
+    "hex": "ff0301d1fd7b02a9f31b00f9fd830091f30300aaa82300d109018052404c00b0"
+  },
+  "_ZN2nn5audio20AppendAudioOutBufferEPNS0_8AudioOutEPNS0_14AudioOutBufferE": {
+    "symbol": "_ZN2nn5audio20AppendAudioOutBufferEPNS0_8AudioOutEPNS0_14AudioOutBufferE",
+    "offset": 1953040,
+    "size": 200,
+    "hex": "ff0301d1fd7b02a9f44f03a9fd830091f40300aa404c00b000d01f91f30301aa"
+  },
+  "_ZN2nn5audio12StopAudioOutEPNS0_8AudioOutE": {
+    "symbol": "_ZN2nn5audio12StopAudioOutEPNS0_8AudioOutE",
+    "offset": 1952592,
+    "size": 136,
+    "hex": "fd7bbea9f30b00f9fd030091f30300aa404c00b000d01f9142281094284a00d0"
+  },
+  "_ZN2nn5audio20FlushAudioOutBuffersEPNS0_8AudioOutE": {
+    "symbol": "_ZN2nn5audio20FlushAudioOutBuffersEPNS0_8AudioOutE",
+    "offset": 1953984,
+    "size": 168,
+    "hex": "fd7bbea9f30b00f9fd030091f30300aa404c009000d01f91e6261094284a00b0"
+  },
+  "_ZN2nn5audio27GetAudioOutBufferBufferSizeEPKNS0_14AudioOutBufferE": {
+    "symbol": "_ZN2nn5audio27GetAudioOutBufferBufferSizeEPKNS0_14AudioOutBufferE",
+    "offset": 1950768,
+    "size": 8,
+    "hex": "000840f9c0035fd6"
+  },
+  "_ZN2nn5audio25GetAudioOutBufferDataSizeEPKNS0_14AudioOutBufferE": {
+    "symbol": "_ZN2nn5audio25GetAudioOutBufferDataSizeEPKNS0_14AudioOutBufferE",
+    "offset": 1950752,
+    "size": 8,
+    "hex": "000c40f9c0035fd6"
+  },
+  "_ZN2nn5audio21SetAudioOutBufferInfoEPNS0_14AudioOutBufferEPvmm": {
+    "symbol": "_ZN2nn5audio21SetAudioOutBufferInfoEPNS0_14AudioOutBufferEPvmm",
+    "offset": 1950720,
+    "size": 12,
+    "hex": "018800a9030c00f9c0035fd6"
+  },
+  "_ZN2nn5audio23GetAudioOutSampleFormatEPKNS0_8AudioOutE": {
+    "symbol": "_ZN2nn5audio23GetAudioOutSampleFormatEPKNS0_8AudioOutE",
+    "offset": 1953024,
+    "size": 8,
+    "hex": "000840b9c0035fd6"
+  },
+  "_ZN2nn5audio21GetAudioOutSampleRateEPKNS0_8AudioOutE": {
+    "symbol": "_ZN2nn5audio21GetAudioOutSampleRateEPKNS0_8AudioOutE",
+    "offset": 1952992,
+    "size": 8,
+    "hex": "000040b9c0035fd6"
+  },
+  "_ZN2nn5audio15AudioBufferListINS0_14AudioOutBufferEE5clearEv": {
+    "symbol": "_ZN2nn5audio15AudioBufferListINS0_14AudioOutBufferEE5clearEv",
+    "offset": 1950596,
+    "size": 8,
+    "hex": "1f7c00a9c0035fd6"
+  },
+  "_ZN2nn5audio27InitializeAudioOutParameterEPNS0_17AudioOutParameterE": {
+    "symbol": "_ZN2nn5audio27InitializeAudioOutParameterEPNS0_17AudioOutParameterE",
+    "offset": 1950704,
+    "size": 12,
+    "hex": "c85ff9d2080000f9c0035fd6"
+  },
+  "_ZN2nn5audio12OpenAudioOutEPNS0_8AudioOutEPNS_2os11SystemEventEPKcRKNS0_17AudioOutParameterE": {
+    "symbol": "_ZN2nn5audio12OpenAudioOutEPNS0_8AudioOutEPNS_2os11SystemEventEPKcRKNS0_17AudioOutParameterE",
+    "offset": 1951856,
+    "size": 276,
+    "hex": "fd7bbda9f50b00f9f44f02a9fd030091f30301aae10302aae20303aaf40300aa"
+  },
+  "_ZN2nn5audio28GetAudioOutBufferDataPointerEPKNS0_14AudioOutBufferE": {
+    "symbol": "_ZN2nn5audio28GetAudioOutBufferDataPointerEPKNS0_14AudioOutBufferE",
+    "offset": 1950736,
+    "size": 8,
+    "hex": "000440f9c0035fd6"
+  },
+  "_ZN2nn5audio23GetAudioOutChannelCountEPKNS0_8AudioOutE": {
+    "symbol": "_ZN2nn5audio23GetAudioOutChannelCountEPKNS0_8AudioOutE",
+    "offset": 1953008,
+    "size": 8,
+    "hex": "000440b9c0035fd6"
+  },
+  "_ZN2nn5audio22ContainsAudioOutBufferEPKNS0_8AudioOutEPKNS0_14AudioOutBufferE": {
+    "symbol": "_ZN2nn5audio22ContainsAudioOutBufferEPKNS0_8AudioOutEPKNS0_14AudioOutBufferE",
+    "offset": 1953456,
+    "size": 172,
+    "hex": "ffc300d1fd7b01a9f44f02a9fd430091f40300aa404c00b000d01f91f30301aa"
+  },
+  "_ZN2nn5audio15AudioBufferListINS0_14AudioOutBufferEE9push_backEPS2_": {
+    "symbol": "_ZN2nn5audio15AudioBufferListINS0_14AudioOutBufferEE9push_backEPS2_",
+    "offset": 1950604,
+    "size": 44,
+    "hex": "080040f9e90300aa1f0100f12a8d40f828018a9a010100f9e8079f1a015828f8"
+  },
+  "_ZN2nn5audio15AudioBufferListINS0_14AudioOutBufferEE9pop_frontEv": {
+    "symbol": "_ZN2nn5audio15AudioBufferListINS0_14AudioOutBufferEE9pop_frontEv",
+    "offset": 1950648,
+    "size": 32,
+    "hex": "080040f9880000b4080140f9080000f9480000b4c0035fd61f0400f9c0035fd6"
+  },
+  "_ZN2nn5audio22GetAudioOutBufferCountEPKNS0_8AudioOutE": {
+    "symbol": "_ZN2nn5audio22GetAudioOutBufferCountEPKNS0_8AudioOutE",
+    "offset": 1953632,
+    "size": 168,
+    "hex": "fd7bbea9f30b00f9fd030091f30300aa404c00b000d01f913e271094284a00d0"
+  },
+  "_ZN2nn5audio13StartAudioOutEPNS0_8AudioOutE": {
+    "symbol": "_ZN2nn5audio13StartAudioOutEPNS0_8AudioOutE",
+    "offset": 1952448,
+    "size": 136,
+    "hex": "fd7bbea9f30b00f9fd030091f30300aa404c00b000d01f9166281094284a00d0"
+  },
+  "GetLastErrno": {
+    "symbol": "_ZN2nn6socket6detail12GetLastErrnoEv",
+    "offset": 1387920,
+    "size": 80,
+    "hex": "fd7bbea9f44f01a9fd030091135000d073221891e00313aaea4d1294743e40f9"
+  },
+  "touch": {
+    "symbol": "_ZN2nn3hid19GetTouchScreenStateILm16EEEvPNS0_16TouchScreenStateIXT_EEE",
+    "offset": 4955600,
+    "size": 44,
+    "hex": "ff8300d1fd7b01a9fd430091410e0594a0c31fb880000035fd7b41a9ff830091"
+  },
+  "copy": {
+    "symbol": "memcpy",
+    "offset": 5383392,
+    "size": 32,
+    "hex": "ec0301cb8a0940924b000aeb69040054e90301aae80300aa6a0100b4e80301aa"
+  },
+  "SetSockOpt": {
+    "symbol": "_ZN2nn6socket10SetSockOptEiiiPKvj",
+    "offset": 1365088,
+    "size": 4,
+    "hex": "347a1214"
+  },
+  "GetSockOpt": {
+    "symbol": "_ZN2nn6socket10GetSockOptEiiiPvPj",
+    "offset": 1365040,
+    "size": 4,
+    "hex": "307a1214"
+  },
+  "Poll": {
+    "symbol": "_ZN2nn6socket4PollEP6pollfdmi",
+    "offset": 1365328,
+    "size": 4,
+    "hex": "447a1214"
+  },
+  "RecvMMsg": {
+    "symbol": "_ZN2nn6socket8RecvMMsgEiP7mmsghdrmiPNS_8TimeSpanE",
+    "offset": 1366160,
+    "size": 4,
+    "hex": "0c7a1214"
+  },
+  "operationMode": {
+    "symbol": "_ZN2nn2oe16GetOperationModeEv",
+    "offset": 3955824,
+    "size": 64,
+    "hex": "ff8300d1fd7b01a9fd43009115a50894080040f9a11300d1082540f900013fd6"
+  },
+  "commonStateGetter": {
+    "symbol": "_ZN2nn2am20GetCommonStateGetterEv",
+    "offset": 1825456,
+    "size": 72,
+    "hex": "fd7bbea9f30b00f9fd030091e84b009013b146f9330100b4680240f9e00313aa"
+  }
+}

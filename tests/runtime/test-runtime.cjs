@@ -21,6 +21,9 @@ const make=require(path.join(root,'dist/runtime/moonlight-stream.js'));
   assert.equal(loadFn(p),expected,'specialized load preserves partial/out-of-range byte semantics: '+p);
  }
 
+ assert.equal(core._ml_session_set_video_format(2),-1,'unknown video formats fail closed');
+ assert.equal(core._ml_session_set_video_format(0x1000),0,'AV1 Main8 can be selected before tasks start');
+ assert.equal(core._ml_session_set_video_format(1),0,'H.264 remains selectable');
  assert.equal(core._ml_session_set_reference_recovery(2),-1);
  assert.equal(core._ml_session_set_reference_recovery(1),0);
  assert.equal(core._ml_session_set_reference_recovery(0),0);
@@ -49,6 +52,7 @@ const make=require(path.join(root,'dist/runtime/moonlight-stream.js'));
  assert.equal(core._ml_fec_prepare_pair(-1),-1,'cannot release tables during suspended recovery');
  assert.equal(core._ml_session_set_reference_recovery(1),-1,'cannot change decoder capabilities with suspended tasks');
  assert.equal(core._ml_session_set_rumble(1),-1,'cannot change controller capabilities with suspended tasks');
+ assert.equal(core._ml_session_set_video_format(0x1000),-1,'cannot change codec while C tasks own the session');
  assert.equal(core._ml_video_batch_configure(1),-1,'cannot replace receive ownership with suspended tasks');
  assert.equal(core._ml_fec_budget_test_result(),0,'large recovery yields before completing the workload');assert(core._ml_runtime_budget_yields()>fecYields);
  const fecDeadline=Date.now()+5000;

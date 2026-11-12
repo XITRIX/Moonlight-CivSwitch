@@ -9,4 +9,12 @@ node_modules/
 /toolchains/
 /build/
 /dist/
+
+# Local device captures; commit concise qualification reports under docs/.
+/investigation/evidence/
 /investigation/artifacts/
+
+# Upstream research checkouts/snapshots are not application dependencies.
+/investigation/references/civswitch-kit/
+/investigation/references/civswitch-kit-audit-2026-11-11/source/
+/investigation/references/civswitch-kit-audit-2026-11-11/*.log

@@ -23,6 +23,11 @@ static uint32_t last_frame;
 static bool have_last_frame;
 static int reference_recovery;
 static int rumble_enabled;
+static int requested_video_format=VIDEO_FORMAT_H264;
+int ml_session_set_video_format(int format) {
+    if(ml_runtime_tasks()||(format!=VIDEO_FORMAT_H264&&format!=VIDEO_FORMAT_AV1_MAIN8))return -1;
+    requested_video_format=format;return 0;
+}
 int ml_session_set_rumble(int enabled) {
     if(ml_runtime_tasks()||(enabled!=0&&enabled!=1))return -1;
     rumble_enabled=enabled;return 0;
@@ -143,7 +148,7 @@ static void start_task(void* ignored) {
     listener.connectionStarted=connected;listener.connectionTerminated=terminated;listener.logMessage=logger;
     if(rumble_enabled)listener.rumble=rumble;
     video.setup=video_setup;video.submitDecodeUnit=video_submit;video.capabilities=CAPABILITY_DIRECT_SUBMIT;
-    if(reference_recovery)video.capabilities|=CAPABILITY_REFERENCE_FRAME_INVALIDATION_AVC;
+    if(reference_recovery&&requested_video_format==VIDEO_FORMAT_H264)video.capabilities|=CAPABILITY_REFERENCE_FRAME_INVALIDATION_AVC;
     audio.init=audio_setup;audio.decodeAndPlaySample=audio_submit;audio.capabilities=CAPABILITY_DIRECT_SUBMIT;
     int result=LiStartConnection(&server,&config,&listener,&video,&audio,NULL,0,NULL,0);
     if(result){error_code=result;state=3;ml_event(6,result,0);}
@@ -151,14 +156,15 @@ static void start_task(void* ignored) {
 int ml_session_start(const char* host,const char* app_version,const char* rtsp_url,const unsigned char* key,unsigned int key_id,
                      int width,int height,int fps,int bitrate,int codec_support) {
     if(state==1||state==2||ml_runtime_tasks())return -1;
-    if(width<64||height<64||width>1920||height>1080||fps<1||fps>60)return -2;
+    int av1=requested_video_format==VIDEO_FORMAT_AV1_MAIN8;
+    if(width<64||height<64||width>(av1?3840:1920)||height>(av1?2160:1080)||fps<1||fps>120||(width>2560&&fps>60))return -2;
     if(!PltSafeStrcpy(address,sizeof(address),host)||!PltSafeStrcpy(version,sizeof(version),app_version)||!PltSafeStrcpy(url,sizeof(url),rtsp_url))return -3;
     LiInitializeServerInformation(&server);server.address=address;server.serverInfoAppVersion=version;server.rtspSessionUrl=url;server.serverCodecModeSupport=codec_support;
     LiInitializeStreamConfiguration(&config);config.width=width;config.height=height;config.fps=fps;config.bitrate=bitrate;
     // Keep 1392-byte payloads on LAN. The core detects public destinations and
     // caps remote IPv4 payloads at 1024 bytes to avoid Internet fragmentation.
     config.packetSize=1392;config.streamingRemotely=STREAM_CFG_AUTO;config.audioConfiguration=AUDIO_CONFIGURATION_STEREO;
-    config.supportedVideoFormats=VIDEO_FORMAT_H264;config.encryptionFlags=0;config.clientRefreshRateX100=fps*100;
+    config.supportedVideoFormats=requested_video_format;config.encryptionFlags=0;config.clientRefreshRateX100=fps*100;
     memcpy(config.remoteInputAesKey,key,16);config.remoteInputAesIv[0]=key_id>>24;config.remoteInputAesIv[1]=key_id>>16;config.remoteInputAesIv[2]=key_id>>8;config.remoteInputAesIv[3]=key_id;
     state=1;error_code=video_frames=audio_frames=0;input_pending=0;keys_read=keys_write=0;keys_reset=0;memset(keys_down,0,sizeof(keys_down));
     pointer_read=pointer_write=0;pointer_reset=mouse_buttons=touch_dirty=0;

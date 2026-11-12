@@ -1,0 +1,125 @@
+CivSwitch kit static audit — 2026-11-11, updated after mirror clone
+
+Requested upstream: https://gitee.com/mza1010/civswitch-kit.git
+Mirror cloned: https://github.com/xlanor/civswitch-kit.git
+Pinned mirror commit: 9a9589147e9852120e0c04e2847ea38b347fe7ab
+Checkout: ../civswitch-kit (204 tracked files; clean and unmodified)
+
+VERDICT
+Credible ns2jb FS-process elevation implementation, rather than a mock success
+screen or ordinary access to Civ7's save mount. Static review supports its design
+and upstream provenance. Successful execution of this Civ7 port on hardware is
+still unverified independently. This is not a certification of package safety,
+compatibility, reliability, or a complete security audit of every artifact.
+
+ACCESS AND COMPARISON
+The initial direct Gitee clone timed out. Twelve public documents/source files
+were recovered through r.jina.ai; eleven are exact-source snapshots (the twelfth
+is a rendered README). All eleven match this GitHub mirror byte for byte.
+The prior retrieval-manifest.json records those partial-retrieval checks.
+
+Independently cloned https://gitlab.com/pepsipu/ns2jb.git at commit
+95f5525089273c5fce0b95047f3600f8442e96ae into /private/tmp/ns2jb-upstream-audit.
+Compared with that upstream's engine directory, the kit has 54 identical files,
+36 changed files, and 22 added files. This comparison is against pepsipu's pinned
+checkout, not the kit's claimed immediate kurumuz/slapah base. The named
+slapah/CivSwitch GitHub URL returned Repository not found during the first pass;
+its claimed baseline commit was not independently retrieved.
+
+The shipped RO payload main and all five associated source/build-manifest files
+(main.c, process.c, start.S, layout.ld, manifest.json) match pepsipu upstream
+exactly. The FS instruction challenge file also matches upstream exactly.
+
+EVIDENCE SUPPORTING ACTUAL FS ELEVATION
+- port/civ_bridge.js adapts the compromised Civ7 process to ns2jb's native-call
+  RPC. The bridge alone does not elevate privileges.
+- port/engine/shared/target.civ7.json supplies a Civ7 SDK fingerprint, instruction
+  references, raw-svc native thread mode, and app-specific acquisition geometry.
+  Target validation checks required artifacts rather than silently falling back
+  to a complete SmileBASIC profile. Runtime ABI matching was not tested here.
+- switch2/memory/probe-reserved-gap.cjs contains the concurrent IPC acquisition
+  and forged-cache path, with positive/control outcomes and failure checks.
+- switch2/memory/verify-proof.cjs independently compares saved 16 KiB memory
+  reads against output-poison and ordinary-file controls. It checks a precise
+  marker write, neighboring bytes, and restoration rather than trusting flags.
+- switch2/process/fs-execute.cjs checks FS process identity and original native
+  instructions, performs two fresh random instruction-return challenges, and
+  verifies restored behavior. This is a meaningful runtime proof design; it was
+  not executed against a console in this audit.
+- switch2/pipeline.cjs requires acquisition, RO helper qualification, and FS
+  instruction challenges before full-pipeline success. Its separate --app-only
+  path also reports verified=true, so stage/context matters when judging logs.
+- switch2/firmware-dump.cjs uses NCM/CodeFS and verifies captured sizes/hashes.
+  It captures main/main.npdm from installed system programs. The advertised dump
+  is not a raw NAND backup. This code does not establish kernel takeover, CFW,
+  or an FS privilege change that survives reboot. The saved Civ7 trigger is a
+  persistent entry point; the exploit chain must run again after reboot.
+
+CONCRETE RELIABILITY FINDINGS (READ ONLY; NO FIXES APPLIED)
+1. Acquisition retries without requiring proven native cleanup.
+   port/engine/switch2/acquire.cjs:14 sets MAX_ATTEMPTS=3. Its error path at
+   lines 102-103 abandons/kills the PC acquisition subprocess, waits one second,
+   then tries again. This does not establish that console allocations, native
+   threads, IPC buffers, or modified FS state were retired safely.
+   docs/UPSTREAM-SYNC-2026-11-10.md explicitly acknowledges that the upstream
+   hasProvenCleanup retry gate was not backported. Treating every failed attempt
+   as safe to retry in the same console session is unsupported.
+
+2. Save restore can report completion after skipped files.
+   save-tools/restore_save.py:109 deletes each target before creating/writing its
+   replacement. Create/open/write errors are logged as SKIP and iteration
+   continues. Line 144 prints RESTORE DONE even with skipped files; the host
+   returns success if that text appears. Manifest SHA-256 strings are displayed
+   but not verified by the restore script, and no console readback verifies the
+   result. A committed restore can therefore be incomplete or contain a failed
+   replacement even when the host exits successfully.
+
+3. The one-click wrapper does not explicitly enforce restore/bridge success.
+   run-p4-once.ps1:38 invokes restore and proceeds to engine startup without a
+   $LASTEXITCODE or result check. The same pattern occurs for bridge sending at
+   line 63. $ErrorActionPreference alone is not a portable assertion that an
+   external Python process exited successfully under the advertised Windows
+   PowerShell invocation. The script prints engine exit status but does not turn
+   it into a deliberate final exit code. PowerShell runtime behavior was not
+   tested here because pwsh is unavailable.
+
+OFFLINE VALIDATION
+- All 103 JavaScript files pass node --check (92 .cjs and 11 .js).
+- All 37 Python files parse; all 24 JSON files parse.
+- 39 existing host tests pass, including local dependency completeness, target
+  preflight, memory-layout helpers, loopback transport, and payload hash checks.
+- The unchanged bridge suite has 1 pass and 2 failures caused by CONFIG.PC_IP
+  being the distributed placeholder <PC_IP>. In a temporary two-file test copy,
+  replacing only that placeholder with TEST-NET address 192.0.2.1 gives 3/3
+  passing mocked bridge tests. No real network connection occurs in those mocks.
+- An initial sandboxed test run also failed four loopback-bind tests with EPERM;
+  those four pass outside the restricted sandbox. This was an environment issue.
+- Shipped RO payload, Switch 1 NRO, and trigger save match their declared SHA-256
+  values and sizes. The RO payload also matches independently cloned upstream.
+  The NRO checksum is a bundled declaration, not independent proof of safety.
+- Zig 0.15.2 and PowerShell/pwsh are unavailable. A reproducible payload rebuild
+  and Windows wrapper execution were not performed. No tooling was installed.
+- Details: mirror-checks.json, host-tests.log, offline-tests.log, and
+  bridge-configured-tests.log in this directory.
+
+REMAINING EVIDENCE LIMITS
+The README claims fw 23.0.1, approximately 30% canary success, RUN 38 end-to-end
+success, and 90/90 system programs (222 MB). The underlying run artifacts were
+not provided by this checkout; the README says RUN 1-38 notes are not included.
+These remain author claims. Old handoff notes retain contradictory earlier
+worker/acquisition status; they may simply be stale, but are not fresh proof.
+
+The reviewed host/bridge source showed no obvious unsolicited remote downloader
+or external exfiltration destination. This is a limited observation, not a
+whole-package malware clearance. The Switch 1 installer is distributed as a
+prebuilt NRO without corresponding installer source in this checkout; it was
+not decompiled or independently matched to an upstream release. The trigger
+save was hash-checked but its embedded executable content was not fully audited.
+The README documents an installation flow that deletes Civ7 single-player saves.
+
+No console was contacted. No installer, exploit, native payload, or firmware
+dumper was deployed or executed. Only inspected host-only tests, static parsers,
+and checksum/comparison checks ran. No Moonlight runtime, payload manifest, or
+packaging files changed; Moonlight package checks do not apply to this isolated
+reference checkout and audit documentation. No new device capability has been
+established by this static audit.

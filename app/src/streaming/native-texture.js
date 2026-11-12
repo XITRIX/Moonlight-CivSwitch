@@ -74,7 +74,7 @@
   function pointer(p){range(p,8,1);return read64(p);}
   function close(){
    if(closed)return;closed=true;
-   // Gameface owns its own reference after ReceiveUserImage. Its normal cache
+   // the layout engine owns its own reference after ReceiveUserImage. Its normal cache
    // release and Civ VII's deferred renderer deletion keep in-flight draws valid.
    if(published){invoke(0x4bc160n,[provider,name]);published=false;}
    if(handle){invoke(0x7817c0n,[handle]);handle=0n;}

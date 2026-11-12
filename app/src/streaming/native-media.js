@@ -123,16 +123,16 @@
   function integer(metadata,key){var k=alloc_string(key),v=alloc(8);try{if(!call("_ZNK5movie9MediaData9FindInt32EPKcPi",[metadata,k,v]))throw Error("Missing video format "+key);return number(read32(v));}finally{owned.pop();free(v);free(k);}}
   var config,input,output,format,index,available,pts,flags,size,alignment,spsNative,ppsNative;
   function videoSetup(videoFormat,w,h,fps){
-   gpu=!!global.MoonlightNativeTexture&&options.renderer!=="png"&&options.renderer!=="native-texture";
-   if(videoFormat!==1||w<64||h<64||w>(gpu?1920:640)||h>(gpu?1080:360))throw Error("Unsupported H.264 renderer dimensions");
-   findMovie();width=w;height=h;frameInterval=gpu?0:Math.max(1,Math.floor(1000/fps));
+   gpu=!options.videoSink&&!!global.MoonlightNativeTexture&&options.renderer!=="png"&&options.renderer!=="native-texture";
+   if(videoFormat!==1||w<64||h<64||w>(gpu||options.videoSink?1920:640)||h>(gpu||options.videoSink?1080:360))throw Error("Unsupported H.264 renderer dimensions");
+   findMovie();width=w;height=h;frameInterval=gpu||options.videoSink?0:Math.max(1,Math.floor(1000/fps));
    // The decoder installs allocator callbacks. Construct it before MediaData or
    // owned Buffer allocations so creation and destruction use the same allocator.
    decoder=alloc(1024);call("_ZN5movie7DecoderC1ENS_11DecoderTypeENS_19DecoderOutputFormatENS_11DecoderModeEi",[decoder,1,gpu?3:4,gpu?2:1,number(call("_ZN5movie17GetThreadPriorityEv",[]))]);
    objects.push({type:"7Decoder",p:decoder});if(!read64(decoder+8n))throw Error("Native decoder initialization failed");
    config=object("9MediaData");format=object("9MediaData");input=object("6Buffer");output=object("6Buffer");
    index=alloc(8);available=alloc(8);pts=alloc(8);flags=alloc(8);size=alloc(8);alignment=alloc(8);spsNative=alloc(65536);ppsNative=alloc(65536);
-   if(global.MoonlightNativeTexture&&options.renderer!=="png")texture=global.MoonlightNativeTexture.create(io,core,w,h,{gpu:gpu});
+   if(!options.videoSink&&global.MoonlightNativeTexture&&options.renderer!=="png")texture=global.MoonlightNativeTexture.create(io,core,w,h,{gpu:gpu});
    if(gpu){var target=texture.target();call("_ZN5movie6Buffer18SetDataAndCapacityEPvm",[output,target.texture,8]);call("_ZN5movie6Buffer9SetNvnDevEPv",[output,target.device]);}
    if(gpu&&!options.synchronousGpu){
     if(fps===60&&options.smoothVideo!==false)videoPacer=createVideoPacer(now,1000/fps);
@@ -184,7 +184,7 @@
      videoDecoded++;
     },
     present:function(frame,adopt){
-     if(now()-lastPreview<(texture?frameInterval:200)||(options.canPresent&&!options.canPresent()))return;
+     if(now()-lastPreview<(texture||options.videoSink?frameInterval:200)||(options.canPresent&&!options.canPresent()))return;
      var slot=frame.index;
      if(!fields){
       ok("_ZN5movie7Decoder15GetOutputFormatEPNS_9MediaDataE",[decoder,format]);
@@ -194,7 +194,8 @@
      if(!gpu&&!outputStorage){
       Object.assign(fields,{yStride:integer(format,"nv12-y-stride"),uvStride:integer(format,"nv12-uv-stride"),yOffset:integer(format,"nv12-y-offset"),uvOffset:integer(format,"nv12-uv-offset")});
       ok("_ZN5movie7Decoder19GetOutputBufferSizeEPiS1_",[decoder,size,alignment]);outputLength=number(read32(size));if(outputLength<1||outputLength>4194304)throw Error("Invalid video output capacity");
-      outputStorage=(alloc(outputLength+4096)+4095n)&~4095n;outputHeap=core._malloc(outputLength);if(!outputHeap)throw Error("Cannot allocate video presentation buffer");
+      outputStorage=(alloc(outputLength+4096)+4095n)&~4095n;
+      if(!options.videoSink){outputHeap=core._malloc(outputLength);if(!outputHeap)throw Error("Cannot allocate video presentation buffer");}
       call("_ZN5movie6Buffer18SetDataAndCapacityEPvm",[output,outputStorage,outputLength]);
      }
      if(gpu){
@@ -206,6 +207,9 @@
      }
      ok("_ZN5movie7Decoder15GetOutputBufferEiPNS_6BufferE",[decoder,slot,output]);
       var data=call("_ZNK5movie6Buffer4DataEv",[output]),used=Number(call("_ZNK5movie6Buffer4SizeEv",[output]));if(!data||used>outputLength||used<1)throw Error("Invalid decoded frame bounds");
+      if(options.videoSink){
+       var begin=now();options.videoSink(data,used,fields);conversionMs+=now()-begin;lastPreview=begin;presentedFrame(frame);return;
+      }
       io.fromNative(core.HEAPU8,outputHeap,used,data);
       var begin=now(),url;
       if(texture)url=texture.present(core.HEAPU8,outputHeap,used,fields);

@@ -2,9 +2,10 @@
 (function(global){
  "use strict";
  function create(options){
-  var editing=false,keyboardPaused=false,hidden=false,draft=null,selected=0,lastButtons=0,ignoreUntil=0,lastAction={name:"",time:0},nextRepeat=0,layouts=[],touch=null,touchBlocked=false,scale=1,rows=[],actions=[];
+  var editing=false,keyboardPaused=false,hidden=false,draft=null,selected=0,lastButtons=0,ignoreUntil=0,lastAction={name:"",time:0},nextRepeat=0,touch=null,touchBlocked=false,rows=[],actions=[];
   var font="BodyFont, Arial, sans-serif";
-  function node(tag,parent,style,text){var n=document.createElement(tag),pixels={};for(var p in style){if(typeof style[p]==="number"){pixels[p]=style[p];n.style[p]=style[p]*scale+"px";}else n.style[p]=style[p];}if(Object.keys(pixels).length)layouts.push({node:n,pixels:pixels});if(text!==undefined)n.textContent=text;parent.appendChild(n);return n;}
+  var scale=global.MoonlightLayout.viewport().scale;
+  var node=global.MoonlightLayout.element;
   var layer=node("div",options.parent,{display:"none",position:"absolute",left:0,right:0,top:0,bottom:0,zIndex:"4",fontFamily:font,fontWeight:"400",color:"#f5f5f5"});layer.id="moonlight-gamepad-mouse";
   var errorBox=node("div",layer,{display:"none",position:"absolute",left:24,top:24,maxWidth:"80vw",padding:12,fontSize:18,backgroundColor:"#1b1e21"});errorBox.id="moonlight-mouse-status";errorBox.setAttribute("role","status");
   var bar=node("div",layer,{position:"absolute",left:0,right:0,bottom:0,paddingLeft:24,paddingRight:24,paddingTop:10,paddingBottom:10,boxSizing:"border-box",backgroundColor:"rgba(27,30,33,0.9)",borderTop:"1px solid #61718a"});bar.id="moonlight-mouse-hints";
@@ -28,7 +29,7 @@
   });
   var message=node("div",panel,{fontSize:18,lineHeight:25,marginTop:16,color:"#b7c6dd"});message.id="moonlight-mouse-options-status";message.setAttribute("role","status");
   var input=global.MoonlightGamepadMouse.create({now:options.now,move:options.move,button:options.button,scroll:options.scroll,reset:options.reset,onReady:function(){errorBox.style.display="none";},onError:function(text){errorBox.textContent=text;errorBox.style.display="block";if(options.onError)options.onError(text);},onHints:toggleHints,onKeyboard:showKeyboard,onOptions:showOptions,onClose:function(){editing=keyboardPaused=false;layer.style.display="none";modal.style.display="none";if(options.onClose)options.onClose();}});
-  function resize(){var r=options.parent.getBoundingClientRect();scale=Math.min(r.width/1280,r.height/720)||1;for(var l of layouts)for(var p in l.pixels)l.node.style[p]=l.pixels[p]*scale+"px";}
+  function resize(){scale=global.MoonlightLayout.viewport().scale;global.MoonlightLayout.resize(layer);}
   function paint(){
    layer.style.display=input.isOpen()&&!keyboardPaused?"block":"none";bar.style.display=!hidden&&!editing?"block":"none";modal.style.display=editing?"flex":"none";
    if(editing){rows.forEach(function(r,i){r.node.style.borderColor=i===selected?"#00efcf":"transparent";r.node.style.backgroundColor=i===selected?"#303a3d":"transparent";r.node.setAttribute("data-selected",String(i===selected));r.value.textContent=i===0?(.5+draft.speed/100*1.5).toFixed(2)+"×":i===1?(draft.swapButtons?"On":"Off"):i===2?(draft.invertScroll?"On":"Off"):"";});}

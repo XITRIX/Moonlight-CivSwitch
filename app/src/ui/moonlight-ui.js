@@ -2,7 +2,7 @@
 (async function () {
     "use strict";
 
-    if (window.__moonlightSimpleUI) window.__moonlightSimpleUI.close();
+    if (window.__moonlightSimpleUI) await window.__moonlightSimpleUI.close();
 
     var finish;
     var lifetime = new Promise(function (resolve) { finish = resolve; });
@@ -25,8 +25,10 @@
     var connectionSignal = null;
     var screen = "hosts";
     var gameHost = null;
+    var nativeView = null;
 
     function report(message) {
+        if(nativeView)nativeView.invalidate();
         if(streamDiagnostics&&(streamDiagnostics.localOnly||screen==="stream")){recordStreamMessage(message);return;}
         // Diagnostic messages never include field contents.
         if (typeof log === "function") {
@@ -37,13 +39,7 @@
         else if (window.console) console.info(message);
     }
 
-    function element(tag, parent, styles, text) {
-        var node = document.createElement(tag);
-        if (styles) Object.assign(node.style, styles);
-        if (text !== undefined) node.textContent = text;
-        if (parent) parent.appendChild(node);
-        return node;
-    }
+    var element = window.MoonlightLayout.element;
 
     function listen(target, name, handler, capture) {
         target.addEventListener(name, handler, !!capture);
@@ -55,15 +51,40 @@
         display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center",
         backgroundColor: "#0c1220", color: "#f4f7ff", fontFamily: "Arial, sans-serif",
         // Keep game-owned keyboard/dialog layers above our overlay.
-        zIndex: "1", boxSizing: "border-box"
+        zIndex: "1", boxSizing: "border-box", padding:"24px", fontSize:"16px"
     });
-    root.id = "moonlight-simple-ui";
+    root.id = "moonlight-simple-ui";root.setAttribute("data-civ-native-ui","1");
     // A non-text focus target for returning from the OS keyboard.
     root.tabIndex = -1;
     root.style.outline = "none";
+    function resizeLayout(){
+        // Explicit bounds also support native overlay children on the console.
+        root.style.width=window.innerWidth+"px";root.style.height=window.innerHeight+"px";
+        window.MoonlightLayout.resize(root);
+        if(nativeView)nativeView.invalidate();
+    }
+    listen(window,"resize",resizeLayout);
+    resizeLayout();
+
+    // Check the resident renderer before creating screens or starting app work.
+    try{nativeView=await window.MoonlightNativeUi.mount(root,{log:report});}
+    catch(error){removers.forEach(function(remove){remove();});if(root.parentNode)root.parentNode.removeChild(root);throw error;}
+    if(nativeView&&nativeView.blocked){
+        var blockerView=nativeView;
+        var blockerHandle={lifetime:blockerView.lifetime,close:function(){
+            removers.forEach(function(remove){remove();});
+            if(root.parentNode)root.parentNode.removeChild(root);
+            if(window.__civswitchApp===blockerHandle)delete window.__civswitchApp;
+            if(window.__moonlightSimpleUI===blockerHandle)delete window.__moonlightSimpleUI;
+            return blockerView.close();
+        }};
+        window.__civswitchApp=blockerHandle;window.__moonlightSimpleUI=blockerHandle;
+        await blockerView.lifetime;await blockerHandle.close();return;
+    }
 
     var panel = element("div", root, {
         display: "none", flexDirection: "column", width: "600px", maxWidth: "88vw",
+        maxHeight:"800px", overflowY:"auto",
         padding: "32px", border: "1px solid #29354b", borderRadius: "18px",
         backgroundColor: "#131d2e", boxSizing: "border-box"
     });
@@ -131,8 +152,10 @@
     pinDisplay.id = "moonlight-pairing-pin";
     var hints = element("div", root, {
         display: "flex", marginTop: "24px", fontSize: "17px", color: "#a7b6cf",
-        textAlign: "center", maxWidth: "94vw"
+        textAlign: "center", width:"94%", maxWidth: "94vw", justifyContent:"center",
+        flexShrink:"0", minHeight:"26px", lineHeight:"26px"
     }, "D-pad up/down: Move    A: Edit / Select    B: Back");
+    hints.id="moonlight-ui-hints";
     var controls = [host, pair, pairBack];
     var hosts = window.MoonlightHosts.create({parent:root,onHost:openHost,onPair:openPair,onSettings:openSettings,onDelete:confirmDeleteHost});
     var streamMode=window.MoonlightSettings.defaults(),settingsLoaded=false,settingsReturn="hosts",settingsTransport=null;
@@ -174,8 +197,13 @@
             if(settingsTransport&&settingsTransport.saveStreamSettings)settingsTransport.saveStreamSettings(mode);
             streamMode=mode;
         },
+        onPerformanceOverlay:function(enabled){
+            var mode=window.MoonlightSettings.validate(Object.assign({},streamMode,{showStats:enabled}));
+            if(settingsTransport&&settingsTransport.saveStreamSettings)settingsTransport.saveStreamSettings(mode);
+            streamMode=mode;
+        },
         onStats:function(stats){streamDiagnostics.stats=stats;streamHistory.record(stats);},
-        onBack:function(){if(!closed){screen="games";games.resume("Stream stopped. Checking the running application…");hints.style.display="flex";ignoreInputUntil=Date.now()+250;paintFocus();}}
+        onBack:function(){if(!closed){root.style.backgroundColor="#0c1220";screen="games";games.resume("Stream stopped. Checking the running application…");hints.style.display="flex";ignoreInputUntil=Date.now()+250;paintFocus();}}
     }) : null;
     var games = window.MoonlightGames.create({parent:root,onBack:returnToHosts,onRefresh:refreshGames,onLaunch:launchGame,onSettings:openSettings,onTerminate:confirmTerminateApp,
         onArtworkLoaded:function(id,bytes,cached){report((cached?"MOONLIGHT_ARTWORK_CACHED: ":"MOONLIGHT_ARTWORK_LOADED: ")+id+" ("+bytes+" bytes)");},
@@ -186,6 +214,7 @@
     root.appendChild(hints);
 
     function paintFocus() {
+        if(nativeView)nativeView.invalidate();
         controls.forEach(function (control, index) {
             var active = index === selected;
             control.style.borderColor = active ? "#94c6ff" : (index === 1 ? "#5275b4" : "#35435b");
@@ -197,7 +226,7 @@
         hints.textContent = screen === "settings"
             ? "D-pad up/down: Move    Left/right: Change    A: Select    B: Back"
             : screen === "games" || screen === "hosts"
-            ? "D-pad: Move    A: Select    B: Back"
+            ? (screen === "hosts" ? "D-pad: Move    A: Select    B: Return to Launcher" : "D-pad: Move    A: Select    B: Back")
             : editing
             ? "Type to edit    Enter / B: Done    D-pad up/down: Move"
             : "D-pad up/down: Move    A: Edit / Select    B: Back";
@@ -217,6 +246,10 @@
             } catch (_) {}
             if (editor.cancelSubscriptions) editor.cancelSubscriptions.forEach(function (remove) { remove(); });
             if (editor.restoreCallbacks) editor.restoreCallbacks();
+            if (editor.keyboardOverlay) {
+                editor.keyboardOverlay.close();
+                editor.keyboardOverlay = null;
+            }
             if (editor.node) {
                 try {
                     if (typeof editor.node.loseFocus === "function") editor.node.loseFocus();
@@ -399,12 +432,19 @@
             observeNativeCompletion(editor);
             if (typeof editor.node.receiveFocus === "function") editor.node.receiveFocus();
             else editor.node.focus();
-            // Gameface applies focus/layout during its next frame.
+            // the layout engine applies focus/layout during its next frame.
             await new Promise(function (resolve) { requestAnimationFrame(resolve); });
             if (closed || nativeEditor !== editor) return;
             input.focus();
             input.value = "";
             observeKeyboardCancelEvents(editor);
+            if (window.MoonlightNativeUi && window.MoonlightNativeUi.keyboard) {
+                editor.keyboardOverlay = window.MoonlightNativeUi.keyboard(root, nativeView, function (error) {
+                    if (closed || nativeEditor !== editor) return;
+                    report("MOONLIGHT_KEYBOARD_OVERLAY_ERROR: " + error.message);
+                    status.textContent = "Keyboard display failed. Press B to cancel.";
+                });
+            }
             editor.activatedAt = Date.now();
             component.onActivate();
             if (nativeEditor === editor) status.textContent = "Editing Host.";
@@ -488,15 +528,15 @@
         loadSettings();
         streamHistory.reset();streamDiagnostics.messages.length=0;streamDiagnostics.stats=null;
         streamDiagnostics.localOnly=true;
-        games.hide();screen="stream";hints.style.display="none";heldDirection="";
+        games.hide();screen="stream";root.style.backgroundColor="transparent";hints.style.display="none";heldDirection="";
         var exitError=null;
         try {
             streamTask=stream.show(gameHost.address,app,streamMode,gameHost.hostname).then(function(result){
                 if(result&&result.stats)streamDiagnostics.stats=result.stats;
                 if(!closed && result && result.error){exitError=result.error.message;games.fail(exitError);}
-            }).catch(function(error){exitError=error.message;if(!closed){screen="games";games.resume(error.message);hints.style.display="flex";}report("MOONLIGHT_STREAM_ERROR: "+error.message);})
+            }).catch(function(error){exitError=error.message;if(!closed){root.style.backgroundColor="#0c1220";screen="games";games.resume(error.message);hints.style.display="flex";}report("MOONLIGHT_STREAM_ERROR: "+error.message);})
                 .finally(function(){streamTask=null;if(!closed&&screen==="games")refreshGames(exitError);});
-        } catch(error) {screen="games";games.resume(error.message);hints.style.display="flex";}
+        } catch(error) {root.style.backgroundColor="#0c1220";screen="games";games.resume(error.message);hints.style.display="flex";}
     }
 
     function pairWithSunshine() {
@@ -637,6 +677,7 @@
 
     function action(name, inputStatus, source, x, y) {
         if (closed) return;
+        if(nativeView)nativeView.invalidate();
         if(appDialog.isOpen()){appDialog.action(name,Number(inputStatus),x,y);return;}
         if (screen === "stream") { stream.action(name,Number(inputStatus),x,y);return; }
         if (name === "keyboard-escape") name = "cancel";
@@ -768,7 +809,7 @@
     }
 
     function close() {
-        if (closed) return;
+        if (closed) return lifetime;
         closed = true;
         if (connectionSignal) connectionSignal.aborted = true;
         endEdit();
@@ -786,9 +827,13 @@
             }
         } catch (_) {}
         if (root.parentNode) root.parentNode.removeChild(root);
-        delete window.__moonlightSimpleUI;
         // Let in-flight native requests release sockets before the loader blocks in accept().
-        Promise.all([connectionTask,artworkDone,streamDone,streamTask]).then(finish,finish);
+        Promise.allSettled([connectionTask,artworkDone,streamDone,streamTask,nativeView&&nativeView.close()]).then(function(){
+            if(window.__moonlightSimpleUI===handle)delete window.__moonlightSimpleUI;
+            if(window.__civswitchApp===handle)delete window.__civswitchApp;
+            finish();
+        });
+        return lifetime;
     }
 
     controls.forEach(function (control, index) {
@@ -815,8 +860,11 @@
             nativeSubscribed = true;
         } catch (_) {}
     }
-    window.__moonlightSimpleUI = { close: close };
+    var handle={close:close,lifetime:lifetime};
+    window.__moonlightSimpleUI = handle;
+    window.__civswitchApp = handle;
     showHosts();
+    if(nativeView)nativeView.invalidate();
     frame = requestAnimationFrame(pollGamepads);
     if (typeof log === "function") await log("MOONLIGHT_UI_READY");
     // Keep eval pending: otherwise CivSwitch immediately blocks in accept().

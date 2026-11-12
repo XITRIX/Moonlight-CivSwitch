@@ -2,15 +2,9 @@
 (function (global) {
     "use strict";
     function create(options) {
-        function element(tag, parent, styles, text) {
-            var node = document.createElement(tag);
-            Object.assign(node.style, styles);
-            if (text !== undefined) node.textContent = text;
-            parent.appendChild(node);
-            return node;
-        }
+        var element = global.MoonlightLayout.element;
         var panel = element("div", options.parent, {
-            display:"none",flexDirection:"column",width:"600px",maxWidth:"88vw",maxHeight:"86vh",
+            display:"none",flexDirection:"column",width:"600px",maxWidth:"88vw",maxHeight:"800px",
             padding:"32px",border:"1px solid #29354b",borderRadius:"18px",backgroundColor:"#131d2e",boxSizing:"border-box"
         });
         panel.id = "moonlight-hosts-screen";

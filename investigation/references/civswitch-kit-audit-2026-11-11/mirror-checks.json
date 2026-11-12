@@ -1,0 +1,532 @@
+{
+  "syntax": {
+    ".cjs": {
+      "count": 92,
+      "failures": []
+    },
+    ".js": {
+      "count": 11,
+      "failures": []
+    },
+    "python": {
+      "count": 37,
+      "failures": []
+    },
+    "json": {
+      "count": 24,
+      "failures": []
+    }
+  },
+  "hashes": {
+    "roPayload": {
+      "sha256": "d590cbfc5d9152c24d5a36f083f8470a2f3164be6b78130129d44132b939701a",
+      "matchesDeclared": true,
+      "bytes": 4757
+    },
+    "nro": {
+      "sha256": "4e8ddfa4982a8130470d0fcbd236f2954c5ee911f79ff581f4f1ecc01690a2d9",
+      "matchesDeclared": true,
+      "bytes": 1486671
+    },
+    "trigger": {
+      "sha256": "c53a04e4ce432727c0e24348be240051b846595103ed06865b34c16bba810e7c",
+      "matchesDeclared": true,
+      "bytes": 1195911
+    }
+  },
+  "upstreamComparison": {
+    "main": true,
+    "main.c": true,
+    "process.c": true,
+    "start.S": true,
+    "layout.ld": true,
+    "manifest.json": true
+  },
+  "tools": {
+    "node": "v25.5.0",
+    "zig": null,
+    "pwsh": null
+  },
+  "engineUpstreamComparison": {
+    "counts": {
+      "identical": 54,
+      "changed": 36,
+      "added": 22
+    },
+    "files": [
+      {
+        "path": "bootstrap.bas",
+        "comparison": "added"
+      },
+      {
+        "path": "build-payload.cjs",
+        "comparison": "identical"
+      },
+      {
+        "path": "dump-firmware.cjs",
+        "comparison": "added"
+      },
+      {
+        "path": "lib/bridge.cjs",
+        "comparison": "changed"
+      },
+      {
+        "path": "lib/connection.cjs",
+        "comparison": "changed"
+      },
+      {
+        "path": "lib/native.cjs",
+        "comparison": "changed"
+      },
+      {
+        "path": "lib/qualify.cjs",
+        "comparison": "changed"
+      },
+      {
+        "path": "rpc.cjs",
+        "comparison": "added"
+      },
+      {
+        "path": "run.cjs",
+        "comparison": "added"
+      },
+      {
+        "path": "shared/domain.cjs",
+        "comparison": "identical"
+      },
+      {
+        "path": "shared/frames.cjs",
+        "comparison": "changed"
+      },
+      {
+        "path": "shared/ipc.cjs",
+        "comparison": "identical"
+      },
+      {
+        "path": "shared/rpc.cjs",
+        "comparison": "changed"
+      },
+      {
+        "path": "shared/sdk-functions.json",
+        "comparison": "identical"
+      },
+      {
+        "path": "shared/sdk-layout.json",
+        "comparison": "identical"
+      },
+      {
+        "path": "shared/stages.cjs",
+        "comparison": "identical"
+      },
+      {
+        "path": "shared/target.civ7.json",
+        "comparison": "added"
+      },
+      {
+        "path": "shared/target.cjs",
+        "comparison": "added"
+      },
+      {
+        "path": "shared/target.smilebasic.json",
+        "comparison": "added"
+      },
+      {
+        "path": "switch2/acquire.cjs",
+        "comparison": "changed"
+      },
+      {
+        "path": "switch2/app/affinity.cjs",
+        "comparison": "changed"
+      },
+      {
+        "path": "switch2/app/bulk-transfer.cjs",
+        "comparison": "identical"
+      },
+      {
+        "path": "switch2/app/compat-affinity-reference.json",
+        "comparison": "identical"
+      },
+      {
+        "path": "switch2/app/domain.cjs",
+        "comparison": "identical"
+      },
+      {
+        "path": "switch2/app/event-code.json",
+        "comparison": "identical"
+      },
+      {
+        "path": "switch2/app/events.cjs",
+        "comparison": "identical"
+      },
+      {
+        "path": "switch2/app/filesystem.cjs",
+        "comparison": "changed"
+      },
+      {
+        "path": "switch2/app/hash-code.json",
+        "comparison": "identical"
+      },
+      {
+        "path": "switch2/app/inspect-mounts.cjs",
+        "comparison": "identical"
+      },
+      {
+        "path": "switch2/app/map.cjs",
+        "comparison": "changed"
+      },
+      {
+        "path": "switch2/app/mounted-save.cjs",
+        "comparison": "changed"
+      },
+      {
+        "path": "switch2/app/native-worker.cjs",
+        "comparison": "changed"
+      },
+      {
+        "path": "switch2/app/probe-write-size.cjs",
+        "comparison": "added"
+      },
+      {
+        "path": "switch2/app/qualify.cjs",
+        "comparison": "changed"
+      },
+      {
+        "path": "switch2/app/rpc.cjs",
+        "comparison": "changed"
+      },
+      {
+        "path": "switch2/app/sdk-proxy-code.json",
+        "comparison": "identical"
+      },
+      {
+        "path": "switch2/app/session.cjs",
+        "comparison": "identical"
+      },
+      {
+        "path": "switch2/app/thread-code.json",
+        "comparison": "identical"
+      },
+      {
+        "path": "switch2/app/thread-scheduling-reference.json",
+        "comparison": "identical"
+      },
+      {
+        "path": "switch2/app/timing-code.json",
+        "comparison": "identical"
+      },
+      {
+        "path": "switch2/app/timing.cjs",
+        "comparison": "changed"
+      },
+      {
+        "path": "switch2/app/worker.cjs",
+        "comparison": "changed"
+      },
+      {
+        "path": "switch2/cleanup-scratch.cjs",
+        "comparison": "changed"
+      },
+      {
+        "path": "switch2/firmware-dump.cjs",
+        "comparison": "added"
+      },
+      {
+        "path": "switch2/hold.cjs",
+        "comparison": "added"
+      },
+      {
+        "path": "switch2/memory/cache-address-plan.cjs",
+        "comparison": "identical"
+      },
+      {
+        "path": "switch2/memory/cache-mount-sdk.json",
+        "comparison": "identical"
+      },
+      {
+        "path": "switch2/memory/cache-mount.cjs",
+        "comparison": "identical"
+      },
+      {
+        "path": "switch2/memory/capture-workers.cjs",
+        "comparison": "identical"
+      },
+      {
+        "path": "switch2/memory/fs-memory-control.cjs",
+        "comparison": "changed"
+      },
+      {
+        "path": "switch2/memory/fs-root-control.cjs",
+        "comparison": "changed"
+      },
+      {
+        "path": "switch2/memory/mounted-rom.cjs",
+        "comparison": "changed"
+      },
+      {
+        "path": "switch2/memory/native-links.cjs",
+        "comparison": "identical"
+      },
+      {
+        "path": "switch2/memory/normalized-path.cjs",
+        "comparison": "identical"
+      },
+      {
+        "path": "switch2/memory/paths.cjs",
+        "comparison": "identical"
+      },
+      {
+        "path": "switch2/memory/probe-reserved-gap.cjs",
+        "comparison": "changed"
+      },
+      {
+        "path": "switch2/memory/run-control.cjs",
+        "comparison": "changed"
+      },
+      {
+        "path": "switch2/memory/session-tools.cjs",
+        "comparison": "identical"
+      },
+      {
+        "path": "switch2/memory/session.cjs",
+        "comparison": "identical"
+      },
+      {
+        "path": "switch2/memory/signed-cache-plan.cjs",
+        "comparison": "identical"
+      },
+      {
+        "path": "switch2/memory/verify-proof.cjs",
+        "comparison": "identical"
+      },
+      {
+        "path": "switch2/memory/wave-history.cjs",
+        "comparison": "added"
+      },
+      {
+        "path": "switch2/memory/wave-overlap.cjs",
+        "comparison": "added"
+      },
+      {
+        "path": "switch2/memory/wave-overlap.test.cjs",
+        "comparison": "added"
+      },
+      {
+        "path": "switch2/pipeline.cjs",
+        "comparison": "changed"
+      },
+      {
+        "path": "switch2/process/bind-notifier.cjs",
+        "comparison": "identical"
+      },
+      {
+        "path": "switch2/process/client.cjs",
+        "comparison": "identical"
+      },
+      {
+        "path": "switch2/process/fs-execute.cjs",
+        "comparison": "identical"
+      },
+      {
+        "path": "switch2/process/qualify.cjs",
+        "comparison": "changed"
+      },
+      {
+        "path": "switch2/process/test-function.S",
+        "comparison": "identical"
+      },
+      {
+        "path": "switch2/process/test-function.bin",
+        "comparison": "identical"
+      },
+      {
+        "path": "switch2/retained/cache-shape.cjs",
+        "comparison": "changed"
+      },
+      {
+        "path": "switch2/retained/cache-shape.test.cjs",
+        "comparison": "added"
+      },
+      {
+        "path": "switch2/retained/find-metadata.cjs",
+        "comparison": "changed"
+      },
+      {
+        "path": "switch2/retained/link-anchor.cjs",
+        "comparison": "added"
+      },
+      {
+        "path": "switch2/retained/links.cjs",
+        "comparison": "identical"
+      },
+      {
+        "path": "switch2/retained/lower-window.cjs",
+        "comparison": "identical"
+      },
+      {
+        "path": "switch2/retained/metadata-window.cjs",
+        "comparison": "added"
+      },
+      {
+        "path": "switch2/retained/metadata-window.test.cjs",
+        "comparison": "added"
+      },
+      {
+        "path": "switch2/retained/pool-anchor.test.cjs",
+        "comparison": "added"
+      },
+      {
+        "path": "switch2/retained/retained-memory.cjs",
+        "comparison": "identical"
+      },
+      {
+        "path": "switch2/ro/bind-sessions.cjs",
+        "comparison": "identical"
+      },
+      {
+        "path": "switch2/ro/control.cjs",
+        "comparison": "changed"
+      },
+      {
+        "path": "switch2/ro/copy-loader-root.cjs",
+        "comparison": "identical"
+      },
+      {
+        "path": "switch2/ro/export-handle.cjs",
+        "comparison": "identical"
+      },
+      {
+        "path": "switch2/ro/files.cjs",
+        "comparison": "changed"
+      },
+      {
+        "path": "switch2/ro/gate.cjs",
+        "comparison": "identical"
+      },
+      {
+        "path": "switch2/ro/install-retained.cjs",
+        "comparison": "changed"
+      },
+      {
+        "path": "switch2/ro/launch.cjs",
+        "comparison": "changed"
+      },
+      {
+        "path": "switch2/ro/layout.cjs",
+        "comparison": "changed"
+      },
+      {
+        "path": "switch2/ro/layout.test.cjs",
+        "comparison": "added"
+      },
+      {
+        "path": "switch2/ro/ncm.cjs",
+        "comparison": "added"
+      },
+      {
+        "path": "switch2/ro/objects.cjs",
+        "comparison": "identical"
+      },
+      {
+        "path": "switch2/ro/payload/layout.ld",
+        "comparison": "identical"
+      },
+      {
+        "path": "switch2/ro/payload/main",
+        "comparison": "identical"
+      },
+      {
+        "path": "switch2/ro/payload/main.c",
+        "comparison": "identical"
+      },
+      {
+        "path": "switch2/ro/payload/manifest.json",
+        "comparison": "identical"
+      },
+      {
+        "path": "switch2/ro/payload/process.c",
+        "comparison": "identical"
+      },
+      {
+        "path": "switch2/ro/payload/start.S",
+        "comparison": "identical"
+      },
+      {
+        "path": "switch2/ro/prepare-event.cjs",
+        "comparison": "identical"
+      },
+      {
+        "path": "switch2/ro/prepare-workers.cjs",
+        "comparison": "identical"
+      },
+      {
+        "path": "switch2/ro/probe.cjs",
+        "comparison": "identical"
+      },
+      {
+        "path": "switch2/ro/process-test.cjs",
+        "comparison": "identical"
+      },
+      {
+        "path": "switch2/ro/runtime.cjs",
+        "comparison": "changed"
+      },
+      {
+        "path": "switch2/ro/test-gate.cjs",
+        "comparison": "identical"
+      },
+      {
+        "path": "switch2/ro/test-sm.cjs",
+        "comparison": "changed"
+      },
+      {
+        "path": "switch2/ro/worker-control.cjs",
+        "comparison": "changed"
+      },
+      {
+        "path": "switch2/tools/endpoint.cjs",
+        "comparison": "changed"
+      },
+      {
+        "path": "switch2/tools/fs-memory.cjs",
+        "comparison": "changed"
+      },
+      {
+        "path": "switch2/tools/fs-root-pid.cjs",
+        "comparison": "identical"
+      },
+      {
+        "path": "target.test.cjs",
+        "comparison": "added"
+      },
+      {
+        "path": "test.cjs",
+        "comparison": "added"
+      }
+    ]
+  },
+  "mirror": {
+    "url": "https://github.com/xlanor/civswitch-kit.git",
+    "commit": "9a9589147e9852120e0c04e2847ea38b347fe7ab",
+    "trackedFiles": 204,
+    "cleanCheckout": true
+  },
+  "offlineTests": {
+    "host": {
+      "passed": 39,
+      "failed": 0,
+      "log": "host-tests.log"
+    },
+    "bridgeUnconfigured": {
+      "passed": 1,
+      "failed": 2,
+      "cause": "Distributed PC_IP placeholder",
+      "log": "offline-tests.log"
+    },
+    "bridgeConfiguredTemporaryCopy": {
+      "passed": 3,
+      "failed": 0,
+      "change": "PC_IP=192.0.2.1 in isolated fixture; checkout unchanged",
+      "log": "bridge-configured-tests.log"
+    }
+  }
+}

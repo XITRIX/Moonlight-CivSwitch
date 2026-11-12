@@ -1,0 +1,30 @@
+{
+  "moduleHash": "cf649bbd",
+  "functions": {
+    "sizing": {
+      "offset": 1348192,
+      "size": 204,
+      "hex": "7f2303d5ff8302d1fd7b07a9f65708a9f44f09a9fdc30191f503032af60302aa"
+    },
+    "create": {
+      "offset": 1348416,
+      "size": 500,
+      "hex": "7f2303d5ffc303d1fd7b0ba9f85f0ca9f6570da9f44f0ea9fdc30291f303042a"
+    },
+    "readback": {
+      "offset": 45763712,
+      "size": 240,
+      "hex": "7f2303d5ff0301d1fd7b03a9fdc30091082840b9e60301aa1f09007160040054"
+    },
+    "destroy": {
+      "offset": 1350448,
+      "size": 488,
+      "hex": "7f2303d5fd7bbca9f70b00f9f65702a9f44f03a9fd03009108604039f30300aa"
+    },
+    "ready": {
+      "offset": 1797840,
+      "size": 48,
+      "hex": "7f2303d5ff8300d1fd7b01a9fd430091082440a9e0030091e82700a90d5c0294"
+    }
+  }
+}

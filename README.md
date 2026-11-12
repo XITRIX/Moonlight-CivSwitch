@@ -1,7 +1,7 @@
 # Moonlight for CivSwitch
 
 Stream your PC games to Nintendo Switch 2 through Civilization VII.
-An experimental [Moonlight](https://moonlight-stream.org/) client running inside
+A [Moonlight](https://moonlight-stream.org/) client running inside
 [Gezine’s CivSwitch](https://github.com/Gezine/CivSwitch), with
 Sunshine pairing, a game library, controller input, video and stereo audio.
 
@@ -9,12 +9,31 @@ Sunshine pairing, a game library, controller input, video and stereo audio.
 physical cartridge, version **1.0.0**, with CivSwitch already set up. Compatibility
 with other Switch models has not been established.
 
-## Performance
+## Native rendering
 
-- Use Boost mode to get true 1080p (it will disable your touchscreen capabilities)
-- **1080p, 60 FPS, 50 Mbps:** stable, smooth gameplay.
-- **1080p, 60 FPS, 80 Mbps:** almost playable, but occasional
-  stutters can make gameplay unpleasant.
+Moonlight draws its interface with NanoVG and Vulkan at 1920×1080 and presents
+H.264/AV1 video directly through the same native display. Boost is not required
+for 1080p output. The Launcher, Moonlight and streaming share one retained
+display; app transitions release view leases while keeping its device and
+swapchain alive. There is no output-renderer setting.
+
+Use the matching CivHomebrew native Launcher (`0.4.3-nanovg.12`, core `0.4.3-sdk.8`, SDK
+1.3.5) and restart Civ VII after the upgrade. Earlier builds completed four installed Launcher → Moonlight → stream → Launcher roundtrips on
+Switch 2, using H.264 and AV1 on one retained native device/swapchain. The user
+confirmed picture, sound, overlay spacing and centered button labels. These were
+short 1080p60/20 Mbps requested Desktop streams, rather than a sustained 60 FPS
+performance qualification. The earlier direct AV1 workload measured 57.2 FPS
+with Boost off; Boost state was not re-confirmed for this newer test.
+Stream sources up to 4K are scaled to the shared 1080p output; 4K is capped at
+60 FPS. See [rendering and app switching](docs/native-rendering.md) and
+[earlier native video evidence](docs/native-video-evidence.md).
+
+## Shared renderer development
+
+Launcher, Hello CivHomebrew, Moonlight and Doom pin **CivHomebrew-SDK 1.3.5**. Renderer fixes belong
+in [CivHomebrew-SDK](https://github.com/XITRIX/CivHomebrew-SDK). Each app builds
+offline from the same verified release. See [native rendering](docs/native-rendering.md) for integration and
+validation, including the restart required when upgrading the resident renderer.
 
 ## Screenshots
 
@@ -43,7 +62,7 @@ connect the PC and Switch to the same local network. Choose either method below.
 
 ### 1. CivHomebrew — recommended
 
-1. Set up [CivHomebrew](https://github.com/XITRIX/CivHomebrew) on your Switch.
+1. Set up [CivHomebrew](https://github.com/XITRIX/CivHomebrew) with its matching native Launcher on your Switch.
 2. Get a `moonlight.civapp` package, or build one using the instructions below.
 3. In CivHomebrew, open **Y Options → FTP** and enable the FTP server.
 4. Connect an FTP client to the Switch (default port **5000**) and upload
@@ -69,17 +88,18 @@ python3 tools/send_ui.py SWITCH_IP
 
 Replace `SWITCH_IP` with your console’s local IP address. The sender uploads the
 streaming runtime and app automatically. Keep the terminal open while using it;
-close Moonlight before uploading another payload.
+close Moonlight before uploading another payload. The raw loader has no Launcher
+view to return to; use CivHomebrew for app switching.
 
 ## First launch
 
 Choose **Pair new host**, enter your PC’s IP address, and approve the displayed
 PIN in Sunshine. Select the paired PC, then choose a game or Desktop to stream.
 
-- **D-pad / A:** navigate and select. **B:** go back or close Moonlight from Hosts.
+- **D-pad / A:** navigate and select. **B:** go back; from Hosts, return to Launcher.
 - **− and + together:** open the left-side menu, titled with the connected host's name. **More** contains **Mouse by Gamepad**, **Show keyboard** and **Touchscreen mode**. **Logout** opens **Disconnect** / **Terminate**: Disconnect keeps the PC app running; Terminate also closes it. **B** goes back through the menu and returns to streaming.
 - A running PC app appears first in the library; other cards are dimmed and disabled until it stops. Use **Terminate app** at the top right to close it.
-- **Settings:** adjust resolution, frame rate, bitrate and frame pacing.
+- **Settings:** adjust resolution, frame rate, bitrate, codec and frame pacing.
   Defaults are **720p, 60 FPS, 20 Mbps**.
 
 Pairing and settings are saved between sessions.

@@ -28,7 +28,7 @@ function transport(wire,{stall=false,signal}={}){
    throw Error('Unexpected native call '+name);
   }
  };
- vm.createContext(context);vm.runInContext(fs.readFileSync(path.join(__dirname,'../app/src/platform/native-network.js'),'utf8'),context);
+ vm.createContext(context);vm.runInContext(fs.readFileSync(path.join(__dirname,'../app/vendor/civhomebrew-sdk.js'),'utf8'),context);vm.runInContext(fs.readFileSync(path.join(__dirname,'../app/src/platform/native-network.js'),'utf8'),context);
  return {run:options=>context.window.MoonlightNative.create().requestHttp({host:'192.168.1.4',port:47989,path:'/test',signal,...options}),
   check:()=>{assert.equal(allocated.size,0);assert.equal(closed,1);},request:()=>request};
 }

@@ -1,0 +1,127 @@
+{
+  "format": "moonlight.civ7.renderer",
+  "version": 2,
+  "contract": {
+    "abi": 2,
+    "nativeABI": 1213093427,
+    "viewport": {
+      "width": 1920,
+      "height": 1080
+    },
+    "buffers": {
+      "input": 4096,
+      "storage": 48418816
+    },
+    "video": {
+      "frameBytes": 12533760,
+      "frameCount": 3,
+      "framesOffset": 2424832,
+      "slots": 2,
+      "slotWords": {
+        "base": 45056,
+        "slotBytes": 32,
+        "sequence": 0,
+        "width": 4,
+        "height": 8,
+        "stride": 12,
+        "sliceHeight": 16,
+        "color": 20
+      },
+      "sampling": [
+        "texel-buffer",
+        "storage-bilinear"
+      ]
+    },
+    "ui": {
+      "offset": 40030208,
+      "pageBytes": 4194304,
+      "pages": 2,
+      "vertices": 6,
+      "instances": 106,
+      "blending": "source-alpha"
+    },
+    "badge": {
+      "instance": 106,
+      "words": {
+        "visible": 45312,
+        "x": 45316,
+        "y": 45320,
+        "width": 45324,
+        "height": 45328
+      },
+      "offset": 27492352,
+      "bytes": 245760
+    },
+    "bindings": {
+      "input": 0,
+      "storage": 1,
+      "luma": 2,
+      "chroma": 3
+    },
+    "control": {
+      "mode": 8,
+      "current": 12,
+      "size": 16,
+      "currentStride": 64,
+      "currentSliceHeight": 68,
+      "currentColor": 72,
+      "nativeReady": 24,
+      "nativeApplied": 32,
+      "nativeSequence": 256,
+      "nativeIndex": 260,
+      "nativeWidth": 264,
+      "nativeHeight": 268,
+      "nativeStride": 272,
+      "nativeSliceHeight": 276,
+      "nativeColor": 280,
+      "nativeCommit": 284,
+      "frameCounter": 512
+    },
+    "uiControl": {
+      "uiMagic": 49152,
+      "uiEpoch": 49156,
+      "uiSequence": 49160,
+      "uiPage": 49164,
+      "uiApplied": 49168,
+      "uiCursor": 49172,
+      "uiOverlay": 49176,
+      "uiTouchItem": 49180,
+      "cmdSequence": 49184,
+      "cmdOp": 49188,
+      "cmdItem": 49192,
+      "cmdValue": 49196,
+      "cmdPage": 49200,
+      "cmdEpoch": 49204,
+      "uiShown": 49208,
+      "uiEdit": 49212,
+      "hostAck": 49216,
+      "hostBusy": 49220
+    },
+    "input": {
+      "pad": 0,
+      "touch": 128,
+      "previousButtons": 784,
+      "chordFrames": 788,
+      "stickRepeat": 792,
+      "touchHeld": 796
+    },
+    "initialState": "zero"
+  },
+  "blob": {
+    "path": "shaders.bin",
+    "bytes": 80144,
+    "sha256": "eeb6077d009d7eedff545cfe7fb148e7bdf253b5845f9f303412c0fdb0f432d4"
+  },
+  "sources": {
+    "publish.comp": "229bde753bc835c376e0fa0f1d0b7b9cb271ccdac9887d22a972f9db97df24ef",
+    "storage.glsl": "81c18548664c68dfcf7bb9b2ce683234dbcd08b161a6c1756555ace8a912d3e6",
+    "ui-control.glsl": "b27362edb2d15a0c907c5a5f4eebf4ae4eb32872a23bea562831fbf0fed63ee0",
+    "ui.frag": "a8c0dff07b50f4c609c8f35d8a6f67ee3418989dd9a462af2199225f35fb8c08",
+    "ui.vert": "8a00c933c615a384e4efa773b455bdc6bd616f3730db624ca05ce073952d2d7c",
+    "video-storage.frag": "bd7c0b6877d11fafa3d691d01498d5039651f434d6dcba9fdcf7ed66d0b5fdb9",
+    "video.frag": "eb48b715e2c0bbfa9591cf40c0757dbd65b166ca1e8effed1b4cd53cb0f880d5",
+    "video.glsl": "bdc0b6a4ea437eecfd441581344dc8d671afbc99a1f5f444e3a993c643edec38",
+    "video.vert": "e582aff5ecbd58498a99f19d32bfbdb74b43a6df94b90da128fe3d4b99dc5bac",
+    "layout.glsl": "1557ce904a8d292197fc4a8b0f90ce68183c40d704806c7c5454ab1eb36c1e2a"
+  }
+}

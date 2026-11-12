@@ -10,10 +10,10 @@ test('stop cancels core I/O immediately, wakes the loop, and frees media only af
  const scope={setTimeout,clearTimeout,Date,performance,Uint8Array,window:null,__moonlightStreamFactory:async options=>{platform=options.moonlightPlatform;return core;},
   MoonlightTelemetry:{now:()=>performance.now(),create:()=>({sample:()=>({})}),readCore:()=>null},
   MoonlightNative:{create:()=>({})},MoonlightStreamIO:{create:()=>({stats:{},interrupt:()=>{interrupted=true;},close:()=>{assert.equal(tasks,0);assert(mediaClosed);closed=true;}})},
-  MoonlightStreamMedia:{create:()=>({drainVideo:()=>{},finishVideo:()=>{},drainAudio:()=>{},stats:()=>({}),close:()=>{assert.equal(tasks,0);mediaClosed=true;}})},
+  MoonlightStreamMedia:{create:()=>({drainVideo:()=>{},finishVideo:()=>{},drainAudio:()=>{},stats:()=>({}),close:async()=>{assert.equal(tasks,0);await new Promise(r=>setTimeout(r,5));mediaClosed=true;}})},
   MoonlightSessionProtocol:{create:()=>({launch:async()=>({host:'host',version:'7',url:'rtsp://host',key:new Uint8Array(16),keyId:1,codecSupport:1})})}};
  scope.window=scope;vm.createContext(scope);vm.runInContext(fs.readFileSync('app/src/streaming/stream-client.js','utf8'),scope);
- const client=scope.MoonlightStreamClient.create({host:'host',app:{id:1},onRumble:(...args)=>rumble.push(args),onStats:s=>{if(s.state===2)ready();}});
+ const client=scope.MoonlightStreamClient.create({renderer:'native-gpu-texture',host:'host',app:{id:1},onRumble:(...args)=>rumble.push(args),onStats:s=>{if(s.state===2)ready();}});
  assert.equal(client.mouseScroll(0,120),-1);
  const done=client.start();await running;assert.equal(client.mouseScroll(5,-120),-2);assert.deepEqual(scroll,[[5,-120]],'scroll forwards wheel units and queue rejection');
  const stopped=client.stop();assert.equal(client.mouseScroll(0,120),-1);assert.equal(scroll.length,1);assert.equal(stopped,done);assert(interrupted);assert.equal(state,4,'stop does not wait for another animation callback');
@@ -34,7 +34,7 @@ async function failVideoStartup(nativeError){
   MoonlightStreamMedia:{create:()=>({videoSetup(){if(nativeError)throw nativeError;return -1;},drainVideo(){},finishVideo(){},drainAudio(){},stats:()=>({}),close(){assert.equal(tasks,0);mediaClosed=true;}})},
   MoonlightSessionProtocol:{create:()=>({launch:async()=>({host:'host',version:'7',url:'rtsp://host',key:new Uint8Array(16),keyId:1,codecSupport:1})})}};
  scope.window=scope;vm.createContext(scope);vm.runInContext(fs.readFileSync('app/src/streaming/stream-client.js','utf8'),scope);
- const result=await scope.MoonlightStreamClient.create({host:'host',app:{id:1},mode:{width:1280,height:720,fps:60,bitrate:5000},log:message=>messages.push(message),onError:error=>{observed=error;}}).start();
+ const result=await scope.MoonlightStreamClient.create({renderer:'native-gpu-texture',host:'host',app:{id:1},mode:{width:1280,height:720,fps:60,bitrate:5000},log:message=>messages.push(message),onError:error=>{observed=error;}}).start();
  assert(mediaClosed);assert(ioClosed);assert.equal(observed,result.error);
  return {result,messages};
 }

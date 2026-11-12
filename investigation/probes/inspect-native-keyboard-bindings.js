@@ -1,0 +1,14 @@
+/* Read-only, bounded main import/call-site inspection. Does not activate IME. */
+var c=CivNanoVGSession.current.renderer.owner.context,base=main_base,modOffset=Number(c.native.read32(base+4n)),mod=base+BigInt(modOffset),tags={};
+if(c.native.read32(mod)!==0x30444f4dn)throw Error('Main MOD0 mismatch');
+var dynamic=mod+BigInt.asIntN(32,c.native.read32(mod+4n));
+for(var i=0;i<128;i++){var tag=Number(c.native.read64(dynamic+BigInt(i*16)));if(!tag)break;tags[tag]=c.native.read64(dynamic+BigInt(i*16+8));}
+function ptr(p){return p<base?base+p:p;}
+var count=Number(c.native.read32(ptr(tags[4])+4n));if(count<1||count>200000||tags[10]>0x800000n)throw Error('Symbol bounds');
+var symbols=c.read(ptr(tags[6]),count*24),strings=c.read(ptr(tags[5]),Number(tags[10])),imports=new Map(),slots=new Map(),stubs=new Map(),calls=[];
+for(var i=0;i<count;i++){if(symbols.readUInt16LE(i*24+6)!==0)continue;var at=symbols.readUInt32LE(i*24),name='';for(var j=at;j<strings.length&&j<at+512&&strings[j];j++)name+=String.fromCharCode(strings[j]);if(/swkbd/.test(name))imports.set(i,name);}
+for(var pair of [[23,2],[7,8]]){var length=Number(tags[pair[1]]||0n);if(!length)continue;if(length%24||length>9600000)throw Error('Relocation bounds');var relocs=c.read(ptr(tags[pair[0]]),length);for(var at=0;at<length;at+=24){var r=relocs.readBigUInt64LE(at+8),name=imports.get(Number(r>>32n));if(name&&[1025,1026].includes(Number(r&0xffffffffn)))slots.set(Number(ptr(relocs.readBigUInt64LE(at))-base),name);}}
+var end=modOffset&~4095,begin=Date.now();if(end<0x100000||end>0x8000000)throw Error('Code bounds');
+for(var off=0;off<end;off+=0x40000){var bytes=c.read(base+BigInt(off),Math.min(0x40000,end-off)),words=new Uint32Array(bytes.buffer,bytes.byteOffset,bytes.byteLength/4);for(var i=0;i+3<words.length;i++){var op=words[i],ld=words[i+1];if((op&0x9f00001f)!==(0x90000010|0)||(ld>>>22&0x3ff)!==0x3e5)continue;var delta=(op>>>5&0x7ffff)*4+(op>>>29&3);if(delta&0x100000)delta-=0x200000;var pc=off+i*4,slot=(pc&~4095)+delta*4096+(ld>>>10&0xfff)*8;if(slots.has(slot))stubs.set(pc,slots.get(slot));}if(Date.now()-begin>25000)throw Error('Stub scan deadline');await new Promise(function(r){setTimeout(r,0);});}
+for(var off=0;off<end;off+=0x40000){var bytes=c.read(base+BigInt(off),Math.min(0x40000,end-off)),words=new Uint32Array(bytes.buffer,bytes.byteOffset,bytes.byteLength/4);for(var i=0;i<words.length;i++){var op=words[i];if(op>>>26!==37&&op>>>26!==5)continue;var pc=off+i*4,target=pc+((op<<6)>>4),name=stubs.get(target);if(!name)continue;var start=Math.max(0,pc-192);calls.push({pc:pc,target:target,name:name,start:start,hex:c.read(base+BigInt(start),384).toString('hex')});if(calls.length>128)throw Error('Caller bound');}if(Date.now()-begin>50000)throw Error('Caller scan deadline');await new Promise(function(r){setTimeout(r,0);});}
+return {codeEnd:end,elapsedMs:Date.now()-begin,slots:Array.from(slots),stubs:Array.from(stubs),calls:calls};

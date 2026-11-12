@@ -35,7 +35,9 @@ as its title. **More → Mouse by Gamepad** opens the controller mouse overlay,
 **More → Show keyboard** opens controller keyboard mode, while
 **More → Touchscreen mode** offers Trackpad / Touchpad choices. Mode changes
 apply immediately and are saved for future streams; a failed save leaves the
-active mode unchanged. **Logout** opens the existing alert: choose **Disconnect**
+active mode unchanged. **More → Performance overlay**, after Touchscreen mode,
+toggles statistics On / Off immediately and saves the preference for future
+streams. A failed save keeps the previous setting. **Logout** opens the existing alert: choose **Disconnect**
 to leave the PC app running, or **Terminate** to disconnect and close it. B in
 the alert returns to Logout; B in submenus goes back one level, and B at the
 drawer root returns to the stream. Outside local controls, B is sent
@@ -62,7 +64,7 @@ statistics during playback. Missing host data appears as a dash.
 ## Performance measurements
 
 `telemetry.js` samples once per second using actual elapsed monotonic time where
-available. FPS counts decoded frames and submissions to the shared Gameface
+available. FPS counts decoded frames and submissions to the shared previous UI renderer
 texture; it does not measure scanout. Network RX includes protocol/FEC/audio
 traffic. RTT and RTT variation come from ENet's upstream estimate, rather than
 one-way video delay. Frame receive time spans the first packet to assembly; core
@@ -245,7 +247,7 @@ packet cannot satisfy a measured sample. Sparse samples are used for the final
   An owned NVN sync allows asynchronous transfer; the app checks completion before
   publication and decoder-slot release. This is a GPU copy, not a zero-copy
   decoder surface. No decoded pixels cross JS.
-  Gameface displays a private `live:/moonlight-experiment/<id>` image, reusing its
+  previous UI renderer displays a private `live:/moonlight-experiment/<id>` image, reusing its
   handle through dynamic-image invalidation. There is no PNG encoding, Base64,
   JavaScript color conversion, or per-frame texture recreation on this path.
   The default request is 1280×720, 60 fps, 20000 kbit/s. Native stream settings
@@ -465,7 +467,7 @@ python3 -B investigation/probes/send-runtime-test.py 192.168.1.182 \
 Measured hardware outcomes and limitations are kept in
 [live streaming evidence](../investigation/evidence/streaming-live.md).
 The user confirmed live video and audio, with roughly 1 fps and laggy sound in
-the first integrated run. The native Gameface texture bridge now displays generated and decoded frames; see
+the first integrated run. The native previous UI renderer texture bridge now displays generated and decoded frames; see
 [direct rendering findings](../investigation/evidence/direct-rendering.md).
 
 Launch negotiation reference:
@@ -531,3 +533,12 @@ polling for up to 15 seconds, since acknowledgment can precede process cleanup.
 The library remains busy until the old application stops, then refreshes its
 Running badge and enabled cards. A host that stays busy produces an explicit
 error instead of a false success; the kill request is never repeated by polling.
+
+## Native output and AV1
+
+Moonlight uses the shared native UI/display service for its interface and
+H.264/AV1 output. 120 Hz control and source resolutions through 4K are available;
+the shared display stays 1920×1080. See [current rendering and app switching](native-rendering.md)
+for lifetime/ownership, and [earlier native video evidence](native-video-evidence.md)
+for the separately recorded console workloads. Host rendering and lifecycle
+checks do not establish a new console streaming performance result.
