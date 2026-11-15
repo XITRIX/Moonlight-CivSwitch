@@ -16,6 +16,8 @@ jobs:
     timeout-minutes: 60
     env:
       CHROME_BIN: /usr/bin/google-chrome
+      # Only this disposable runner opts out of Chrome's Linux sandbox.
+      CHROME_NO_SANDBOX: '1'
     steps:
       - uses: actions/checkout@v7
         with:

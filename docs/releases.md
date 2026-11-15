@@ -27,6 +27,11 @@ every file to a draft release, verifies remote names/sizes/digests, then publish
 it as Latest, ready for CivHomebrew's **X Menu → Check app updates**. Public
 repository visibility is required for console discovery without account tokens.
 
+Browser checks use a fresh temporary Chrome profile and a 30-second startup
+deadline. The disposable Ubuntu runner sets `CHROME_NO_SANDBOX=1` for these local
+fixtures and avoids `/dev/shm`; developer launches keep Chrome's sandbox enabled.
+Startup failures report the exit code or signal and recent browser stderr.
+
 Versions must be newer than the latest stable release. Prerelease/build suffixes
 and duplicate tags/releases are rejected; published files are never overwritten.
 Release runs are serialized and detect a new latest release appearing during the

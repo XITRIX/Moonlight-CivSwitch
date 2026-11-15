@@ -23,7 +23,10 @@
   result.codec=codec;return result;
  }
  function create(fs){return {
-  load:function(){var text=fs.read();if(text===null)return defaults();var value=JSON.parse(text);if(!value||value.version!==1)throw Error("Unsupported stream settings");return validate(value.mode);},
+  load:function(){var text=fs.read();if(text===null)return defaults();var value=JSON.parse(text);if(!value||value.version!==1)throw Error("Unsupported stream settings");
+   // Preserve the other preferences saved while the isolated VRR experiment ran.
+   if(value.mode&&value.mode.videoPacing==="vrr")value.mode.videoPacing="smooth";
+   return validate(value.mode);},
   save:function(mode){var text=JSON.stringify({version:1,mode:validate(mode)});fs.write(text);fs.commit();if(fs.read()!==text)throw Error("Stream settings could not be verified");}
  };}
  function resolveBitrate(mode){return mode.bitrate==="auto"?50000:mode.bitrate;}

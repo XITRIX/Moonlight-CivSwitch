@@ -2,6 +2,57 @@ const test=require('node:test'),assert=require('node:assert/strict'),fs=require(
 const {spawn}=require('node:child_process');
 const {once}=require('node:events');
 const chromeCleanup=require('./helpers/chrome-cleanup.cjs');
+const {chromeArgs,waitForChromePort}=require('./helpers/chrome-startup.cjs');
+const {EventEmitter}=require('node:events');
+const {PassThrough}=require('node:stream');
+
+function startupFixture(t){
+ const profile=fs.mkdtempSync(path.join(os.tmpdir(),'chrome-startup-test-'));
+ t.after(()=>fs.rmSync(profile,{recursive:true,force:true}));
+ const chrome=Object.assign(new EventEmitter(),{exitCode:null,signalCode:null,stderr:new PassThrough()});
+ return {chrome,profile};
+}
+
+test('Chrome startup detects signal termination and retains the browser diagnostic',async t=>{
+ const {chrome,profile}=startupFixture(t);
+ const ready=waitForChromePort(chrome,profile,{timeoutMs:1000,pollMs:1});
+ chrome.stderr.write('No usable sandbox!');chrome.signalCode='SIGTRAP';
+ await assert.rejects(ready,/terminated by SIGTRAP\nNo usable sandbox!/);
+ assert.equal(chrome.listenerCount('error'),0);assert.equal(chrome.stderr.listenerCount('data'),0);
+});
+
+test('Chrome startup reports executable failures, exit codes and timeout stderr',async t=>{
+ for(const reason of ['spawn','exit','timeout']){
+  const {chrome,profile}=startupFixture(t);
+  const ready=waitForChromePort(chrome,profile,{timeoutMs:20,pollMs:1});
+  chrome.stderr.write('browser startup diagnostic');
+  if(reason==='spawn')chrome.emit('error',Error('spawn chrome ENOENT'));
+  if(reason==='exit')chrome.exitCode=17;
+  const message=reason==='spawn'?'spawn chrome ENOENT':reason==='exit'?'exited with code 17':'timed out after 20 ms';
+  await assert.rejects(ready,error=>error.message.includes(message)&&error.message.includes('browser startup diagnostic'));
+ }
+});
+
+test('Chrome startup waits through missing, empty and partial port files',async t=>{
+ const {chrome,profile}=startupFixture(t);
+ const ready=waitForChromePort(chrome,profile,{timeoutMs:1000,pollMs:1});
+ const file=path.join(profile,'DevToolsActivePort');
+ for(const content of ['', '431', 'not-a-port\n', '0\n', '65536\n']){
+  fs.writeFileSync(file,content);
+  assert.equal(await Promise.race([ready.then(()=>true),new Promise(r=>setTimeout(()=>r(false),5))]),false);
+ }
+ fs.writeFileSync(file,'43123\n/devtools/browser/test\n');
+ assert.equal(await ready,43123);
+});
+
+test('CI sandbox opt-in is scoped to Linux and isolated profiles remain required',()=>{
+ const flags=(platform,env)=>chromeArgs('/tmp/test-profile',{platform,env});
+ assert(!flags('linux',{}).includes('--no-sandbox'));
+ assert(!flags('darwin',{CHROME_NO_SANDBOX:'1'}).includes('--no-sandbox'));
+ const ci=flags('linux',{CHROME_NO_SANDBOX:'1'});
+ assert(ci.includes('--no-sandbox'));assert(ci.includes('--disable-dev-shm-usage'));
+ assert(ci.includes('--user-data-dir=/tmp/test-profile'));
+});
 
 test('browser cleanup waits for a child profile writer after the main process exits',async()=>{
  const profile=fs.mkdtempSync(path.join(os.tmpdir(),'chrome-cleanup-test-'));

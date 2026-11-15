@@ -20,6 +20,13 @@ test('stream settings survive a new store and reject unsupported stream modes',(
  assert.deepEqual(plain(store.load()),mode);
  for(const text of ['{',JSON.stringify({version:2,mode}),JSON.stringify({version:1,mode:{...mode,fps:0}})]){file=text;assert.throws(()=>store.load());assert.equal(file,text);}
 });
+test('saved experimental VRR falls back to Smooth without losing other preferences or rewriting storage',()=>{
+ const mode={...plain(settings.defaults()),width:1920,height:1080,fps:120,bitrate:50000,showStats:true,rumble:false,touchMode:'touchpad',mouse:{speed:71,swapButtons:true,invertScroll:true}};
+ const file=JSON.stringify({version:1,mode:{...mode,videoPacing:'vrr'}});
+ const store=settings.create({read:()=>file,write:()=>assert.fail('load must not write'),commit:()=>assert.fail('load must not commit')});
+ assert.deepEqual(plain(store.load()),mode);
+ assert.throws(()=>settings.validate({...mode,videoPacing:'vrr'}),/Invalid video pacing/);
+});
 test('save failures are reported so the settings screen can remain open',()=>{
  for(const stage of ['write','commit','readback']){
   const store=settings.create({read:()=>null,write:()=>{if(stage==='write')throw Error('disk full');},commit:()=>{if(stage==='commit')throw Error('commit failed');}});

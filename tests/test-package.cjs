@@ -8,7 +8,7 @@ const os=require('node:os');
 const path=require('node:path');
 const {spawn}=require('node:child_process');
 const chromeCleanup=require('./helpers/chrome-cleanup.cjs');
-const pause=ms=>new Promise(resolve=>setTimeout(resolve,ms));
+const {chromeArgs,waitForChromePort}=require('./helpers/chrome-startup.cjs');
 (async()=>{
  const pkg=JSON.parse(fs.readFileSync(process.argv[2], 'utf8'));
  const root=path.join(__dirname,'..');
@@ -25,20 +25,11 @@ const pause=ms=>new Promise(resolve=>setTimeout(resolve,ms));
  assert.equal(pkg.icon,'data:image/png;base64,'+fs.readFileSync(path.join(root,manifest.icon)).toString('base64'));
 
  const profile=fs.mkdtempSync(path.join(os.tmpdir(),'civapp-smoke-'));
- const chrome=spawn(process.env.CHROME_BIN||'/Applications/Google Chrome.app/Contents/MacOS/Google Chrome',[
-  '--headless','--disable-gpu','--disable-extensions','--no-first-run','--no-default-browser-check',
-  '--remote-debugging-port=0','--user-data-dir='+profile,'about:blank'
- ],{stdio:['ignore','ignore','pipe']});
+ const chrome=spawn(process.env.CHROME_BIN||'/Applications/Google Chrome.app/Contents/MacOS/Google Chrome',chromeArgs(profile),{stdio:['ignore','ignore','pipe']});
  const cleanup=chromeCleanup(chrome);
- let socket,spawnError,stderr='';chrome.on('error',e=>spawnError=e);chrome.stderr.on('data',s=>stderr=(stderr+s).slice(-2000));
+ let socket;
  try{
-  let port;
-  for(let i=0;i<200;i++){
-   if(spawnError)throw spawnError;
-   try{port=Number(fs.readFileSync(path.join(profile,'DevToolsActivePort'),'utf8').split('\n')[0]);break;}catch{}
-   if(chrome.exitCode!==null)throw Error(stderr);await pause(50);
-  }
-  assert(port,'Chrome did not start');
+  const port=await waitForChromePort(chrome,profile);
   const tabs=await(await fetch('http://127.0.0.1:'+port+'/json/list')).json();
   socket=new WebSocket(tabs.find(t=>t.type==='page').webSocketDebuggerUrl);
   await new Promise((r,j)=>{socket.addEventListener('open',r,{once:true});socket.addEventListener('error',j,{once:true});});
